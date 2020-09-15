@@ -1,7 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home.vue";
-import InvestHome from "@/views/InvestHome.vue";
+import InvestHome from "@/views/invest/InvestHome.vue";
+import WriteInvest from "@/views/invest/WriteInvest.vue";
 
 Vue.use(VueRouter);
 
@@ -18,6 +19,11 @@ const routes = [
     path: "/investhome",
     name: "InvestHome",
     component: InvestHome,
+  },
+  {
+    path: "/writeinvest",
+    name: "WriteInves",
+    component: WriteInvest,
   },
 ];
 
