@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS). // 우린 토큰 인증이므로 session 사용 안함
                 and().
                     authorizeRequests().	// 페이지별 접근 가능한 권한 설정
-                    antMatchers("/newuser/**", "/swagger-ui.html").permitAll().
+                    antMatchers("/newuser/**", "/swagger-ui.html", "/kakaopay/**"," kapi.kakao.com/**").permitAll().
                 and().
                     authorizeRequests().	// 페이지별 접근 가능한 권한 설정
                     antMatchers("/admin/**").hasRole("ADMIN").
