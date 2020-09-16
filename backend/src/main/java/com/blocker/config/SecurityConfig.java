@@ -1,6 +1,5 @@
 package com.blocker.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,14 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.blocker.jwt.JwtAuthenticationEntryPoint;
-import com.blocker.jwt.JwtRequestFilter;
+import com.blocker.dto.KakaoOAuth2User;
 
 
 @Configuration
@@ -25,59 +18,39 @@ import com.blocker.jwt.JwtRequestFilter;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
-    @Autowired
-    private UserDetailsService jwtUserDetailsService;
-    @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
     // Swagger 관련 문서는 모두가 볼 수 있도록 설정하기 위해 WebSecurity ignore 설정 진행
    @Override 	
 	public void configure(WebSecurity web) throws Exception {
 	   web.ignoring().antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**", "/webSocket/**");
 	}
-   
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.
-                httpBasic().disable(). // 기본 제공해주는 로그인 페이지 사용 안함 (우리가 만든 로그인 페이지로 커스텀하기 위해서)
-                cors().and().		   
-                csrf().disable().	   // rest api 이므로, 페이지 구현을 안하므로, csrf 보안 사용 안함
-                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS). // 우린 토큰 인증이므로 session 사용 안함
-                and().
-                    authorizeRequests().	// 페이지별 접근 가능한 권한 설정
-                    antMatchers("/newuser/**", "/swagger-ui.html").permitAll().
-                and().
-                    authorizeRequests().	// 페이지별 접근 가능한 권한 설정
-                    antMatchers("/admin/**").hasRole("ADMIN").
-                and().
-                    authorizeRequests().	// 페이지별 접근 가능한 권한 설정
-                    antMatchers("/user/**").hasAnyRole("USER", "ADMIN").
-                and().
-                    authorizeRequests().
-                    anyRequest().
-                    authenticated().
-                and().
-                    exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).
-                and().
-                    addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-    }
+   @Override
+   protected void configure(HttpSecurity http) throws Exception {
+       // disables cors and csrf
+       http
+               .cors().and()
+               .csrf()
+               .disable();
 
+       // authenticate
+       http.authorizeRequests()
+               .antMatchers("/my").permitAll()
+               .antMatchers("/").permitAll()
+               .antMatchers("/oauth2/**").permitAll()
+               .antMatchers("/login/**").permitAll()
+               .anyRequest().authenticated()
+               .and()
+               .oauth2Login()
+               .userInfoEndpoint()
+               .customUserType(KakaoOAuth2User.class, "kakao");
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
-    }
+       // disables session creation on Spring Security
+//       http.sessionManagement()
+//               .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+   }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+   @Override
+   public void configure(AuthenticationManagerBuilder auth) throws Exception {
+//       auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+   }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
 }
