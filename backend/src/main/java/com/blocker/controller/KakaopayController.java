@@ -29,16 +29,18 @@ public class KakaopayController {
 
 	@PostMapping("/kakaoPay")
 	@ApiOperation(value = "카카오페이 Post방식")
-	// 프론트에서 상품명 수량 총액 가져와서 kakaoPayReady의 파라메타로 넘겨서 
+	// 프론트에서 상품명 수량 총액 가져와서 kakaoPayReady의 파라메타로 넘겨서
 	// kakaoPayReady의 필수데이터를 초기화 해주어야함
-	public String kakaoPay() {
-		return kakaopay.kakaoPayReady();
+	public void kakaoPay() {
+		kakaopay.kakaoPayReady();
 	}
 
 	@GetMapping("/kakaoPayReadySuccess")
 	@ApiOperation(value = "카카오페이 성공했을 경우")
-	public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token) {
+	public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token, Model model) {
 		System.out.println("kakaoPaySuccess get----------------------");
 		System.out.println("kakaoPaySuccess pg_token : " + pg_token);
+
+		model.addAttribute("info", kakaopay.kakaoPayInfo(pg_token));
 	}
 }
