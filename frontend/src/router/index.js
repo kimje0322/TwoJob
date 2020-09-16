@@ -3,34 +3,46 @@ import VueRouter from "vue-router";
 import Home from "@/views/Home.vue";
 import InvestHome from "@/views/invest/InvestHome.vue";
 import WriteInvest from "@/views/invest/WriteInvest.vue";
+import ShoppingHome from "@/views/shopping/ShoppingHome.vue";
+import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
 
 Vue.use(VueRouter);
 
 /**
  * 아래의 router를 변경하여 구현할 수 있습니다.
  */
-const routes = [
-  {
-    path: "/",
-    name: "home",
-    component: Home,
-  },
-  {
-    path: "/investhome",
-    name: "InvestHome",
-    component: InvestHome,
-  },
-  {
-    path: "/writeinvest",
-    name: "WriteInves",
-    component: WriteInvest,
-  },
+const routes = [{
+        path: "/",
+        name: "home",
+        component: Home,
+    },
+    {
+        path: "/investhome",
+        name: "InvestHome",
+        component: InvestHome,
+    },
+    {
+        path: "/writeinvest",
+        name: "WriteInves",
+        component: WriteInvest,
+    },
+    {
+        path: "/shoppinghome",
+        name: "ShoppingHome",
+        component: ShoppingHome,
+    },
+    {
+        path: "/shoppingdetail",
+        name: "ShoppingDetail",
+        component: ShoppingDetail,
+    },
+
 ];
 
 const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes,
+    mode: "history",
+    base: process.env.BASE_URL,
+    routes,
 });
 
 

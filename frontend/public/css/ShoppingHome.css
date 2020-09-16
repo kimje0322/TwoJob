@@ -1,0 +1,4 @@
+.v-application--wrap {
+    min-height: 0 !important;
+    background-color: #f8f9fa;
+}
