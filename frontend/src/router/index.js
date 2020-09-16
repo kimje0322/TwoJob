@@ -2,7 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home.vue";
 import InvestHome from "@/views/InvestHome.vue";
-import ShoppingHome from "@/views/shoppinghome/ShoppingHome.vue";
+import ShoppingHome from "@/views/shopping/ShoppingHome.vue";
+import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
 
 Vue.use(VueRouter);
 
@@ -24,6 +25,12 @@ const routes = [{
         name: "ShoppingHome",
         component: ShoppingHome,
     },
+    {
+        path: "/shoppingdetail",
+        name: "ShoppingDetail",
+        component: ShoppingDetail,
+    },
+
 ];
 
 const router = new VueRouter({

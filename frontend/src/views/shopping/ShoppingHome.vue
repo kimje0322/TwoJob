@@ -35,46 +35,152 @@
     </div>
     <!-- 카테고리 -->
     
-    <div style="text-align:center">
-    <v-app id="inspire">
-      <v-container class="grey lighten-5">
+    <v-app id="inspire" style="text-align:center">
+      <v-container class="cateContainer">
         <v-row no-gutters>
+          <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
           <v-col
             cols="12"
-            sm="4"
+            sm="1"
+          >
+          </v-col>
+          <v-col
+            cols="12"
+            sm="1"
           >
             <v-card
               class="pa-2"
               outlined
               tile
             >
-            <img src="../../assets/전체.png" alt="" 
-              style="width:55px; height:60px"><br>
-              전체
+            <v-icon size="30">mdi-book-multiple-outline</v-icon><br>
+            <!-- <img src="../../assets/전체.png" alt="" 
+              style="width:55px; height:60px"><br> -->
+              <p class="categoryTag">전체</p>
             </v-card>
           </v-col>
           <v-col
             cols="12"
-            sm="4"
+            sm="1"
           >
             <v-card
               class="pa-2"
               outlined
               tile
             >
-            <img src="../../assets/전체.png" alt="" 
-              style="width:55px; height:60px"><br>
-              테크, 가전
+            <v-icon size="30">mdi-laptop-windows</v-icon>
+              <p class="categoryTag">테크, 가전</p>
             </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-app>
+          </v-col>
+          <v-col
+              cols="12"
+              sm="1"
+            >
+            <v-card
+              class="pa-2"
+              outlined
+              tile
+            >
+            <v-icon size="30">mdi-shoe-heel</v-icon>
+              <p class="categoryTag">패션, 잡화</p>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="1"
+          >
+            <v-card
+              class="pa-2"
+              outlined
+              tile
+            >
+            <v-icon size="30">mdi-lipstick</v-icon>
+              <p class="categoryTag">뷰티</p>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="1"
+          >
+            <v-card
+              class="pa-2"
+              outlined
+              tile
+            >
+             <v-icon size="30">mdi-food</v-icon>
+              <p class="categoryTag">푸드</p>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="1"
+          >
+            <v-card
+              class="pa-2"
+              outlined
+              tile
+            >
+             <v-icon size="30">mdi-hair-dryer</v-icon>
+              <p class="categoryTag">홈리빙</p>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="1"
+          >
+            <v-card
+              class="pa-2"
+              outlined
+              tile
+            >
+             <v-icon size="30">mdi-handball</v-icon>
+              <p class="categoryTag">스포츠</p>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="1"
+          >
+            <v-card
+              class="pa-2"
+              outlined
+              tile
+            >
+             <v-icon size="30">mdi-dog</v-icon>
+              <p class="categoryTag">반려동물</p>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="1"
+          >
+            <v-card
+              class="pa-2"
+              outlined
+              tile
+            >
+             <v-icon size="30">mdi-book-open-variant</v-icon>
+              <p class="categoryTag">책</p>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="1"
+          >
+            <v-card
+              class="pa-2"
+              outlined
+              tile
+            >
+             <v-icon size="30">mdi-violin</v-icon>
+              <p class="categoryTag">악기</p>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-app>
 
 
-
-      <!-- <img src="../../assets/전체.png" alt="" style="width:55px; height:60px"> -->
-    </div>
     <!-- 품절임박 -->
     <div style="margin-left: 5%;">
       <h4 style="font-weight: 600">품절임박<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
@@ -286,5 +392,11 @@ export default {
 }
 .openBadge {
   color: rgb(22, 150, 245);
+}
+.categoryTag {
+  margin-bottom: 0;
+}
+.v-application--wrap {
+  min-height: 0;
 }
 </style>
