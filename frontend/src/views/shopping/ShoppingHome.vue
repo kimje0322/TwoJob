@@ -34,7 +34,6 @@
       </v-carousel>
     </div>
     <!-- 카테고리 -->
-    
     <v-app id="inspire" style="text-align:center">
       <v-container class="cateContainer">
         <v-row no-gutters>
@@ -54,8 +53,6 @@
               tile
             >
             <v-icon size="30">mdi-book-multiple-outline</v-icon><br>
-            <!-- <img src="../../assets/전체.png" alt="" 
-              style="width:55px; height:60px"><br> -->
               <p class="categoryTag">전체</p>
             </v-card>
           </v-col>
@@ -180,7 +177,6 @@
       </v-container>
     </v-app>
 
-
     <!-- 품절임박 -->
     <div style="margin-left: 5%;">
       <h4 style="font-weight: 600">품절임박<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
@@ -190,17 +186,13 @@
         <v-card :loading="loading" class="my-12" max-width="320" style="margin: auto">
           <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
           <v-card-title style="font-weight: 600; margin: auto">{{item.title}}
-            <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.deadline}}일 남음</v-chip></div>
+            <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.deadline}}개 남음</v-chip></div>
           </v-card-title>
           <v-card-text>
             <div style="margin-bottom: 15px;">{{item.content}}</div>
-            <div style="color: black;">
+            <!-- <div style="color: black;">
               <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.price}} 원</h5>
-              <div style="display: inline-block; float: right;">
-                <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
-                <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
-              </div>
-            </div>
+            </div> -->
           </v-card-text>
         </v-card>
       </div>
@@ -218,13 +210,9 @@
           </v-card-title>
           <v-card-text>
             <div style="margin-bottom: 15px;">{{item.content}}</div>
-            <div style="color: black;">
-              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.price}} 원</h5>
-              <div style="display: inline-block; float: right;">
-                <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
-                <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
-              </div>
-            </div>
+            <!-- <div style="color: black; display: inline-block; float: right;">
+              <v-icon size="20" class="mr-1">mdi-heart</v-icon>128
+            </div> -->
           </v-card-text>
         </v-card>
       </div>
@@ -245,7 +233,7 @@
           <v-card-text>
             <div style="margin-bottom: 15px;">{{item.content}}</div>
             <div style="color: black;">
-              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">목표금액 : {{item.price}} 원</h5>
+              <strong><p style="display: inline-block; height: 41.6px; line-height: 41.6px">판매 예정금액 {{item.price}} 원</p></strong>
             </div>
           </v-card-text>
         </div>
@@ -256,6 +244,7 @@
 
 <script>
 import "../../../public/css/InvestHome.css";
+import "../../../public/css/ShoppingHome.css";
 
 export default {
   data() {
@@ -327,25 +316,25 @@ export default {
           title: "특별한 자전거",
           opendate: "2",
           content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,500,500",
+          price: "39,000",
         },
         {
           title: "특별한 숟가락",
           opendate: "5",
           content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,300,500",
+          price: "75,000",
         },
         {
           title: "달라진 안경",
           opendate: "10",
           content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,500",
+          price: "1,000,000",
         },
         {
           title: "날이 없는 선풍기",
           opendate: "12",
           content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,000",
+          price: "50,000",
         },
       ]
     };
