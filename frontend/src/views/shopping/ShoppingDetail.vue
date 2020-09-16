@@ -102,7 +102,7 @@
     </div>
     <!-- 금손님 정보 -->
     <div class="mt-5">
-      <strong><p>금손님 정보</p></strong>
+      <strong><p class="mb-3">금손님 정보</p></strong>
       <div class="maker" style="float:left">
         <img class="makerImg" src="../../assets/금손.jpg" alt="">
       </div>
@@ -112,6 +112,20 @@
       </div>
     </div>
     <hr style="margin-top: 80px">
+    <!-- 탭 -->
+    <v-tabs>
+      <v-tab><strong>프로젝트 이력</strong></v-tab>
+      <v-tab>상품 설명서</v-tab>
+      <v-tab>리뷰</v-tab>
+      <v-tab>투자금 사용내역</v-tab>
+    </v-tabs><br>
+    <div >
+      <p>프로젝트 성공률</p>
+      <img style="width: 30%;" src="../../assets/80.png" alt="">
+    </div>
+    <p>성공 프로젝트</p>
+    <p>만든 프로젝트</p>
+
   </div>
   </div>
 </template>
@@ -151,7 +165,7 @@ export default {
     width: 100% !important;
   }
   .entirePage {
-    margin: 30px 170px 0px 200px;
+    margin: 30px 150px 0px 200px;
   }
   .shoppingDetail {
     height: 500px;
@@ -190,5 +204,7 @@ export default {
     height: 100%;
     object-fit: cover;
   }
-  
+  p {
+    margin-bottom: 0;
+  }
 </style>
