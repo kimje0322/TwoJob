@@ -1,7 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home.vue";
-import InvestHome from "@/views/InvestHome.vue";
+import InvestHome from "@/views/invest/InvestHome.vue";
+import WriteInvest from "@/views/invest/WriteInvest.vue";
 import ShoppingHome from "@/views/shopping/ShoppingHome.vue";
 import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
 
@@ -19,6 +20,11 @@ const routes = [{
         path: "/investhome",
         name: "InvestHome",
         component: InvestHome,
+    },
+    {
+        path: "/writeinvest",
+        name: "WriteInves",
+        component: WriteInvest,
     },
     {
         path: "/shoppinghome",
