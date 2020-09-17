@@ -1,7 +1,12 @@
 <template>
   <!-- 상단 네브바 -->
-    <div class="investNav">
+    <div class="Navbar">
       <div class="items">
+        <div class="serviceName">
+          <router-link to="/">
+            <h3>ToJob</h3>
+          </router-link>
+        </div>
         <div>
           <router-link to="/investhome">
             <h5>투자목록</h5>
@@ -36,24 +41,20 @@
             </v-dialog>
           </v-row>-->
           <!-- </router-link> -->
-
-          <v-btn @click.stop="dialog = true">
+          <v-btn @click="onchargebox">
             <i class="fas fa-user fa-lg"></i>
           </v-btn>
-
-          <v-dialog v-model="dialog" max-width="290">
+          <div class="chargebox" style="inline-block" v-if="openbox">
             <v-card style="padding: 20px; margin: 0">
               <v-card-title class="headline">{{userInfo.name}}님의 자산 현황 : {{asset}}원</v-card-title>
               <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
               <v-card-actions class="moneybtns">
-                <!-- <a v-if="next" :href="nexturl">{{money}}원을 충전하시겠습니까?
-                </a> -->
                 <v-spacer></v-spacer>
                 <v-btn class="chargebtn" text @click="onKakao">충전하기</v-btn>
-                <v-btn class="closebtn" text @click="dialog = false">닫기</v-btn>
+                <v-btn class="closebtn" text @click="openbox = false">닫기</v-btn>
               </v-card-actions>
             </v-card>
-          </v-dialog>
+          </div>
         </v-row>
         <div>
           <router-link to="/search">
@@ -69,6 +70,7 @@
 <script>
 import axios from "axios";
 import store from '../store/index.js'
+import "../../public/css/Navbar.scss"
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
@@ -78,7 +80,7 @@ export default {
   data() {
     return {
       login: false,
-      dialog: false,
+      openbox: false,
       money: "",
       asset: "0",
       next: false,
@@ -100,7 +102,10 @@ export default {
       this.login = false;
     }
   },
-   methods: {
+  methods: {
+    onchargebox() {
+      this.openbox = !this.openbox
+    },
     onKakao() {
       this.money = this.money * 1;
       const fd = new FormData();
@@ -171,11 +176,23 @@ export default {
 </script>
 
 <style scoped>
-.investNav {
+.Navbar {
   height: 50px;
   /* text-align: center; */
   text-align: right;
   line-height: 50px;
+}
+.serviceName {
+  float: left;
+  margin-left: 20px !important;
+  height: 50px;
+  /* font-weight: 600; */
+}
+.serviceName h3 {
+  line-height: 50px;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: 1.2px;
 }
 .items div {
   display: inline-block;
@@ -185,10 +202,12 @@ export default {
   color: black;
   text-decoration: none;
 }
-.v-dialog--active {
-  top: 3%;
+.chargebox {
   position: absolute;
-  left: 68%;
+  z-index: 98;
+  width: 25%;
+  top: 7%;
+  right: 0%;
 }
 .v-card__title {
   margin: 0 !important;
