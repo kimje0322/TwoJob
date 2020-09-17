@@ -1,0 +1,13 @@
+.Navbar {
+  .v-dialog--active {
+    top: 3%;
+    position: absolute;
+    left: 68%;
+    width: 25% !important;
+    max-width: unset !important;
+  }
+  .v-btn--contained {
+    background-color: unset !important;
+    box-shadow: unset !important;
+  }
+}
