@@ -12,27 +12,27 @@
 
 #### 1. member(회원관리) 액세스 토큰을 들고 있기위한 용도
 
-##### user_id(PK)
+##### user_id(PK) (oauth값)
 
-##### access_token
+##### access_token (accesstoken)
 
-##### name
+##### name (user 이름)
 
-##### profile_img
+##### profile_img (user의 profile Img)
 
-##### provider_name
+##### provider_name (토큰값을 준 도메인 ex. 네이버인지 카카오인지 구글인지)
 
-##### email
+##### email (email)
 
 
 
 #### 2. wallets(회원 지갑 관리) 
 
-##### user_id(PK,FK)
+##### user_id(PK,FK) (member에있는 user_id(oauth 값))
 
-#####  address
+#####  address (유저 지갑의 고유 해시값)
 
-##### balance(Token갯수)
+##### balance (Token갯수)
 
 
 
@@ -40,7 +40,7 @@
 
 ##### transactions_id
 
-##### hash 
+##### hash (트랜젝션이 일어날때 얻는 해시값)
 
 ##### nonce 
 
@@ -78,39 +78,39 @@
 
 #### 4. FundContents (투자에관한 글을 관리)
 
-##### num(PK)
+##### num(PK) (SellingContents의 FK와 조인하기위해 사용할 number (auto_increment로 지정))
 
-##### oauth_id(member)(FK)
+##### oauth_id(FK) (member에있는 user_id(oauth 값))
 
-##### subject
+##### subject (제목)
 
-##### content
+##### content (내용)
 
-##### latestBlock
+##### latestBlock (해당 게시글의 마지막블록index)
 
 
 
 #### 5. SellingContents (판매에관한 글을 관리)
 
-##### num
+##### num(PK) (PK를 지정해주기위한 number (auto_increment로 지정))
 
-##### fundContentNum(FK)
+##### fundContentNum(FK) (FundContent에있는 num) => 판매 게시글이 투자게시글로부터 나오기때문에
 
-##### subject
+##### subject (제목)
 
-##### content
+##### content (내용)
 
-##### latestBlock
+##### latestBlock (해당 게시글의 마지막블록index)
 
 
 
 #### 6. Images (모든 사진 파일의 경로를 관리)
 
-##### num(PK)  
+##### num(PK) (PK를 지정해주기위한 number (auto_increment로 지정))
 
-##### FundContentsnum
+##### FundContentsnum(FK) (FundContent에있는 num) => 판매 게시글이 투자게시글로부터 나오기때문에
 
-##### Imgpath 
+##### Imgpath (사진의 경로)
 
 
 
