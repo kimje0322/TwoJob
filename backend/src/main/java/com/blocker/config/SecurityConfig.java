@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                .disable();
 
        // authenticate
-       http.authorizeRequests()
+       http.authorizeRequests().antMatchers("/**").permitAll()
        		   .antMatchers("/wallet/**").permitAll()
                .antMatchers("/oauth2/**").permitAll()
                .antMatchers("/login/**").permitAll()
