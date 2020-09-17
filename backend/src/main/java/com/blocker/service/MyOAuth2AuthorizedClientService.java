@@ -26,10 +26,11 @@ public class MyOAuth2AuthorizedClientService implements OAuth2AuthorizedClientSe
     public void saveAuthorizedClient(OAuth2AuthorizedClient oAuth2AuthorizedClient, Authentication authentication) {
         String providerType = oAuth2AuthorizedClient.getClientRegistration().getRegistrationId();
         OAuth2AccessToken accessToken = oAuth2AuthorizedClient.getAccessToken();
+        System.out.println("dd = " + accessToken);
         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
         String id = oauth2User.getName();
-        String name = oauth2User.getAttribute("name");
-        String image = oauth2User.getAttribute("image");
+        String name = "aa";//oauth2User.getAttribute("name");
+        String image = "aa";//oauth2User.getAttribute("image");
         Member member = new Member(id, name, image, providerType, accessToken.getTokenValue());
         memberRepository.save(member);
     }

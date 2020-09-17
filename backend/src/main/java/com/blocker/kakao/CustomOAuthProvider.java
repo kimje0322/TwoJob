@@ -17,8 +17,21 @@ public enum CustomOAuthProvider {
                     .userNameAttributeName("id")
                     .clientName("Kakao");
         }
+    },
+    NAVER {
+        @Override
+        public ClientRegistration.Builder getBuilder() {
+            return getBuilder("naver", ClientAuthenticationMethod.POST)
+                    .scope("profile", "talk_message")
+                    .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
+                    .tokenUri("https://nid.naver.com/oauth2.0/token")
+                    .userInfoUri("https://openapi.naver.com/v1/nid/me")
+                    .clientId("MaPOtdZfH4zVADw4AFJX")
+                    .clientSecret("cAtFom_WbK")
+                    .userNameAttributeName("id")
+                    .clientName("Naver");
+        }
     };
-
     private static final String DEFAULT_LOGIN_REDIRECT_URL = "{baseUrl}/login/oauth2/code/{registrationId}";
 
     protected final ClientRegistration.Builder getBuilder(String registrationId, ClientAuthenticationMethod method) {
@@ -32,4 +45,5 @@ public enum CustomOAuthProvider {
     }
 
     public abstract ClientRegistration.Builder getBuilder();
+    
 }
