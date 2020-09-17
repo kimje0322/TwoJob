@@ -74,7 +74,12 @@
                               placeholder="프로젝트 시작 날짜"
                             ></v-text-field>
                           </template>
-                          <v-date-picker v-model="date1" no-title @input="menu1 = false" color="rgb(22, 150, 245)"></v-date-picker>
+                          <v-date-picker
+                            v-model="date1"
+                            no-title
+                            @input="menu1 = false"
+                            color="rgb(22, 150, 245)"
+                          ></v-date-picker>
                         </v-menu>
                       </div>
                     </div>
@@ -108,18 +113,33 @@
                               placeholder="프로젝트 시작 날짜"
                             ></v-text-field>
                           </template>
-                          <v-date-picker v-model="date2" no-title @input="menu2 = false" color="rgb(22, 150, 245)"></v-date-picker>
+                          <v-date-picker
+                            v-model="date2"
+                            no-title
+                            @input="menu2 = false"
+                            color="rgb(22, 150, 245)"
+                          ></v-date-picker>
                         </v-menu>
                       </div>
                     </div>
                   </div>
                   <h5>달성 목표 금액</h5>
                   <p style="margin: 0 0 5px 10px">마감일 자정까지 목표 금액을 100%달성하셔야만 물품을 판매하실 수 있습니다.</p>
-                  <input v-model="targetPrice" @click="removeTargetPrice" type="text" style="width: 35%; text-align: right; font-size: 18px">
+                  <input
+                    v-model="targetPrice"
+                    @click="removeTargetPrice"
+                    type="text"
+                    style="width: 35%; text-align: right; font-size: 18px"
+                  />
                   <h5 style="display: inline-block; margin-left: 5px;">원</h5>
                   <h5>상품 판매 예정 금액</h5>
                   <p style="margin: 0 0 5px 10px">상품 판매할 예정 금액을 입력해주세요(상품이 여러개이면 대표상품으로 입력해주세요).</p>
-                  <input v-model="receivePrice" @click="removeReceivePrice" type="text" style="width: 35%; text-align: right; font-size: 18px">
+                  <input
+                    v-model="receivePrice"
+                    @click="removeReceivePrice"
+                    type="text"
+                    style="width: 35%; text-align: right; font-size: 18px"
+                  />
                   <h5 style="display: inline-block; margin-left: 5px;">원</h5>
                   <h5>대표 사진</h5>
                   <v-file-input
@@ -131,10 +151,16 @@
                     hide-details
                   ></v-file-input>
                   <h5>소개 영상 URL</h5>
-                  <input type="text" placeholder="프로젝트 소개 영상 URL을 입력해주세요.">
+                  <input type="text" placeholder="프로젝트 소개 영상 URL을 입력해주세요." />
                   <h5>카테고리</h5>
-                  <div class="categoryDiv" style="">
-                    <v-btn class="categorybtn" :class="key" v-for="(value, key) in categoryList" :key="key" @click="checkcategory(key)">{{value}}</v-btn>
+                  <div class="categoryDiv" style>
+                    <v-btn
+                      class="categorybtn"
+                      :class="key"
+                      v-for="(value, key) in categoryList"
+                      :key="key"
+                      @click="checkcategory(key)"
+                    >{{value}}</v-btn>
                   </div>
                   <h5>검색용 태그</h5>
                   <div>
@@ -161,16 +187,53 @@
           <v-tab-item :value="'tab-1'">
             <v-card flat tile>
               <v-card-text>
-                금손정보
+                <div class="writerinfo">
+                  <p>금손님에대한 정보를 입력해주세요.</p>
+                  <h5>개인 / 사업자 구분</h5>
+                  <v-select
+                    v-model="select"
+                    :items="items"
+                    label="사업자 구분 선택"
+                    solo
+                    hide-details
+                    @click="openMenu"
+                  ></v-select>
+                  <!-- 개인 -->
+                  <div v-if="individual">
+                    <h5>금손님 소개</h5>
+                    <textarea
+                      name="introduce"
+                      id="introduce"
+                      cols="98"
+                      rows="10"
+                      placeholder="금손님을 소개하는 글을 써주세요."
+                    ></textarea>
+                    <h5>금손님 소개 사이트</h5>
+                    <input type="text" placeholder="ex)홈페이지, SNS" />
+                  </div>
+                  <!-- 개인사업자/기업 -->
+                  <div v-if="business">
+                    <h5>회사명</h5>
+                    <input type="text" placeholder="회사명을 입력해주세요." />
+                    <h5>금손님 소개</h5>
+                    <textarea
+                      name="introduce"
+                      id="introduce"
+                      cols="98"
+                      rows="10"
+                      placeholder="금손님을 소개하는 글을 써주세요."
+                    ></textarea>
+                    <h5>금손님 소개 사이트</h5>
+                    <input type="text" placeholder="ex)홈페이지, SNS" />
+                  </div>
+                </div>
               </v-card-text>
             </v-card>
           </v-tab-item>
           <!-- 투자 설명서 창 -->
           <v-tab-item :value="'tab-2'">
             <v-card flat tile>
-              <v-card-text>
-                투자 설명서
-              </v-card-text>
+              <v-card-text>투자 설명서</v-card-text>
             </v-card>
           </v-tab-item>
         </v-tabs>
@@ -181,7 +244,7 @@
 
 <script>
 import "@/../public/css/WriteInvest.css";
-import $ from "jquery"
+import $ from "jquery";
 import Swal from "sweetalert2";
 
 export default {
@@ -203,25 +266,33 @@ export default {
       receivePrice: 0,
       // 사진
       rules: [
-        value => !value || value.size < 2000000 || 'Tunbnail size should be less than 2 MB!',
+        (value) =>
+          !value ||
+          value.size < 2000000 ||
+          "Tunbnail size should be less than 2 MB!",
       ],
       // 카테고리
       categoryList: {
-        "tech": "테크, 가전", 
-        "fashion": "패션", 
-        "beauty": "뷰티", 
-        "food": "푸드",
-        "home": "홈리빙",
-        "sports": "스포츠",
-        "animal": "반려동물",
-        "book": "책",
-        "instrument": "악기"
+        tech: "테크, 가전",
+        fashion: "패션",
+        beauty: "뷰티",
+        food: "푸드",
+        home: "홈리빙",
+        sports: "스포츠",
+        animal: "반려동물",
+        book: "책",
+        instrument: "악기",
       },
       checkCategory: [],
       // 검색태그
       items: [],
       model: [],
-      
+      // 금손 정보
+      items: ['개인', '개인 사업자/기업'],
+      select: '',
+      openMenutab: false,
+      individual: false,
+      business: false,
     };
   },
   computed: {
@@ -237,26 +308,25 @@ export default {
       this.dateFormatted2 = this.formatDate(this.date2);
     },
     model(val, prev) {
-      if (val.length === prev.length) return
-      this.model = val.map(v => {
-        if (typeof v === 'string') {
-          v = {text: `#${v}`}
-          this.items.push(v)
-          this.nonce++
+      if (val.length === prev.length) return;
+      this.model = val.map((v) => {
+        if (typeof v === "string") {
+          v = { text: `#${v}` };
+          this.items.push(v);
+          this.nonce++;
         }
-        return v
-      })
+        return v;
+      });
     },
     select(val) {
-      if (val=="개인"){
-        this.individual = true
-        this.business = false
+      if (val == "개인") {
+        this.individual = true;
+        this.business = false;
+      } else {
+        this.business = true;
+        this.individual = false;
       }
-      else {
-        this.business = true
-        this.individual = false
-      }
-    }
+    },
   },
   methods: {
     formatDate(date) {
@@ -272,41 +342,38 @@ export default {
       return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
     removeTargetPrice() {
-      this.targetPrice = ''
+      this.targetPrice = "";
     },
     removeReceivePrice() {
-      this.receivePrice = ''
+      this.receivePrice = "";
     },
     checkcategory(category) {
-      if (this.checkCategory.indexOf(category) >= 0){
-        const idx = this.checkCategory.indexOf(category)
-        this.checkCategory.splice(idx, 1)
-          $(`.${category}`).css('background-color', 'white')
-          $(`.${category}`).css('color', 'black')
-      }
-      else {
-        this.checkCategory.push(category)
-        $(`.${category}`).css('background-color', 'rgb(22, 150, 245)')
-        $(`.${category}`).css('color', 'white')
+      if (this.checkCategory.indexOf(category) >= 0) {
+        const idx = this.checkCategory.indexOf(category);
+        this.checkCategory.splice(idx, 1);
+        $(`.${category}`).css("background-color", "white");
+        $(`.${category}`).css("color", "black");
+      } else {
+        this.checkCategory.push(category);
+        $(`.${category}`).css("background-color", "rgb(22, 150, 245)");
+        $(`.${category}`).css("color", "white");
       }
     },
-    change(){
+    change() {
       const tags = [];
-      this.model.forEach(tag =>{
+      this.model.forEach((tag) => {
         tags.push(tag.text);
-      })
+      });
       this.$refs.feeditem.searchTag(tags);
     },
     openMenu() {
-      this.openMenutab = !this.openMenutab
+      this.openMenutab = !this.openMenutab;
       if (this.openMenutab) {
-        $('.v-menu').css('display', 'unset')
-      }
-      else {
-        $('.v-menu').css('display', 'none')
+        $(".v-menu").css("display", "unset");
+      } else {
+        $(".v-menu").css("display", "none");
       }
     },
-    
   },
 };
 </script>
