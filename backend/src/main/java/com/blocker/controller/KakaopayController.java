@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.util.KakaoPay;
@@ -27,6 +28,7 @@ public class KakaopayController {
 
 	}
 
+	@ResponseBody
 	@PostMapping("/kakaoPay")
 	@ApiOperation(value = "카카오페이 Post방식")
 	// 프론트에서 상품명 수량 총액 가져와서 kakaoPayReady의 파라메타로 넘겨서
@@ -35,6 +37,7 @@ public class KakaopayController {
 		return kakaopay.kakaoPayReady(count);
 	}
 
+	@ResponseBody
 	@GetMapping("/kakaoPayReadySuccess")
 	@ApiOperation(value = "카카오페이 성공했을 경우")
 	public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token, Model model) {
