@@ -184,7 +184,9 @@
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in deadlineItems" :key="i" style="display: inline-block; flex:1">
         <v-card :loading="loading" class="my-12" max-width="320" style="margin: auto">
+          <router-link to="/ShoppingDetail">
           <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
+          </router-link>
           <v-card-title style="font-weight: 600; margin: auto">{{item.title}}
             <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.deadline}}개 남음</v-chip></div>
           </v-card-title>
@@ -267,8 +269,8 @@ export default {
       ],
       deadlineItems: [
         {
-          title: "특별한 자전거",
-          deadline: "1",
+          title: "Ostay 다이슨 드라이어",
+          deadline: "2",
           content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,500,500",
           percent: "98",
