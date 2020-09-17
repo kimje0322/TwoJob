@@ -31,8 +31,8 @@ public class KakaopayController {
 	@ApiOperation(value = "카카오페이 Post방식")
 	// 프론트에서 상품명 수량 총액 가져와서 kakaoPayReady의 파라메타로 넘겨서
 	// kakaoPayReady의 필수데이터를 초기화 해주어야함
-	public void kakaoPay() {
-		kakaopay.kakaoPayReady();
+	public void kakaoPay(@RequestParam String count, @RequestParam String totalPrice) {
+		kakaopay.kakaoPayReady(count, totalPrice);
 	}
 
 	@GetMapping("/kakaoPayReadySuccess")

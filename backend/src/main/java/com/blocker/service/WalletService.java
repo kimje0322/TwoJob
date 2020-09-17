@@ -1,5 +1,5 @@
 package com.blocker.service;
 
-public class tempservice {
+public interface WalletService {
 
 }

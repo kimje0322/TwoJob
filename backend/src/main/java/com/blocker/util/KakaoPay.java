@@ -27,7 +27,7 @@ public class KakaoPay {
 
 	private static final String host = "https://kapi.kakao.com";
 
-	public String kakaoPayReady() {
+	public String kakaoPayReady(String count, String totalCount) {
 		RestTemplate restTemplate = new RestTemplate();
 
 		// 서버로 요청할 Header
@@ -42,11 +42,11 @@ public class KakaoPay {
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
 		params.add("cid", "TC0ONETIME"); // 가맹점코드 테스트할때는 TC0ONETIME을 넣는다
 		params.add("partner_order_id", "1001"); // 가맹점 주문번호
-		params.add("partner_user_id", "gorany");// 가맹점 회원 id
-		params.add("item_name", "갤럭시S9"); // 상품명
-		params.add("quantity", "1"); // 수량
-		params.add("total_amount", "2100"); // 상품 총액
-		params.add("tax_free_amount", "100"); // 상품 비과세 금액
+		params.add("partner_user_id", "tojob");// 가맹점 회원 id
+		params.add("item_name", "ether"); // 상품명
+		params.add("quantity", count); // 수량
+		params.add("total_amount", totalCount); // 상품 총액
+		params.add("tax_free_amount", "0"); // 상품 비과세 금액
 		// 프론트 주소나오면 다시 작성해야함
 		params.add("approval_url", "http://localhost:8080/kakaopay/kakaoPayReadySuccess"); // 결제 성공시 redirect할 url
 		params.add("cancel_url", "http://localhost:8080"); // 결제 취소시 redirect할 url (결제 페이지로 바꿀 예정)
