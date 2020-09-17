@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div style="height: 60px; text-align: center; border-bottom: 1px solid gray;">네브 바</div>
+  <div class="writeinvest">
+    <navbar/>
     <!-- 투자 메뉴바 -->
     <div class="investNav">
       <div class="items">
@@ -249,11 +249,15 @@
 </template>
 
 <script>
-import "@/../public/css/WriteInvest.css";
+import "@/../public/css/WriteInvest.scss";
 import $ from "jquery";
 import Swal from "sweetalert2";
+import Navbar from "../../components/Navbar.vue"
 
 export default {
+  components: {
+    Navbar
+  },
   data() {
     return {
       tab: null,

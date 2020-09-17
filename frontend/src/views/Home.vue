@@ -1,68 +1,7 @@
 <template>
-  <div>
-    <!-- 상단 네브바 -->
-    <div class="investNav">
-      <div class="items">
-        <div>
-          <router-link to="/investhome">
-            <h5>투자목록</h5>
-          </router-link>
-        </div>
-        <div>
-          <router-link to="#">
-            <h5>판매목록</h5>
-          </router-link>
-        </div>
-        <div v-if="!login">
-          <button @click="onClick">
-            <h5 style="margin: 0">로그인</h5>
-          </button>
-        </div>
-        <v-row v-else style="display: inline-block; width: 100px;">
-          <!-- <router-link to="/oauth2/authorization/kakao"> -->
-          <!-- <h5 style="margin: 0">로그인</h5> -->
-          <!-- <v-row justify="center">
-            <v-btn @click.stop="dialog = true">
-              <i class="fas fa-user fa-lg"></i>
-            </v-btn>
-            <v-dialog v-model="dialog" max-width="250">
-              <v-card>
-                <v-text-field label="충전금액" required></v-text-field>
-              </v-card>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="dialog = false">Disagree</v-btn>
-                <v-btn color="green darken-1" text @click="dialog = false">Agree</v-btn>
-              </v-card-actions>
-            </v-dialog>
-          </v-row>-->
-          <!-- </router-link> -->
-
-          <v-btn @click.stop="dialog = true">
-            <i class="fas fa-user fa-lg"></i>
-          </v-btn>
-
-          <v-dialog v-model="dialog" max-width="290">
-            <v-card>
-              <v-card-title class="headline">XX님의 자산 현황 : {{asset}}원</v-card-title>
-              <v-text-field v-model="money" label="충전금액" required></v-text-field>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="onKakao">충전하기</v-btn>
-                <v-btn color="green darken-1" text @click="dialog = false">닫기</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-row>
-        <div>
-          <router-link to="/search">
-            <button style="flex-right: 0">
-              <i class="fas fa-search"></i>
-            </button>
-          </router-link>
-        </div>
-      </div>
-    </div>
+  <div class="home">
+    <!-- 상단 Navbar -->
+    <navbar/>
     <!-- 투자홈 광고사진 -->
     <div class="homeImg">
       <v-carousel>
@@ -191,28 +130,20 @@ import axios from "axios";
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 // import 'bootstrap/dist/css/bootstrap.css'
 // import 'bootstrap-vue/dist/bootstrap-vue.css'
-// import "../../public/css/Home.css";
+import "../../public/css/Home.scss";
 import store from '../store/index.js'
+import Navbar from '../components/Navbar.vue'
 
-const SERVER_URL = "https://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
-const redirect_uri = "https://j3b102.p.ssafy.io:8080";
+const redirect_uri = "http://j3b102.p.ssafy.io:8080";
 
 export default {
+  components: {
+    Navbar,
+  },
   data() {
     return {
-      login: false,
-      dialog: false,
-      money: "",
-      asset: "",
-      // useremail: "",
-      // username: "",
-      // userimg: "",
-      userInfo: {
-        email: '',
-        name: '',
-        img: '',
-      },
       items: [
         {
           src: "https://image.freepik.com/free-photo/_93675-87338.jpg",
@@ -230,63 +161,6 @@ export default {
         },
       ],
     };
-  },
-  methods: {
-    onKakao() {
-      axios
-        .post(
-          `${SEVER_URL}/kakaopay/kakaoPay?count=${this.money * 1}&totalPrice=${
-            this.money * 1
-          }`
-        )
-        .then();
-    },
-    onClick() {
-      window.Kakao.Auth.loginForm({
-        success: this.GetMe,
-      });
-    },
-    GetMe(authObj) {
-      console.log(authObj);
-      //토큰값 받아오는 부분
-      console.log(authObj.access_token);
-      // this.$cookies.set("auth-token", authObj.access_token);
-      window.Kakao.API.request({
-        url: "/v2/user/me",
-        success: (res) => {
-          console.log(res)
-          this.userInfo.email = res.kakao_account.email
-          this.userInfo.name = res.kakao_account.profile.nickname
-          this.userInfo.img = res.kakao_account.profile.thumbnail_image_url
-
-          axios
-            .post(
-              `http://j3b102.p.ssafy.io:8080/account/kakaologin`,
-              {
-                email: this.userInfo.email,
-                nickname: this.userInfo.name,
-                image: this.userInfo.img,
-              }
-            )
-            .then((res) => {
-              this.login = true
-              console.log(this.login)
-              console.log(res);
-              console.log("저기")
-              store.commit('setUserInfo', this.userInfo)
-              this.$router.push("/#");
-            })
-            .catch((error) => {
-              console.log(error);
-              // this.$router.push("/error");
-            });
-        },
-        fail: (error) => {
-          this.$router.push("/error");
-        },
-      });
-    },
-
   },
 };
 </script>
@@ -328,10 +202,5 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.v-dialog--active {
-  top: 3%;
-  position: absolute;
-  left: 68%;
 }
 </style>
