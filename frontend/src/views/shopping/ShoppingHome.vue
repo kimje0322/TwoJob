@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div style="height: 60px; text-align: center; border-bottom: 1px solid gray;">네브 바</div>
+  <div class="shoppingHome">
+    <navbar/>
     <!-- 쇼핑 메뉴바 -->
     <div class="shoppingNav">
       <div class="items">
@@ -245,10 +245,14 @@
 </template>
 
 <script>
-import "../../../public/css/InvestHome.css";
-import "../../../public/css/ShoppingHome.css";
+import "../../../public/css/InvestHome.scss";
+import "../../../public/css/ShoppingHome.scss";
+import Navbar from "../../components/Navbar.vue";
 
 export default {
+  components: {
+    Navbar
+  },
   data() {
     return {
       items: [
@@ -352,6 +356,7 @@ export default {
   height: 50px;
   text-align: center;
   line-height: 50px;
+  border-top: 1px solid lightgray;
 }
 .items div {
   display: inline-block;
