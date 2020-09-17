@@ -46,11 +46,13 @@ public class KakaoPay {
 		params.add("item_name", "ether"); // 상품명
 		params.add("quantity", count + ""); // 수량
 		params.add("total_amount", (count * 10) + ""); // 상품 총액
+		System.out.println("count=======>" + (count * 10));
 		params.add("tax_free_amount", "0"); // 상품 비과세 금액
 		// 프론트 주소나오면 다시 작성해야함
-		params.add("approval_url", "http://j3b102.p.ssafy.io:8080/kakaopay/kakaoPayReadySuccess"); // 결제 성공시 redirect할 url
-		params.add("cancel_url", "http://j3b102.p.ssafy.io:8080"); // 결제 취소시 redirect할 url (결제 페이지로 바꿀 예정)
-		params.add("fail_url", "http://j3b102.p.ssafy.io:8080"); // 결제 실패시 redirect할 url (결제 페이지로 바꿀 예정)
+		params.add("approval_url", "http://localhost:8080/kakaopay/kakaoPayReadySuccess?totalprice="+(count*10)); // 결제 성공시 redirect할
+																									// url
+		params.add("cancel_url", "http://localhost:8080"); // 결제 취소시 redirect할 url (결제 페이지로 바꿀 예정)
+		params.add("fail_url", "http://localhost:8080"); // 결제 실패시 redirect할 url (결제 페이지로 바꿀 예정)
 
 		// 헤더와 바디를 붙이는 방법
 		HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
@@ -76,7 +78,7 @@ public class KakaoPay {
 		return "/pay";
 	}
 
-	public KakaoPayApprovalDto kakaoPayInfo(String pg_token) {
+	public KakaoPayApprovalDto kakaoPayInfo(String pg_token, String totalprice) {
 
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -91,9 +93,9 @@ public class KakaoPay {
 		params.add("cid", "TC0ONETIME");
 		params.add("tid", kakaoPayReadyDto.getTid());
 		params.add("partner_order_id", "1001");
-		params.add("partner_user_id", "gorany");
+		params.add("partner_user_id", "tojob");
 		params.add("pg_token", pg_token);
-		params.add("total_amount", "2100");
+		params.add("total_amount", totalprice);
 
 		HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
