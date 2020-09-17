@@ -22,7 +22,7 @@
             <h5 style="margin: 0">로그인</h5>
           </button>
         </div>
-        <v-row v-else style="display: inline-block; width: 100px;">
+        <v-row v-else style="display: inline-block; width: 150px; ">
           <!-- <router-link to="/oauth2/authorization/kakao"> -->
           <!-- <h5 style="margin: 0">로그인</h5> -->
           <!-- <v-row justify="center">
@@ -44,6 +44,7 @@
           <v-btn @click="onchargebox">
             <i class="fas fa-user fa-lg"></i>
           </v-btn>
+          <p @click="onLogout()" style="display: inline-block; cursor: pointer">로그아웃</p>
           <div class="chargebox" style="inline-block" v-if="openbox">
             <v-card style="padding: 20px; margin: 0">
               <v-card-title class="headline">{{userInfo.name}}님의 자산 현황 : {{asset}}원</v-card-title>
@@ -94,13 +95,13 @@ export default {
     }
   },
   mounted() {
-    if (store.state.isSigned) {
-      console.log(store.state.isSigned)
-      this.userInfo = store.state.userInfo
-      this.login = store.state.isSigned;
-    }else {
-      this.login = false;
-    }
+    // if (store.state.isSigned) {
+    //   console.log(store.state.isSigned)
+    //   this.userInfo = store.state.userInfo
+    //   this.login = store.state.isSigned;
+    // }else {
+    //   this.login = false;
+    // }
   },
   methods: {
     onchargebox() {
@@ -155,6 +156,7 @@ export default {
             )
             .then((res) => {
               this.userInfo.login = true
+              this.login = true
               // console.log(this.login)
               console.log(res);
               console.log("저기")
@@ -171,6 +173,10 @@ export default {
         },
       });
     },
+    onLogout() {
+      this.login = false
+      store.commit('deluserInfo');
+    }
   },
 }
 </script>
