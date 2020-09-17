@@ -48,7 +48,7 @@ public class KakaoPay {
 		params.add("total_amount", (count * 10) + ""); // 상품 총액
 		params.add("tax_free_amount", "0"); // 상품 비과세 금액
 		// 프론트 주소나오면 다시 작성해야함
-		params.add("approval_url", "http://j3b102.p..io:8080/kakaopay/kakaoPayReadySuccess"); // 결제 성공시 redirect할 url
+		params.add("approval_url", "http://j3b102.p.ssafy.io:8080/kakaopay/kakaoPayReadySuccess"); // 결제 성공시 redirect할 url
 		params.add("cancel_url", "http://j3b102.p.ssafy.io:8080"); // 결제 취소시 redirect할 url (결제 페이지로 바꿀 예정)
 		params.add("fail_url", "http://j3b102.p.ssafy.io:8080"); // 결제 실패시 redirect할 url (결제 페이지로 바꿀 예정)
 
