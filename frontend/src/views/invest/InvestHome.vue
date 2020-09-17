@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="investhome">
     <div style="height: 60px; text-align: center; border-bottom: 1px solid gray;">네브 바</div>
     <!-- 투자 메뉴바 -->
     <div class="investNav">
@@ -20,7 +20,7 @@
           </router-link>
         </div>
         <div>
-          <router-link to="/">
+          <router-link to="/writeinvest">
             <h5 style="margin: 0">투자오픈</h5>
           </router-link>
         </div>
@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import "../../public/css/InvestHome.css";
+import "../../../public/css/InvestHome.css";
 
 export default {
   data() {

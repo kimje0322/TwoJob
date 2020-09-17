@@ -1,0 +1,11 @@
+.theme--dark.v-tabs > .v-tabs-bar {
+  background-color: unset !important;
+}
+.v-tabs-bar__content a {
+  text-decoration: none;
+  color: black !important;
+  font-weight: 600;
+}
+.elevation-2 .v-card__text {
+  background-color: rgba(173, 220, 254, 0.4);
+}
