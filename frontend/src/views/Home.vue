@@ -192,6 +192,7 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 // import 'bootstrap/dist/css/bootstrap.css'
 // import 'bootstrap-vue/dist/bootstrap-vue.css'
 // import "../../public/css/Home.css";
+import store from '../store/index.js'
 
 const SERVER_URL = "https://j3b102.p.ssafy.io:8080";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
@@ -204,9 +205,14 @@ export default {
       dialog: false,
       money: "",
       asset: "",
-      useremail: "",
-      username: "",
-      userimg: "",
+      // useremail: "",
+      // username: "",
+      // userimg: "",
+      userInfo: {
+        email: '',
+        name: '',
+        img: '',
+      },
       items: [
         {
           src: "https://image.freepik.com/free-photo/_93675-87338.jpg",
@@ -248,37 +254,31 @@ export default {
       window.Kakao.API.request({
         url: "/v2/user/me",
         success: (res) => {
-          console.log(res);
-          this.useremail = res.kakao_account.email;
-          this.username = res.kakao_account.profile.nickname;
-          this.userimg = res.kakao_account.profile.thumbnail_image_url;
-          // const kakao_account = res.kakao_account;
-          // // 카카오에서 필요한 정보 가져오는 부분
-          // const userInfo = {
-          //   nickname: kakao_account.profile.nickname,
-          //   email: kakao_account.email,
-          //   password: authObj.access_token,
-          //   image: kakao_account.profile.profile_image_url.replace(
-          //     "http://",
-          //     "https://"
-          //   ),
-          //   address: null,
-          // };
-          // console.log(kakao_account);
+          console.log(res)
+          this.userInfo.email = res.kakao_account.email
+          this.userInfo.name = res.kakao_account.profile.nickname
+          this.userInfo.img = res.kakao_account.profile.thumbnail_image_url
 
           axios
-            .post(`http://j3b102.p.ssafy.io:8080/account/kakaologin`, {
-              email: this.useremail,
-              nickname: this.username,
-              image: this.userimg,
-            })
+            .post(
+              `http://j3b102.p.ssafy.io:8080/account/kakaologin`,
+              {
+                email: this.userInfo.email,
+                nickname: this.userInfo.name,
+                image: this.userInfo.img,
+              }
+            )
             .then((res) => {
+              this.login = true
+              console.log(this.login)
               console.log(res);
+              console.log("저기")
+              store.commit('setUserInfo', this.userInfo)
               this.$router.push("/#");
             })
             .catch((error) => {
               console.log(error);
-              this.$router.push("/error");
+              // this.$router.push("/error");
             });
         },
         fail: (error) => {
