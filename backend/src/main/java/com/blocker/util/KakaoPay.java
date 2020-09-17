@@ -44,8 +44,8 @@ public class KakaoPay {
 		params.add("partner_order_id", "1001"); // 가맹점 주문번호
 		params.add("partner_user_id", "tojob");// 가맹점 회원 id
 		params.add("item_name", "ether"); // 상품명
-		params.add("quantity", count+""); // 수량
-		params.add("total_amount", (count*10)+""); // 상품 총액
+		params.add("quantity", count + ""); // 수량
+		params.add("total_amount", (count * 10) + ""); // 상품 총액
 		params.add("tax_free_amount", "0"); // 상품 비과세 금액
 		// 프론트 주소나오면 다시 작성해야함
 		params.add("approval_url", "http://localhost:8080/kakaopay/kakaoPayReadySuccess"); // 결제 성공시 redirect할 url
