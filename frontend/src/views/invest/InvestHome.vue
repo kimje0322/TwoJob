@@ -44,7 +44,7 @@
     </div>
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in deadlineItems" :key="i" style="display: inline-block; flex:1">
-        <v-card :loading="loading" class="my-12" max-width="320" style="margin: auto">
+        <v-card class="my-12" max-width="320" style="margin: auto">
           <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
           <v-card-title style="font-weight: 600; margin: auto">{{item.title}}
             <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.deadline}}일 남음</v-chip></div>
