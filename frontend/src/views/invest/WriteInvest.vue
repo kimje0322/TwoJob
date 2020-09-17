@@ -233,7 +233,13 @@
           <!-- 투자 설명서 창 -->
           <v-tab-item :value="'tab-2'">
             <v-card flat tile>
-              <v-card-text>투자 설명서</v-card-text>
+              <v-card-text>
+                <div class="investContent">
+                  <p>프로젝트 내용에 대해 자세히 설명해주세요.</p>
+                  <h5>투자설명</h5>
+                  <textarea name="introduce" id="introduce" cols="98" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea>
+                </div>
+              </v-card-text>
             </v-card>
           </v-tab-item>
         </v-tabs>
@@ -374,6 +380,20 @@ export default {
         $(".v-menu").css("display", "none");
       }
     },
+    openInvestBtn() {
+      console.log('클릭')
+      Swal.fire({
+        icon: "warning",
+        title: '',
+        text: "정말 프로젝트를 오픈하시겠습니까?",
+        showCancelButton: true,
+        cancelButtonColor: '#d33',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: '오픈하기',
+        cancelButtonText: '취소하기',
+        reverseButtons: true
+      });
+    }
   },
 };
 </script>
