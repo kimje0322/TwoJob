@@ -228,10 +228,12 @@ export default {
   methods: {
     onKakao() {
       axios
-      .post(`${SEVER_URL}/kakaopay/kakaoPay?count=${this.money * 1}&totalPrice=${this.money * 1}`)
-      .then(
-
-      );
+        .post(
+          `${SEVER_URL}/kakaopay/kakaoPay?count=${this.money * 1}&totalPrice=${
+            this.money * 1
+          }`
+        )
+        .then();
     },
     onClick() {
       window.Kakao.Auth.loginForm({
@@ -241,15 +243,15 @@ export default {
     GetMe(authObj) {
       console.log(authObj);
       //토큰값 받아오는 부분
-      console.log(authObj.access_token)
+      console.log(authObj.access_token);
       // this.$cookies.set("auth-token", authObj.access_token);
       window.Kakao.API.request({
         url: "/v2/user/me",
         success: (res) => {
-          console.log(res)
-          this.useremail = res.kakao_account.email
-          this.username = res.kakao_account.profile.nickname
-          this.userimg = res.kakao_account.profile.thumbnail_image_url
+          console.log(res);
+          this.useremail = res.kakao_account.email;
+          this.username = res.kakao_account.profile.nickname;
+          this.userimg = res.kakao_account.profile.thumbnail_image_url;
           // const kakao_account = res.kakao_account;
           // // 카카오에서 필요한 정보 가져오는 부분
           // const userInfo = {
@@ -265,20 +267,17 @@ export default {
           // console.log(kakao_account);
 
           axios
-            .post(
-              `http://j3b102.p.ssafy.io:8080/account/kakaologin`,
-              {
-                email: this.useremail,
-                nickname: this.username,
-                image: this.userimg,
-              }
-            )
+            .post(`http://j3b102.p.ssafy.io:8080/account/kakaologin`, {
+              email: this.useremail,
+              nickname: this.username,
+              image: this.userimg,
+            })
             .then((res) => {
               console.log(res);
               this.$router.push("/#");
             })
             .catch((error) => {
-              console.log(error)
+              console.log(error);
               this.$router.push("/error");
             });
         },
@@ -288,25 +287,6 @@ export default {
       });
     },
 
-    // login(userInfo) {
-    //   axios
-    //     .get(
-    //       `${SERVER_URL}/account/login?email=${userInfo.userEmail}&password=kakao`
-    //     )
-    //     .then((response) => {
-    //       this.$cookie.set("accesstoken", response.data, 1);
-    //       this.$cookie.set("userId", response.data.object.userId, 1);
-    //       this.$cookie.set("useremail", userInfo.userEmail, 1);
-    //       // this.$router.push("/map");
-    //     })
-
-    //     .catch((error) => {
-    //       //   // console.log(error.response);
-    //       alert(
-    //         "소셜회원은 회원가입한 소셜 로그인으로, 홈페이지 회원은 홈페이지 로그인으로 로그인 해 주세요"
-    //       );
-    //     });
-    // },
   },
 };
 </script>
