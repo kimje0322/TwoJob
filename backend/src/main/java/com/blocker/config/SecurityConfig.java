@@ -33,10 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/wallet/**").permitAll()
 		.antMatchers("/oauth2/**").permitAll()
 		.antMatchers("/login/**").permitAll()
-		.anyRequest().authenticated()
-		.and()
-		.oauth2Login()
-		.userInfoEndpoint();
+		.anyRequest().authenticated();
 
 	}
 }
