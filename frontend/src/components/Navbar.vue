@@ -4,7 +4,7 @@
       <div class="items">
         <div class="serviceName">
           <router-link to="/">
-            <h3>ToJob</h3>
+            <h3>TwoJob</h3>
           </router-link>
         </div>
         <div>
@@ -14,7 +14,7 @@
         </div>
         <div>
           <router-link to="/shoppinghome">
-            <h5>판매목록</h5>
+            <h5>쇼핑목록</h5>
           </router-link>
         </div>
         <div v-if="!login">
@@ -95,13 +95,13 @@ export default {
     }
   },
   mounted() {
-    // if (store.state.isSigned) {
-    //   console.log(store.state.isSigned)
-    //   this.userInfo = store.state.userInfo
-    //   this.login = store.state.isSigned;
-    // }else {
-    //   this.login = false;
-    // }
+    if (store.state.isSigned) {
+      console.log(store.state.isSigned)
+      this.userInfo = store.state.userInfo
+      this.login = store.state.isSigned;
+    }else {
+      this.login = false;
+    }
   },
   methods: {
     onchargebox() {

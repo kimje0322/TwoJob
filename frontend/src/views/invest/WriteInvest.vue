@@ -237,7 +237,7 @@
                 <div class="investContent">
                   <p>프로젝트 내용에 대해 자세히 설명해주세요.</p>
                   <h5>투자설명</h5>
-                  <textarea name="introduce" id="introduce" cols="98" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea>
+                  <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea>
                 </div>
               </v-card-text>
             </v-card>
