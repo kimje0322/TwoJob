@@ -6,11 +6,11 @@ interface ISaleItem{
     @param _uniqueCode 게시글에 대한 해시값
     @param _count 판매갯수
     */
-    function SaleItem(string memory _uniqueCode, uint count) payable external;
+    function SaleItem(string memory _uniqueCode, uint _count) payable external;
 
     /** 수익 분배
     @param _uniqueCode 게시글에 대한 해시값
     @param _money 투자자들에게 나눠줄 수익금
     */
-    function DistributeProfit(string memory _uniqueCode, uint256 money) payable external;
+    function DistributeProfit(string memory _uniqueCode, uint256 _money) payable external;
 }

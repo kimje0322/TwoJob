@@ -86,25 +86,25 @@ contract CrowdFunding is Campaign, ICrowdFunding, ISaleItem{
      /** 물건 판매
     @param _uniqueCode 게시글에 대한 해시값
     */
-    function SaleItem(string memory _uniqueCode, uint count) payable public override(ISaleItem){
+    function SaleItem(string memory _uniqueCode, uint _count) payable public override(ISaleItem){
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
         //판매를 하면 해당 금액 만큼 profit에 돈을 저장해두고 일주일후 DistributeProfit을 호출함
-        tempCamp.totalSell += count;
+        tempCamp.totalSell += _count;
         DistributeProfit(_uniqueCode, msg.value);
     }
 
     /** 수익 분배
      @param _uniqueCode 게시글에 대한 해시값
     */
-    function DistributeProfit(string memory _uniqueCode, uint256 money) payable public override(ISaleItem){
+    function DistributeProfit(string memory _uniqueCode, uint256 _money) payable public override(ISaleItem){
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
 
         address[] memory investgatorsList = tempCamp.investgators;
         uint256 investgatorsCount = investgatorsList.length;
         // 판매자에게 나누어지게 될 몫
-        address(uint160(tempCamp.creator)).transfer((money*30)/100);
+        address(uint160(tempCamp.creator)).transfer((_money*30)/100);
         // 투자자들에게 나누어지게 될 몫
-        uint256 share = (money*70)/100;
+        uint256 share = (_money*70)/100;
 
         for(uint256 i=0; i<investgatorsCount; i++){
 
