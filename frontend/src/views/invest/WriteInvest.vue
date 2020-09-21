@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div style="height: 60px; text-align: center; border-bottom: 1px solid gray;">네브 바</div>
+  <div class="writeinvest">
+    <navbar/>
     <!-- 투자 메뉴바 -->
     <div class="investNav">
       <div class="items">
@@ -237,7 +237,7 @@
                 <div class="investContent">
                   <p>프로젝트 내용에 대해 자세히 설명해주세요.</p>
                   <h5>투자설명</h5>
-                  <textarea name="introduce" id="introduce" cols="98" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea>
+                  <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea>
                 </div>
               </v-card-text>
             </v-card>
@@ -249,11 +249,15 @@
 </template>
 
 <script>
-import "@/../public/css/WriteInvest.css";
+import "@/../public/css/WriteInvest.scss";
 import $ from "jquery";
 import Swal from "sweetalert2";
+import Navbar from "../../components/Navbar.vue"
 
 export default {
+  components: {
+    Navbar
+  },
   data() {
     return {
       tab: null,
