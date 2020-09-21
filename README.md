@@ -34,20 +34,21 @@ https://xd.adobe.com/view/adaaaf5b-9132-4b7c-96aa-b082be9f2062-f8f9/
 
 
 
-- commit message
+### commit message rule
+
+```
+[FE/BE/etc] 동사 + 페이지 이름 + 추가하고 싶은 메시지 
+
+#지라번호
+```
+
+- 동사: Add, Update, Fix(버그 수정), Delete
+
+- 예시
 
   ```
-  [FE/BE/etc] 동사 + 페이지 이름 + 추가하고 싶은 메시지 
+  [FE] Fix adminpage design
   
-  #지라번호
+  #S02P13B205-332 
   ```
 
-  - 동사: Add, Update, Fix(버그 수정), Delete
-
-  - 예시
-
-    ```
-    [FE] Fix adminpage design
-    
-    #S02P13B205-332 
-    ```
