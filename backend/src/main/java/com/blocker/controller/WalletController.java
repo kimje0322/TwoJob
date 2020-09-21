@@ -55,15 +55,15 @@ public class WalletController {
 	@Autowired
 	WalletService walletService;
 	
-	@ApiOperation(value = "[지갑 등록] 사용자 계정에 지갑을 등록합니다. param : [ email,  address ], result :  등록된 이메일이 아니면  novalid, 이미 존재하면 isExist, 등록에 성공하면 success를 return 합니다.")
+	@ApiOperation(value = "[지갑 등록] 사용자 계정에 지갑을 등록합니다. param : [ accessToken,  address ], result : 토큰 만료면 error code, 이미 존재하면 isExist, 등록에 성공하면 success를 return 합니다.")
 	@PostMapping(value = "/regist")
-	public ResponseEntity<String> register(@RequestParam("email") String email,@RequestParam("address") String address)  {
-		return new ResponseEntity<String>(walletService.wallet_regist(email, address),HttpStatus.OK);
+	public ResponseEntity<String> register(@RequestParam("accessToken") String accessToken,@RequestParam("address") String address)  {
+		return new ResponseEntity<String>(walletService.wallet_regist(accessToken, address),HttpStatus.OK);
 	}
 	@PostMapping("/ether")
-	@ApiOperation(value = "[이더 충전] 지갑에 ethere를 충전. param : [email, ether], result : 지갑이 존재하지 않으면 novalid, 충전에 성공하면 success를 return")
-	public ResponseEntity<String> charge(@RequestParam("email") String email,@RequestParam("ether") Double ether) {
-		return new ResponseEntity<String>(walletService.charge_ether(email, ether), HttpStatus.OK);
+	@ApiOperation(value = "[이더 충전] 지갑에 ethere를 충전. param : [email, ether], result : 토큰 만료면 error code,, 지갑이 존재하지 않으면 novalid, 충전에 성공하면 success를 return")
+	public ResponseEntity<String> charge(@RequestParam("accessToken") String accessToken,@RequestParam("ether") Double ether) {
+		return new ResponseEntity<String>(walletService.charge_ether(accessToken, ether), HttpStatus.OK);
 	}
 	@ApiOperation(value = "[지갑 조회] address를 이용해 지갑의 값을 조회. param : [address], result : 지갑이 존재하지 않으면 novalid, 지갑이 존재하면 해당 지갑의 balance를 return")
 	@GetMapping("/ToAdress")
@@ -75,10 +75,10 @@ public class WalletController {
 			return new ResponseEntity<Integer>((Integer) result, HttpStatus.OK);
 		}
 	}
-	@ApiOperation(value = "[지갑 조회] 사용자 id를 이용해 지갑을 조회. param : [email}, result : 지갑이 존재하지 않으면 novalid, 지갑이 존재하면 해당 지갑을 return")
-	@GetMapping("/ToEmail")
-	public ResponseEntity<?> getByUser(@RequestParam("email") String email) {
-		Object result = walletService.getWallet(email);
+	@ApiOperation(value = "[지갑 조회] 사용자 id를 이용해 지갑을 조회. param : [oauthid], result : 지갑이 존재하지 않으면 novalid, 지갑이 존재하면 해당 지갑을 return")
+	@GetMapping("/ToId")
+	public ResponseEntity<?> getByUser(@RequestParam("oauthid") String id) {
+		Object result = walletService.getWallet(id);
 		if(result.equals("novalid")) {
 			return new ResponseEntity<String>((String) result, HttpStatus.OK);
 		}else {

@@ -1,8 +1,6 @@
 package com.blocker.controller;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,12 +23,10 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.Transfer;
 import org.web3j.tx.gas.DefaultGasProvider;
-import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import com.blocker.service.TokenService;
 import com.blocker.wrapper.Greeter;
-import com.blocker.wrapper.TJToken;
 import com.blocker.wrapper.ToJobCoin;
 
 import io.swagger.annotations.ApiOperation;
