@@ -9,12 +9,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.apache.http.client.methods.HttpUriRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.blocker.dto.Member;
 import com.blocker.dto.Property;
+import com.blocker.repository.MemberRepository;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -23,92 +26,80 @@ import com.google.gson.JsonParser;
 public class LoginServiceImpl implements LoginService{
 	@Autowired
 	Property property;
-	
-	public String getAccessToken (String code) {
-		
-		String requestUrl = "https://kauth.kakao.com/oauth/token";
-		String access_Token = "";
-		URL url;
+
+	@Autowired
+	MemberRepository memberRepository;
+	public Object getUserInfo (String accessToken) {
+		String reqURL = "https://kapi.kakao.com/v2/user/me";
 		try {
-			url = new URL(requestUrl);
+			URL url = new URL(reqURL);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("POST");
-			conn.setDoOutput(true);
-			
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-            StringBuilder sb = new StringBuilder();
-            sb.append("grant_type=authorization_code");
-            sb.append("&client_id=" + property.getKakaologinkey());
-            sb.append("&redirect_uri=http://localhost:8000");
-            sb.append("&code=" + code);
-            bw.write(sb.toString());
-            bw.flush();
-            
-            int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
-            
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
-            
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-            System.out.println("response body : " + result);
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
-            access_Token = element.getAsJsonObject().get("access_token").getAsString();
-            
-            System.out.println("access_token : " + access_Token);
-            
-            br.close();
-            bw.close();
-		} catch (Exception e) {
+			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+			int responseCode = conn.getResponseCode();
+			System.out.println("responseCode : " + responseCode);
+			if(responseCode == 200) {
+				BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+				String line = "";
+				String result = "";
+
+				while ((line = br.readLine()) != null) {
+					result += line;
+				}
+				System.out.println("response body : " + result);
+
+				JsonParser parser = new JsonParser();
+				JsonElement element = parser.parse(result);
+				JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+				JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+				String id = element.getAsJsonObject().get("id").getAsString();
+				String nickname = properties.getAsJsonObject().get("nickname").getAsString();
+				JsonElement nprofile_image = properties.getAsJsonObject().get("profile_image");
+				JsonElement nemail = kakao_account.getAsJsonObject().get("email");
+				String email = nemail==null?null:nemail.getAsString();
+				String profile_image = nprofile_image==null?null:nprofile_image.getAsString();
+				Optional<Member> m = memberRepository.findById(id);
+				Member m1 = null;
+				if(m.isPresent()) {
+					m1 = m.get();
+					m1.setAccessToken(accessToken);
+					m1.setName(nickname);
+					m1.setEmail(email);
+					m1.setProfileImg(profile_image);
+					memberRepository.save(m1);
+				}else {
+					m1 = new Member(id, nickname, profile_image,"KAKAO", email, accessToken);
+					memberRepository.save(m1);
+				}
+				return m1;
+			}else {
+				return responseCode;
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return access_Token;
+		return "fail";
 	}
-	
-	public String getUserInfo (String access_Token) {
-	    
-	    HashMap<String, Object> userInfo = new HashMap<>();
-	    String reqURL = "https://kapi.kakao.com/v2/user/me";
-	    try {
-	        URL url = new URL(reqURL);
-	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-	        conn.setRequestMethod("POST");
-	        
-	        conn.setRequestProperty("Authorization", "Bearer " + access_Token);
-	        
-	        int responseCode = conn.getResponseCode();
-	        System.out.println("responseCode : " + responseCode);
-	        
-	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	        
-	        String line = "";
-	        String result = "";
-	        
-	        while ((line = br.readLine()) != null) {
-	            result += line;
-	        }
-	        System.out.println("response body : " + result);
-	        
-	        JsonParser parser = new JsonParser();
-	        JsonElement element = parser.parse(result);
-	        
-	        JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-	        JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
-	        String id = element.getAsJsonObject().get("id").getAsString();
-	        String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-	        String email = kakao_account.getAsJsonObject().get("email").getAsString();
-	        System.out.println("id = " + id);
-	        System.out.println("nickname = " + nickname);
-	        System.out.println("email = " + email);
-	        return nickname;
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	    return "?";
+	public String Logout(String accessToken) {
+		String reqURL = "https://kapi.kakao.com/v1/user/logout";
+		try {
+			URL url = new URL(reqURL);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+			int responseCode = conn.getResponseCode();
+			System.out.println("responseCode : " + responseCode);
+			if(responseCode == 200) {
+				return "success";
+			}else {
+				return String.valueOf(responseCode);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "fail";
 	}
 
 }
