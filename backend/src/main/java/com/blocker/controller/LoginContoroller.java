@@ -66,8 +66,8 @@ public class LoginContoroller {
     @GetMapping("/kakaologin")
     public void login(@RequestParam("code") String code) {
     	System.out.println("code : " + code);
-    	String accessToken = loginService.getAccessToken(code);
-    	System.out.println(loginService.getUserInfo(accessToken));
+    	//String accessToken = loginService.getAccessToken(code);
+    	System.out.println(loginService.getUserInfo(code));
     }
     
 }
