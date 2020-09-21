@@ -14,6 +14,9 @@
         ></v-carousel-item>
       </v-carousel>
     </div>
+    <button @click="onWallet" style="margin-left: 200px;">
+      눌러봐
+    </button>
     <!-- 홈페이지 설명 -->
     <div class="home_info">
       <div class="home_div">
@@ -133,12 +136,32 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "../../public/css/Home.scss";
 import store from '../store/index.js'
 import Navbar from '../components/Navbar.vue'
+import Web3 from "web3";
+import { registerWallet } from "@/api/wallet.js";
+
+
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
 const redirect_uri = "http://j3b102.p.ssafy.io:8080";
 
 export default {
+  methods: {
+    onWallet() {
+      // var Web3 = require('web3');
+      var web3 = new Web3('http://localhost:8545');
+
+      var Accounts = require('web3-eth-accounts');
+      var accounts = new Accounts('http://localhost:8545');
+      var result = web3.eth.accounts.create();
+      console.log(accounts)
+      console.log(result)
+      // axios
+      //   .post()
+      alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
+    }
+
+  },
   components: {
     Navbar,
   },
