@@ -1,6 +1,6 @@
 <template>
   <div class="writeinvest">
-    <navbar/>
+    <navbar />
     <!-- 투자 메뉴바 -->
     <div class="investNav">
       <div class="items">
@@ -236,8 +236,14 @@
               <v-card-text>
                 <div class="investContent">
                   <p>프로젝트 내용에 대해 자세히 설명해주세요.</p>
-                  <h5>투자설명</h5>
-                  <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea>
+                  <div style="margin-bottom: 1rem">
+                    <h5
+                      style="display: inline-block; height: 36px; line-height: 36px; Smargin: 0;"
+                    >투자설명</h5>
+                    <v-btn @click="onSave" style="float: right; background-color: rgb(22, 150,245); color:">저장하기</v-btn>
+                  </div>
+                  <!-- <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea> -->
+                  <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />
                 </div>
               </v-card-text>
             </v-card>
@@ -252,11 +258,18 @@
 import "@/../public/css/WriteInvest.scss";
 import $ from "jquery";
 import Swal from "sweetalert2";
-import Navbar from "../../components/Navbar.vue"
+import Navbar from "../../components/Navbar.vue";
+// editor
+import "codemirror/lib/codemirror.css";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { Editor } from "@toast-ui/vue-editor";
+import axios from "axios";
+import store from '../../store/index.js'
 
 export default {
   components: {
-    Navbar
+    Navbar,
+    Editor,
   },
   data() {
     return {
@@ -298,17 +311,28 @@ export default {
       items: [],
       model: [],
       // 금손 정보
-      items: ['개인', '개인 사업자/기업'],
-      select: '',
+      items: ["개인", "개인 사업자/기업"],
+      select: "",
       openMenutab: false,
       individual: false,
       business: false,
+      // editor
+      editorOptions: {
+        hooks: {
+          addImageBlobHook: function (blob, callback) {
+            // console.log(blob)
+            const imageURL = URL.createObjectURL(blob)
+            callback(imageURL);
+            // FormData
+            // this.uploadImage(blob, imageURL);
+          },
+        },
+      },
+      editortext: "",
     };
   },
   computed: {
-    // computedDateFormatted () {
-    //   return this.formatDate(this.date)
-    // },
+
   },
   watch: {
     date1(val) {
@@ -384,20 +408,36 @@ export default {
         $(".v-menu").css("display", "none");
       }
     },
+    uploadImage(blob) {
+      var formData = new FormData();
+      formData.append("image", blob); // 설명서 사진
+      formData.append("image-name", blob.name); // 사진 이름
+
+      axios.post(`URL`, formData, { 
+          headers: { 'Content-Type': 'multipart/form-data' } 
+      }).then(response => {
+        // // console.log(response);
+        // this.image = response.data;
+      });
+    },
+    onSave() {
+      this.editortext = this.$refs.toastuiEditor.invoke("getMarkdown");
+      console.log(this.editortext)
+    },
     openInvestBtn() {
-      console.log('클릭')
+      console.log("클릭");
       Swal.fire({
         icon: "warning",
-        title: '',
+        title: "",
         text: "정말 프로젝트를 오픈하시겠습니까?",
         showCancelButton: true,
-        cancelButtonColor: '#d33',
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: '오픈하기',
-        cancelButtonText: '취소하기',
-        reverseButtons: true
+        cancelButtonColor: "#d33",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "오픈하기",
+        cancelButtonText: "취소하기",
+        reverseButtons: true,
       });
-    }
+    },
   },
 };
 </script>
