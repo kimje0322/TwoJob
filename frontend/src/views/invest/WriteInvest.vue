@@ -317,18 +317,19 @@ export default {
       individual: false,
       business: false,
       // editor
+      editortext: "",
+      editorImage: [],
       editorOptions: {
         hooks: {
           addImageBlobHook: function (blob, callback) {
             // console.log(blob)
             const imageURL = URL.createObjectURL(blob)
             callback(imageURL);
-            // FormData
-            // this.uploadImage(blob, imageURL);
+            this.editorImage.push(blob)
           },
         },
       },
-      editortext: "",
+      
     };
   },
   computed: {
@@ -421,7 +422,7 @@ export default {
       });
     },
     onSave() {
-      this.editortext = this.$refs.toastuiEditor.invoke("getMarkdown");
+      this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
       console.log(this.editortext)
     },
     openInvestBtn() {
