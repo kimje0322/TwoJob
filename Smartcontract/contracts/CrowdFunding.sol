@@ -1,8 +1,10 @@
 pragma solidity ^0.7.0;
 
 import "./Campaign.sol";
+import "./ICrowdFunding.sol";
+import "./ISaleItem.sol";
 
-contract CrowdFunding is Campaign{
+contract CrowdFunding is Campaign, ICrowdFunding, ISaleItem{
     mapping(string => campaignStruct) campaigns;
 
     /** modifier 는 function의 실행(행동)을 쉽게 변경가능하도록하며, function 실행의 조건을 체크 할수 있다
@@ -21,30 +23,14 @@ contract CrowdFunding is Campaign{
      */
     modifier becomeDuedate(string memory _uniqueCode) {require(block.timestamp >= campaigns[_uniqueCode].deadline);_;}
 
-
-    /**  createCampaign에대한 event
-     *@param _uniqueCode 게시글에대한 해시값
-     *@param _creator 게시자의 주소
-     *@param _fundingGoal 목표 금액
-     *@param _fundraiseAmount 현재 금액
-     *@param _deadline 마감일
-     */
-    event noticeCreateCampaign(
-        string  _uniqueCode,
-        address _creator,
-        uint256 _fundingGoal,
-        uint256 _fundraiseAmount,
-        uint _deadline
-    );
-
     /**투자 게시글 생성 
        게시글에대한 해시값, 목표금액, 마감일이 파라미터로 넘겨짐
        투자를 받는 사람의 주소, 목표금액, 모인금액, 투자자들의 개별 투자금액을위한 mapping
        거래의 마감일, 마감일이 종료되었는지 아닌지
      */
     
-    
-    function createCampaign (string memory _uniqueCode, uint256 _fundingGoal, uint _deadline) public {
+    //버전0.6.0부터는 override시 어느 곳으로부터 파생되었는지 명시 해주어야함
+    function createCampaign (string memory _uniqueCode, uint256 _fundingGoal, uint _deadline) public override(ICrowdFunding){
         campaigns[_uniqueCode].uniqueCode = _uniqueCode;
         campaigns[_uniqueCode].creator = msg.sender;
         campaigns[_uniqueCode].fundingGoal = _fundingGoal;
@@ -61,7 +47,7 @@ contract CrowdFunding is Campaign{
     /**특정 게시글에 투자하기
      *@param _uniqueCode 투자하고싶은 게시글에대한 해시값
      */
-    function FundingCampign(string memory _uniqueCode) payable public {
+    function FundingCampign(string memory _uniqueCode) payable public override(ICrowdFunding) {
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
         
         //게시글 작성자는 투자를 막는다
@@ -76,7 +62,7 @@ contract CrowdFunding is Campaign{
      * 마감일이 되면 목표금액에 도달 했을경우 펀딩 금액을 작성자에게 줌 
      * @param _uniqueCode 게시글에대한 해시값
      */
-    function DueDay(string memory _uniqueCode) campaignNotClosed(_uniqueCode) campaignOwner(_uniqueCode) becomeDuedate(_uniqueCode) public {
+    function DueDay(string memory _uniqueCode) campaignNotClosed(_uniqueCode) campaignOwner(_uniqueCode) becomeDuedate(_uniqueCode) public override(ICrowdFunding) {
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
 
         if(tempCamp.fundingGoal > tempCamp.fundraiseAmount){
@@ -96,6 +82,41 @@ contract CrowdFunding is Campaign{
 
         tempCamp.closed = true;
     }
+
+     /** 물건 판매
+    @param _uniqueCode 게시글에 대한 해시값
+    */
+    function SaleItem(string memory _uniqueCode, uint _count) payable public override(ISaleItem){
+        campaignStruct storage tempCamp = campaigns[_uniqueCode];
+        //판매를 하면 해당 금액 만큼 profit에 돈을 저장해두고 일주일후 DistributeProfit을 호출함
+        tempCamp.totalSell += _count;
+        DistributeProfit(_uniqueCode, msg.value);
+    }
+
+    /** 수익 분배
+     @param _uniqueCode 게시글에 대한 해시값
+    */
+    function DistributeProfit(string memory _uniqueCode, uint256 _money) payable public override(ISaleItem){
+        campaignStruct storage tempCamp = campaigns[_uniqueCode];
+
+        address[] memory investgatorsList = tempCamp.investgators;
+        uint256 investgatorsCount = investgatorsList.length;
+        // 판매자에게 나누어지게 될 몫
+        address(uint160(tempCamp.creator)).transfer((_money*30)/100);
+        // 투자자들에게 나누어지게 될 몫
+        uint256 share = (_money*70)/100;
+
+        for(uint256 i=0; i<investgatorsCount; i++){
+
+            address investgator = investgatorsList[i];
+            //토큰으로 바꿔서 보내줘야됨
+            address(uint160(investgator)).transfer((share)*(tempCamp.investRate[investgator]/tempCamp.fundraiseAmount));
+        }
+    }
+
+
+
+    
 
     
 }
