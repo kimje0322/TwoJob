@@ -240,7 +240,7 @@
                     <h5
                       style="display: inline-block; height: 36px; line-height: 36px; Smargin: 0;"
                     >투자설명</h5>
-                    <v-btn @click="onSave" style="float: right; background-color: rgb(22, 150,245); color:">저장하기</v-btn>
+                    <v-btn @click="onSave" style="float: right; background-color: white; color: rgb(22, 150,245); font-weight: 600">저장하기</v-btn>
                   </div>
                   <!-- <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea> -->
                   <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />
