@@ -7,6 +7,7 @@ import Search from "@/views/search/Search.vue"
 import SearchDetail from "@/views/search/SearchDetail.vue"
 import ShoppingHome from "@/views/shopping/ShoppingHome.vue";
 import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
+import WriteShopping from "@/views/shopping/WriteShopping.vue";
 
 Vue.use(VueRouter);
 
@@ -48,6 +49,11 @@ const routes = [{
         path: "/shoppingdetail",
         name: "ShoppingDetail",
         component: ShoppingDetail,
+    },
+    {
+        path: "/writeshopping",
+        name: "WriteShopping",
+        component: WriteShopping,
     },
 
 ];

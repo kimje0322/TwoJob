@@ -1,0 +1,432 @@
+<template>
+  <div class="writeinvest">
+    <navbar/> 
+    <h4>마이페이지</h4>
+    <!-- 쇼핑 글쓰기 메뉴바 -->
+    <div>
+      <!-- 쇼핑 글쓰기 메뉴 -->
+      <div class="writeMenuBar">
+        <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
+          <v-tab v-for="(item, i) in tabs" :key="i" :href="`#tab-${i}`" class="writeMenu">{{ item }}</v-tab>
+          <!-- 쇼핑 오픈버튼 -->
+          <div class="openbtn" @click="openInvestBtn">
+            <v-btn color="rgb(22, 150, 245)" style="font-weight: 600">쇼핑 프로젝트 오픈</v-btn>
+          </div>
+          <!-- 상품 정보 창 -->
+          <v-tab-item :value="'tab-0'">
+            <v-card flat tile>
+              <v-card-text>
+                <div class="pjtinfo">
+                  <p>상품에 대한 정보를 정확하게 입력해주세요.</p>
+                  <h5>상품명</h5>
+                  <input v-model="title" type="text" placeholder="상품명을 입력해주세요." />
+                  <h5 style="display: inline-block; margin-left: 5px;"></h5>
+                  <h5>대표 사진</h5>
+                  <v-file-input
+                    :rules="rules"
+                    accept="image/png, image/jpeg, image/bmp"
+                    placeholder="Pick an thumbnail"
+                    prepend-icon="mdi-camera"
+                    outlined
+                    hide-details
+                  ></v-file-input>
+                  <!-- 판매 오픈 날짜 -->
+                  <h5>판매 오픈 날짜</h5>
+                    <div class="startDayBox">
+                      <div>
+                        <v-menu
+                          ref="menu1"
+                          v-model="menu1"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-y
+                          max-width="290px"
+                          min-width="290px"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="dateFormatted1"
+                              persistent-hint
+                              v-bind="attrs"
+                              @blur="date1 = parseDate(dateFormatted1)"
+                              v-on="on"
+                              color="rgb(22, 150, 245)"
+                              hide-details
+                              outlined
+                              placeholder="프로젝트 시작 날짜"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="date1"
+                            no-title
+                            @input="menu1 = false"
+                            color="rgb(22, 150, 245)"
+                          ></v-date-picker>
+                        </v-menu>
+                      </div>
+                    </div>
+                  <!-- 판매 금액 -->
+                  <h5>판매 금액</h5>
+                  <input
+                    v-model="receivePrice"
+                    @click="removeTargetPrice"
+                    type="text"
+                    style="width: 35%; text-align: right; font-size: 18px"
+                  />
+                  <h5 style="display: inline-block; margin-left: 5px;">원</h5>
+                  <!-- 카테고리 -->
+                  <h5>카테고리</h5>
+                  <div class="categoryDiv" style>
+                    <v-btn
+                      class="categorybtn"
+                      :class="key"
+                      v-for="(value, key) in categoryList"
+                      :key="key"
+                      @click="checkcategory(key)"
+                    >{{value}}</v-btn>
+                  </div>
+                  <h5>검색용 태그</h5>
+                  <div>
+                    <v-combobox
+                      v-model="model"
+                      hide-details
+                      hide-selected
+                      label="태그를 입력해주세요."
+                      multiple
+                      small-chips
+                      solo
+                      dense
+                      deletable-chips
+                      @keyup.enter="change"
+                      class="searchBarBtn"
+                      style="overflow-y:hidden;"
+                    ></v-combobox>
+                  </div>
+                </div>
+                <!-- 상품 추가 버튼 -->
+                <v-btn  outlined @click="onAddItem" class="addItem">
+                  <v-icon class="mr-2">mdi-plus-box-multiple-outline</v-icon>
+                  상품 추가
+                </v-btn>
+                <div v-if="addedItem" class="addedItem">
+                  <div>
+                     <v-card   
+                      style="background-color: #EEEEEE" 
+                      
+                      outlined
+                      >
+                        <v-list-item >
+                          <v-list-item-content>
+                            <div class="overline"></div>
+                            <v-list-item-title class="headline mb-1"><strong>{{ title }}</strong></v-list-item-title>
+                            <v-list-item-subtitle>
+                              <span class="summary">
+                                <v-icon size=17>mdi-check</v-icon>
+                                오픈 날짜
+                              </span>{{ menu1 }}
+                            </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                              <span class="summary">
+                                 <v-icon size=17>mdi-check</v-icon>
+                                 판매 금액
+                              </span>{{ receivePrice }} 원
+                              </v-list-item-subtitle>
+                            <v-list-item-subtitle>
+                              <span class="summary">
+                                 <v-icon size=17>mdi-check</v-icon>
+                                 카테고리
+                              </span>
+                              <v-btn class="showCategory mr-1" color="rgb(22, 150, 245)" x-small
+                              v-for="(value, key) in showCategory"
+                              :key="key"
+                              >{{value}}</v-btn>
+                            </v-list-item-subtitle>
+                          </v-list-item-content> 
+
+                          <v-list-item-avatar
+                            tile
+                            size="50"
+                            color="grey"
+                          ></v-list-item-avatar>
+                        </v-list-item>
+
+                        <v-card-actions >
+                          <v-btn text>삭제</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+          <!-- 쇼핑 설명서 창 -->
+          <v-tab-item :value="'tab-1'">
+            <v-card flat tile>
+              <v-card-text>
+                <div class="investContent">
+                  <p>상품 내용에 대해 자세히 설명해주세요.</p>
+                  <h5>쇼핑 설명</h5>
+                  <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+        </v-tabs>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import "@/../public/css/WriteInvest.scss";
+import $ from "jquery";
+import Swal from "sweetalert2";
+import Navbar from "../../components/Navbar.vue"
+
+export default {
+  components: {
+    Navbar
+  },
+  data() {
+    return {
+      // 추가된 상품
+      addedItem: false,
+      showCategory: [],
+      tab: null,
+      text: ["1", "2", "3"],
+      tabs: ["상품 정보", "쇼핑 설명서"],
+      title: "",
+      content: "",
+      // 날짜
+      date1: "",
+      dateFormatted1: "",
+      menu1: false,
+      // 사진
+      rules: [
+        (value) =>
+          !value ||
+          value.size < 2000000 ||
+           "Tunbnail size should be less than 2 MB!",
+      ],
+      // 카테고리
+       categoryList: {
+        tech: "테크, 가전",
+        fashion: "패션",
+        beauty: "뷰티",
+        food: "푸드",
+        home: "홈리빙",
+        sports: "스포츠",
+        animal: "반려동물",
+        book: "책",
+        instrument: "악기",
+      },
+      checkCategory: [],
+      // 검색 태그
+      items: [],
+      model: [],
+    };
+  },
+  watch: {
+    date1(val) {
+      this.dateFormatted1 = this.formatDate(this.date1);
+    },
+    model(val, prev) {
+      if (val.length === prev.length) return;
+      this.model = val.map((v) => {
+        if (typeof v === "string") {
+          v = { text: `#${v}` };
+          this.items.push(v);
+          this.nonce++;
+        }
+        return v;
+      });
+    },
+  },
+  methods: {
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${year}/${month}/${day}`;
+    },
+    parseDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("/");
+      return 
+      // return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    },
+    removeTargetPrice() {
+      this.targetPrice = "";
+    },
+    checkcategory(category) {
+      if (this.checkCategory.indexOf(category) >= 0) {
+        const idx = this.checkCategory.indexOf(category);
+        this.checkCategory.splice(idx, 1);
+        $(`.${category}`).css("background-color", "white");
+        $(`.${category}`).css("color", "black");
+        // console.log(this.checkCategory)
+      } else {
+        this.checkCategory.push(category);
+        $(`.${category}`).css("background-color", "rgb(22, 150, 245)");
+        $(`.${category}`).css("color", "white");
+        // console.log(this.checkCategory)
+
+      }
+    },
+    change() {
+      const tags = [];
+      this.model.forEach((tag) => {
+        tags.push(tag.text);
+      });
+      this.$refs.feeditem.searchTag(tags);
+    },
+    openInvestBtn() {
+      Swal.fire({
+        icon: "warning",
+        title: '',
+        text: "정말 프로젝트를 오픈하시겠습니까?",
+        showCancelButton: true,
+        cancelButtonColor: '#d33',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: '오픈하기',
+        cancelButtonText: '취소하기',
+        reverseButtons: true
+      });
+    },
+    onAddItem() {
+      this.addedItem = true;
+      // console.log(this.checkCategory)
+      // console.log(this.categoryList["animal"])
+      //  ["instrument", "book", __ob__: Observer]
+      for (var i = 0; i < this.checkCategory.length; i++) {
+        if (!this.showCategory.includes(this.categoryList[this.checkCategory[i]]))
+          this.showCategory.push(this.categoryList[this.checkCategory[i]])
+      } 
+    }
+  }
+}
+</script>
+
+<style scoped>
+.investNav {
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  border-bottom: 1px solid gray;
+  margin-bottom: 15px;
+}
+.items div {
+  display: inline-block;
+  margin: 0 10% 0 0;
+}
+.items div a {
+  color: black;
+  text-decoration: none;
+}
+.items div a:hover {
+  color: rgb(22, 150, 245);
+}
+.items h5 {
+  font-weight: 600;
+}
+.writeMenu {
+  margin-left: 3%;
+  letter-spacing: unset !important;
+  font-size: 1.25rem;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+.writeMenu:hover {
+  background-color: rgba(173, 220, 254, 0.4);
+}
+.v-tab--active {
+  background-color: rgba(173, 220, 254, 0.4);
+}
+.v-tab:before {
+  background-color: unset;
+}
+.openbtn {
+  line-height: 45px;
+  position: absolute;
+  right: 1%;
+}
+.v-card__text {
+  padding: 16px 10%;
+  color: black !important;
+}
+h5 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+input {
+  background-color: white;
+  width: 90%;
+  height: 40px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  margin-left: 10px;
+  margin-bottom: 30px;
+  padding: 10px;
+}
+input:hover {
+  border: 2px solid rgb(22, 150, 245);
+}
+.v-input__slot fieldset {
+  display: none;
+}
+.pjtinfo .v-menu {
+  display: unset;
+}
+.startDayBox {
+  display: inline-block;
+  width: 35%;
+}
+.tilddIcon {
+  display: inline-block;
+  margin: 0 9%;
+}
+.categoryDiv {
+  margin-bottom: 28px;
+}
+.categoryDiv .v-btn {
+  width: 105px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.categorybtn:hover {
+  border: 2px solid rgb(22, 150, 245);
+}
+.searchBarBtn {
+  border: 1px solid lightgray;
+}
+#introduce {
+  background-color: white;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  resize: none;
+  padding: 8px;
+  margin: 0 0 20px 10px;
+}
+#introduce:hover {
+  border: 2px solid rgb(22, 150, 245);
+}
+/* .addItem {
+  background-color:rgb(22, 150, 245) !important;
+  color: white;
+} */
+.addedItem {
+  margin: 12px;
+  /* background-color: #EEEEEE;
+  border-radius: 5px;
+  border: 1px; */
+}
+.showCategory {
+  color: white;
+}
+.summary {
+  font-weight: bold;
+  margin-right: 3px;
+}
+</style>
