@@ -1,14 +1,5 @@
 package com.blocker.controller;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,33 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Keys;
-import org.web3j.crypto.Wallet;
-import org.web3j.crypto.WalletFile;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.admin.Admin;
-import org.web3j.protocol.admin.methods.response.NewAccountIdentifier;
-import org.web3j.protocol.admin.methods.response.PersonalListAccounts;
-import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.protocol.exceptions.TransactionException;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.RawTransactionManager;
-import org.web3j.tx.Transfer;
-import org.web3j.utils.Convert;
-import org.web3j.utils.Convert.Unit;
 
+import com.blocker.dto.Wallet;
 import com.blocker.service.WalletService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -82,7 +51,7 @@ public class WalletController {
 		if(result.equals("novalid")) {
 			return new ResponseEntity<String>((String) result, HttpStatus.OK);
 		}else {
-			return new ResponseEntity<Integer>((Integer) result, HttpStatus.OK);
+			return new ResponseEntity<Wallet>((Wallet) result, HttpStatus.OK);
 		}
 	}
 }

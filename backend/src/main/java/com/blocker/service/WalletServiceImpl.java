@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.Transfer;
@@ -15,21 +14,14 @@ import org.web3j.utils.Convert;
 
 import com.blocker.dto.Member;
 import com.blocker.dto.Property;
-import com.blocker.dto.Userinfo;
 import com.blocker.dto.Wallet;
-import com.blocker.repository.UserInfoRepository;
 import com.blocker.repository.WalletRepository;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 @Service
 public class WalletServiceImpl implements WalletService{
 
 	@Autowired
 	WalletRepository walletRepository;
-
-	@Autowired
-	UserInfoRepository userInfoRepository;
-
 	@Autowired
 	LoginService loginService;
 
