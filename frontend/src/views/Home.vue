@@ -146,6 +146,17 @@ const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
 const redirect_uri = "http://j3b102.p.ssafy.io:8080";
 
 export default {
+  mounted() {
+    axios
+      .get(`${SERVER_URL}/Token/balance?address=${store.state.address}`)
+      .then((res) => {
+        console.log("이건 밸런스값임")
+        console.log(res)
+        store.commit("setBalance", res.data)
+        console.log(store.state.balance)
+      })
+
+  },
   methods: {
     onWallet() {
       // var Web3 = require('web3');
@@ -156,8 +167,21 @@ export default {
       var result = web3.eth.accounts.create();
       console.log(accounts)
       console.log(result)
-      // axios
-      //   .post()
+
+      store.commit("setAddress", result.address)
+      
+      const fd = new FormData();
+      fd.append("accessToken", store.state.accessToken);
+      fd.append("address", store.state.address);
+      axios
+        .post(`${SERVER_URL}/wallet/regist`, fd)
+        .then((res) => {
+          console.log("wow!!success!!")
+          console.log(res)
+          console.log(fd)
+        })
+
+    
       alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
     }
 

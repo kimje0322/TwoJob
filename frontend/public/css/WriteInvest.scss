@@ -1,76 +1,80 @@
+.v-slide-group__wrapper {
+    background-color: white;
+}
+
 .writeinvest {
-  .theme--dark.v-tabs > .v-tabs-bar {
-    background-color: unset !important;
-  }
-  .v-tabs-bar__content a {
-    text-decoration: none;
-    color: black !important;
-    font-weight: 600;
-  }
-  .elevation-2 .v-card__text {
-    background-color: rgba(173, 220, 254, 0.4);
-  }
-  /* 달력 css */
-  .v-text-field--outlined fieldset {
-    height: 45px;
-    background-color: white;
-    border: 1px solid lightgray;
-    border-color: unset !important;
-  }
-  .v-text-field--outlined fieldset:hover {
-    border: 2px solid rgb(22, 150, 245) !important;
-  }
-  .v-input input {
-    max-height: unset !important;
-    height: 40px;
-    font-size: 13.5px;
-  }
-  .v-text-field__slot {
-    height: 40px;
-  }
-  .pjtinfo .v-menu__content {
-    top: 370px !important;
-  }
-  .v-text-field {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-  .v-input__icon {
-    width: 40px !important;
-    height: 40px !important;
-  }
-  .theme--light.v-input {
-    width: 90%;
-    margin: 0 0 20px 10px !important;
-  }
-  .v-input__prepend-outer {
-    margin: 0 !important;
-  }
-  .v-input__append-inner {
-    margin: 0 !important;
-  }
-  .theme--light.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
-    background-color: white;
-  }
-  .theme--light.v-chip:not(.v-chip--active) {
-    background-color: rgb(22, 150, 245);
-    color: white;
-  }
-  .v-chip .v-chip__close.v-icon {
-    color: white;
-  }
-  .v-select.v-input--dense .v-chip {
-    padding-right: 5px;
-  }
-  .pjtinfo .v-input__append-inner {
-    display: none !important;
-  }
-  .v-text-field.v-text-field--solo .v-input__control {
-    height: 40px;
-    min-height: unset !important;
-  }
-  .writerinfo .v-menu__content {
-    top: 41px !important;
-    left: 0px !important;
-  }
+    .theme--dark.v-tabs>.v-tabs-bar {
+        background-color: unset !important;
+    }
+    .v-tabs-bar__content a {
+        text-decoration: none;
+        color: black !important;
+        font-weight: 600;
+    }
+    .elevation-2 .v-card__text {
+        background-color: rgba(173, 220, 254, 0.4);
+    }
+    /* 달력 css */
+    .v-text-field--outlined fieldset {
+        height: 45px;
+        background-color: white;
+        border: 1px solid lightgray;
+        border-color: unset !important;
+    }
+    .v-text-field--outlined fieldset:hover {
+        border: 2px solid rgb(22, 150, 245) !important;
+    }
+    .v-input input {
+        max-height: unset !important;
+        height: 40px;
+        font-size: 13.5px;
+    }
+    .v-text-field__slot {
+        height: 40px;
+    }
+    .pjtinfo .v-menu__content {
+        top: 370px !important;
+    }
+    .v-text-field {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .v-input__icon {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    .theme--light.v-input {
+        width: 90%;
+        margin: 0 0 20px 10px !important;
+    }
+    .v-input__prepend-outer {
+        margin: 0 !important;
+    }
+    .v-input__append-inner {
+        margin: 0 !important;
+    }
+    .theme--light.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
+        background-color: white;
+    }
+    .theme--light.v-chip:not(.v-chip--active) {
+        background-color: rgb(22, 150, 245);
+        color: white;
+    }
+    .v-chip .v-chip__close.v-icon {
+        color: white;
+    }
+    .v-select.v-input--dense .v-chip {
+        padding-right: 5px;
+    }
+    .pjtinfo .v-input__append-inner {
+        display: none !important;
+    }
+    .v-text-field.v-text-field--solo .v-input__control {
+        height: 40px;
+        min-height: unset !important;
+    }
+    .writerinfo .v-menu__content {
+        top: 41px !important;
+        left: 0px !important;
+    }
 }
