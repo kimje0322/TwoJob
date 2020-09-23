@@ -104,56 +104,63 @@
                   </div>
                 </div>
                 <!-- 상품 추가 버튼 -->
-                <v-btn  outlined @click="onAddItem" class="addItem">
+                <v-btn outlined @click="onAddItem" class="addItem mt-2 ml-2">
                   <v-icon class="mr-2">mdi-plus-box-multiple-outline</v-icon>
                   상품 추가
                 </v-btn>
+                <!-- 상품 추가 후 요약 -->
+                <!-- item은 json형태 -->
                 <div v-if="addedItem" class="addedItem">
-                  <div>
-                     <v-card   
-                      style="background-color: #EEEEEE" 
-                      
+                  <div stlye="margin:0;">
+                    <v-card
+                      class="mr-5 mt-3"
+                      v-for="(item, key) in addedItems"
+                      :key="key" 
+                      style="display: inline-block; max-height: 150px; width: 40%; padding: 12px;background-color: #EEEEEE;" 
                       outlined
-                      >
-                        <v-list-item >
-                          <v-list-item-content>
-                            <div class="overline"></div>
-                            <v-list-item-title class="headline mb-1"><strong>{{ title }}</strong></v-list-item-title>
-                            <v-list-item-subtitle>
-                              <span class="summary">
+                    > 
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-list-item-title
+                          class="headline mt-1 mb-3 ">
+                          <strong>{{ item.title }}</strong>
+                          </v-list-item-title>
+                          <v-list-item-subtitle>
+                            <span class="summary">
+                              <v-icon size=17>mdi-check</v-icon>
+                              오픈 날짜
+                            </span>{{ item.opendate }} 
+                          </v-list-item-subtitle>
+                          <v-list-item-subtitle>
+                            <span class="summary">
                                 <v-icon size=17>mdi-check</v-icon>
-                                오픈 날짜
-                              </span>{{ menu1 }}
+                                판매 금액
+                            </span>
+                            {{ item.price }} 원
                             </v-list-item-subtitle>
-                            <v-list-item-subtitle>
-                              <span class="summary">
-                                 <v-icon size=17>mdi-check</v-icon>
-                                 판매 금액
-                              </span>{{ receivePrice }} 원
-                              </v-list-item-subtitle>
-                            <v-list-item-subtitle>
-                              <span class="summary">
-                                 <v-icon size=17>mdi-check</v-icon>
-                                 카테고리
-                              </span>
-                              <v-btn class="showCategory mr-1" color="rgb(22, 150, 245)" x-small
-                              v-for="(value, key) in showCategory"
-                              :key="key"
-                              >{{value}}</v-btn>
-                            </v-list-item-subtitle>
-                          </v-list-item-content> 
+                          <v-list-item-subtitle>
+                            <span class="summary">
+                                <v-icon size=17>mdi-check</v-icon>
+                                카테고리
+                            </span>
+                            <v-btn readonly class="showCategory mr-1" color="rgb(22, 150, 245)" x-small
+                            v-for="(value, key) in item.category"
+                            :key="key"
+                            >{{value}}</v-btn>
+                          </v-list-item-subtitle>
+                        </v-list-item-content> 
 
-                          <v-list-item-avatar
-                            tile
-                            size="50"
-                            color="grey"
-                          ></v-list-item-avatar>
+                        <!-- <v-list-item-avatar
+                          tile
+                          size="50"
+                          color="grey"
+                        ></v-list-item-avatar> -->
                         </v-list-item>
 
-                        <v-card-actions >
-                          <v-btn text>삭제</v-btn>
+                        <v-card-actions>
+                          <v-btn small text @click="onDeleteItem(item)" style="margin-left:auto;">삭제</v-btn>
                         </v-card-actions>
-                      </v-card>
+                    </v-card>
                   </div>
                 </div>
               </v-card-text>
@@ -179,6 +186,7 @@
 
 <script>
 import "@/../public/css/WriteInvest.scss";
+import "@/../public/css/Writeshopping.scss";
 import $ from "jquery";
 import Swal from "sweetalert2";
 import Navbar from "../../components/Navbar.vue"
@@ -190,8 +198,9 @@ export default {
   data() {
     return {
       // 추가된 상품
-      addedItem: false,
       showCategory: [],
+      addedItem: false,
+      addedItems: [],
       tab: null,
       text: ["1", "2", "3"],
       tabs: ["상품 정보", "쇼핑 설명서"],
@@ -201,6 +210,8 @@ export default {
       date1: "",
       dateFormatted1: "",
       menu1: false,
+      // 가격
+      receivePrice: 0,
       // 사진
       rules: [
         (value) =>
@@ -211,7 +222,7 @@ export default {
       // 카테고리
        categoryList: {
         tech: "테크, 가전",
-        fashion: "패션",
+        fashion: "패션, 잡화",
         beauty: "뷰티",
         food: "푸드",
         home: "홈리빙",
@@ -260,6 +271,7 @@ export default {
       this.targetPrice = "";
     },
     checkcategory(category) {
+      // console.log(category)
       if (this.checkCategory.indexOf(category) >= 0) {
         const idx = this.checkCategory.indexOf(category);
         this.checkCategory.splice(idx, 1);
@@ -271,7 +283,6 @@ export default {
         $(`.${category}`).css("background-color", "rgb(22, 150, 245)");
         $(`.${category}`).css("color", "white");
         // console.log(this.checkCategory)
-
       }
     },
     change() {
@@ -296,16 +307,28 @@ export default {
     },
     onAddItem() {
       this.addedItem = true;
-      // console.log(this.checkCategory)
-      // console.log(this.categoryList["animal"])
-      //  ["instrument", "book", __ob__: Observer]
+      this.addedItems.push({title: this.title, opendate: this.date1, price: this.receivePrice, category: []})
+ 
       for (var i = 0; i < this.checkCategory.length; i++) {
-        if (!this.showCategory.includes(this.categoryList[this.checkCategory[i]]))
-          this.showCategory.push(this.categoryList[this.checkCategory[i]])
-      } 
+          // addedItems.category에 카테고리 push
+          this.addedItems[this.addedItems.length-1].category.push(this.categoryList[this.checkCategory[i]]);
+          // 체크 버튼 초기화
+          $(`.${this.checkCategory[i]}`).css("background-color", "white");
+          $(`.${this.checkCategory[i]}`).css("color", "black");
+        }
+      // checkCategory 비우기
+      this.checkCategory.splice(0, this.checkCategory.length);
+      this.title = "";
+      this.date1 = "";
+      this.receivePrice = 0;
+      console.log(this.addedItems)
+    },
+    onDeleteItem(item) {
+      this.addedItems.splice(this.addedItems.indexOf(item),1)
     }
   }
 }
+
 </script>
 
 <style scoped>
@@ -412,15 +435,9 @@ input:hover {
 #introduce:hover {
   border: 2px solid rgb(22, 150, 245);
 }
-/* .addItem {
-  background-color:rgb(22, 150, 245) !important;
-  color: white;
-} */
+
 .addedItem {
   margin: 12px;
-  /* background-color: #EEEEEE;
-  border-radius: 5px;
-  border: 1px; */
 }
 .showCategory {
   color: white;
@@ -429,4 +446,10 @@ input:hover {
   font-weight: bold;
   margin-right: 3px;
 }
+.v-card__actions, .v-list-item__content, .v-list-item theme--light {
+  padding: 0;
+}
+ .v-list-item theme--light {
+   padding: 0px !important;
+ }
 </style>
