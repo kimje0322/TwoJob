@@ -17,6 +17,12 @@ public class Property {
 	@Value("${eth.erc20.contract}")
 	private String TokenAddr;
 	
+	@Value("${eth.funding.contract}")
+	private String FundingAddr;
+	
 	@Value("${kakao.loginkey}")
 	private String kakaologinkey;
+	
+	
+	
 }
