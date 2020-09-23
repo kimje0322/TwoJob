@@ -2,7 +2,7 @@ package com.blocker.service;
 
 public interface FundingService {
 	public void Deploy();
-	public void createCampaign();
+	public String createCampaign(String accessToken);
 	public void fundingCampaign();
 	public void getCam();
 	public void receiveFund();

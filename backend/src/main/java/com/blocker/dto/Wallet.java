@@ -17,7 +17,7 @@ import lombok.Setter;
 @Table(name = "wallets")
 public class Wallet {
 	@Id
-    @Column(name = "user_id")
+	@Column(name = "user_id")
     private String oauthId;
 	
 	@Column
