@@ -46,54 +46,14 @@
                   <input v-model="title" type="text" placeholder="프로젝트명을 입력해주세요." />
                   <h5>프로젝트 한줄 소개</h5>
                   <input v-model="content" type="text" placeholder="프로젝트에대해 100자이내로 설명해주세요." />
-                  <h5>프로젝트 오픈 기간</h5>
+                  <h5>프로젝트 마감 기간</h5>
                   <div>
-                    <!-- 시작날짜 -->
-                    <div class="startDayBox">
-                      <p style="margin: 0">시작 날짜</p>
-                      <div>
-                        <v-menu
-                          ref="menu1"
-                          v-model="menu1"
-                          :close-on-content-click="false"
-                          transition="scale-transition"
-                          offset-y
-                          max-width="290px"
-                          min-width="290px"
-                        >
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
-                              v-model="dateFormatted1"
-                              persistent-hint
-                              v-bind="attrs"
-                              @blur="date1 = parseDate(dateFormatted1)"
-                              v-on="on"
-                              color="rgb(22, 150, 245)"
-                              hide-details
-                              outlined
-                              placeholder="프로젝트 시작 날짜"
-                            ></v-text-field>
-                          </template>
-                          <v-date-picker
-                            v-model="date1"
-                            no-title
-                            @input="menu1 = false"
-                            color="rgb(22, 150, 245)"
-                          ></v-date-picker>
-                        </v-menu>
-                      </div>
-                    </div>
-                    <!-- 물결 -->
-                    <div class="tilddIcon">
-                      <v-icon>mdi-tilde</v-icon>
-                    </div>
                     <!-- 마감날짜 -->
                     <div class="startDayBox">
-                      <p style="margin: 0">마감 날짜</p>
                       <div>
                         <v-menu
-                          ref="menu2"
-                          v-model="menu2"
+                          ref="menu"
+                          v-model="menu"
                           :close-on-content-click="false"
                           transition="scale-transition"
                           offset-y
@@ -102,21 +62,21 @@
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              v-model="dateFormatted2"
+                              v-model="dateFormatted"
                               persistent-hint
                               v-bind="attrs"
-                              @blur="date2 = parseDate(dateFormatted2)"
+                              @blur="date = parseDate(dateFormatted)"
                               v-on="on"
                               color="rgb(22, 150, 245)"
                               hide-details
                               outlined
-                              placeholder="프로젝트 시작 날짜"
+                              placeholder="프로젝트 마감 날짜"
                             ></v-text-field>
                           </template>
                           <v-date-picker
-                            v-model="date2"
+                            v-model="date"
                             no-title
-                            @input="menu2 = false"
+                            @input="menu = false"
                             color="rgb(22, 150, 245)"
                           ></v-date-picker>
                         </v-menu>
@@ -135,14 +95,15 @@
                   <h5>상품 판매 예정 금액</h5>
                   <p style="margin: 0 0 5px 10px">상품 판매할 예정 금액을 입력해주세요(상품이 여러개이면 대표상품으로 입력해주세요).</p>
                   <input
-                    v-model="receivePrice"
-                    @click="removeReceivePrice"
+                    v-model="sellPrice"
+                    @click="removeSellPrice"
                     type="text"
                     style="width: 35%; text-align: right; font-size: 18px"
                   />
                   <h5 style="display: inline-block; margin-left: 5px;">원</h5>
                   <h5>대표 사진</h5>
                   <v-file-input
+                    v-model="thumbnail"
                     :rules="rules"
                     accept="image/png, image/jpeg, image/bmp"
                     placeholder="Pick an thumbnail"
@@ -150,8 +111,6 @@
                     outlined
                     hide-details
                   ></v-file-input>
-                  <h5>소개 영상 URL</h5>
-                  <input type="text" placeholder="프로젝트 소개 영상 URL을 입력해주세요." />
                   <h5>카테고리</h5>
                   <div class="categoryDiv" style>
                     <v-btn
@@ -202,6 +161,7 @@
                   <div v-if="individual">
                     <h5>금손님 소개</h5>
                     <textarea
+                      v-model="introduce"
                       name="introduce"
                       id="introduce"
                       cols="98"
@@ -209,14 +169,15 @@
                       placeholder="금손님을 소개하는 글을 써주세요."
                     ></textarea>
                     <h5>금손님 소개 사이트</h5>
-                    <input type="text" placeholder="ex)홈페이지, SNS" />
+                    <input v-model="siteUrl" type="text" placeholder="ex)홈페이지, SNS" />
                   </div>
                   <!-- 개인사업자/기업 -->
                   <div v-if="business">
                     <h5>회사명</h5>
-                    <input type="text" placeholder="회사명을 입력해주세요." />
+                    <input v-model="companyName" type="text" placeholder="회사명을 입력해주세요." />
                     <h5>금손님 소개</h5>
                     <textarea
+                      v-model="introduce"
                       name="introduce"
                       id="introduce"
                       cols="98"
@@ -224,7 +185,7 @@
                       placeholder="금손님을 소개하는 글을 써주세요."
                     ></textarea>
                     <h5>금손님 소개 사이트</h5>
-                    <input type="text" placeholder="ex)홈페이지, SNS" />
+                    <input v-model="siteUrl" type="text" placeholder="ex)홈페이지, SNS" />
                   </div>
                 </div>
               </v-card-text>
@@ -240,7 +201,7 @@
                     <h5
                       style="display: inline-block; height: 36px; line-height: 36px; Smargin: 0;"
                     >투자설명</h5>
-                    <v-btn @click="onSave" style="float: right; background-color: rgb(22, 150,245); color:">저장하기</v-btn>
+                    <v-btn @click="onSave" style="float: right; background-color: white; color: rgb(22, 150,245); font-weight: 600">저장하기</v-btn>
                   </div>
                   <!-- <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea> -->
                   <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />
@@ -266,6 +227,7 @@ import { Editor } from "@toast-ui/vue-editor";
 import axios from "axios";
 import store from '../../store/index.js'
 
+const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 export default {
   components: {
     Navbar,
@@ -279,19 +241,17 @@ export default {
       title: "",
       content: "",
       // 날짜
-      date1: "",
-      dateFormatted1: "",
-      date2: "",
-      dateFormatted2: "",
-      menu1: false,
-      menu2: false,
+      date: "",
+      dateFormatted: "",
+      menu: false,
       targetPrice: 0,
-      receivePrice: 0,
+      sellPrice: 0,
       // 사진
+      thumbnail: "",
       rules: [
-        (value) =>
-          !value ||
-          value.size < 2000000 ||
+        (thumbnail) =>
+          !thumbnail ||
+          thumbnail.size < 2000000 ||
           "Tunbnail size should be less than 2 MB!",
       ],
       // 카테고리
@@ -308,45 +268,55 @@ export default {
       },
       checkCategory: [],
       // 검색태그
-      items: [],
+      tags: [],
       model: [],
       // 금손 정보
       items: ["개인", "개인 사업자/기업"],
       select: "",
+      companyName: "",
+      introduce: "",
+      siteUrl: "",
       openMenutab: false,
       individual: false,
       business: false,
       // editor
+      editortext: "",
+      editorImages: [],
       editorOptions: {
         hooks: {
           addImageBlobHook: function (blob, callback) {
             // console.log(blob)
             const imageURL = URL.createObjectURL(blob)
             callback(imageURL);
-            // FormData
-            // this.uploadImage(blob, imageURL);
+            // var formData = new FormData();
+            // formData.append("file", blob);
+
+            // axios.post(`URL`, formData, { 
+            //     headers: { 'Content-Type': 'multipart/form-data' } 
+            // }).then(response => {
+            //     console.log(response);
+            //   // this.image = response.data;
+            //   // callback(response)
+            // });
+            // // callback()
           },
         },
       },
-      editortext: "",
     };
   },
   computed: {
 
   },
   watch: {
-    date1(val) {
-      this.dateFormatted1 = this.formatDate(this.date1);
-    },
-    date2(val) {
-      this.dateFormatted2 = this.formatDate(this.date2);
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date);
     },
     model(val, prev) {
       if (val.length === prev.length) return;
       this.model = val.map((v) => {
         if (typeof v === "string") {
+          this.tags.push(v);
           v = { text: `#${v}` };
-          this.items.push(v);
           this.nonce++;
         }
         return v;
@@ -378,7 +348,7 @@ export default {
     removeTargetPrice() {
       this.targetPrice = "";
     },
-    removeReceivePrice() {
+    removeSellPrice() {
       this.receivePrice = "";
     },
     checkcategory(category) {
@@ -408,20 +378,23 @@ export default {
         $(".v-menu").css("display", "none");
       }
     },
-    uploadImage(blob) {
-      var formData = new FormData();
-      formData.append("image", blob); // 설명서 사진
-      formData.append("image-name", blob.name); // 사진 이름
+    // uploadImage() {
+    //   var formData = new FormData();
+    //   for (var x=0; x<this.editorImages.length; x++){
+    //     formData.append("files", this.editorImages[x])
+    //   }
+    //   // formData.append("image", blob); // 설명서 사진
+    //   // formData.append("image-name", blob.name); // 사진 이름
 
-      axios.post(`URL`, formData, { 
-          headers: { 'Content-Type': 'multipart/form-data' } 
-      }).then(response => {
-        // // console.log(response);
-        // this.image = response.data;
-      });
-    },
+    //   axios.post(`URL`, formData, { 
+    //       headers: { 'Content-Type': 'multipart/form-data' } 
+    //   }).then(response => {
+    //     // // console.log(response);
+    //     // this.image = response.data;
+    //   });
+    // },
     onSave() {
-      this.editortext = this.$refs.toastuiEditor.invoke("getMarkdown");
+      this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
       console.log(this.editortext)
     },
     openInvestBtn() {
@@ -429,14 +402,45 @@ export default {
       Swal.fire({
         icon: "warning",
         title: "",
-        text: "정말 프로젝트를 오픈하시겠습니까?",
+        text: "프로젝트를 오픈하기 전 저장하기 버튼을 꼭 클릭해 주세요.",
         showCancelButton: true,
         cancelButtonColor: "#d33",
         confirmButtonColor: "#3085d6",
         confirmButtonText: "오픈하기",
         cancelButtonText: "취소하기",
         reverseButtons: true,
-      });
+      }).then((result) => {
+        if (result.value) {
+          axios.post(`${SERVER_URL}/investment/create`, {
+            pjtName: this.title,
+            oneLineIntro: this.content,
+            deadLine: this.dateformatted,
+            goalPrice: this.targetPrice,
+            expectedSalePrice: this.sellPrice,
+            pictual: this.thumbnail,
+            categorys: this.checkCategory,
+            tags: this.tags,
+            identity: this.select,
+            compName: this.companyName,
+            introduce: this.introduce,
+            url: this.siteUrl,
+            editorhtml: this.editortext
+          })
+            .then(response => {
+              Swal.fire({
+                // position: 'top-end',
+                icon: 'success',
+                title: '',
+                text: '프로젝트가 성공적으로 오픈되었습니다.',
+                showConfirmButton: false,
+                // timer: 1500
+              })
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        }
+      })
     },
   },
 };
