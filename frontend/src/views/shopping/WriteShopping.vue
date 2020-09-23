@@ -9,8 +9,9 @@
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab v-for="(item, i) in tabs" :key="i" :href="`#tab-${i}`" class="writeMenu">{{ item }}</v-tab>
           <!-- 쇼핑 오픈버튼 -->
-          <div class="openbtn" @click="openInvestBtn">
-            <v-btn color="rgb(22, 150, 245)" style="font-weight: 600">쇼핑 프로젝트 오픈</v-btn>
+          <div class="openbtn" @click="checkForm">
+            <!-- v-bind:disabled="addedItems.length < 1" -->
+            <v-btn :class="{deactive: isActive}" color="rgb(22, 150, 245)" style="font-weight: 600">쇼핑 프로젝트 오픈</v-btn>
           </div>
           <!-- 상품 정보 창 -->
           <v-tab-item :value="'tab-0'">
@@ -19,7 +20,9 @@
                 <div class="pjtinfo">
                   <p>상품에 대한 정보를 정확하게 입력해주세요.</p>
                   <h5>상품명</h5>
-                  <input v-model="title" type="text" placeholder="상품명을 입력해주세요." />
+                  <input v-model="title" 
+
+                  type="text" placeholder="상품명을 입력해주세요." />
                   <h5 style="display: inline-block; margin-left: 5px;"></h5>
                   <h5>대표 사진</h5>
                   <v-file-input
@@ -191,6 +194,8 @@ import $ from "jquery";
 import Swal from "sweetalert2";
 import Navbar from "../../components/Navbar.vue"
 
+
+
 export default {
   components: {
     Navbar
@@ -201,6 +206,7 @@ export default {
       showCategory: [],
       addedItem: false,
       addedItems: [],
+      isActive: true,
       tab: null,
       text: ["1", "2", "3"],
       tabs: ["상품 정보", "쇼핑 설명서"],
@@ -252,6 +258,15 @@ export default {
         return v;
       });
     },
+    addedItems(val) {
+      console.log('넣음')
+      if(this.addedItems.length < 1) {
+        this.isActive = true
+      }
+      else{
+        this.isActive = false
+      }
+    }
   },
   methods: {
     formatDate(date) {
@@ -292,7 +307,15 @@ export default {
       });
       this.$refs.feeditem.searchTag(tags);
     },
-    openInvestBtn() {
+    checkForm() {
+      if (!this.addedItems.length) {
+        alert('상품을 등록해주세요.');
+      } else {
+        openShoppingBtn();
+      }
+    },
+    openShoppingBtn() {
+      this.checkForm();
       Swal.fire({
         icon: "warning",
         title: '',
@@ -306,22 +329,26 @@ export default {
       });
     },
     onAddItem() {
-      this.addedItem = true;
-      this.addedItems.push({title: this.title, opendate: this.date1, price: this.receivePrice, category: []})
- 
-      for (var i = 0; i < this.checkCategory.length; i++) {
-          // addedItems.category에 카테고리 push
-          this.addedItems[this.addedItems.length-1].category.push(this.categoryList[this.checkCategory[i]]);
-          // 체크 버튼 초기화
-          $(`.${this.checkCategory[i]}`).css("background-color", "white");
-          $(`.${this.checkCategory[i]}`).css("color", "black");
-        }
-      // checkCategory 비우기
-      this.checkCategory.splice(0, this.checkCategory.length);
-      this.title = "";
-      this.date1 = "";
-      this.receivePrice = 0;
-      console.log(this.addedItems)
+      if (this.title.length > 0 && this.date1.length > 0  && this.receivePrice.length > 0 && this.checkCategory.length > 0 ) {
+        this.addedItem = true;
+        this.addedItems.push({title: this.title, opendate: this.date1, price: this.receivePrice, category: []})
+  
+        for (var i = 0; i < this.checkCategory.length; i++) {
+            // addedItems.category에 카테고리 push
+            this.addedItems[this.addedItems.length-1].category.push(this.categoryList[this.checkCategory[i]]);
+            // 체크 버튼 초기화
+            $(`.${this.checkCategory[i]}`).css("background-color", "white");
+            $(`.${this.checkCategory[i]}`).css("color", "black");
+          }
+        // checkCategory 비우기
+        this.checkCategory.splice(0, this.checkCategory.length);
+        this.title = "";
+        this.date1 = "";
+        this.receivePrice = 0;
+        console.log(this.addedItems)
+      } else {
+        alert('모든 정보를 입력해주세요.')
+      }
     },
     onDeleteItem(item) {
       this.addedItems.splice(this.addedItems.indexOf(item),1)
@@ -452,4 +479,11 @@ input:hover {
  .v-list-item theme--light {
    padding: 0px !important;
  }
+
+button:disabled,
+button[disabled] {
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666 !important;
+}
 </style>
