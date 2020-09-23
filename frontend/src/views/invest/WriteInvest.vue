@@ -285,20 +285,18 @@ export default {
       editorOptions: {
         hooks: {
           addImageBlobHook: function (blob, callback) {
-            // console.log(blob)
-            const imageURL = URL.createObjectURL(blob)
-            callback(imageURL);
-            // var formData = new FormData();
-            // formData.append("file", blob);
+            console.log(blob)
+            // const imageURL = URL.createObjectURL(blob)
+            // callback(imageURL);
+            var formData = new FormData();
+            formData.append("img", blob);
 
-            // axios.post(`URL`, formData, { 
-            //     headers: { 'Content-Type': 'multipart/form-data' } 
-            // }).then(response => {
-            //     console.log(response);
-            //   // this.image = response.data;
-            //   // callback(response)
-            // });
-            // // callback()
+            axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
+                headers: { 'Content-Type': 'multipart/form-data' } 
+            }).then(response => {
+                console.log(response.data);
+              callback(response.data)
+            });
           },
         },
       },
