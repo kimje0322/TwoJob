@@ -8,6 +8,7 @@ import SearchDetail from "@/views/search/SearchDetail.vue"
 import ShoppingHome from "@/views/shopping/ShoppingHome.vue";
 import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
 import Mypage from "@/views/mypage/Mypage.vue";
+import WriteShopping from "@/views/shopping/WriteShopping.vue";
 
 Vue.use(VueRouter);
 
@@ -54,7 +55,12 @@ const routes = [{
         path: "/mypage",
         name: "Mypage",
         component: Mypage,
-    }
+    },
+    {
+        path: "/writeshopping",
+        name: "WriteShopping",
+        component: WriteShopping,
+    },
 
 ];
 

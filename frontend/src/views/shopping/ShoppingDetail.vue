@@ -22,7 +22,7 @@
         <!-- 우측: 상품 디테일 -->
         <div style="float: left; width:36%; margin-top:10px;">
           <!-- 기업명 -->
-          <p>다이손</p>
+          <p>다이슨</p>
           <!-- 상품 제목 -->
           <h3>{{ detailItems.title }}</h3>
           <hr />
