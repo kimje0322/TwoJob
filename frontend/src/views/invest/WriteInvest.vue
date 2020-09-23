@@ -9,14 +9,9 @@
             <h5>투자홈</h5>
           </router-link>
         </div>
-        <div>
-          <router-link to="/">
+        <div style="margin: 0 15%">
+          <router-link to="/investproject">
             <h5>프로젝트</h5>
-          </router-link>
-        </div>
-        <div>
-          <router-link to="/">
-            <h5>오픈예정</h5>
           </router-link>
         </div>
         <div>
@@ -46,54 +41,14 @@
                   <input v-model="title" type="text" placeholder="프로젝트명을 입력해주세요." />
                   <h5>프로젝트 한줄 소개</h5>
                   <input v-model="content" type="text" placeholder="프로젝트에대해 100자이내로 설명해주세요." />
-                  <h5>프로젝트 오픈 기간</h5>
+                  <h5>프로젝트 마감 날짜</h5>
                   <div>
-                    <!-- 시작날짜 -->
-                    <div class="startDayBox">
-                      <p style="margin: 0">시작 날짜</p>
-                      <div>
-                        <v-menu
-                          ref="menu1"
-                          v-model="menu1"
-                          :close-on-content-click="false"
-                          transition="scale-transition"
-                          offset-y
-                          max-width="290px"
-                          min-width="290px"
-                        >
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
-                              v-model="dateFormatted1"
-                              persistent-hint
-                              v-bind="attrs"
-                              @blur="date1 = parseDate(dateFormatted1)"
-                              v-on="on"
-                              color="rgb(22, 150, 245)"
-                              hide-details
-                              outlined
-                              placeholder="프로젝트 시작 날짜"
-                            ></v-text-field>
-                          </template>
-                          <v-date-picker
-                            v-model="date1"
-                            no-title
-                            @input="menu1 = false"
-                            color="rgb(22, 150, 245)"
-                          ></v-date-picker>
-                        </v-menu>
-                      </div>
-                    </div>
-                    <!-- 물결 -->
-                    <div class="tilddIcon">
-                      <v-icon>mdi-tilde</v-icon>
-                    </div>
                     <!-- 마감날짜 -->
                     <div class="startDayBox">
-                      <p style="margin: 0">마감 날짜</p>
                       <div>
                         <v-menu
-                          ref="menu2"
-                          v-model="menu2"
+                          ref="menu"
+                          v-model="menu"
                           :close-on-content-click="false"
                           transition="scale-transition"
                           offset-y
@@ -102,21 +57,21 @@
                         >
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                              v-model="dateFormatted2"
+                              v-model="dateFormatted"
                               persistent-hint
                               v-bind="attrs"
-                              @blur="date2 = parseDate(dateFormatted2)"
+                              @blur="date = parseDate(dateFormatted)"
                               v-on="on"
                               color="rgb(22, 150, 245)"
                               hide-details
                               outlined
-                              placeholder="프로젝트 시작 날짜"
+                              placeholder="프로젝트 마감 날짜"
                             ></v-text-field>
                           </template>
                           <v-date-picker
-                            v-model="date2"
+                            v-model="date"
                             no-title
-                            @input="menu2 = false"
+                            @input="menu = false"
                             color="rgb(22, 150, 245)"
                           ></v-date-picker>
                         </v-menu>
@@ -279,12 +234,9 @@ export default {
       title: "",
       content: "",
       // 날짜
-      date1: "",
-      dateFormatted1: "",
-      date2: "",
-      dateFormatted2: "",
-      menu1: false,
-      menu2: false,
+      date: "",
+      dateFormatted: "",
+      menu: false,
       targetPrice: 0,
       receivePrice: 0,
       // 사진
@@ -335,11 +287,8 @@ export default {
 
   },
   watch: {
-    date1(val) {
-      this.dateFormatted1 = this.formatDate(this.date1);
-    },
-    date2(val) {
-      this.dateFormatted2 = this.formatDate(this.date2);
+    date(val) {
+      this.dateFormatted = this.formatDate(this.date);
     },
     model(val, prev) {
       if (val.length === prev.length) return;
@@ -448,11 +397,11 @@ export default {
   text-align: center;
   line-height: 50px;
   border-bottom: 1px solid gray;
+  border-top: 1px solid lightgray;
   margin-bottom: 15px;
 }
 .items div {
   display: inline-block;
-  margin: 0 10% 0 0;
 }
 .items div a {
   color: black;

@@ -9,14 +9,9 @@
             <h5 style="color: rgb(22, 150, 245)">투자홈</h5>
           </router-link>
         </div>
-        <div>
-          <router-link to="/">
+        <div style="margin: 0 15%">
+          <router-link to="/investproject">
             <h5>프로젝트</h5>
-          </router-link>
-        </div>
-        <div>
-          <router-link to="/">
-            <h5>오픈예정</h5>
           </router-link>
         </div>
         <div>
@@ -226,7 +221,6 @@ export default {
 }
 .items div {
   display: inline-block;
-  margin: 0 10% 0 0;
 }
 .items div a {
   color: black;
@@ -237,6 +231,7 @@ export default {
 }
 .items h5 {
   font-weight: 600;
+  margin: 0;
 }
 .homeImg {
   margin-bottom: 3%;
