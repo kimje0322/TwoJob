@@ -11,11 +11,20 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name ="tag")
+@Table(name ="tags")
 public class TagDto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int num;
 	@Column
 	String tagname;
+	
+	public TagDto() {
+		
+	}
+	
+	public TagDto(TagDto tagdto) {
+		this.num = tagdto.getNum();
+		this.tagname = tagdto.getTagname();
+	}
 }
