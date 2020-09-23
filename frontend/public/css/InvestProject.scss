@@ -1,0 +1,11 @@
+.investproject {
+  .v-text-field--outlined fieldset {
+    height: 55px !important;
+  }
+  .v-menu {
+    display: unset;
+  }
+  .theme--light.v-label {
+    left: -10px !important;
+  }
+}
