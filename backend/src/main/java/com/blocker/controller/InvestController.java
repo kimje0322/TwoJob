@@ -118,7 +118,8 @@ public class InvestController {
 		String savedName = uuid.toString() + "_" + img.getOriginalFilename();
 		File file = new File(path + savedName);
 		try {
-			img.transferTo(file);
+		// 경로바꾸고 이거 주석 풀어줘야함
+		// img.transferTo(file);
 		} catch (Exception e) {
 			System.out.println("이미지 저장중 오류발생");
 			e.printStackTrace();
