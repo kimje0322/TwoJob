@@ -1,6 +1,5 @@
 package com.blocker.service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -10,7 +9,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.Transfer;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Convert.Unit;
@@ -69,24 +67,40 @@ public class TokenServiceImpl implements TokenService{
 		return balance2.toString();
 	}
 	@Override
-	public TransactionReceipt TransferTo(String to,String pk, BigInteger amount) {
+	public BigDecimal TransferTo(String to, Integer amount) {
 		Web3j web3j = Web3j.build(new HttpService());
 		Credentials credentials = Credentials.create(property.getAdminPK());
 		TJToken contract = TJToken.load(property.getTokenAddr(),web3j, credentials, new DefaultGasProvider());
-		Credentials buyer = Credentials.create(pk);
-		String hash = "";
-		TransactionReceipt tr = null;
+		BigInteger transvalue = Convert.toWei(String.valueOf(amount), Convert.Unit.ETHER).toBigInteger();
 		try {
-			BigDecimal val = new BigDecimal(amount);
-			TransactionReceipt receipt = Transfer.sendFunds(web3j, buyer, property.getAdminAddr(),val, Unit.ETHER).send();
-			tr = contract.transfer(to, amount).send();
+			TransactionReceipt tr = contract.transfer(to, transvalue).send();
 			System.out.println(tr.getBlockNumber());
 			System.out.println(tr.getTransactionHash());
-			System.out.println(Convert.fromWei(contract.balanceOf(to).send().toString(), Unit.ETHER));
-			hash = tr.getTransactionHash();
+			return Convert.fromWei(contract.balanceOf(to).send().toString(), Unit.ETHER);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return tr;
+		return null;
+	}
+	@Override
+	public void Transferfrm(String from, String to, Integer amount) {
+		Web3j web3j = Web3j.build(new HttpService());
+		Credentials sender = Credentials.create("5d338ca1076170e61e5630c9d55b3c1fd8e6d818be4d51e0007dede82ffa81af");
+		TJToken contract = TJToken.load(property.getTokenAddr(),web3j, sender, new DefaultGasProvider());
+		System.out.println("이거? " + contract.getContractAddress());
+		try {
+			System.out.println(contract.isValid() + " ?");
+			contract.increaseAllowance("0x7823C51EcBCf5cAF58D5001A17cE30bc37C2Fc51", Convert.toWei(String.valueOf(amount), Convert.Unit.ETHER).toBigInteger()).send();
+			System.out.println("???");
+			System.out.println(contract.allowance("0x55766a23e337777Ba66129594600021C3A31E966", "0x7823C51EcBCf5cAF58D5001A17cE30bc37C2Fc51").send() + " ??D");
+			TransactionReceipt tr = contract.transferFrom("0x55766a23e337777Ba66129594600021C3A31E966","0x7823C51EcBCf5cAF58D5001A17cE30bc37C2Fc51", Convert.toWei(String.valueOf(amount), Convert.Unit.ETHER).toBigInteger()).send();
+			System.out.println(tr.getBlockNumber());
+			System.out.println(tr.getTransactionHash());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }
+
