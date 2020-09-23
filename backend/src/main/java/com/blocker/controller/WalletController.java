@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,7 +35,7 @@ public class WalletController {
 	}
 	@ApiOperation(value = "[지갑 조회] address를 이용해 지갑의 값을 조회. param : [address], result : 지갑이 존재하지 않으면 novalid, 지갑이 존재하면 해당 지갑의 balance를 return")
 	@GetMapping("/ToAdress")
-	public ResponseEntity<?> get(@PathVariable String address) {
+	public ResponseEntity<?> get(@RequestParam("address") String address) {
 		Object result = walletService.getBalance(address);
 		if(result.equals("novalid")) {
 			return new ResponseEntity<String>((String) result, HttpStatus.OK);
