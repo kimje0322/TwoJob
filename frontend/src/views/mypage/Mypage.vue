@@ -3,7 +3,7 @@
     <!-- 상단 Navbar -->
     <navbar />
     <!-- 투자 글쓰기 메뉴바 -->
-    <div style="max-width: 1000px; margin: 0 auto;">
+    <div style="max-width: 1000px; max-height: 1000px; margin: 0 auto;">
       <!-- 투자 글쓰기 메뉴 -->
       <div class="writeMenuBar">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
@@ -20,25 +20,205 @@
               <v-card-text>
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
                 <div>
-                  <div style="width: 55px; display: inline-block; margin: 0 auto 25px;">
+                  <!-- <div style="width: 55px; display: inline-block; margin: 0 auto 25px;"> -->
+                  <div style="margin-top: 40px; float: left;">
                     <img :src="userimg" style="height: 100px; border-radius: 50%" />
-                  </div>
-                  <div style="text-align: center">
-                    <h5>{{username}} 님</h5>
+                    <div style="text-align: center; margin-top: 20px;">
+                      <h5>{{username}} 님</h5>
+                      <p>총 {{userbalance}}.0 원</p>
+                      <router-link to="/">
+                        <v-btn
+                          @click="onLogout"
+                          style="vertical-align: middle; background-color: mintcream;"
+                        >로그아웃</v-btn>
+                      </router-link>
                     </div>
-                  <div>총 {{userbalance}}.0 원</div>
+                  </div>
+                  <div class="project_info">
+                    <h3 class="mypage_title">마이페이지</h3>
+                    <div class="info_box">
+                      <div class="info_frame">
+                        <ul class="info_ul">
+                          <li class="info_li">
+                            <a href="/writeinvest" class="pjt_a">
+                              <span class="pjt_span">
+                                투자 프로젝트
+                                <h3 style="padding-top: 7px;">
+                                  XX
+                                  <h5 style="display: inline-block;">회</h5>
+                                </h3>
+                              </span>
+                            </a>
+                          </li>
+                          <li class="info_li" style="border-left: 2px solid #e9ecef;">
+                            <a href="#" class="pjt_a">
+                              <span class="pjt_span">
+                                판매 프로젝트
+                                <h3 style="padding-top: 7px;">
+                                  XX
+                                  <h5 style="display: inline-block;">회</h5>
+                                </h3>
+                              </span>
+                            </a>
+                          </li>
+                        </ul>
+                        <ul class="open_pjt">
+                          <li class="opjt_li">
+                            <a href="/writeinvest" class="opjt_a">투자 프로젝트 생성</a>
+                          </li>
+                          <li class="opjt_li">
+                            <a href="#" class="opjt_a">판매 프로젝트 생성</a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div style="margin-top: 15px;">
+                        <div
+                          style="padding: 18px 12px; float: left; width: 50%; border-top: 2px solid #f2f4f6; border-bottom: 2px solid #f2f4f6;"
+                        >
+                          <span style="margin-right: 5px;">
+                            <i class="far fa-heart fa-lg"></i>
+                          </span>
+                          <strong style="font-size: 17px;">찜 한 목록</strong>
+                        </div>
+                        <div
+                          style="padding: 18px 12px; float: left; width: 50%; border-top: 2px solid #f2f4f6; border-bottom: 2px solid #f2f4f6;"
+                        >
+                          <span style="margin-right: 5px;">
+                            <i class="far fa-comments fa-lg"></i>
+                          </span>
+                          <strong style="font-size: 17px;">1 : 1 문의</strong>
+                        </div>
+                      </div>
+                      <div style="margin: 100px 20px 0;">
+                        <h4 style="display: inline-block; font-size: 17px; font-weight: 600; ">거래내역</h4>
+                        <span style="float: right">더보기</span>
+                        <div style="margin-top: 18px;">
+                          <div>
+                            <img
+                              :src="userimg"
+                              style="height: 40px; border-radius: 50%; display: inline-block;"
+                            />
+                            <span style="margin-left: 100px;">프로젝트 명</span>
+                            <span style="float: right">+ 120,0000 ETH</span>
+                          </div>
+                          <div style="margin-top: 15px;">
+                            <img
+                              :src="userimg"
+                              style="height: 40px; border-radius: 50%; display: inline-block;"
+                            />
+                            <span style="margin-left: 100px;">프로젝트 명</span>
+                            <span style="float: right">+ 120,0000 ETH</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div style="display: inline-block; margin-left: 200px;">
-                  <h4 style="flex: 7">마이페이지</h4>
-                </div>
+                <!-- <div style="display: inline-block; margin-left: 200px;"></div> -->
               </v-card-text>
             </v-card>
           </v-tab-item>
           <!-- 금손 정보 창 -->
           <v-tab-item :value="'tab-1'">
             <v-card flat tile>
-              <v-card-text></v-card-text>
+              <v-card-text>
+                <div>
+                  <!-- <div style="width: 55px; display: inline-block; margin: 0 auto 25px;"> -->
+                  <div style="margin-top: 40px; float: left;">
+                    <img :src="userimg" style="height: 100px; border-radius: 50%" />
+                    <div style="text-align: center; margin-top: 20px;">
+                      <h5>{{username}} 님</h5>
+                      <p>총 {{userbalance}}.0 원</p>
+                      <router-link to="/">
+                        <v-btn
+                          @click="onLogout"
+                          style="vertical-align: middle; background-color: mintcream;"
+                        >로그아웃</v-btn>
+                      </router-link>
+                    </div>
+                  </div>
+                  <div class="project_info">
+                    <h3 class="mypage_title">마이페이지</h3>
+                    <div class="info_box">
+                      <div class="info_frame">
+                        <ul class="info_ul">
+                          <li class="info_li">
+                            <a href="/writeinvest" class="pjt_a">
+                              <span class="pjt_span">
+                                투자하기
+                                <h3 style="padding-top: 7px;">
+                                  XX
+                                  <h5 style="display: inline-block;">회</h5>
+                                </h3>
+                              </span>
+                            </a>
+                          </li>
+                          <li class="info_li" style="border-left: 2px solid #e9ecef;">
+                            <a href="#" class="pjt_a">
+                              <span class="pjt_span">
+                                판매하기
+                                <h3 style="padding-top: 7px;">
+                                  XX
+                                  <h5 style="display: inline-block;">회</h5>
+                                </h3>
+                              </span>
+                            </a>
+                          </li>
+                        </ul>
+                        <ul class="open_pjt">
+                          <li class="opjt_li">
+                            <a href="/writeinvest" class="opjt_a">투자 프로젝트 생성</a>
+                          </li>
+                          <li class="opjt_li">
+                            <a href="#" class="opjt_a">판매 프로젝트 생성</a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div style="margin-top: 15px;">
+                        <div
+                          style="padding: 18px 12px; float: left; width: 50%; border-top: 2px solid #f2f4f6; border-bottom: 2px solid #f2f4f6;"
+                        >
+                          <span style="margin-right: 5px;">
+                            <i class="far fa-heart fa-lg"></i>
+                          </span>
+                          <strong style="font-size: 17px;">찜 한 목록</strong>
+                        </div>
+                        <div
+                          style="padding: 18px 12px; float: left; width: 50%; border-top: 2px solid #f2f4f6; border-bottom: 2px solid #f2f4f6;"
+                        >
+                          <span style="margin-right: 5px;">
+                            <i class="far fa-comments fa-lg"></i>
+                          </span>
+                          <strong style="font-size: 17px;">1 : 1 문의</strong>
+                        </div>
+                      </div>
+                      <div style="margin: 100px 20px 0;">
+                        <h4 style="display: inline-block; font-size: 17px; font-weight: 600; ">거래내역</h4>
+                        <span style="float: right">더보기</span>
+                        <div style="margin-top: 18px;">
+                          <div>
+                            <img
+                              :src="userimg"
+                              style="height: 40px; border-radius: 50%; display: inline-block;"
+                            />
+                            <span style="margin-left: 100px;">프로젝트 명</span>
+                            <span style="float: right">+ 120,0000 ETH</span>
+                          </div>
+                          <div style="margin-top: 15px;">
+                            <img
+                              :src="userimg"
+                              style="height: 40px; border-radius: 50%; display: inline-block;"
+                            />
+                            <span style="margin-left: 100px;">프로젝트 명</span>
+                            <span style="float: right">+ 120,0000 ETH</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </v-card-text>
             </v-card>
           </v-tab-item>
         </v-tabs>
@@ -61,7 +241,14 @@ import Navbar from "../../components/Navbar.vue";
 import "@/../public/css/WriteInvest.scss";
 
 export default {
-  methods: {},
+  methods: {
+    onLogout() {
+      store.state.isSigned = false;
+      console.log("로그아웃됨");
+      console.log("store.state.isSigned " + store.state.isSigned);
+      // this.$router.push("/");
+    },
+  },
   components: {
     Navbar,
   },
@@ -238,5 +425,75 @@ input:hover {
 }
 #introduce:hover {
   border: 2px solid rgb(22, 150, 245);
+}
+.v-card__text {
+  height: 600px;
+}
+.v-card--flat {
+  background-color: rgba(173, 220, 254, 0.4);
+}
+.project_info {
+  margin-left: 50px;
+  float: left;
+}
+.mypage_title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+.info_box {
+  box-sizing: border-box;
+}
+.info_frame {
+  background-color: #fff;
+  border: 1px solid #cdd3d8;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px 0 rgba(33, 37, 41, 0.11);
+}
+.info_ul {
+  list-style: none;
+  width: 600px;
+  height: 120px;
+  margin-top: 15px;
+}
+.info_li {
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+}
+.pjt_a {
+  display: block;
+  padding: 20px 0;
+  text-decoration: none;
+  color: #495057;
+}
+.pjt_span {
+  line-height: 25px;
+  font-size: 18px;
+  font-weight: 600;
+  font-style: normal;
+  text-align: center;
+}
+.open_pjt {
+  width: 600px;
+  height: 80px;
+  display: block;
+  margin: 0;
+  list-style: none;
+  background-color: #f2f4f6;
+  border-radius: 0 0 12px 12px;
+}
+.opjt_li {
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+  padding: 29px 6px;
+}
+.opjt_a {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-style: normal;
+  color: #495057;
 }
 </style>
