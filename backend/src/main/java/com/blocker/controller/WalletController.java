@@ -25,8 +25,8 @@ public class WalletController {
 	
 	@ApiOperation(value = "[지갑 등록] 사용자 계정에 지갑을 등록합니다. param : [ accessToken,  address ], result : 토큰 만료면 error code, 이미 존재하면 isExist, 등록에 성공하면 success를 return 합니다.")
 	@PostMapping(value = "/regist")
-	public ResponseEntity<String> register(@RequestParam("accessToken") String accessToken,@RequestParam("address") String address)  {
-		return new ResponseEntity<String>(walletService.wallet_regist(accessToken, address),HttpStatus.OK);
+	public ResponseEntity<String> register(@RequestParam("accessToken") String accessToken,@RequestParam("address") String address, @RequestParam("privatekey") String privatekey)  {
+		return new ResponseEntity<String>(walletService.wallet_regist(accessToken, address, privatekey),HttpStatus.OK);
 	}
 	@PostMapping("/ether")
 	@ApiOperation(value = "[이더 충전] 지갑에 ethere를 충전. param : [email, ether], result : 토큰 만료면 error code,, 지갑이 존재하지 않으면 novalid, 충전에 성공하면 success를 return")

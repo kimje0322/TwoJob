@@ -25,12 +25,16 @@ public class Wallet {
     
     @Column
     private int balance;
-
-	public Wallet(String oauthId, String address, int balance) {
+    
+    @Column
+    private String privatekey;
+    
+	public Wallet(String oauthId, String address, int balance, String privatekey) {
 		super();
 		this.oauthId = oauthId;
 		this.address = address;
 		this.balance = balance;
+		this.privatekey = privatekey;
 	}
     
 }

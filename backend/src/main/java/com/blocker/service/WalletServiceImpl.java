@@ -29,7 +29,7 @@ public class WalletServiceImpl implements WalletService{
 	Property property;
 
 	@Override
-	public String wallet_regist(String accessToken, String address) {
+	public String wallet_regist(String accessToken, String address, String privatekey) {
 		Object result =  loginService.getUserInfo(accessToken);
 		if(result.getClass() == Member.class) {
 			Member m = (Member)result;
@@ -37,7 +37,7 @@ public class WalletServiceImpl implements WalletService{
 			if(wallets.isPresent()) {
 				return "isExist";
 			}else {
-				Wallet newWallet = new Wallet(m.getOauthId(),address, 0);
+				Wallet newWallet = new Wallet(m.getOauthId(),address, 0, privatekey);
 				walletRepository.save(newWallet);
 				return "success";
 			}

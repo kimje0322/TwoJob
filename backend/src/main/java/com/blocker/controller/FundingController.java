@@ -24,7 +24,7 @@ public class FundingController {
 	public void Deploy() throws Exception {
 		fundingService.Deploy();
 	}
-	@ApiOperation(value = "[토큰 사기] 이더를 이용해 토큰을 구매합니다. param : [address, privatekey, ether], return : 충전후 잔액을 return 합니다")
+	@ApiOperation(value = "[펀딩 캠페인 오픈] 이더를 이용해 토큰을 구매합니다. param : [address, privatekey, ether], return : 충전후 잔액을 return 합니다")
 	@GetMapping(value = "/transfer")
 	public ResponseEntity<Void> transfer() throws Exception {
 		fundingService.createCampaign();
