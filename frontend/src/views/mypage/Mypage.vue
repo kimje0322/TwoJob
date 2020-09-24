@@ -238,7 +238,8 @@ import axios from "axios";
 // import "../../../public/css/Home.scss";
 import store from "../../store/index.js";
 import Navbar from "../../components/Navbar.vue";
-import "@/../public/css/WriteInvest.scss";
+// import "@/../public/css/WriteInvest.scss";
+import "@/../public/css/Mypage.scss"
 
 export default {
   methods: {
