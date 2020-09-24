@@ -12,6 +12,8 @@ import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
 import Mypage from "@/views/mypage/Mypage.vue";
 import WriteShopping from "@/views/shopping/WriteShopping.vue";
 import MyInvestPjt from "@/views/mypage/MyInvestPjt.vue"
+import LikeList from "@/views/mypage/LikeList.vue"
+import Messenger from "@/views/mypage/Messenger.vue"
 
 Vue.use(VueRouter);
 
@@ -78,6 +80,16 @@ const routes = [{
         path: "/myinvestpjt",
         name: "MyInvestPjt",
         component: MyInvestPjt,
+    },
+    {
+        path: "/likelist",
+        name: "LikeList",
+        component: LikeList,
+    },
+    {
+        path: "/messenger",
+        name: "Messsenger",
+        component: Messenger,
     }
 ];
 
