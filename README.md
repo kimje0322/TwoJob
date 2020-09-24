@@ -10,7 +10,7 @@
 
 ### 제작 배경
 
-<img src="기타/image/배경.PNG" alt="배경" />
+![](기타/image/배경.PNG)
 
 
 
