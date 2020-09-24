@@ -300,7 +300,7 @@ export default {
   methods: {
     onSave() {
       this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
-      console.log(this.editortext)
+      // console.log(this.editortext)
     },
     formatDate(date) {
       if (!date) return null;
@@ -316,7 +316,7 @@ export default {
       // return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
     removeTargetPrice() {
-      this.targetPrice = "";
+      this.price = "";
     },
     checkcategory(category) {
       // console.log(category)
@@ -345,7 +345,7 @@ export default {
         this.completed = true;
         this.openShoppingBtn();
       } else {
-      alert('모든 항목을 입력해주세요.');
+      alert('모든 항목을 입력해주세요.');  
       } 
     },
     openShoppingBtn() {
@@ -361,14 +361,19 @@ export default {
         reverseButtons: true
       }).then((result) => {
         if (result.value) {
-          axios.post(`${SERVER_URL}/investment/create`, {
-            pjtName: this.title,
-            picture: this.thumbnail,
-            openDate: this.openDate,
-            price: this.targetPrice,
+          axios.post(`${SERVER_URL}/sale/create`, {
+            address: "abc",
+            investaddress: "abc",
+            pjtname: this.title,
+            picture: "정성오",
+            startdate: this.dateFormatted1,
+            saleprice: this.price,
+            url: "abc",
             // categorys: this.checkCategory,
             // tags: this.tags,
-            editorhtml: this.editortext
+            editorhtml: this.editortext,
+            userid: "string",
+
           })
             .then(response => {
               Swal.fire({
