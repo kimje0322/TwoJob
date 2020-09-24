@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blocker.service.TokenService;
 import com.blocker.util.KakaoPay;
 
 import io.swagger.annotations.ApiOperation;
@@ -22,13 +23,14 @@ public class KakaopayController {
 	@Autowired
 	private KakaoPay kakaopay;
 
+	@Autowired
+	private TokenService tokenService;
 	@GetMapping("/kakaoPay")
 	@ApiOperation(value = "카카오페이 get방식")
 	public void kakaoPayGet() {
 
 	}
 
-	
 	@ResponseBody
 	@PostMapping("/kakaoPay")
 	@ApiOperation(value = "카카오페이 Post방식")
@@ -41,10 +43,13 @@ public class KakaopayController {
 	@ResponseBody
 	@GetMapping("/kakaoPayReadySuccess")
 	@ApiOperation(value = "카카오페이 성공했을 경우")
-	public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token, String totalprice, Model model) {
+	public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token, String totalprice, String access_token) {
 		System.out.println("kakaoPaySuccess get----------------------");
 		System.out.println("kakaoPaySuccess pg_token : " + pg_token);
 
-		model.addAttribute("info", kakaopay.kakaoPayInfo(pg_token, totalprice));
+		kakaopay.kakaoPayInfo(pg_token, totalprice);
+		Integer money = Integer.parseInt(totalprice);
+		//토큰 충전 
+		tokenService.TransferTo(access_token, money);
 	}
 }
