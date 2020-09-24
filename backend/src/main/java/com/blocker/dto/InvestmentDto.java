@@ -14,8 +14,7 @@ import lombok.Data;
 @Table(name = "investmentboard")
 public class InvestmentDto {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키 매핑 db에서 자동증분으로 설정
-	int num;
+	String address;
 	
 	@Column
 	String identity;// 개인인지 사업자인지
@@ -45,5 +44,5 @@ public class InvestmentDto {
 	int expectedsaleprice;// 판매 예정금액
 	
 	@Column
-	String pictual;// 대표사진이름
+	String picture;// 대표사진이름
 }
