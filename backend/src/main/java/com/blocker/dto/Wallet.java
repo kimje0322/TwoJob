@@ -17,7 +17,7 @@ import lombok.Setter;
 @Table(name = "wallets")
 public class Wallet {
 	@Id
-    @Column(name = "user_id")
+	@Column(name = "user_id")
     private String oauthId;
 	
 	@Column
@@ -25,12 +25,16 @@ public class Wallet {
     
     @Column
     private int balance;
-
-	public Wallet(String oauthId, String address, int balance) {
+    
+    @Column
+    private String privatekey;
+    
+	public Wallet(String oauthId, String address, int balance, String privatekey) {
 		super();
 		this.oauthId = oauthId;
 		this.address = address;
 		this.balance = balance;
+		this.privatekey = privatekey;
 	}
     
 }
