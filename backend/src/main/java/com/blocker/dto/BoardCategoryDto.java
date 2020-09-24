@@ -17,7 +17,7 @@ public class BoardCategoryDto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int num;
 	@Column
-	int investnum;
+	String investaddress;
 	@Column
 	String categoryname;
 }

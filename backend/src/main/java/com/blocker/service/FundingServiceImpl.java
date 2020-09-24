@@ -58,7 +58,7 @@ public class FundingServiceImpl implements FundingService{
 					Web3j web3j = Web3j.build(new HttpService());
 					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-					contract.createCampaign(String.valueOf(myInvest.getNum()), Convert.toWei(String.valueOf(myInvest.getGoalprice()), Convert.Unit.ETHER).toBigInteger(), new BigInteger("123123123123")).send();
+					contract.createCampaign(String.valueOf(myInvest.getAddress()), Convert.toWei(String.valueOf(myInvest.getGoalprice()), Convert.Unit.ETHER).toBigInteger(), new BigInteger("123123123123")).send();
 					System.out.println("캠페인 생성 완료!");
 					return "success";
 				}else {
@@ -89,7 +89,7 @@ public class FundingServiceImpl implements FundingService{
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
 
 					System.out.println("후 = " +contract.isValid());
-					contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getNum()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
+					contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getAddress()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
 					System.out.println("fundingCampaign succss");
 					return "success";
 				}else {
@@ -117,7 +117,7 @@ public class FundingServiceImpl implements FundingService{
 					Web3j web3j = Web3j.build(new HttpService());
 					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-					contract.receiveFunds(property.getTokenAddr(), String.valueOf(myInvest.getNum())).send();
+					contract.receiveFunds(property.getTokenAddr(), String.valueOf(myInvest.getAddress())).send();
 					System.out.println("receiveFund Success");
 					return "success";
 				}else {
