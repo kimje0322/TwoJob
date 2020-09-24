@@ -163,7 +163,7 @@ export default {
         // this.userInfo.email = res.data.email;
         console.log("이게뭐냐면");
         console.log(this.userInfo);
-        this.$router.push("/");
+        // this.$router.push("/");
       });
     },
   },

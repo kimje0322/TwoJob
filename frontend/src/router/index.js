@@ -9,6 +9,7 @@ import ShoppingHome from "@/views/shopping/ShoppingHome.vue";
 import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
 import Mypage from "@/views/mypage/Mypage.vue";
 import WriteShopping from "@/views/shopping/WriteShopping.vue";
+import MyInvestPjt from "@/views/mypage/MyInvestPjt.vue"
 
 Vue.use(VueRouter);
 

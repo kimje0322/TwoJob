@@ -5,7 +5,7 @@
     <!-- 투자 글쓰기 메뉴바 -->
     <div style="max-width: 1000px; max-height: 1000px; margin: 0 auto;">
       <!-- 투자 글쓰기 메뉴 -->
-      <div class="writeMenuBar">
+      <div class="writeMenuBar" style="background-color: white !important;">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab
             style="color: black;"
@@ -495,5 +495,11 @@ input:hover {
   letter-spacing: 0;
   font-style: normal;
   color: #495057;
+}
+.v-slide-group__content {
+  background-color: white !important;
+}
+.v-tabs-bar__content {
+  background-color: white !important;
 }
 </style>
