@@ -27,24 +27,38 @@
         </button>
       </div>
       <v-row v-else style="display: inline-block; width: 150px; ">
-        <v-btn @click="onchargebox">
+        <!-- <v-btn @click="onchargebox"> -->
+          <v-btn @click.stop="openbox = true">
           <!-- <i class="fas fa-user fa-lg"></i> -->
           <span style="width: 35px; height: 35px;">
             <img :src="userInfo.img" style="height: 100%; border-radius: 50%" />
           </span>
+          <h5
+            style="display: inline-block; margin: 0; padding-left: 10px; font-size: 17px; font-weight: 550;"
+          >{{ userInfo.name }}</h5>
+          <span>님</span>
         </v-btn>
         <div class="chargebox" style="inline-block" v-if="openbox">
-          <v-card style="padding: 20px; margin: 0">
-            <v-card-title class="headline">{{userInfo.name}}님의 자산 현황 : {{asset}}원</v-card-title>
+          <v-card style="padding: 0; margin: 0">
+            <v-card-title class="headline">{{userInfo.name}}님의 자산 현황  <br>  {{asset}}원</v-card-title>
             <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
             <v-card-actions class="moneybtns">
               <v-spacer></v-spacer>
-              <router-link to="/mypage">
-                <v-btn @click="openbox = false" >마이페이지</v-btn>
-              </router-link>
-              <v-btn class="chargebtn" text @click="onKakao">충전하기</v-btn>
+              <v-btn class="chargebtn" text @click="onKakao">
+                충전하기
+                <!-- <div style="inline-block" v-if="kakaopay">
+                  <v-card>
+
+                  </v-card>
+                </div>-->
+              </v-btn>
               <v-btn class="closebtn" text @click="openbox = false">닫기</v-btn>
             </v-card-actions>
+            <div style="text-align: center; width: 100%; padding: 0 2px">
+              <router-link to="/mypage">
+                <v-btn @click="openbox = false" style="width: 100%; background: rgb(22, 150, 245) !important; color: white;">마이페이지</v-btn>
+              </router-link>
+            </div>
           </v-card>
         </div>
       </v-row>
@@ -72,6 +86,7 @@ const redirect_uri = "http://j3b102.p.ssafy.io:8080";
 export default {
   data() {
     return {
+      // kakopay: false,
       login: false,
       openbox: false,
       money: "",
@@ -87,7 +102,8 @@ export default {
     };
   },
   mounted() {
-    this.asset = store.state.balance + ".0"
+    console.log(location.href)
+    this.asset = store.state.balance + ".0";
     // this.asset = "100"
     console.log("여기여기여기여기");
     console.log(this.userInfo);
@@ -106,9 +122,11 @@ export default {
   },
   methods: {
     onchargebox() {
-      this.openbox = !this.openbox;
+      this.opopenbox = trueenbox = !this.openbox;
     },
     onKakao() {
+      // this.kakopay = true;
+
       this.money = this.money * 1;
       const fd = new FormData();
       fd.append("count", this.money);
@@ -122,6 +140,14 @@ export default {
           console.log(this.next);
           this.nexturl = response.data;
           window.location.href = this.nexturl;
+          // window.open(
+          //   this.nexturl,
+          //   "토큰 충전",
+          //   "width=500,height=500,left=600"
+          // );
+          console.log("여기를봐라")
+          console.log(response)
+          console.log(window.location.href)
         })
         .catch((error) => {
           console.log(error);
