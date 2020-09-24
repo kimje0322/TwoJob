@@ -14,9 +14,9 @@
         ></v-carousel-item>
       </v-carousel>
     </div>
-    <button @click="onWallet" style="margin-left: 200px;">
+    <!-- <button @click="onWallet" style="margin-left: 200px;">
       눌러봐
-    </button>
+    </button> -->
     <!-- 홈페이지 설명 -->
     <div class="home_info">
       <div class="home_div">
@@ -158,36 +158,36 @@ export default {
 
   },
   methods: {
-    onWallet() {
-      // var Web3 = require('web3');
-      var web3 = new Web3('http://localhost:8545');
+    // onWallet() {
+    //   // var Web3 = require('web3');
+    //   var web3 = new Web3('http://j3b102.p.ssafy.io:8545');
 
-      var Accounts = require('web3-eth-accounts');
-      var accounts = new Accounts('http://localhost:8545');
-      var result = web3.eth.accounts.create();
-      console.log(accounts)
-      console.log(result)
+    //   var Accounts = require('web3-eth-accounts');
+    //   var accounts = new Accounts('http://j3b102.p.ssafy.io:8545');
+    //   var result = web3.eth.accounts.create();
+    //   console.log(accounts)
+    //   console.log(result)
 
-      store.commit("setAddress", result.address)
+    //   store.commit("setAddress", result.address)
       
-      const fd = new FormData();
-      fd.append("accessToken", store.state.accessToken);
-      fd.append("address", store.state.address);
-      fd.append("privatekey", result.privateKey);
-      axios
-        .post(`${SERVER_URL}/wallet/regist`, fd)
-        .then((res) => {
-          console.log("wow!!success!!")
-          console.log(res)
-          console.log(fd)
-          if(res.data == 401){
-            store.state.isSigned = false;
-          }
-        })
+    //   const fd = new FormData();
+    //   fd.append("accessToken", store.state.accessToken);
+    //   fd.append("address", store.state.address);
+    //   fd.append("privatekey", result.privateKey);
+    //   axios
+    //     .post(`${SERVER_URL}/wallet/regist`, fd)
+    //     .then((res) => {
+    //       console.log("wow!!success!!")
+    //       console.log(res)
+    //       console.log(fd)
+    //       if(res.data == 401){
+    //         store.state.isSigned = false;
+    //       }
+    //     })
 
     
-      alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
-    }
+    //   alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
+    // }
 
   },
   components: {

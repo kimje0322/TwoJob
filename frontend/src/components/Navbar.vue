@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     onchargebox() {
-      this.opopenbox = trueenbox = !this.openbox;
+      this.openbox = trueenbox = !this.openbox;
     },
     onKakao() {
       // this.kakopay = true;

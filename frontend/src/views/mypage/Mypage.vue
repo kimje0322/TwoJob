@@ -32,6 +32,8 @@
                           style="vertical-align: middle; background-color: mintcream;"
                         >로그아웃</v-btn>
                       </router-link>
+                      <br>
+                      <v-btn @click="onWallet" style="margin-top: 20px">지갑생성</v-btn>   
                     </div>
                   </div>
                   <div class="project_info">
@@ -240,6 +242,7 @@ import store from "../../store/index.js";
 import Navbar from "../../components/Navbar.vue";
 // import "@/../public/css/WriteInvest.scss";
 import "@/../public/css/Mypage.scss"
+import Swal from "sweetalert2";
 
 export default {
   methods: {
@@ -249,6 +252,48 @@ export default {
       console.log("store.state.isSigned " + store.state.isSigned);
       // this.$router.push("/");
     },
+    onWallet() {
+      // var Web3 = require('web3');
+      var web3 = new Web3('http://localhost:8545');
+
+      var Accounts = require('web3-eth-accounts');
+      var accounts = new Accounts('http://localhost:8545');
+      var result = web3.eth.accounts.create();
+      console.log(accounts)
+      console.log(result)
+
+      store.commit("setAddress", result.address)
+      
+      const fd = new FormData();
+      fd.append("accessToken", store.state.accessToken);
+      fd.append("address", store.state.address);
+      fd.append("privatekey", result.privateKey);
+      axios
+        .post(`${SERVER_URL}/wallet/regist`, fd)
+        .then((res) => {
+          console.log("wow!!success!!")
+          console.log(res)
+          console.log(fd)
+          if(res.data == 401){
+            store.state.isSigned = false;
+          }
+          else if (res.data == 'success'){
+            Swal.fire({
+              icon: "success",
+              title: "지갑 생성 성공",
+              text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
+              showCancelButton: true,
+              cancelButtonColor: "#d33",
+              // confirmButtonColor: "#3085d6",
+              // confirmButtonText: "오픈하기",
+              cancelButtonText: "취소하기",
+            })
+          }
+        })
+
+    
+      // alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
+    }
   },
   components: {
     Navbar,
