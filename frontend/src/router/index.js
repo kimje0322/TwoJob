@@ -61,7 +61,11 @@ const routes = [{
         name: "WriteShopping",
         component: WriteShopping,
     },
-
+    {
+        path: "/myinvestpjt",
+        name: "MyInvestPjt",
+        component: MyInvestPjt,
+    }
 ];
 
 const router = new VueRouter({
