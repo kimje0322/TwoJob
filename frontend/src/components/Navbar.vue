@@ -156,6 +156,7 @@ export default {
     onClick() {
       window.Kakao.Auth.loginForm({
         success: this.GetMe,
+        
       });
       // onclick() {
       //   Kakao.init('a98b416e875c32a2c8aa2bc5da03103f');
