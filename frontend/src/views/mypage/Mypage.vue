@@ -242,6 +242,7 @@ import store from "../../store/index.js";
 import Navbar from "../../components/Navbar.vue";
 // import "@/../public/css/WriteInvest.scss";
 import "@/../public/css/Mypage.scss"
+import Web3 from "web3";
 import Swal from "sweetalert2";
 
 export default {
