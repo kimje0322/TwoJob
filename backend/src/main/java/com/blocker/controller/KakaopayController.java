@@ -38,13 +38,5 @@ public class KakaopayController {
 		return kakaopay.kakaoPayReady(count);
 	}
 
-	@ResponseBody
-	@GetMapping("/kakaoPayReadySuccess")
-	@ApiOperation(value = "카카오페이 성공했을 경우")
-	public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token, String totalprice, Model model) {
-		System.out.println("kakaoPaySuccess get----------------------");
-		System.out.println("kakaoPaySuccess pg_token : " + pg_token);
-
-		model.addAttribute("info", kakaopay.kakaoPayInfo(pg_token, totalprice));
-	}
+	
 }
