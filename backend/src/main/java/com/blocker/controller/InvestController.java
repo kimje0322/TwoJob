@@ -19,11 +19,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.blocker.dto.BoardCategoryDto;
 import com.blocker.dto.BoardTagDto;
+import com.blocker.dto.CategoryDto;
 import com.blocker.dto.EditorInvestmentDto;
 import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.TagDto;
+import com.blocker.repository.BoardCategoryRepository;
 import com.blocker.repository.BoardTagRepository;
+import com.blocker.repository.CategoryRepository;
 import com.blocker.repository.EditorInvestmentRepository;
 import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.TagRepository;
@@ -45,6 +49,10 @@ public class InvestController {
 	private TagRepository tagRepository;
 	@Autowired
 	private BoardTagRepository boardTagRepository;
+	@Autowired
+	private BoardCategoryRepository boardCategoryRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "투자 게시글 생성")
@@ -92,6 +100,27 @@ public class InvestController {
 				boardTagRepository.save(boardTagDto);
 			}
 
+			// category
+			List<String> categorys = pinvestment.getCategorys();
+
+			for (Iterator<String> iter = categorys.iterator(); iter.hasNext();) {
+				String category = iter.next();
+				Optional<CategoryDto> opCategorydto = categoryRepository.findCategoryDtoByCategoryname(category);
+				CategoryDto categoryDto;
+				if (!opCategorydto.isPresent()) {
+					categoryDto = new CategoryDto();
+					categoryDto.setCategoryname(category);
+					categoryDto = categoryRepository.save(categoryDto);
+				} else {
+					categoryDto = new CategoryDto(opCategorydto.get());
+				}
+				System.out.println("categorydto==>" + categoryDto.toString());
+				BoardCategoryDto boardCategoryDto = new BoardCategoryDto();
+				boardCategoryDto.setCategoryname(category);
+				boardCategoryDto.setInvestnum(tempInvestmentDto.getNum());
+				boardCategoryRepository.save(boardCategoryDto);
+			}
+
 			result.data = "Success";
 			result.status = true;
 		} catch (Exception e) {
@@ -112,18 +141,18 @@ public class InvestController {
 	public String changePath(@RequestBody MultipartFile img) {
 		Map<String, Object> resultMap = new HashMap<>();
 		final BasicResponse result = new BasicResponse();
-		// 이 path는 나중에 서버경로로 바꿔줘야함 
+		// 이 path는 나중에 서버경로로 바꿔줘야함
 		String path = "C:\\Users\\multicampus\\Desktop\\Ethereum\\s03p22b102\\";
 		UUID uuid = UUID.randomUUID();
 		String savedName = uuid.toString() + "_" + img.getOriginalFilename();
 		File file = new File(path + savedName);
 		try {
-		// 경로바꾸고 이거 주석 풀어줘야함
-		// img.transferTo(file);
+			// 경로바꾸고 이거 주석 풀어줘야함
+			// img.transferTo(file);
 		} catch (Exception e) {
 			System.out.println("이미지 저장중 오류발생");
 			e.printStackTrace();
-		}finally {
+		} finally {
 			return file.getAbsolutePath();
 		}
 	}
