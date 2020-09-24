@@ -8,7 +8,9 @@ import Search from "@/views/search/Search.vue"
 import SearchDetail from "@/views/search/SearchDetail.vue"
 import ShoppingHome from "@/views/shopping/ShoppingHome.vue";
 import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
+import Mypage from "@/views/mypage/Mypage.vue";
 import WriteShopping from "@/views/shopping/WriteShopping.vue";
+import MyInvestPjt from "@/views/mypage/MyInvestPjt.vue"
 
 Vue.use(VueRouter);
 
@@ -57,11 +59,20 @@ const routes = [{
         component: ShoppingDetail,
     },
     {
+        path: "/mypage",
+        name: "Mypage",
+        component: Mypage,
+    },
+    {
         path: "/writeshopping",
         name: "WriteShopping",
         component: WriteShopping,
     },
-
+    {
+        path: "/myinvestpjt",
+        name: "MyInvestPjt",
+        component: MyInvestPjt,
+    }
 ];
 
 const router = new VueRouter({
