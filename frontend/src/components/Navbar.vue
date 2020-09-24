@@ -132,7 +132,7 @@ export default {
       fd.append("count", this.money);
       console.log(typeof this.money);
       axios
-        .post(`http://localhost:8080/kakaopay/kakaoPay`, fd)
+        .post(`${SERVER_URL}/kakaopay/kakaoPay`, fd)
         .then((response) => {
           console.log(response);
           // router.push(response.data)
