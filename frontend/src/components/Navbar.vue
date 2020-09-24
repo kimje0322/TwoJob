@@ -195,6 +195,7 @@ export default {
   /* font-weight: 600; */
 }
 .serviceName h3 {
+  font-family: 'Lobster', cursive;
   line-height: 50px;
   font-weight: 600;
   font-size: 30px;
