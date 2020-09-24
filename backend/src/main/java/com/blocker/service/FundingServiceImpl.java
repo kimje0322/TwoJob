@@ -11,23 +11,26 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 
+import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.Member;
 import com.blocker.dto.Property;
 import com.blocker.dto.Wallet;
+import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.WalletRepository;
 import com.blocker.wrapper.CrowdFunding;
 import com.blocker.wrapper.TJToken;
 
 @Service
 public class FundingServiceImpl implements FundingService{
-	
+
 	@Autowired
 	Property property;
 	@Autowired
 	LoginService loginService;
 	@Autowired
 	WalletRepository walletRepository;
-	
+	@Autowired
+	InvestmentRepository investmentRepository;
 	@Override
 	public void Deploy() {
 		Web3j web3j = Web3j.build(new HttpService());
@@ -42,78 +45,113 @@ public class FundingServiceImpl implements FundingService{
 		};
 	}
 	@Override
-	public String createCampaign(String accessToken) {
+	public String createCampaign(String accessToken, String id) throws Exception {
 		Object result =  loginService.getUserInfo(accessToken);
 		if(result.getClass() == Member.class) {
 			Member m = (Member)result;
 			Optional<Wallet> wallets = walletRepository.findById(m.getOauthId());
-			Web3j web3j = Web3j.build(new HttpService());
-			Credentials credentials = Credentials.create(property.getAdminPK());
-			CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-			try {
-				contract.createCampaign("123", Convert.toWei(String.valueOf(5), Convert.Unit.ETHER).toBigInteger(), new BigInteger("123123123123")).send();
-				System.out.println("dddddddd");
-				return "success";
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			Optional<InvestmentDto> Invest = investmentRepository.findById(id);
+			if(wallets.isPresent()) {
+				if(Invest.isPresent()) {
+					Wallet mywallet = wallets.get();
+					InvestmentDto myInvest = Invest.get();
+					Web3j web3j = Web3j.build(new HttpService());
+					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
+					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+					contract.createCampaign(String.valueOf(myInvest.getNum()), Convert.toWei(String.valueOf(myInvest.getGoalprice()), Convert.Unit.ETHER).toBigInteger(), new BigInteger("123123123123")).send();
+					System.out.println("캠페인 생성 완료!");
+					return "success";
+				}else {
+					return "noInvest";
+				}
+			}else {
+				return "noWallet";
 			}
-			return "fail";
 		}else if(result.getClass() == String.class){
 			return (String)result;
 		}else {
 			return String.valueOf(result);
 		}
-		
 	}
-	public void fundingCampaign() {
-		Web3j web3j = Web3j.build(new HttpService());
-		Credentials credentials = Credentials.create("b08800e0672fbcddce24e16545e69579b9a2efef7df77bdc85fd13edbae60f54");
-		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-		try {
-			System.out.println("후 = " +contract.isValid());
-			contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), "123", Convert.toWei(String.valueOf(2), Convert.Unit.ETHER).toBigInteger()).send();
-			System.out.println("dddddddd123");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	@Override
+	public String fundingCampaign(String accessToken, String campaignid, String value) throws Exception {
+		Object result =  loginService.getUserInfo(accessToken);
+		if(result.getClass() == Member.class) {
+			Member m = (Member)result;
+			Optional<Wallet> wallets = walletRepository.findById(m.getOauthId());
+			Optional<InvestmentDto> Invest = investmentRepository.findById(campaignid);
+			if(wallets.isPresent()) {
+				if(Invest.isPresent()) {
+					Wallet mywallet = wallets.get();
+					InvestmentDto myInvest = Invest.get();
+					Web3j web3j = Web3j.build(new HttpService());
+					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
+					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+
+					System.out.println("후 = " +contract.isValid());
+					contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getNum()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
+					System.out.println("fundingCampaign succss");
+					return "success";
+				}else {
+					return "noInvest";
+				}
+			}else {
+				return "noWallet";
+			}
+		}else if(result.getClass() == String.class){
+			return (String)result;
+		}else {
+			return String.valueOf(result);
 		}
 	}
-	public void receiveFund() {
+	public String receiveFund(String accessToken, String campaignid) throws Exception {
+		Object result =  loginService.getUserInfo(accessToken);
+		if(result.getClass() == Member.class) {
+			Member m = (Member)result;
+			Optional<Wallet> wallets = walletRepository.findById(m.getOauthId());
+			Optional<InvestmentDto> Invest = investmentRepository.findById(campaignid);
+			if(wallets.isPresent()) {
+				if(Invest.isPresent()) {
+					Wallet mywallet = wallets.get();
+					InvestmentDto myInvest = Invest.get();
+					Web3j web3j = Web3j.build(new HttpService());
+					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
+					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+					contract.receiveFunds(property.getTokenAddr(), String.valueOf(myInvest.getNum())).send();
+					System.out.println("receiveFund Success");
+					return "success";
+				}else {
+					return "noInvest";
+				}
+			}else {
+				return "noWallet";
+			}
+		}else if(result.getClass() == String.class){
+			return (String)result;
+		}else {
+			return String.valueOf(result);
+		}
+	}
+	@Override
+	public void reFund(String campaignId) throws Exception {
 		Web3j web3j = Web3j.build(new HttpService());
 		Credentials credentials = Credentials.create(property.getAdminPK());
 		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-		try {
-			contract.receiveFunds(property.getTokenAddr(), "123").send();
-			System.out.println("여기요");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		contract.Refund(property.getTokenAddr(), campaignId).send();
+		System.out.println("환불 완료");
+
 	}
-	public void reFund() {
+	@Override
+	public void getCam(String campaignId) throws Exception {
 		Web3j web3j = Web3j.build(new HttpService());
 		Credentials credentials = Credentials.create(property.getAdminPK());
 		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-		try {
-			contract.Refund(property.getTokenAddr(), "123").send();
-			System.out.println("여기요22");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	public void getCam() {
-		Web3j web3j = Web3j.build(new HttpService());
-		Credentials credentials = Credentials.create("127aef0f773889678daea871a71322886840988b5a96048fc5b01dd4ae4aa2d4");
-		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-		try {
-			//System.out.println(contract.test(property.getTokenAddr(), new BigInteger("100")).send());
-			System.out.println(contract.getAddress().send());
-			//System.out.println(contract.getSender().send());
-			System.out.println(contract.getCampaign("123").send());
-			System.out.println(contract.getBalance(property.getTokenAddr()).send());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		//System.out.println(contract.test(property.getTokenAddr(), new BigInteger("100")).send());
+		System.out.println(contract.getAddress().send());
+		//System.out.println(contract.getSender().send());
+		System.out.println(contract.getCampaign(campaignId).send());
+		System.out.println(contract.getBalance(property.getTokenAddr()).send());
+
 	}
 }
