@@ -14,6 +14,9 @@
         ></v-carousel-item>
       </v-carousel>
     </div>
+    <button @click="onWallet" style="margin-left: 200px;">
+      눌러봐
+    </button>
     <!-- 홈페이지 설명 -->
     <div class="home_info">
       <div class="home_div">
@@ -133,12 +136,60 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "../../public/css/Home.scss";
 import store from '../store/index.js'
 import Navbar from '../components/Navbar.vue'
+import Web3 from "web3";
+import { registerWallet } from "@/api/wallet.js";
+
+
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
 const redirect_uri = "http://j3b102.p.ssafy.io:8080";
 
 export default {
+  mounted() {
+    axios
+      .get(`${SERVER_URL}/Token/balance?address=${store.state.address}`)
+      .then((res) => {
+        console.log("이건 밸런스값임")
+        console.log(res)
+        store.commit("setBalance", res.data)
+        console.log(store.state.balance)
+      })
+
+  },
+  methods: {
+    onWallet() {
+      // var Web3 = require('web3');
+      var web3 = new Web3('http://localhost:8545');
+
+      var Accounts = require('web3-eth-accounts');
+      var accounts = new Accounts('http://localhost:8545');
+      var result = web3.eth.accounts.create();
+      console.log(accounts)
+      console.log(result)
+
+      store.commit("setAddress", result.address)
+      
+      const fd = new FormData();
+      fd.append("accessToken", store.state.accessToken);
+      fd.append("address", store.state.address);
+      fd.append("privatekey", result.privateKey);
+      axios
+        .post(`${SERVER_URL}/wallet/regist`, fd)
+        .then((res) => {
+          console.log("wow!!success!!")
+          console.log(res)
+          console.log(fd)
+          if(res.data == 401){
+            store.state.isSigned = false;
+          }
+        })
+
+    
+      alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
+    }
+
+  },
   components: {
     Navbar,
   },
