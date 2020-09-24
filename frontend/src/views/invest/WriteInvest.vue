@@ -9,14 +9,9 @@
             <h5>투자홈</h5>
           </router-link>
         </div>
-        <div>
-          <router-link to="/">
+        <div style="margin: 0 15%">
+          <router-link to="/investproject">
             <h5>프로젝트</h5>
-          </router-link>
-        </div>
-        <div>
-          <router-link to="/">
-            <h5>오픈예정</h5>
           </router-link>
         </div>
         <div>
@@ -46,7 +41,7 @@
                   <input v-model="title" type="text" placeholder="프로젝트명을 입력해주세요." />
                   <h5>프로젝트 한줄 소개</h5>
                   <input v-model="content" type="text" placeholder="프로젝트에대해 100자이내로 설명해주세요." />
-                  <h5>프로젝트 마감 기간</h5>
+                  <h5>프로젝트 마감 날짜</h5>
                   <div>
                     <!-- 마감날짜 -->
                     <div class="startDayBox">
@@ -257,7 +252,7 @@ export default {
       // 카테고리
       categoryList: {
         tech: "테크, 가전",
-        fashion: "패션",
+        fashion: "패션, 잡화",
         beauty: "뷰티",
         food: "푸드",
         home: "홈리빙",
@@ -450,11 +445,11 @@ export default {
   text-align: center;
   line-height: 50px;
   border-bottom: 1px solid gray;
+  border-top: 1px solid lightgray;
   margin-bottom: 15px;
 }
 .items div {
   display: inline-block;
-  margin: 0 10% 0 0;
 }
 .items div a {
   color: black;

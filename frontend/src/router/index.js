@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home.vue";
 import InvestHome from "@/views/invest/InvestHome.vue";
+import InvestProject from "@/views/invest/InvestProject.vue";
 import WriteInvest from "@/views/invest/WriteInvest.vue";
 import Search from "@/views/search/Search.vue"
 import SearchDetail from "@/views/search/SearchDetail.vue"
@@ -25,6 +26,11 @@ const routes = [{
         path: "/investhome",
         name: "InvestHome",
         component: InvestHome,
+    },
+    {
+        path: "/investproject",
+        name: "InvestProject",
+        component: InvestProject,
     },
     {
         path: "/writeinvest",

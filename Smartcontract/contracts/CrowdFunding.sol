@@ -5,7 +5,6 @@ import "./ICrowdFunding.sol";
 import "./ISaleItem.sol";
 
 contract CrowdFunding is Campaign, ICrowdFunding, ISaleItem{
-    
     mapping(string => campaignStruct) campaigns;
 
     /** modifier 는 function의 실행(행동)을 쉽게 변경가능하도록하며, function 실행의 조건을 체크 할수 있다
@@ -31,9 +30,9 @@ contract CrowdFunding is Campaign, ICrowdFunding, ISaleItem{
      */
     
     //버전0.6.0부터는 override시 어느 곳으로부터 파생되었는지 명시 해주어야함
-    function createCampaign (string memory _uniqueCode, uint256 _fundingGoal, uint _deadline, address _creator) public override(ICrowdFunding){
+    function createCampaign (string memory _uniqueCode, uint256 _fundingGoal, uint _deadline) public override(ICrowdFunding){
         campaigns[_uniqueCode].uniqueCode = _uniqueCode;
-        campaigns[_uniqueCode].creator = _creator;
+        campaigns[_uniqueCode].creator = msg.sender;
         campaigns[_uniqueCode].fundingGoal = _fundingGoal;
         campaigns[_uniqueCode].fundraiseAmount = 0;
         //mapping을 초기화시켜주기위해 게시자의 주소를 가지고 초기화를해줌 사용하지는 않을예정
@@ -47,24 +46,16 @@ contract CrowdFunding is Campaign, ICrowdFunding, ISaleItem{
 
     /**특정 게시글에 투자하기
      *@param _uniqueCode 투자하고싶은 게시글에대한 해시값
-     *@param _from 보내는사람의 주소
-     *@param _sendingMoney 보내는 돈의양
      */
-    function FundingCampign(string memory _uniqueCode, address _from , uint256 _sendingMoney) payable public override(ICrowdFunding) {
+    function FundingCampign(string memory _uniqueCode) payable public override(ICrowdFunding) {
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
         
         //게시글 작성자는 투자를 막는다
-        require( _from != tempCamp.creator);
+        require(msg.sender != tempCamp.creator);
 
-
-        if(msg.sender.send(_sendingMoney)){
-            if(tempCamp.investRate[_from]==0){
-                tempCamp.investgators.push(_from);
-            }
-
-            tempCamp.fundraiseAmount += _sendingMoney;
-            tempCamp.investRate[_from] += _sendingMoney;
-        }
+        tempCamp.investgators.push(msg.sender);
+        tempCamp.fundraiseAmount += msg.value;
+        tempCamp.investRate[msg.sender] += msg.value;
     }
 
     /**
@@ -77,33 +68,29 @@ contract CrowdFunding is Campaign, ICrowdFunding, ISaleItem{
         if(tempCamp.fundingGoal > tempCamp.fundraiseAmount){
             // 투자자들에게 투자한 금액 만큼 돈이 송금됨
             uint256 len = tempCamp.investgators.length;
-            
+            uint count = 0;
             for(uint i=0; i<len; i++){
-                address invastgator = tempCamp.investgators[i];
+                address invastgator = tempCamp.investgators[count++];
                 //0.5.0부터는 address에서 trasfer를 할 수 없고 두번의 address를 uint160으로 형변환 한뒤에 다시 address로 형변환 해주어야 송금이 가능해 짐
                 address(uint160(invastgator)).transfer(tempCamp.investRate[invastgator]);
             }
 
         }else{
             // creator에게 투자금액이 송금됨
-            address(uint160(tempCamp.creator)).transfer(tempCamp.fundraiseAmount);
+            msg.sender.transfer(tempCamp.fundraiseAmount);
         }
 
         tempCamp.closed = true;
     }
 
      /** 물건 판매
-      *@param _uniqueCode 게시글에 대한 해시값
-      *@param _count 판매수량
-      *@param _profit 수익금
+    @param _uniqueCode 게시글에 대한 해시값
     */
-    function SaleItem(string memory _uniqueCode, uint _count, uint256 _profit) payable public override(ISaleItem){
+    function SaleItem(string memory _uniqueCode, uint _count) payable public override(ISaleItem){
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
         //판매를 하면 해당 금액 만큼 profit에 돈을 저장해두고 일주일후 DistributeProfit을 호출함
-        if(msg.sender.send(_profit)){
-            tempCamp.totalSell += _count;
-            DistributeProfit(_uniqueCode, _profit);
-        }
+        tempCamp.totalSell += _count;
+        DistributeProfit(_uniqueCode, msg.value);
     }
 
     /** 수익 분배
