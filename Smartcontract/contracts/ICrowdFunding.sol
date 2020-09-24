@@ -2,12 +2,12 @@ pragma solidity ^0.7.0;
 
 interface ICrowdFunding{
     
-    function createCampaign (string memory _uniqueCode, uint256 _fundingGoal, uint _deadline, address _creator)external;
+    function createCampaign (string memory _uniqueCode, uint256 _fundingGoal, uint _deadline)external;
 
     /**특정 게시글에 투자하기
      *@param _uniqueCode 투자하고싶은 게시글에대한 해시값
      */
-    function FundingCampign(string memory _uniqueCode, address _from, uint256 _sendingMoney) payable external;
+    function FundingCampign(string memory _uniqueCode) payable external;
 
     /**
      * 마감일이 되면 목표금액에 도달 했을경우 펀딩 금액을 작성자에게 줌 

@@ -20,5 +20,5 @@ public class BoardTagDto {
 	String tagname;
 	//만약 여기서 애러뜨면 유니크키 지정안해서 그런거임
 	@Column
-	int investnum;
+	String investaddress;
 }

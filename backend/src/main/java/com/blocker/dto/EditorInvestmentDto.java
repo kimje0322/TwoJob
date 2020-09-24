@@ -15,10 +15,7 @@ import lombok.Data;
 public class EditorInvestmentDto {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int num;
-	@Column
-	int investnum;
+	String investaddress;
 	@Column
 	String editorhtml;
 }

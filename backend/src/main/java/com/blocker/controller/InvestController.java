@@ -60,6 +60,7 @@ public class InvestController {
 		final BasicResponse result = new BasicResponse();
 		try {
 			InvestmentDto investmentdto = new InvestmentDto();
+			investmentdto.setAddress(pinvestment.getAddress());
 			investmentdto.setCompname(pinvestment.getCompName());
 			investmentdto.setDeadline(pinvestment.getDeadLine());
 			investmentdto.setExpectedsaleprice(pinvestment.getExpectedSalePrice());
@@ -67,7 +68,7 @@ public class InvestController {
 			investmentdto.setIdentity(pinvestment.getIdentity());
 			investmentdto.setIntroduce(pinvestment.getIntroduce());
 			investmentdto.setOnelineintro(pinvestment.getOneLineIntro());
-			investmentdto.setPictual(pinvestment.getPictual());
+			investmentdto.setPicture(pinvestment.getPicture());
 			investmentdto.setPjtname(pinvestment.getPjtName());
 			investmentdto.setUrl(pinvestment.getUrl());
 
@@ -76,7 +77,7 @@ public class InvestController {
 			// editor값 넣기
 			EditorInvestmentDto editorInvestmentDto = new EditorInvestmentDto();
 			editorInvestmentDto.setEditorhtml(pinvestment.getEditorhtml());
-			editorInvestmentDto.setInvestnum(tempInvestmentDto.getNum());
+			editorInvestmentDto.setInvestaddress(tempInvestmentDto.getAddress());
 			editorinvestmentRepository.save(editorInvestmentDto);
 
 			// tag
@@ -95,7 +96,7 @@ public class InvestController {
 				}
 				System.out.println("tagdto==>" + tagdto.toString());
 				BoardTagDto boardTagDto = new BoardTagDto();
-				boardTagDto.setInvestnum(tempInvestmentDto.getNum());
+				boardTagDto.setInvestaddress(tempInvestmentDto.getAddress());
 				boardTagDto.setTagname(tagdto.getTagname());
 				boardTagRepository.save(boardTagDto);
 			}
@@ -117,7 +118,7 @@ public class InvestController {
 				System.out.println("categorydto==>" + categoryDto.toString());
 				BoardCategoryDto boardCategoryDto = new BoardCategoryDto();
 				boardCategoryDto.setCategoryname(category);
-				boardCategoryDto.setInvestnum(tempInvestmentDto.getNum());
+				boardCategoryDto.setInvestaddress(tempInvestmentDto.getAddress());
 				boardCategoryRepository.save(boardCategoryDto);
 			}
 
@@ -141,14 +142,14 @@ public class InvestController {
 	public String changePath(@RequestBody MultipartFile img) {
 		Map<String, Object> resultMap = new HashMap<>();
 		final BasicResponse result = new BasicResponse();
-		// 이 path는 나중에 서버경로로 바꿔줘야함 
+		// 이 path는 나중에 서버경로로 바꿔줘야함
 		String path = "/home/ubuntu/apps/upload/image/";
 		UUID uuid = UUID.randomUUID();
 		String savedName = uuid.toString() + "_" + img.getOriginalFilename();
 		File file = new File(path + savedName);
 		try {
-		// 경로바꾸고 이거 주석 풀어줘야함
-		img.transferTo(file);
+			// 경로바꾸고 이거 주석 풀어줘야함
+			img.transferTo(file);
 		} catch (Exception e) {
 			System.out.println("이미지 저장중 오류발생");
 			e.printStackTrace();

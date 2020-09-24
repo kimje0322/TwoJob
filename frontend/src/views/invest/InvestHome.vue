@@ -9,14 +9,9 @@
             <h5 style="color: rgb(22, 150, 245)">투자홈</h5>
           </router-link>
         </div>
-        <div>
-          <router-link to="/">
+        <div style="margin: 0 15%">
+          <router-link to="/investproject">
             <h5>프로젝트</h5>
-          </router-link>
-        </div>
-        <div>
-          <router-link to="/">
-            <h5>오픈예정</h5>
           </router-link>
         </div>
         <div>
@@ -68,7 +63,7 @@
     </div>
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in likeItems" :key="i" style="display: inline-block; flex:1">
-        <v-card :loading="loading" class="my-12" max-width="320" style="margin: auto">
+        <v-card class="my-12" max-width="320" style="margin: auto">
           <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
           <v-card-title style="font-weight: 600; margin: auto">{{item.title}}
             <div style="margin-left: auto;"><v-chip class="likeBadge">{{item.likenum}}명 좋아요</v-chip></div>
@@ -226,7 +221,6 @@ export default {
 }
 .items div {
   display: inline-block;
-  margin: 0 10% 0 0;
 }
 .items div a {
   color: black;
@@ -237,6 +231,7 @@ export default {
 }
 .items h5 {
   font-weight: 600;
+  margin: 0;
 }
 .homeImg {
   margin-bottom: 3%;
