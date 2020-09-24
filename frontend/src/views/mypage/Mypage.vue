@@ -285,11 +285,11 @@ export default {
               icon: "success",
               title: "지갑 생성 성공",
               text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
-              showCancelButton: true,
-              cancelButtonColor: "#d33",
+              // showCancelButton: true,
+              // cancelButtonColor: "#d33",
               // confirmButtonColor: "#3085d6",
-              // confirmButtonText: "오픈하기",
-              cancelButtonText: "취소하기",
+              confirmButtonText: "확인",
+              // cancelButtonText: "취소하기",
             })
           }
         })
