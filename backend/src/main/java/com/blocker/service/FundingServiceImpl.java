@@ -1,6 +1,7 @@
 package com.blocker.service;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,10 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 
+import com.blocker.dto.Member;
 import com.blocker.dto.Property;
+import com.blocker.dto.Wallet;
+import com.blocker.repository.WalletRepository;
 import com.blocker.wrapper.CrowdFunding;
 import com.blocker.wrapper.TJToken;
 
@@ -19,6 +23,10 @@ public class FundingServiceImpl implements FundingService{
 	
 	@Autowired
 	Property property;
+	@Autowired
+	LoginService loginService;
+	@Autowired
+	WalletRepository walletRepository;
 	
 	@Override
 	public void Deploy() {
@@ -34,17 +42,29 @@ public class FundingServiceImpl implements FundingService{
 		};
 	}
 	@Override
-	public void createCampaign() {
-		Web3j web3j = Web3j.build(new HttpService());
-		Credentials credentials = Credentials.create(property.getAdminPK());
-		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-		try {
-			contract.createCampaign("123", Convert.toWei(String.valueOf(5), Convert.Unit.ETHER).toBigInteger(), new BigInteger("123123123123")).send();
-			System.out.println("dddddddd");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public String createCampaign(String accessToken) {
+		Object result =  loginService.getUserInfo(accessToken);
+		if(result.getClass() == Member.class) {
+			Member m = (Member)result;
+			Optional<Wallet> wallets = walletRepository.findById(m.getOauthId());
+			Web3j web3j = Web3j.build(new HttpService());
+			Credentials credentials = Credentials.create(property.getAdminPK());
+			CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+			try {
+				contract.createCampaign("123", Convert.toWei(String.valueOf(5), Convert.Unit.ETHER).toBigInteger(), new BigInteger("123123123123")).send();
+				System.out.println("dddddddd");
+				return "success";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return "fail";
+		}else if(result.getClass() == String.class){
+			return (String)result;
+		}else {
+			return String.valueOf(result);
 		}
+		
 	}
 	public void fundingCampaign() {
 		Web3j web3j = Web3j.build(new HttpService());

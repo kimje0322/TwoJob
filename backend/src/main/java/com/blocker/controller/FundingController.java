@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.service.FundingService;
@@ -26,8 +27,8 @@ public class FundingController {
 	}
 	@ApiOperation(value = "[펀딩 캠페인 오픈] 이더를 이용해 토큰을 구매합니다. param : [address, privatekey, ether], return : 충전후 잔액을 return 합니다")
 	@GetMapping(value = "/transfer")
-	public ResponseEntity<Void> transfer() throws Exception {
-		fundingService.createCampaign();
+	public ResponseEntity<Void> transfer(@RequestParam("accessToken") String accessToken) throws Exception {
+		fundingService.createCampaign(accessToken);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 	@ApiOperation(value = "[토큰 사기] 이더를 이용해 토큰을 구매합니다. param : [address, privatekey, ether], return : 충전후 잔액을 return 합니다")
