@@ -245,6 +245,8 @@ import "@/../public/css/Mypage.scss"
 import Web3 from "web3";
 import Swal from "sweetalert2";
 
+const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+
 export default {
   methods: {
     onLogout() {
