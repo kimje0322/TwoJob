@@ -42,7 +42,7 @@
                       <div class="info_frame">
                         <ul class="info_ul">
                           <li class="info_li">
-                            <a href="/writeinvest" class="pjt_a">
+                            <a href="/myinvestpjt" class="pjt_a">
                               <span class="pjt_span">
                                 투자 프로젝트
                                 <h3 style="padding-top: 7px;">

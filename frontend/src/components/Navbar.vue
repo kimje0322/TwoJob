@@ -123,7 +123,7 @@ export default {
       //아래와 같은 코드가 필요
       //if(this.index!=-1){
       axios
-        .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?pg_token=${this.pg_token}&totalprice=${this.money}&access_token=${store.state.accessToken}`)
+        .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&totalprice=${this.money}`)
         .then((res) => {
           console.log(res)
         })
