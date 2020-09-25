@@ -142,7 +142,6 @@ import store from "../store/index.js";
 import Navbar from "../components/Navbar.vue";
 import Web3 from "web3";
 import { registerWallet } from "@/api/wallet.js";
-import Swal from 'sweetalert2'
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
@@ -157,16 +156,7 @@ export default {
         console.log(res);
         if (res.data != "401") {
           console.log("401 에러안나");
-          console.log('res.data')
           store.commit("setBalance", res.data);
-          Swal.fire({
-                // position: 'top-end',
-                icon: 'success',
-                title: '성공적으로 충전이 완료되었습니다.',
-                showConfirmButton: false,
-                timer: 1500
-            })
-            window.location.reload();
         }
         console.log(store.state.balance);
       });
