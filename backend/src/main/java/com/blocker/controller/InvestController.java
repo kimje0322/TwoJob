@@ -35,6 +35,7 @@ import com.blocker.repository.EditorInvestmentRepository;
 import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.TagRepository;
 import com.blocker.request.InvestmentRequest;
+import com.blocker.request.InvestmentResponse;
 import com.blocker.util.BasicResponse;
 
 import io.swagger.annotations.ApiOperation;
@@ -63,7 +64,10 @@ public class InvestController {
 		final BasicResponse result = new BasicResponse();
 		try {
 			InvestmentDto investmentdto = new InvestmentDto();
-			investmentdto.setAddress(pinvestment.getAddress());
+			
+			UUID uuid = UUID.randomUUID();
+			investmentdto.setAddress(uuid.toString());
+			investmentdto.setUserid(pinvestment.getUserid());
 			investmentdto.setCompname(pinvestment.getCompName());
 			investmentdto.setDeadline(pinvestment.getDeadLine());
 			investmentdto.setExpectedsaleprice(pinvestment.getExpectedSalePrice());
@@ -167,34 +171,33 @@ public class InvestController {
 	public Object investList(@RequestParam String userid) {
 		final BasicResponse result = new BasicResponse();
 		List<InvestmentDto> list = new ArrayList<>();
-		List<InvestmentRequest> resultDatas = new ArrayList<>();
+		List<InvestmentResponse> resultDatas = new ArrayList<>();
 
 		list = investmentRepository.findAllByUserid(userid);
 		try {
-			System.out.println("11");
 			for (Iterator<InvestmentDto> iter = list.iterator(); iter.hasNext();) {
 				InvestmentDto investmentDto = iter.next();
-				InvestmentRequest investmentRequest = new InvestmentRequest();
-				investmentRequest.setAddress(investmentDto.getAddress());
-				investmentRequest.setCompName(investmentDto.getCompname());
-				investmentRequest.setDeadLine(investmentDto.getDeadline());
-				investmentRequest.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
-				investmentRequest.setGoalPrice(investmentDto.getGoalprice());
-				investmentRequest.setIdentity(investmentDto.getIdentity());
-				investmentRequest.setIntroduce(investmentDto.getIntroduce());
-				investmentRequest.setOneLineIntro(investmentDto.getOnelineintro());
-				investmentRequest.setPicture(investmentDto.getPicture());
-				investmentRequest.setPjtName(investmentDto.getPjtname());
-				investmentRequest.setUrl(investmentDto.getUrl());
-				investmentRequest.setUserid(investmentDto.getUserid());
+				InvestmentResponse investmentResponse = new InvestmentResponse();
+				investmentResponse.setAddress(investmentDto.getAddress());
+				investmentResponse.setCompName(investmentDto.getCompname());
+				investmentResponse.setDeadLine(investmentDto.getDeadline());
+				investmentResponse.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
+				investmentResponse.setGoalPrice(investmentDto.getGoalprice());
+				investmentResponse.setIdentity(investmentDto.getIdentity());
+				investmentResponse.setIntroduce(investmentDto.getIntroduce());
+				investmentResponse.setOneLineIntro(investmentDto.getOnelineintro());
+				investmentResponse.setPicture(investmentDto.getPicture());
+				investmentResponse.setPjtName(investmentDto.getPjtname());
+				investmentResponse.setUrl(investmentDto.getUrl());
+				investmentResponse.setUserid(investmentDto.getUserid());
 
 				// editor
 				Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
 						.getEditorInvestmentDtoByInvestaddress(investmentDto.getAddress());
 				if (opEditorInvestmentDto.isPresent()) {
-					investmentRequest.setEditorhtml(opEditorInvestmentDto.get().getEditorhtml());
+					investmentResponse.setEditorhtml(opEditorInvestmentDto.get().getEditorhtml());
 				}
-				resultDatas.add(investmentRequest);
+				resultDatas.add(investmentResponse);
 			}
 
 			result.data = "success";

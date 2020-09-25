@@ -1,5 +1,6 @@
 package com.blocker.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,5 @@ import com.blocker.dto.SaleBoardDto;
 public interface SaleBoardRepository extends JpaRepository<SaleBoardDto, String>{
 
 	Optional<SaleBoardDto> findSaleBoardDtoByAddress(String address);
+	List<SaleBoardDto> findAllByUserid(String userid);
 }
