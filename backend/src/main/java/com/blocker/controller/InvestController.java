@@ -1,6 +1,7 @@
 package com.blocker.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -155,6 +158,54 @@ public class InvestController {
 			e.printStackTrace();
 		} finally {
 			return file.getAbsolutePath();
+		}
+	}
+
+	@GetMapping("/investList")
+	@ApiOperation(value = "저장되어있는 모든 투자 게시글을보여줌")
+	@ResponseBody
+	public Object investList(@RequestParam String userid) {
+		final BasicResponse result = new BasicResponse();
+		List<InvestmentDto> list = new ArrayList<>();
+		List<InvestmentRequest> resultDatas = new ArrayList<>();
+
+		list = investmentRepository.findAllByUserid(userid);
+		try {
+			System.out.println("11");
+			for (Iterator<InvestmentDto> iter = list.iterator(); iter.hasNext();) {
+				InvestmentDto investmentDto = iter.next();
+				InvestmentRequest investmentRequest = new InvestmentRequest();
+				investmentRequest.setAddress(investmentDto.getAddress());
+				investmentRequest.setCompName(investmentDto.getCompname());
+				investmentRequest.setDeadLine(investmentDto.getDeadline());
+				investmentRequest.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
+				investmentRequest.setGoalPrice(investmentDto.getGoalprice());
+				investmentRequest.setIdentity(investmentDto.getIdentity());
+				investmentRequest.setIntroduce(investmentDto.getIntroduce());
+				investmentRequest.setOneLineIntro(investmentDto.getOnelineintro());
+				investmentRequest.setPicture(investmentDto.getPicture());
+				investmentRequest.setPjtName(investmentDto.getPjtname());
+				investmentRequest.setUrl(investmentDto.getUrl());
+				investmentRequest.setUserid(investmentDto.getUserid());
+
+				// editor
+				Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
+						.getEditorInvestmentDtoByInvestaddress(investmentDto.getAddress());
+				if (opEditorInvestmentDto.isPresent()) {
+					investmentRequest.setEditorhtml(opEditorInvestmentDto.get().getEditorhtml());
+				}
+				resultDatas.add(investmentRequest);
+			}
+
+			result.data = "success";
+			result.object = resultDatas;
+			result.status = true;
+		} catch (Exception e) {
+			result.data = "fail";
+			result.object = null;
+			result.status = false;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
 }
