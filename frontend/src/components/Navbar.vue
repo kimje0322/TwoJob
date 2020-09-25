@@ -122,6 +122,8 @@ export default {
       console.log(this.pg_token)
       //아래와 같은 코드가 필요
       //if(this.index!=-1){
+      console.log("충전할 금액은")
+      console.log(this.money)
       axios
         .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&totalprice=${this.money}`)
         .then((res) => {
