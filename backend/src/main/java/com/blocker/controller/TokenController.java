@@ -1,20 +1,18 @@
 package com.blocker.controller;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 import com.blocker.service.TokenService;
+import com.blocker.util.webhook;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -62,5 +60,10 @@ public class TokenController {
 	public ResponseEntity<String> increase(@RequestParam("amount") Integer amount) throws Exception {
 		return new ResponseEntity<String>(tokenService.IncreaseToken(amount), HttpStatus.OK);
 	}
-	
+	@ExceptionHandler(Exception.class)
+	public void nullex(Exception e) {
+		System.err.println("Token 부분에서 " + e.getClass());
+		webhook w = new webhook();
+		w.send("Token 부분에서 " + e.getClass());
+	}
 }

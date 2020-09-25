@@ -1,8 +1,8 @@
 package com.blocker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.service.TokenService;
 import com.blocker.util.KakaoPay;
+import com.blocker.util.webhook;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -43,7 +44,7 @@ public class KakaopayController {
 	@ResponseBody
 	@GetMapping("/kakaoPayReadySuccess")
 	@ApiOperation(value = "카카오페이 성공했을 경우")
-	public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token, String totalprice, String access_token) {
+	public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token, String totalprice, String access_token) throws Exception {
 		System.out.println("kakaoPaySuccess get----------------------");
 		System.out.println("kakaoPaySuccess pg_token : " + pg_token);
 
@@ -51,5 +52,11 @@ public class KakaopayController {
 		Integer money = Integer.parseInt(totalprice);
 		//토큰 충전 
 		tokenService.TransferTo(access_token, money);
+	}
+	@ExceptionHandler(Exception.class)
+	public void nullex(Exception e) {
+		System.err.println("kakaopay부분 " + e.getClass());
+		webhook w = new webhook();
+		w.send("kakaopay 부분에서 " + e.getClass());
 	}
 }
