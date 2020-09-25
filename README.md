@@ -1,4 +1,4 @@
-# :money_with_wings:ToJob (투자를 잡아라) ![버전](https://img.shields.io/badge/%20version-1.0-green)
+# :money_with_wings: ToJob (투자를 잡아라) ![버전](https://img.shields.io/badge/%20version-1.0-green)
 
 ![](기타/image/로고.PNG)
 
