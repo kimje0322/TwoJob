@@ -1,4 +1,4 @@
-# :money_with_wings:ToJob (투자를 잡아라) ![버전](https://img.shields.io/badge/%20version-1.0-green)
+# ToJob (투자를 잡아라) ![버전](https://img.shields.io/badge/%20version-1.0-green)
 
 ![](기타/image/로고.PNG)
 
@@ -91,7 +91,7 @@
 
 
 
-### <img src="기타/image/블록체인.png" style="zoom:25%;" /> 블록체인 적용방안
+### 블록체인 적용방안
 
 - 블록체인은 투자금액을 모금하는 중간계좌 뿐 아니라 수익을 분배할 때 사용
 - 또한, 유저의 투자 게시글 정보와 판매 명세를 블록으로 저장하여 이후 투자자들이 투자할 때 참고할 수 있는 정보로 제공
