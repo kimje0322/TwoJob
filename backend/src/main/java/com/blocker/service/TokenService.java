@@ -11,4 +11,6 @@ public interface TokenService {
 	public String getTokenNum(String address);
 	public String TransferTo(String to,Integer amount);
 	public void Transferfrm(String from, String to, Integer amount);
+	public String getAdminVal();
+	public String IncreaseToken(Integer amount);
 }

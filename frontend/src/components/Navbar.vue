@@ -20,7 +20,6 @@
       <div v-if="!login">
         <button @click="onClick">
           <h5 style="margin: 0">로그인</h5>
-
           <!-- <a id="kakao-login-btn"></a> -->
           <!-- <a href="http://developers.kakao.com/logout"></a> -->
           <a href="http://developers.kakao.com/logout"></a>
@@ -30,8 +29,8 @@
         <!-- <v-btn @click="onchargebox"> -->
         <v-btn @click.stop="openbox = true">
           <!-- <i class="fas fa-user fa-lg"></i> -->
-          <span style="width: 35px; height: 35px;">
-            <img :src="userInfo.img" style="height: 100%; border-radius: 50%" />
+          <span class="userimgbox" style="width: 35px; height: 35px;">
+            <img class="userimg" :src="userInfo.img" style="height: 100%;" />
           </span>
           <h5
             style="display: inline-block; margin: 0; padding-left: 10px; font-size: 17px; font-weight: 550;"
@@ -103,7 +102,7 @@ export default {
       next: false,
       nexturl: "",
       userInfo: {
-        email: "",
+        id: "",
         name: "",
         img: "",
         login: false,
@@ -222,6 +221,7 @@ export default {
         this.login = true;
         // store.state.isSigned = true;
         this.userInfo.login = true;
+        this.userInfo.id = res.data.oauthId;
         this.userInfo.name = res.data.name;
         this.userInfo.img = res.data.profileImg;
         store.commit("setUserInfo", this.userInfo);
@@ -298,5 +298,16 @@ export default {
   color: white !important;
   font-weight: 600;
   font-size: 1.25rem;
+}
+.userimgbox{
+  border-radius: 70%;
+  width: 55px;
+  height: 55px;
+  overflow: hidden;
+}
+.userimg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>
