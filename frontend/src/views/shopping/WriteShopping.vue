@@ -1,7 +1,7 @@
 <template>
   <div class="writeinvest">
     <navbar/> 
-    <h4>마이페이지</h4>
+    <!-- <h4>마이페이지</h4> -->
     <!-- 쇼핑 글쓰기 메뉴바 -->
     <div>
       <!-- 쇼핑 글쓰기 메뉴 -->
@@ -13,6 +13,7 @@
             <!-- v-bind:disabled="addedItems.length < 1" -->
             <v-btn :class="{deactive: isActive}" color="rgb(22, 150, 245)" style="font-weight: 600">쇼핑 프로젝트 오픈</v-btn>
           </div>
+
           <!-- 상품 정보 창 -->
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
@@ -26,6 +27,7 @@
                   <h5 style="display: inline-block; margin-left: 5px;"></h5>
                   <h5>대표 사진</h5>
                   <v-file-input
+                    v-model="thumbnail"
                     :rules="rules"
                     accept="image/png, image/jpeg, image/bmp"
                     placeholder="Pick an thumbnail"
@@ -51,7 +53,7 @@
                               v-model="dateFormatted1"
                               persistent-hint
                               v-bind="attrs"
-                              @blur="date1 = parseDate(dateFormatted1)"
+                              @blur="openDate = parseDate(dateFormatted1)"
                               v-on="on"
                               color="rgb(22, 150, 245)"
                               hide-details
@@ -60,7 +62,7 @@
                             ></v-text-field>
                           </template>
                           <v-date-picker
-                            v-model="date1"
+                            v-model="openDate"
                             no-title
                             @input="menu1 = false"
                             color="rgb(22, 150, 245)"
@@ -71,14 +73,14 @@
                   <!-- 판매 금액 -->
                   <h5>판매 금액</h5>
                   <input
-                    v-model="receivePrice"
+                    v-model="price"
                     @click="removeTargetPrice"
                     type="text"
                     style="width: 35%; text-align: right; font-size: 18px"
                   />
                   <h5 style="display: inline-block; margin-left: 5px;">원</h5>
                   <!-- 카테고리 -->
-                  <h5>카테고리</h5>
+                  <!-- <h5>카테고리</h5>
                   <div class="categoryDiv" style>
                     <v-btn
                       class="categorybtn"
@@ -104,15 +106,14 @@
                       class="searchBarBtn"
                       style="overflow-y:hidden;"
                     ></v-combobox>
-                  </div>
+                  </div> -->
                 </div>
                 <!-- 상품 추가 버튼 -->
-                <v-btn outlined @click="onAddItem" class="addItem mt-2 ml-2">
+                <!-- <v-btn outlined @click="onAddItem" class="addItem mt-2 ml-2">
                   <v-icon class="mr-2">mdi-plus-box-multiple-outline</v-icon>
                   상품 추가
-                </v-btn>
+                </v-btn> -->
                 <!-- 상품 추가 후 요약 -->
-                <!-- item은 json형태 -->
                 <div v-if="addedItem" class="addedItem">
                   <div stlye="margin:0;">
                     <v-card
@@ -152,14 +153,7 @@
                             >{{value}}</v-btn>
                           </v-list-item-subtitle>
                         </v-list-item-content> 
-
-                        <!-- <v-list-item-avatar
-                          tile
-                          size="50"
-                          color="grey"
-                        ></v-list-item-avatar> -->
                         </v-list-item>
-
                         <v-card-actions>
                           <v-btn small text @click="onDeleteItem(item)" style="margin-left:auto;">삭제</v-btn>
                         </v-card-actions>
@@ -175,8 +169,13 @@
               <v-card-text>
                 <div class="investContent">
                   <p>상품 내용에 대해 자세히 설명해주세요.</p>
-                  <h5>쇼핑 설명</h5>
-                  <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea>
+                  <div style="margin-bottom: 1rem">
+                    <h5
+                      style="display: inline-block; height: 36px; line-height: 36px; Smargin: 0;"
+                    >쇼핑설명</h5>
+                    <v-btn @click="onSave" style="float: right; background-color: white; color: rgb(22, 150,245); font-weight: 600">저장하기</v-btn>
+                  </div>
+                  <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />
                 </div>
               </v-card-text>
             </v-card>
@@ -193,12 +192,19 @@ import "@/../public/css/Writeshopping.scss";
 import $ from "jquery";
 import Swal from "sweetalert2";
 import Navbar from "../../components/Navbar.vue"
+// editor
+import "codemirror/lib/codemirror.css";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { Editor } from "@toast-ui/vue-editor";
+import axios from "axios";
+import store from '../../store/index.js'
 
 
-
+const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 export default {
   components: {
-    Navbar
+    Navbar,
+    Editor,
   },
   data() {
     return {
@@ -213,12 +219,13 @@ export default {
       title: "",
       content: "",
       // 날짜
-      date1: "",
+      openDate: "",
       dateFormatted1: "",
       menu1: false,
       // 가격
-      receivePrice: 0,
+      price: 0,
       // 사진
+      thumbnail: "",
       rules: [
         (value) =>
           !value ||
@@ -241,11 +248,33 @@ export default {
       // 검색 태그
       items: [],
       model: [],
+      // editor
+      editortext: "",
+      editorImages: [],
+      editorOptions: {
+        hooks: {
+          addImageBlobHook: function (blob, callback) {
+            console.log(blob)
+            // const imageURL = URL.createObjectURL(blob)
+            // callback(imageURL);
+            var formData = new FormData();
+            formData.append("img", blob);
+
+            axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
+                headers: { 'Content-Type': 'multipart/form-data' } 
+            }).then(response => {
+                console.log(response.data);
+              callback(response.data)
+            });
+          },
+        },
+      },
+      completed: false,
     };
   },
   watch: {
-    date1(val) {
-      this.dateFormatted1 = this.formatDate(this.date1);
+    openDate(val) {
+      this.dateFormatted1 = this.formatDate(this.openDate);
     },
     model(val, prev) {
       if (val.length === prev.length) return;
@@ -260,7 +289,7 @@ export default {
     },
     addedItems(val) {
       console.log('넣음')
-      if(this.addedItems.length < 1) {
+      if(this.completed = true) {
         this.isActive = true
       }
       else{
@@ -269,6 +298,10 @@ export default {
     }
   },
   methods: {
+    onSave() {
+      this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
+      // console.log(this.editortext)
+    },
     formatDate(date) {
       if (!date) return null;
 
@@ -283,7 +316,7 @@ export default {
       // return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     },
     removeTargetPrice() {
-      this.targetPrice = "";
+      this.price = "";
     },
     checkcategory(category) {
       // console.log(category)
@@ -308,14 +341,14 @@ export default {
       this.$refs.feeditem.searchTag(tags);
     },
     checkForm() {
-      if (!this.addedItems.length) {
-        alert('상품을 등록해주세요.');
+      if (this.title && this.thumbnail.name && this.openDate && this.price && this.editortext) {
+        this.completed = true;
+        this.openShoppingBtn();
       } else {
-        openShoppingBtn();
-      }
+      alert('모든 항목을 입력해주세요.');  
+      } 
     },
     openShoppingBtn() {
-      this.checkForm();
       Swal.fire({
         icon: "warning",
         title: '',
@@ -326,12 +359,42 @@ export default {
         confirmButtonText: '오픈하기',
         cancelButtonText: '취소하기',
         reverseButtons: true
-      });
+      }).then((result) => {
+        if (result.value) {
+          axios.post(`${SERVER_URL}/sale/create`, {
+            address: "abc",
+            investaddress: "abc",
+            pjtname: this.title,
+            picture: "정성오",
+            startdate: this.dateFormatted1,
+            saleprice: this.price,
+            url: "abc",
+            // categorys: this.checkCategory,
+            // tags: this.tags,
+            editorhtml: this.editortext,
+            userid: "string",
+
+          })
+            .then(response => {
+              Swal.fire({
+                // position: 'top-end',
+                icon: 'success',
+                title: '',
+                text: '프로젝트가 성공적으로 오픈되었습니다.',
+                showConfirmButton: false,
+                // timer: 1500
+              })
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        }
+      })
     },
     onAddItem() {
-      if (this.title.length > 0 && this.date1.length > 0  && this.receivePrice.length > 0 && this.checkCategory.length > 0 ) {
+      if (this.title.length > 0 && this.openDate.length > 0  && this.price.length > 0 && this.checkCategory.length > 0 ) {
         this.addedItem = true;
-        this.addedItems.push({title: this.title, opendate: this.date1, price: this.receivePrice, category: []})
+        this.addedItems.push({title: this.title, opendate: this.openDate, price: this.price, category: []})
   
         for (var i = 0; i < this.checkCategory.length; i++) {
             // addedItems.category에 카테고리 push
@@ -343,8 +406,8 @@ export default {
         // checkCategory 비우기
         this.checkCategory.splice(0, this.checkCategory.length);
         this.title = "";
-        this.date1 = "";
-        this.receivePrice = 0;
+        this.openDate = "";
+        this.price = 0;
         console.log(this.addedItems)
       } else {
         alert('모든 정보를 입력해주세요.')
@@ -355,7 +418,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped>
@@ -480,10 +542,4 @@ input:hover {
    padding: 0px !important;
  }
 
-button:disabled,
-button[disabled] {
-    border: 1px solid #999999;
-    background-color: #cccccc;
-    color: #666666 !important;
-}
 </style>

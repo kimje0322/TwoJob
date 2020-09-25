@@ -19,6 +19,11 @@
             <h5>오픈예정</h5>
           </router-link>
         </div>
+        <div>
+          <router-link to="/writeshopping">
+            <h5>쇼핑 오픈</h5>
+          </router-link>
+        </div>
       </div>
     </div>
     <!-- 쇼핑홈 광고사진 -->
@@ -38,139 +43,16 @@
       <v-container class="cateContainer">
         <v-row no-gutters>
           <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
-          <v-col
-            cols="12"
-            sm="1"
-          >
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
+          <v-col cols="12" sm="1"></v-col>
+          <!-- 카테고리 for문 -->
+          <v-col v-for="(category, i) in categoryList" :key="i" cols="12" sm="1">
             <v-card
               class="pa-2"
               outlined
               tile
             >
-            <v-icon size="30">mdi-book-multiple-outline</v-icon><br>
-              <p class="categoryTag">전체</p>
-            </v-card>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-            <v-icon size="30">mdi-laptop-windows</v-icon>
-              <p class="categoryTag">테크, 가전</p>
-            </v-card>
-          </v-col>
-          <v-col
-              cols="12"
-              sm="1"
-            >
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-            <v-icon size="30">mdi-shoe-heel</v-icon>
-              <p class="categoryTag">패션, 잡화</p>
-            </v-card>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-            <v-icon size="30">mdi-lipstick</v-icon>
-              <p class="categoryTag">뷰티</p>
-            </v-card>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-             <v-icon size="30">mdi-food</v-icon>
-              <p class="categoryTag">푸드</p>
-            </v-card>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-             <v-icon size="30">mdi-hair-dryer</v-icon>
-              <p class="categoryTag">홈리빙</p>
-            </v-card>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-             <v-icon size="30">mdi-handball</v-icon>
-              <p class="categoryTag">스포츠</p>
-            </v-card>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-             <v-icon size="30">mdi-dog</v-icon>
-              <p class="categoryTag">반려동물</p>
-            </v-card>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-             <v-icon size="30">mdi-book-open-variant</v-icon>
-              <p class="categoryTag">책</p>
-            </v-card>
-          </v-col>
-          <v-col
-            cols="12"
-            sm="1"
-          >
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-             <v-icon size="30">mdi-violin</v-icon>
-              <p class="categoryTag">악기</p>
+              <v-icon size="30">mdi-{{category.icon}}</v-icon><br>
+              <p class="categoryTag">{{category.name}}</p>
             </v-card>
           </v-col>
         </v-row>
@@ -255,6 +137,18 @@ export default {
   },
   data() {
     return {
+      categoryList: [
+        { icon: "book-multiple-outline", name: "전체", key: "all" },
+        { icon: "laptop-windows", name: "테크, 가전", key: "tech" },
+        { icon: "shoe-heel", name: "패션, 잡화", key: "fashion" },
+        { icon: "lipstick", name: "뷰티", key: "beauty" },
+        { icon: "food", name: "푸드", key: "food" },
+        { icon: "hair-dryer", name: "홈리빙", key: "home" },
+        { icon: "handball", name: "스포츠", key: "sports" },
+        { icon: "dog", name: "반려동물", key: "animal" },
+        { icon: "book-open-variant", name: "책", key: "book" },
+        { icon: "violin", name: "악기", key: "instrument" },
+      ],
       items: [
         {
           src: "https://image.freepik.com/free-photo/_93675-87338.jpg",

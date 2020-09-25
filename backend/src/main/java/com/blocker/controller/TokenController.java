@@ -36,17 +36,17 @@ public class TokenController {
 	public ResponseEntity<String> Total() throws Exception {
 		return new ResponseEntity<String>(tokenService.getTotal(), HttpStatus.OK);
 	}
-	@ApiOperation(value = "[사용자의 토큰량] 특정 사용자의 토큰량을 가져옵니다. param : [address], return : 해당 address의 token 양")
+	@ApiOperation(value = "[사용자의 토큰량] 특정 사용자의 토큰량을 가져옵니다. param : [accessToken], return : 해당 address의 token 양")
 	@GetMapping(value = "/balance")
-	public ResponseEntity<String> getBalance(@RequestParam("address") String address) throws Exception {
-		return new ResponseEntity<String>(tokenService.getTokenNum(address), HttpStatus.OK);
+	public ResponseEntity<String> getBalance(@RequestParam("accessToken") String accessToken) throws Exception {
+		return new ResponseEntity<String>(tokenService.getTokenNum(accessToken), HttpStatus.OK);
 	}
-	@ApiOperation(value = "[토큰 사기] 이더를 이용해 토큰을 구매합니다. param : [address, privatekey, ether], return : 충전후 잔액을 return 합니다")
+	@ApiOperation(value = "[토큰 사기] 토큰을 구매합니다. param : [accessToken, money], return : 충전후 잔액을 return 합니다")
 	@GetMapping(value = "/buy")
-	public ResponseEntity<BigDecimal> getBalance(@RequestParam("address") String address,@RequestParam("ether") Integer ether) throws Exception {
-		return new ResponseEntity<BigDecimal>(tokenService.TransferTo(address, ether), HttpStatus.OK);
+	public ResponseEntity<String> getBalance(@RequestParam("accessToken") String accessToken,@RequestParam("money") Integer money) throws Exception {
+		return new ResponseEntity<String>(tokenService.TransferTo(accessToken, money), HttpStatus.OK);
 	}
-	@ApiOperation(value = "[토큰 사기] 이더를 이용해 토큰을 구매합니다. param : [address, privatekey, ether], return : 충전후 잔액을 return 합니다")
+	@ApiOperation(value = "[토큰 전송] A에서 B로 토큰을 전달합니다.(손보는거 필요) param : [address, privatekey, ether], return : 충전후 잔액을 return 합니다")
 	@GetMapping(value = "/transfer")
 	public ResponseEntity<Void> transfer() throws Exception {
 		tokenService.Transferfrm("", "", 1);
