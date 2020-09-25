@@ -131,7 +131,7 @@ export default {
         })
       //}
     }
-    this.asset = store.state.balance + ".0";
+    this.asset = store.state.balance;
     // this.asset = "100"
     // console.log("여기여기여기여기");
     // console.log(this.userInfo);
