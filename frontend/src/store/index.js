@@ -18,7 +18,8 @@ export default new Vuex.Store({
     state: {
         isSigned: false, // 로그인 여부
         userInfo: {
-            email: null,
+            // email: null,
+            id: null,
             name: null, // 사용자 아이디 저장
             img: null,
             walletAddress: null
@@ -58,7 +59,8 @@ export default new Vuex.Store({
         },
         setUserInfo(state, userinfo) {
             console.log(userinfo)
-            state.userInfo.email = userinfo.email;
+            // state.userInfo.email = userinfo.email;
+            state.userInfo.id = userinfo.id;
             state.userInfo.name = userinfo.name;
             state.userInfo.img = userinfo.img;
             state.isSigned = userinfo.login;

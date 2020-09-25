@@ -102,7 +102,7 @@ export default {
       next: false,
       nexturl: "",
       userInfo: {
-        email: "",
+        id: "",
         name: "",
         img: "",
         login: false,
@@ -221,6 +221,7 @@ export default {
         this.login = true;
         // store.state.isSigned = true;
         this.userInfo.login = true;
+        this.userInfo.id = res.data.oauthId;
         this.userInfo.name = res.data.name;
         this.userInfo.img = res.data.profileImg;
         store.commit("setUserInfo", this.userInfo);
