@@ -20,7 +20,6 @@
       <div v-if="!login">
         <button @click="onClick">
           <h5 style="margin: 0">로그인</h5>
-
           <!-- <a id="kakao-login-btn"></a> -->
           <!-- <a href="http://developers.kakao.com/logout"></a> -->
           <a href="http://developers.kakao.com/logout"></a>

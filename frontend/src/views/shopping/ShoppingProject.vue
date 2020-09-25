@@ -26,18 +26,7 @@
         </div>
       </div>
     </div>
-    <!-- 쇼핑홈 광고사진 -->
-    <div class="homeImg">
-      <v-carousel>
-        <v-carousel-item
-          v-for="(item,i) in items"
-          :key="i"
-          :src="item.src"
-          reverse-transition="fade-transition"
-          transition="fade-transition"
-        ></v-carousel-item>
-      </v-carousel>
-    </div>
+    <hr>
     <!-- 카테고리 -->
     <v-app id="inspire" style="text-align:center">
       <v-container class="cateContainer">
@@ -59,10 +48,76 @@
       </v-container>
     </v-app>
 
-    <!-- 품절임박 -->
-    <div style="margin-left: 5%;">
-      <h4 style="font-weight: 600">품절임박<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
+    <!-- 필터 -->
+    <div class="filterBox">
+      <!-- 상태 -->
+      <div style="display: inline-block; margin-right: 2%">
+        <v-select
+          :items="state"
+          label="상태"
+          outlined
+          hide-details
+          v-model="nowstate"
+          @click="openState"
+          :class="{checkstate: checkstate}"
+          class="origin"
+        ></v-select>
+      </div>
+      <div style="width: 150px; display: inline-block; float: right">
+        <v-btn class="reloadbtn" @click="filterInit">
+          <v-icon color="rgba(0, 0, 0, 0.38)" style="margin-right: 10px">mdi-reload</v-icon>필터 초기화
+        </v-btn>
+      </div>
     </div>
+    <!-- 프로젝트 -->
+    <div class="projectList" style="padding: 10px 3%;">
+      <div style="height: 45px;">
+        <div style="display: inline-block;">
+          <span style="color: rgb(22, 150, 245);">4</span>
+          <span>개의 프로젝트가 있습니다.</span>
+        </div>
+        <div style="width: 100px; display: inline-block; float: right;">
+          <v-select
+            :items="filter"
+            hide-details
+            label="최신순"
+            single-line
+            @click="openFilter"
+            v-model="nowfilter"
+            append-icon="mdi-arrow-down-drop-circle-outline"
+            class="filter"
+          ></v-select>
+        </div>
+      </div>
+      <div style="padding: 1% 0">
+        <div v-for="(item, i) in shoppingProjects" :key="i" style="display: inline-block; width: 30%; margin-bottom: 30px;">
+          <v-card class="my-12" max-width="320" style="margin: auto">
+            <router-link to="/shoppingdetail">
+            <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
+            </router-link>
+            <v-card-title style="font-weight: 600; margin: auto">
+              {{item.title}}
+              <div style="margin-left: auto;">
+                <v-chip class="projectBadge">{{item.deadline}}일 남음</v-chip>
+              </div>
+            </v-card-title>
+            <v-card-text>
+              <div style="margin-bottom: 15px;">{{item.content}}</div>
+              <div style="color: black;">
+                <h5
+                  style="display: inline-block; height: 41.6px; line-height: 41.6px"
+                >{{item.price}} 원</h5>
+                <div style="display: inline-block; float: right;">
+                  <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
+                  <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
+      </div>
+    </div>
+
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in deadlineItems" :key="i" style="display: inline-block; flex:1">
         <v-card :loading="loading" class="my-12" max-width="320" style="margin: auto">
@@ -74,17 +129,29 @@
           </v-card-title>
           <v-card-text>
             <div style="margin-bottom: 15px;">{{item.content}}</div>
-            <!-- <div style="color: black;">
-              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.price}} 원</h5>
-            </div> -->
           </v-card-text>
         </v-card>
       </div>
     </div>
-    <!-- 인기순 -->
-    <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">인기순<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
-    </div>
+    <!-- 프로젝트 -->
+    <div class="projectList" style="padding: 10px 3%;">
+      <div style="height: 45px;">
+        <div style="display: inline-block;">
+         
+        </div>
+        <div style="width: 100px; display: inline-block; float: right;">
+          <v-select
+            :items="filter"
+            hide-details
+            label="최신순"
+            single-line
+            @click="openFilter"
+            v-model="nowfilter"
+            append-icon="mdi-arrow-down-drop-circle-outline"
+            class="filter"
+          ></v-select>
+        </div>
+      </div>
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in likeItems" :key="i" style="display: inline-block; flex:1">
         <v-card :loading="loading" class="my-12" max-width="320" style="margin: auto">
@@ -101,10 +168,7 @@
         </v-card>
       </div>
     </div>
-    <!-- 오픈예정 -->
-    <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">오픈예정<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
-    </div>
+    
     <div style="padding: 1% 0">
       <v-card v-for="(item, i) in openItems" :key="i" style="width: 38%; height: 180px; display: inline-block; margin: 0 6% 4% 6%;">
         <v-img style="width:33%; float:left;" height="180" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
@@ -122,6 +186,7 @@
           </v-card-text>
         </div>
       </v-card>
+    </div>
     </div>
   </div>
 </template>
@@ -165,10 +230,24 @@ export default {
           src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
         },
       ],
-      deadlineItems: [
+      // 상태
+      nowstate: "",
+      checkstate: false,
+      openstate: false,
+      state: [
+        "전체 프로젝트",
+        "진행중인 프로젝트",
+        "종료된 프로젝트",
+      ],
+      // 필터
+      nowfilter: "",
+      openfilter: false,
+      filter: ["최신순", "인기순", "마감임박순"],
+      // 프로젝트
+      shoppingProjects: [
         {
-          title: "Ostay 다이슨 드라이어",
-          deadline: "2",
+          title: "특별한 자전거",
+          deadline: "1",
           content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,500,500",
           percent: "98",
@@ -187,60 +266,37 @@ export default {
           price: "1,000,500",
           percent: "88",
         },
-      ],
-      likeItems: [
-        {
-          title: "특별한 자전거",
-          likenum: "10000",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,500,500",
-          percent: "92",
-        },
-        {
-          title: "특별한 숟가락",
-          likenum: "5000",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,300,500",
-          percent: "85",
-        },
         {
           title: "달라진 안경",
-          likenum: "3500",
+          deadline: "7",
           content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,000,500",
-          percent: "79",
+          percent: "88",
         },
       ],
-      openItems: [
-        {
-          title: "특별한 자전거",
-          opendate: "2",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "39,000",
-        },
-        {
-          title: "특별한 숟가락",
-          opendate: "5",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "75,000",
-        },
-        {
-          title: "달라진 안경",
-          opendate: "10",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,000",
-        },
-        {
-          title: "날이 없는 선풍기",
-          opendate: "12",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "50,000",
-        },
-      ]
     };
   },
-  methods: {
+  watch: {
 
+  },
+  methods: {
+    nowstate(val) {
+      if(this.nowstate) {
+        this.checkstate = true
+      }
+      else {
+        this.checkstate = false
+      }
+    },
+    filterInit() {
+      this.nowstate = ''
+      this.checkstate = false
+      this.opensate = false
+      this.nowrate = ""
+      this.checkrate = false
+      this.longrate = false
+      this.openrate = false
+    },
   },
 };
 </script>
@@ -288,5 +344,62 @@ export default {
 }
 .v-application--wrap {
   min-height: 0;
+}
+.origin {
+  width: 100px;
+}
+.checkstate {
+  width: 200px;
+}
+.checkstate .v-input__slot {
+  width: 200px;
+}
+.checkstate fieldset {
+  width: 200px;
+}
+.longrate {
+  width: 180px;
+}
+.longrate .v-input__slot {
+  width: 180px;
+}
+.longrate fieldset {
+  width: 180px;
+}
+.checkrate {
+  width: 160px;
+}
+.checkrate .v-input__slot {
+  width: 160px;
+}
+.checkrate fieldset {
+  width: 160px;
+}
+.filterBox {
+  padding: 0 3%;
+  height: 65px;
+  border-bottom: 1px solid lightgray;
+}
+.reloadbtn {
+  background-color: unset !important;
+  border: 1px solid rgba(0, 0, 0, 0.38);
+  box-shadow: unset !important;
+  color: rgba(0, 0, 0, 0.6);
+  height: 45px !important;
+}
+.reloadbtn:before {
+  background: unset !important;
+}
+.reloadbtn:hover {
+  border: 1px solid black;
+}
+.filter {
+  padding: 0;
+  margin: 0;
+}
+.projectBadge {
+  background-color: rgb(22, 150, 245) !important;
+  color: white !important;
+  text-align: right;
 }
 </style>
