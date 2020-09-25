@@ -154,8 +154,10 @@ export default {
     },
     onKakao() {
       // this.kakopay = true;
-      store.commit("setCharge", this.money);
       this.money = this.money * 1;
+      store.commit("setCharge", this.money);
+      console.log("vuex에 저장된 충전할 금액은")
+      console.log(store.state.charge)
       const fd = new FormData();
       fd.append("count", this.money);
       console.log(typeof this.money);
