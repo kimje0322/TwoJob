@@ -26,8 +26,13 @@ export default new Vuex.Store({
         accessToken: null,
         address: null,
         balance: null,
+        charge: null,
+
     },
     mutations: {
+        setCharge(state, charge) {
+            state.charge = charge;
+        },
         setBalance(state, balance) {
             state.balance = balance;
         },
