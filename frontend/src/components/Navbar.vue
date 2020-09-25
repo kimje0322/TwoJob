@@ -25,26 +25,39 @@
           <a href="http://developers.kakao.com/logout"></a>
         </button>
       </div>
-      <v-row v-else style="display: inline-block; width: 150px; ">
+      <v-row v-else style="display: inline-block; width: 150px">
         <!-- <v-btn @click="onchargebox"> -->
         <v-btn @click.stop="openbox = true">
           <!-- <i class="fas fa-user fa-lg"></i> -->
-          <span class="userimgbox" style="width: 35px; height: 35px;">
-            <img class="userimg" :src="userInfo.img" style="height: 100%;" />
+          <span class="userimgbox" style="width: 35px; height: 35px">
+            <img class="userimg" :src="userInfo.img" style="height: 100%" />
           </span>
           <h5
-            style="display: inline-block; margin: 0; padding-left: 10px; font-size: 17px; font-weight: 550;"
-          >{{ userInfo.name }}</h5>
+            style="
+              display: inline-block;
+              margin: 0;
+              padding-left: 10px;
+              font-size: 17px;
+              font-weight: 550;
+            "
+          >
+            {{ userInfo.name }}
+          </h5>
           <span>님</span>
         </v-btn>
         <div class="chargebox" style="inline-block" v-if="openbox">
           <v-card style="padding: 0; margin: 0">
             <v-card-title class="headline">
-              {{userInfo.name}}님의 자산 현황
+              {{ userInfo.name }}님의 자산 현황
               <br />
-              {{asset}}원
+              {{ asset }}원
             </v-card-title>
-            <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
+            <v-text-field
+              class="moneyinput"
+              v-model="money"
+              label="충전금액"
+              required
+            ></v-text-field>
             <v-card-actions class="moneybtns">
               <v-spacer></v-spacer>
               <v-btn class="chargebtn" text @click="onKakao">
@@ -61,8 +74,13 @@
               <router-link to="/mypage">
                 <v-btn
                   @click="openbox = false"
-                  style="width: 100%; background: rgb(22, 150, 245) !important; color: white;"
-                >마이페이지</v-btn>
+                  style="
+                    width: 100%;
+                    background: rgb(22, 150, 245) !important;
+                    color: white;
+                  "
+                  >마이페이지</v-btn
+                >
               </router-link>
             </div>
           </v-card>
@@ -111,23 +129,25 @@ export default {
   },
   mounted() {
     console.log(location.href);
-    console.log("이거봐라라ㅏㅏㅏ???")
-    console.log(location.href.includes("pg_token"))
+    console.log("이거봐라라ㅏㅏㅏ???");
+    console.log(location.href.includes("pg_token"));
     if (location.href.includes("pg_token")) {
       //     window.opener.closed = true;
-      this.index = location.href.indexOf("pg_token")
-      this.pg_token = location.href.slice(this.index + 9)
-      console.log("pg_token 이다ㅏㅏ")
-      console.log(this.pg_token)
+      this.index = location.href.indexOf("pg_token");
+      this.pg_token = location.href.slice(this.index + 9);
+      console.log("pg_token 이다ㅏㅏ");
+      console.log(this.pg_token);
       //아래와 같은 코드가 필요
       //if(this.index!=-1){
-      console.log("충전할 금액은")
-      console.log(store.state.charge)
+      console.log("충전할 금액은");
+      console.log(store.state.charge);
       axios
-        .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${this.userInfo.id}`)
+        .get(
+          `${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${store.state.userInfo.id}`
+        )
         .then((res) => {
-          console.log(res)
-        })
+          console.log(res);
+        });
       //}
     }
     this.asset = store.state.balance;
@@ -147,8 +167,8 @@ export default {
       // this.kakopay = true;
       this.money = this.money * 1;
       store.commit("setCharge", this.money);
-      console.log("vuex에 저장된 충전할 금액은")
-      console.log(store.state.charge)
+      console.log("vuex에 저장된 충전할 금액은");
+      console.log(store.state.charge);
       const fd = new FormData();
       fd.append("count", this.money);
       fd.append("userid", this.userInfo.id);
@@ -189,7 +209,8 @@ export default {
         this.userInfo.id = res.data.oauthId;
         this.userInfo.name = res.data.name;
         if (res.data.profileImg == null) {
-          this.userInfo.img = "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg"
+          this.userInfo.img =
+            "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
         } else {
           this.userInfo.img = res.data.profileImg;
         }
@@ -218,7 +239,7 @@ export default {
   /* font-weight: 600; */
 }
 .serviceName h3 {
-  font-family: 'Lobster', cursive;
+  font-family: "Lobster", cursive;
   line-height: 50px;
   font-weight: 600;
   font-size: 30px;
@@ -268,7 +289,7 @@ export default {
   font-weight: 600;
   font-size: 1.25rem;
 }
-.userimgbox{
+.userimgbox {
   border-radius: 70%;
   width: 55px;
   height: 55px;
