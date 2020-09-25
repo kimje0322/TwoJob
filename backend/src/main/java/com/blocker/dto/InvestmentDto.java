@@ -15,34 +15,37 @@ import lombok.Data;
 public class InvestmentDto {
 	@Id
 	String address;
-	
+
+	@Column
+	String userid;// userid
+
 	@Column
 	String identity;// 개인인지 사업자인지
-	
+
 	@Column
 	String compname;// 회사명
-	
+
 	@Column
 	String introduce;// 금손소개
-	
+
 	@Column
 	String url;// 참고할 url
-	
+
 	@Column
 	String pjtname;// 플젝명
-	
+
 	@Column
 	String onelineintro;// 한줄소개
-	
+
 	@Column
 	String deadline;// 마감날짜
-	
+
 	@Column
 	int goalprice;// 달성금액
-	
+
 	@Column
 	int expectedsaleprice;// 판매 예정금액
-	
+
 	@Column
 	String picture;// 대표사진이름
 }

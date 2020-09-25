@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class InvestmentRequest {
 	String address;
+	String userid;
 	String identity;// 개인인지 사업자인지
 	String compName;// 회사명
 	String introduce;// 금손소개
