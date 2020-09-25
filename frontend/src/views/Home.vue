@@ -155,6 +155,7 @@ export default {
         console.log("이건 밸런스값임");
         console.log(res);
         if (res.data != "401") {
+          console.log("401 에러안나");
           store.commit("setBalance", res.data);
         }
         console.log(store.state.balance);
