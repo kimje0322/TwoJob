@@ -9,6 +9,7 @@ import Search from "@/views/search/Search.vue"
 import SearchDetail from "@/views/search/SearchDetail.vue"
 import ShoppingHome from "@/views/shopping/ShoppingHome.vue";
 import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
+import ShoppingProject from "@/views/shopping/ShoppingProject.vue";
 import Mypage from "@/views/mypage/Mypage.vue";
 import WriteShopping from "@/views/shopping/WriteShopping.vue";
 import MyInvestPjt from "@/views/mypage/MyInvestPjt.vue"
@@ -65,6 +66,11 @@ const routes = [{
         path: "/shoppingdetail",
         name: "ShoppingDetail",
         component: ShoppingDetail,
+    },
+    {
+        path: "/shoppingproject",
+        name: "ShoppingProject",
+        component: ShoppingProject,
     },
     {
         path: "/mypage",
