@@ -19,6 +19,11 @@
             <h5>오픈예정</h5>
           </router-link>
         </div>
+        <div>
+          <router-link to="/writeshopping">
+            <h5>쇼핑 오픈</h5>
+          </router-link>
+        </div>
       </div>
     </div>
     <!-- 쇼핑홈 광고사진 -->
@@ -46,7 +51,7 @@
               outlined
               tile
             >
-              <v-icon size="30">{{category.icon}}</v-icon><br>
+              <v-icon size="30">mdi-{{category.icon}}</v-icon><br>
               <p class="categoryTag">{{category.name}}</p>
             </v-card>
           </v-col>
