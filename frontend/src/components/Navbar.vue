@@ -124,28 +124,21 @@ export default {
       console.log("충전할 금액은")
       console.log(store.state.charge)
       axios
-        .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&totalprice=${store.state.charge}`)
+        .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${this.userInfo.id}`)
         .then((res) => {
           console.log(res)
         })
       //}
     }
     this.asset = store.state.balance;
-    // this.asset = "100"
-    // console.log("여기여기여기여기");
-    // console.log(this.userInfo);
     if (store.state.isSigned) {
-      // console.log(store.state.isSigned);
-      // console.log(store.state.userInfo);
+
       this.userInfo = store.state.userInfo;
       this.login = store.state.isSigned;
       // console.log(this.userInfo);
     } else {
       this.login = false;
     }
-    // let externalScript = document.createElement('script')
-    // externalScript.setAttribute('src', 'https://developers.kakao.com/sdk/js/kakao.min.js')
-    // document.head.appendChild(externalScript)
   },
   methods: {
     onchargebox() {
@@ -159,6 +152,7 @@ export default {
       console.log(store.state.charge)
       const fd = new FormData();
       fd.append("count", this.money);
+      fd.append("userid", this.userInfo.id)
       console.log(typeof this.money);
       axios
         .post(`${SERVER_URL}/kakaopay/kakaoPay`, fd)
@@ -170,22 +164,6 @@ export default {
           console.log(this.next);
           this.nexturl = response.data;
           window.location.href = this.nexturl;
-          // window.open(
-          //   this.nexturl,
-          //   "토큰 충전",
-          //   "width=500,height=500,left=600"
-          // );
-          console.log("여기를봐라");
-          console.log(response);
-          console.log(window.location.href);
-
-          // if (window.opener && !window.opener.closed) {
-          //   console.log("팝업창 없애주세요 제발")
-          //   // window.opener.location.href = "http://www.mozilla.org";
-          //   if(window.opener.location.href.includes("pg_token")) {
-          //     window.opener.closed = true;
-          //   }
-          // }
         })
         .catch((error) => {
           console.log(error);
@@ -195,17 +173,6 @@ export default {
       window.Kakao.Auth.loginForm({
         success: this.GetMe,
       });
-      // onclick() {
-      //   Kakao.init('a98b416e875c32a2c8aa2bc5da03103f');
-      //   Kakao.Auth.createLoginButton({
-      //     container: "#kakao-login-btn",
-      //     success: function (authObj) {
-      //       alert(JSON.stringify(authObj));
-      //     },
-      //     fail:  function (err) {
-      //       alert(JSON.stringify(err));
-      //     },
-      //   });
     },
     GetMe(authObj) {
       console.log(authObj);
