@@ -162,31 +162,6 @@ export default {
       });
   },
   methods: {
-    // onWallet() {
-    //   // var Web3 = require('web3');
-    //   var web3 = new Web3('http://j3b102.p.ssafy.io:8545');
-    //   var Accounts = require('web3-eth-accounts');
-    //   var accounts = new Accounts('http://j3b102.p.ssafy.io:8545');
-    //   var result = web3.eth.accounts.create();
-    //   console.log(accounts)
-    //   console.log(result)
-    //   store.commit("setAddress", result.address)
-    //   const fd = new FormData();
-    //   fd.append("accessToken", store.state.accessToken);
-    //   fd.append("address", store.state.address);
-    //   fd.append("privatekey", result.privateKey);
-    //   axios
-    //     .post(`${SERVER_URL}/wallet/regist`, fd)
-    //     .then((res) => {
-    //       console.log("wow!!success!!")
-    //       console.log(res)
-    //       console.log(fd)
-    //       if(res.data == 401){
-    //         store.state.isSigned = false;
-    //       }
-    //     })
-    //   alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
-    // }
   },
   components: {
     Navbar,

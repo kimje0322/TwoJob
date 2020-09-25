@@ -132,10 +132,9 @@ export default {
     }
     this.asset = store.state.balance;
     if (store.state.isSigned) {
-
       this.userInfo = store.state.userInfo;
       this.login = store.state.isSigned;
-      // console.log(this.userInfo);
+      console.log(this.userInfo);
     } else {
       this.login = false;
     }
@@ -152,8 +151,7 @@ export default {
       console.log(store.state.charge)
       const fd = new FormData();
       fd.append("count", this.money);
-      fd.append("userid", this.userInfo.id)
-      console.log(typeof this.money);
+      fd.append("userid", this.userInfo.id);
       axios
         .post(`${SERVER_URL}/kakaopay/kakaoPay`, fd)
         .then((response) => {
