@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 public class SaleBoardRequest {
 
-	@Id
-	String address;
 	@Column
 	String investaddress;
 	@Column

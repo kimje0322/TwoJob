@@ -33,7 +33,6 @@ public class SaleBoardDto {
 	public SaleBoardDto() {}
 	
 	public SaleBoardDto(SaleBoardRequest saleBoardRequest) {
-		this.address = saleBoardRequest.getAddress();
 		this.investaddress = saleBoardRequest.getInvestaddress();
 		this.userid = saleBoardRequest.getUserid();
 		this.url = saleBoardRequest.getUrl();

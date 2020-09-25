@@ -17,8 +17,8 @@ public class InvestmentDto {
 	String address;
 
 	@Column
-	String userid;// userid
-
+	String userid;//유저아이디
+	
 	@Column
 	String identity;// 개인인지 사업자인지
 
