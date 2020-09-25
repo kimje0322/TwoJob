@@ -176,9 +176,9 @@ export default {
           //   "토큰 충전",
           //   "width=500,height=500,left=600"
           // );
-          console.log("여기를봐라");
-          console.log(response);
-          console.log(window.location.href);
+          // console.log("여기를봐라");
+          // console.log(response);
+          // console.log(window.location.href);
 
           // if (window.opener && !window.opener.closed) {
           //   console.log("팝업창 없애주세요 제발")
