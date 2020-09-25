@@ -117,26 +117,17 @@ export default {
     if (location.href.includes("pg_token")) {
       //     window.opener.closed = true;
       this.index = location.href.indexOf("pg_token")
-<<<<<<< HEAD
-      this.pg_token = location.href.slice(this.index + 9, -1)
-      console.log("pg_token 이다ㅏㅏ")
-      console.log(this.pg_token)
-=======
       this.pg_token = location.href.slice(this.index + 9)
       console.log("pg_token 이다ㅏㅏ")
       console.log(this.pg_token)
       //아래와 같은 코드가 필요
       //if(this.index!=-1){
->>>>>>> c841d561fa54b00891c9da61258a50c9abba8973
       axios
-        .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?pg_token=${this.pg_token}&totalprice=${this.money}&access_token=${store.state.accessToken}`)
+        .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&totalprice=${this.money}`)
         .then((res) => {
           console.log(res)
         })
-<<<<<<< HEAD
-=======
       //}
->>>>>>> c841d561fa54b00891c9da61258a50c9abba8973
     }
     this.asset = store.state.balance + ".0";
     // this.asset = "100"
