@@ -123,9 +123,9 @@ export default {
       //아래와 같은 코드가 필요
       //if(this.index!=-1){
       console.log("충전할 금액은")
-      console.log(this.money)
+      console.log(store.state.charge)
       axios
-        .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&totalprice=${this.money}`)
+        .get(`${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&totalprice=${store.state.charge}`)
         .then((res) => {
           console.log(res)
         })
@@ -154,7 +154,7 @@ export default {
     },
     onKakao() {
       // this.kakopay = true;
-
+      store.commit("setCharge", this.money);
       this.money = this.money * 1;
       const fd = new FormData();
       fd.append("count", this.money);
