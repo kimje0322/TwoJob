@@ -188,7 +188,11 @@ export default {
         this.userInfo.login = true;
         this.userInfo.id = res.data.oauthId;
         this.userInfo.name = res.data.name;
-        this.userInfo.img = res.data.profileImg;
+        if (res.data.profileImg == null) {
+          this.userInfo.img = "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg"
+        } else {
+          this.userInfo.img = res.data.profileImg;
+        }
         store.commit("setUserInfo", this.userInfo);
         // this.userInfo.email = res.data.email;
         console.log("이게뭐냐면");
