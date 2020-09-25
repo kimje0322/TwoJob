@@ -1,7 +1,7 @@
 <template>
   <div class="writeinvest">
     <navbar/> 
-    <h4>마이페이지</h4>
+    <!-- <h4>마이페이지</h4> -->
     <!-- 쇼핑 글쓰기 메뉴바 -->
     <div>
       <!-- 쇼핑 글쓰기 메뉴 -->
