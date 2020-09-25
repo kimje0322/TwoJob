@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +38,7 @@ import com.blocker.repository.TagRepository;
 import com.blocker.request.InvestmentRequest;
 import com.blocker.request.InvestmentResponse;
 import com.blocker.util.BasicResponse;
+import com.blocker.util.webhook;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -210,5 +212,11 @@ public class InvestController {
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
+	}
+	@ExceptionHandler(Exception.class)
+	public void nullex(Exception e) {
+		System.err.println("invest 부분에서 " + e.getClass());
+		webhook w = new webhook();
+		w.send("invest 부분에서 " + e.getClass());
 	}
 }

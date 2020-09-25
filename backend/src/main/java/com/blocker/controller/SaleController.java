@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,7 @@ import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.SaleBoardRepository;
 import com.blocker.request.SaleBoardRequest;
 import com.blocker.util.BasicResponse;
+import com.blocker.util.webhook;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -101,5 +104,11 @@ public class SaleController {
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
+	}
+	@ExceptionHandler(Exception.class)
+	public void nullex(Exception e) {
+		System.err.println("sale 부분에서 " + e.getClass());
+		webhook w = new webhook();
+		w.send("sale 부분에서 " + e.getClass());
 	}
 }
