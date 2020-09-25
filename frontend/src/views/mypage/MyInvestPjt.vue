@@ -172,6 +172,10 @@ export default {
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
+    // 나의 프로젝트 내역 가져오기
+    // axios
+    //   .get(`${SERVER_URL}/investment/investList?`)
+
   },
   data() {
     return {
