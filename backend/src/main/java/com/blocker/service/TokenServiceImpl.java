@@ -59,7 +59,21 @@ public class TokenServiceImpl implements TokenService{
 		BigDecimal total2 = Convert.fromWei(total.toString(), Unit.ETHER);
 		return total2.toString();
 	}
-
+	@Override
+	public String getAdminVal() {
+		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+		Credentials credentials = Credentials.create(property.getAdminPK());
+		TJToken contract = TJToken.load(property.getTokenAddr(),web3j, credentials, new DefaultGasProvider());
+		BigInteger total = new BigInteger("0"); 
+		try {
+			System.out.println(contract.isValid());
+			total = contract.balanceOf(property.getAdminAddr()).send();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		BigDecimal total2 = Convert.fromWei(total.toString(), Unit.ETHER);
+		return total2.toString();
+	}
 	@Override
 	public String getTokenNum(String accessToken) {
 		Object result =  loginService.getUserInfo(accessToken);
@@ -133,7 +147,22 @@ public class TokenServiceImpl implements TokenService{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	}
+	
+	@Override
+	public String IncreaseToken(Integer amount) {
+		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+		Credentials credentials = Credentials.create(property.getAdminPK());
+		TJToken contract = TJToken.load(property.getTokenAddr(),web3j, credentials, new DefaultGasProvider());
+		BigInteger total = new BigInteger("0"); 
+		try {
+			System.out.println(contract.isValid());
+			contract.mint(Convert.toWei(String.valueOf(amount), Convert.Unit.ETHER).toBigInteger()).send();
+			return "success";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "fail";
 	}
 }
 
