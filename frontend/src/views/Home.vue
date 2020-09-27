@@ -3,11 +3,13 @@
     <!-- 상단 Navbar -->
     <navbar />
     <!-- 투자홈 광고사진 -->
+    <!-- :src="require(`../assets/${item.src}.jpg`)" -->
+    <!-- src="../assets/배경1.jpg" -->
+    
     <div class="homeImg">
       <v-carousel>
-        <v-carousel-item
-          v-for="(item, i) in items"
-          :key="i"
+        <v-carousel-item          
+          v-for="(item, i) in items" :key="i"
           :src="item.src"
           reverse-transition="fade-transition"
           transition="fade-transition"
@@ -195,6 +197,7 @@ export default {
     return {
       items: [
         {
+          // src: "../assets/배경1.jpg",
           src: "https://image.freepik.com/free-photo/_93675-87338.jpg",
         },
         {
@@ -231,6 +234,7 @@ export default {
   text-decoration: none;
 }
 .homeImg {
+  filter: brightness(85%);
   margin-bottom: 3%;
 }
 .home_info {
