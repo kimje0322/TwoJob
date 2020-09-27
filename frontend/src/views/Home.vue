@@ -149,6 +149,8 @@ const redirect_uri = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   mounted() {
+    console.log("유저아이디는")
+    console.log(store.state.userInfo.id)
     axios
       .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
       .then((res) => {
