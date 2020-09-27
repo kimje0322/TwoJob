@@ -44,11 +44,11 @@ public class KakaoPay {
 		params.add("partner_user_id", "tojob");// 가맹점 회원 id
 		params.add("item_name", "ether"); // 상품명
 		params.add("quantity", count + ""); // 수량
-		params.add("total_amount", (count * 10) + ""); // 상품 총액
-		System.out.println("count=======>" + (count * 10));
+		params.add("total_amount", count + ""); // 상품 총액
+		System.out.println("count=======>" + count);
 		params.add("tax_free_amount", "0"); // 상품 비과세 금액
 		// 프론트 주소나오면 다시 작성해야함
-		params.add("approval_url", "http://j3b102.p.ssafy.io:8080/kakaopay/kakaoPayReadySuccess?totalprice="+(count*10)); // 결제 성공시 redirect할 url
+		params.add("approval_url", "http://j3b102.p.ssafy.io/"); // 결제 성공시 redirect할 url
 		params.add("cancel_url", "http://j3b102.p.ssafy.io:8080"); // 결제 취소시 redirect할 url (결제 페이지로 바꿀 예정)
 		params.add("fail_url", "http://j3b102.p.ssafy.io:8080"); // 결제 실패시 redirect할 url (결제 페이지로 바꿀 예정)
 

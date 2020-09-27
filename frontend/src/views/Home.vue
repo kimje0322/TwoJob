@@ -1,12 +1,12 @@
 <template>
   <div class="home">
     <!-- 상단 Navbar -->
-    <navbar/>
+    <navbar />
     <!-- 투자홈 광고사진 -->
     <div class="homeImg">
       <v-carousel>
         <v-carousel-item
-          v-for="(item,i) in items"
+          v-for="(item, i) in items"
           :key="i"
           :src="item.src"
           reverse-transition="fade-transition"
@@ -14,13 +14,16 @@
         ></v-carousel-item>
       </v-carousel>
     </div>
+    <!-- <button @click="onWallet" style="margin-left: 200px;">
+      눌러봐
+    </button> -->
     <!-- 홈페이지 설명 -->
     <div class="home_info">
       <div class="home_div">
-        <div style="display: inline-block; flex: 1;">
+        <div style="display: inline-block; flex: 1">
           <i class="fab fa-medapps fa-7x"></i>
         </div>
-        <div style="flex: 7; margin-left: 10px;">
+        <div style="flex: 7; margin-left: 10px">
           <h3 class="info_left">
             투잡러들의 투잡현황!
             <br />기대 이상의 수익률!
@@ -49,11 +52,11 @@
         </div>
       </div>
       <div class="home_div">
-        <div style="display: inline-block; flex: 1;">
+        <div style="display: inline-block; flex: 1">
           <!-- <i class="fab fa-medapps fa-7x"></i> -->
           <i class="fas fa-lock fa-5x"></i>
         </div>
-        <div style="flex: 7; margin-left: 10px;">
+        <div style="flex: 7; margin-left: 10px">
           <h3 class="info_left">
             소중한 자산 보안은
             <br />블록체인 기술로!
@@ -83,10 +86,10 @@
         </div>
       </div>
       <div class="home_div">
-        <div style="display: inline-block; flex: 1;">
+        <div style="display: inline-block; flex: 1">
           <i class="fas fa-desktop fa-4x"></i>
         </div>
-        <div style="flex: 7; margin-left: 10px;">
+        <div style="flex: 7; margin-left: 10px">
           <h3 class="info_left">
             언제 어디서든
             <br />쉽고 간편하게!
@@ -95,14 +98,18 @@
         </div>
 
         <div class="info_right" style="flex: 5">
-          <img style="width: 400px;" src="https://i.ytimg.com/vi/GWra1dWRA8g/maxresdefault.jpg" alt />
+          <img
+            style="width: 400px"
+            src="https://i.ytimg.com/vi/GWra1dWRA8g/maxresdefault.jpg"
+            alt
+          />
         </div>
       </div>
       <div class="home_div">
-        <div style="display: inline-block; flex: 1;">
+        <div style="display: inline-block; flex: 1">
           <i class="far fa-thumbs-up fa-5x"></i>
         </div>
-        <div style="flex: 7; margin-left: 10px;">
+        <div style="flex: 7; margin-left: 10px">
           <h3 class="info_left">
             다양한 카테고리를
             <br />즐길 수 있는 유일한 곳!
@@ -111,7 +118,7 @@
         </div>
         <div class="info_right" style="flex: 4.5">
           <img
-            style="width: 300px;"
+            style="width: 300px"
             src="https://gscaltexmediahub.com/wp-content/uploads/2015/04/teamwork.jpg"
             alt
           />
@@ -131,14 +138,33 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 // import 'bootstrap/dist/css/bootstrap.css'
 // import 'bootstrap-vue/dist/bootstrap-vue.css'
 import "../../public/css/Home.scss";
-import store from '../store/index.js'
-import Navbar from '../components/Navbar.vue'
+import store from "../store/index.js";
+import Navbar from "../components/Navbar.vue";
+import Web3 from "web3";
+import { registerWallet } from "@/api/wallet.js";
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
 const redirect_uri = "http://j3b102.p.ssafy.io:8080";
 
 export default {
+  mounted() {
+    console.log("유저아이디는")
+    console.log(store.state.userInfo.id)
+    axios
+      .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
+      .then((res) => {
+        console.log("이건 밸런스값임");
+        console.log(res);
+        if (res.data != "401") {
+          console.log("401 에러안나");
+          store.commit("setBalance", res.data);
+        }
+        console.log(store.state.balance);
+      });
+  },
+  methods: {
+  },
   components: {
     Navbar,
   },

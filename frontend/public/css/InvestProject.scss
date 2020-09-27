@@ -1,0 +1,16 @@
+.investproject {
+  .v-text-field--outlined fieldset {
+    height: 55px !important;
+  }
+  .filterBox .v-menu__content {
+    top: 65px !important;
+    left: 0px !important;
+  }
+  .filterBox .theme--light.v-label {
+    left: -10px !important;
+  }
+  .projectList .v-menu__content {
+    top: 40px !important;
+    left: 0px !important;
+  }
+}
