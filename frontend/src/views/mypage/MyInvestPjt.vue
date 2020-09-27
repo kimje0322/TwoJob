@@ -173,8 +173,11 @@ export default {
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
     // 나의 프로젝트 내역 가져오기
-    // axios
-    //   .get(`${SERVER_URL}/investment/investList?`)
+    axios
+      .get(`${SERVER_URL}/investment/investList?userid=${store.state.userInfo.id}`)
+      .then((res) => {
+        console.log(res)
+      })
 
   },
   data() {
