@@ -1,6 +1,7 @@
 package com.blocker.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +36,9 @@ import com.blocker.repository.EditorInvestmentRepository;
 import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.TagRepository;
 import com.blocker.request.InvestmentRequest;
+import com.blocker.request.InvestmentResponse;
 import com.blocker.util.BasicResponse;
+import com.blocker.util.webhook;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -60,7 +66,10 @@ public class InvestController {
 		final BasicResponse result = new BasicResponse();
 		try {
 			InvestmentDto investmentdto = new InvestmentDto();
-			investmentdto.setAddress(pinvestment.getAddress());
+			
+			UUID uuid = UUID.randomUUID();
+			investmentdto.setAddress(uuid.toString());
+			investmentdto.setUserid(pinvestment.getUserid());
 			investmentdto.setCompname(pinvestment.getCompName());
 			investmentdto.setDeadline(pinvestment.getDeadLine());
 			investmentdto.setExpectedsaleprice(pinvestment.getExpectedSalePrice());
@@ -156,5 +165,58 @@ public class InvestController {
 		} finally {
 			return file.getAbsolutePath();
 		}
+	}
+
+	@GetMapping("/investList")
+	@ApiOperation(value = "저장되어있는 모든 투자 게시글을보여줌")
+	@ResponseBody
+	public Object investList(@RequestParam String userid) {
+		final BasicResponse result = new BasicResponse();
+		List<InvestmentDto> list = new ArrayList<>();
+		List<InvestmentResponse> resultDatas = new ArrayList<>();
+
+		list = investmentRepository.findAllByUserid(userid);
+		try {
+			for (Iterator<InvestmentDto> iter = list.iterator(); iter.hasNext();) {
+				InvestmentDto investmentDto = iter.next();
+				InvestmentResponse investmentResponse = new InvestmentResponse();
+				investmentResponse.setAddress(investmentDto.getAddress());
+				investmentResponse.setCompName(investmentDto.getCompname());
+				investmentResponse.setDeadLine(investmentDto.getDeadline());
+				investmentResponse.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
+				investmentResponse.setGoalPrice(investmentDto.getGoalprice());
+				investmentResponse.setIdentity(investmentDto.getIdentity());
+				investmentResponse.setIntroduce(investmentDto.getIntroduce());
+				investmentResponse.setOneLineIntro(investmentDto.getOnelineintro());
+				investmentResponse.setPicture(investmentDto.getPicture());
+				investmentResponse.setPjtName(investmentDto.getPjtname());
+				investmentResponse.setUrl(investmentDto.getUrl());
+				investmentResponse.setUserid(investmentDto.getUserid());
+
+				// editor
+				Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
+						.getEditorInvestmentDtoByInvestaddress(investmentDto.getAddress());
+				if (opEditorInvestmentDto.isPresent()) {
+					investmentResponse.setEditorhtml(opEditorInvestmentDto.get().getEditorhtml());
+				}
+				resultDatas.add(investmentResponse);
+			}
+
+			result.data = "success";
+			result.object = resultDatas;
+			result.status = true;
+		} catch (Exception e) {
+			result.data = "fail";
+			result.object = null;
+			result.status = false;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+	@ExceptionHandler(Exception.class)
+	public void nullex(Exception e) {
+		System.err.println("invest 부분에서 " + e.getClass());
+		webhook w = new webhook();
+		w.send("invest 부분에서 " + e.getClass());
 	}
 }

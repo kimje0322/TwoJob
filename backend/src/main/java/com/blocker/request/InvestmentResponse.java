@@ -5,7 +5,8 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class InvestmentRequest {
+public class InvestmentResponse {
+	String address;
 	String userid;
 	String identity;// 개인인지 사업자인지
 	String compName;// 회사명
@@ -17,7 +18,7 @@ public class InvestmentRequest {
 	int goalPrice;// 달성금액
 	int expectedSalePrice;// 판매 예정금액
 	String picture;// 대표사진이름
-	List<String> categorys;//카테고리
-	List<String> tags;//테그
+	List<String> categorys;// 카테고리
+	List<String> tags;// 테그
 	String editorhtml;
 }

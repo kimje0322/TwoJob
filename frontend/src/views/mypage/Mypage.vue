@@ -250,6 +250,7 @@ const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 export default {
   methods: {
     onLogout() {
+      // this.$store.reset()
       store.state.isSigned = false;
       console.log("로그아웃됨");
       console.log("store.state.isSigned " + store.state.isSigned);

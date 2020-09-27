@@ -97,14 +97,16 @@
                   />
                   <h5 style="display: inline-block; margin-left: 5px;">원</h5>
                   <h5>대표 사진</h5>
+                  <!-- v-model="thumbnail" -->
                   <v-file-input
-                    v-model="thumbnail"
+                    :value="this.thumbnail"
                     :rules="rules"
                     accept="image/png, image/jpeg, image/bmp"
                     placeholder="Pick an thumbnail"
                     prepend-icon="mdi-camera"
                     outlined
                     hide-details
+                    @change="onthumbnail"
                   ></v-file-input>
                   <h5>카테고리</h5>
                   <div class="categoryDiv" style>
@@ -230,6 +232,9 @@ export default {
   },
   data() {
     return {
+      // 개인정보
+      userInfo: {},
+      login: false,
       tab: null,
       text: ["1", "2", "3"],
       tabs: ["프로젝트 정보", "금손 정보", "투자 설명서"],
@@ -242,7 +247,9 @@ export default {
       targetPrice: 0,
       sellPrice: 0,
       // 사진
-      thumbnail: "",
+      pp: "응?",
+      thumbnail: "file",
+      picture: "",
       rules: [
         (thumbnail) =>
           !thumbnail ||
@@ -325,6 +332,14 @@ export default {
       }
     },
   },
+  mounted() {
+    if (store.state.isSigned) {
+      this.userInfo = store.state.userInfo;
+      this.login = store.state.isSigned;
+    } else {
+      this.login = false;
+    }
+  },
   methods: {
     formatDate(date) {
       if (!date) return null;
@@ -343,6 +358,20 @@ export default {
     },
     removeSellPrice() {
       this.receivePrice = "";
+    },
+    onthumbnail(event) {
+      console.log(event)
+      var formData = new FormData();
+      formData.append("img", event);
+
+      axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
+          headers: { 'Content-Type': 'multipart/form-data' }
+      }).then(response => {
+          console.log(response.data);
+          this.picture = response.data
+      }).catch(error => {
+          console.log(error)
+        })
     },
     checkcategory(category) {
       if (this.checkCategory.indexOf(category) >= 0) {
@@ -405,12 +434,13 @@ export default {
       }).then((result) => {
         if (result.value) {
           axios.post(`${SERVER_URL}/investment/create`, {
+            userid: this.userInfo.id,
             pjtName: this.title,
             oneLineIntro: this.content,
             deadLine: this.dateformatted,
             goalPrice: this.targetPrice,
             expectedSalePrice: this.sellPrice,
-            pictual: this.thumbnail,
+            picture: this.picture,
             categorys: this.checkCategory,
             tags: this.tags,
             identity: this.select,
