@@ -141,6 +141,7 @@ export default {
       //if(this.index!=-1){
       console.log("충전할 금액은");
       console.log(store.state.charge);
+      console.log(store.state.userInfo.id)
       axios
         .get(
           `${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${store.state.userInfo.id}`
