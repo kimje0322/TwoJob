@@ -15,6 +15,7 @@ import WriteShopping from "@/views/shopping/WriteShopping.vue";
 import MyInvestPjt from "@/views/mypage/MyInvestPjt.vue"
 import LikeList from "@/views/mypage/LikeList.vue"
 import Messenger from "@/views/mypage/Messenger.vue"
+import Chat from "@/views/mypage/Chat.vue"
 
 Vue.use(VueRouter);
 
@@ -96,6 +97,11 @@ const routes = [{
         path: "/messenger",
         name: "Messsenger",
         component: Messenger,
+    },
+    {
+        path: "/chat",
+        name: "Chat",
+        component: Chat,
     }
 ];
 

@@ -29,20 +29,25 @@
                     :key="i"
                     style="display: inline-block; flex: 1"
                   >
-                    <v-card class="my-12" max-width="270px" style="margin: auto">
+                    <v-card
+                      class="my-12"
+                      max-width="270px"
+                      style="margin: auto"
+                    >
                       <v-img
                         height="250"
                         src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
                       ></v-img>
-                      <v-card-title style="font-size: 15px; font-weight: 600; margin: auto"
+                      <v-card-title
+                        style="font-size: 15px; font-weight: 600; margin: auto"
                         >{{ item.title }}
                         <div style="margin-left: auto">
-                          <v-chip class="likeBadge" style="font-size: 12px;"
+                          <v-chip class="likeBadge" style="font-size: 12px"
                             >{{ item.likenum }}명 좋아요</v-chip
                           >
                         </div>
                       </v-card-title>
-                      <v-card-text style="max-height: 90px;">
+                      <v-card-text style="max-height: 90px">
                         <div style="color: black">
                           <h5
                             style="
@@ -82,25 +87,19 @@
           <!-- 큰손 프로젝트 창 -->
           <v-tab-item :value="'tab-1'">
             <v-card flat tile>
-              <v-card-text>
-               
-              </v-card-text>
+              <v-card-text> </v-card-text>
             </v-card>
           </v-tab-item>
           <!-- 판매 프로젝트 창 -->
           <v-tab-item :value="'tab-2'">
             <v-card flat tile>
-              <v-card-text>
-               
-              </v-card-text>
+              <v-card-text> </v-card-text>
             </v-card>
           </v-tab-item>
           <!-- 구매 프로젝트 창 -->
           <v-tab-item :value="'tab-3'">
             <v-card flat tile>
-              <v-card-text>
-               
-              </v-card-text>
+              <v-card-text> </v-card-text>
             </v-card>
           </v-tab-item>
         </v-tabs>
@@ -172,16 +171,12 @@ export default {
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
-    // 나의 프로젝트 내역 가져오기
-    axios
-      .get(`${SERVER_URL}/investment/investList?userid=${store.state.userInfo.id}`)
-      .then((res) => {
-        console.log(res)
-      })
-
   },
   data() {
     return {
+      // 투자리스트
+      investlst: [],
+
       userimg: "",
       username: "",
       userbalance: "",
@@ -233,6 +228,19 @@ export default {
     };
   },
   computed: {},
+  method: {
+    init() {
+      // 나의 프로젝트 내역 가져오기
+      axios
+        .get(
+          `${SERVER_URL}/investment/investList?userid=${store.state.userInfo.id}`
+        )
+        .then((res) => {
+          console.log(res);
+          this.investlst = res.data.object
+        });
+    },
+  },
   watch: {
     date1(val) {
       this.dateFormatted1 = this.formatDate(this.date1);
