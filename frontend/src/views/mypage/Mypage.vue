@@ -206,7 +206,7 @@
                               :src="userimg"
                               style="height: 40px; border-radius: 50%; display: inline-block;"
                             />
-                            <span style="margin-left: 100px;">프로젝트 명</span>
+                            <span style="margin-left: 100px;">dfdfdfdfdfdfdfdfdfdfdf프로젝트 명</span>
                             <span style="float: right">+ 120,0000 ETH</span>
                           </div>
                           <div style="margin-top: 15px;">
