@@ -79,7 +79,7 @@ const routes = [{
         component: Mypage,
     },
     {
-        path: "/writeshopping",
+        path: "/writeshopping/:address?",
         name: "WriteShopping",
         component: WriteShopping,
     },
