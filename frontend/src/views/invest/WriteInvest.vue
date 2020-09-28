@@ -297,8 +297,9 @@ export default {
             axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
                 headers: { 'Content-Type': 'multipart/form-data' } 
             }).then(response => {
-                console.log(response.data);
-              callback(response.data)
+                const cutUrl = response.data.substr(18, response.data.length-17)
+                const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+              callback(imgUrl)
             });
           },
         },
