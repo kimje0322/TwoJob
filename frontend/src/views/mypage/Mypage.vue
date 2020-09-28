@@ -192,9 +192,9 @@
                           <span style="margin-right: 5px;">
                             <i class="far fa-comments fa-lg"></i>
                           </span>
-                          <strong style="font-size: 17px;">
+                          <!-- <strong style="font-size: 17px;"> -->
                             <a href="/chat">1 : 1 문의</a>
-                            </strong>
+                            <!-- </strong> -->
                         </div>
                       </div>
                       <div style="margin: 100px 20px 0;">
