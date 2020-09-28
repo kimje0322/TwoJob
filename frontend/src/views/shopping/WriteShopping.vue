@@ -22,7 +22,6 @@
                   <p>상품에 대한 정보를 정확하게 입력해주세요.</p>
                   <h5>상품명</h5>
                   <input v-model="title" 
-
                   type="text" placeholder="상품명을 입력해주세요." />
                   <h5 style="display: inline-block; margin-left: 5px;"></h5>
                   <h5>대표 사진</h5>

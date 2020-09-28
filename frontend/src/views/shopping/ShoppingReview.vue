@@ -4,7 +4,6 @@
       <!-- 리뷰 작성부분 --> 
       <v-card-text style="height:450;" class="pa-1">
         <v-list>
-          <input ref="imageInput" type="file" hidden />
           <!-- 만족도 확인 -->
           <v-toolbar dense elevation="1">
             <h5 class="mx-auto">리뷰 등록</h5>
@@ -20,13 +19,36 @@
             mdi-star
             </v-icon>
           </div>
+          <!-- 이미지 업로드 버튼 -->
+          <input ref="imageInput" type="file" @change="onChangeImages" hidden/>
+          <div v-if="!uploadimg" @click="onClickImageUpload" class="reviewImg mx-auto mt-3">
+            <v-icon>mdi-camera-plus-outline</v-icon>
+            <span style="display:inline-block; margin-top:10px">사진 첨부하기</span>  
+          </div>
+          <!-- 이미지 첨부된 경우 -->
+          <!-- 이미지 삭제 버튼 -->
+          <div v-show="uploadimg">
+            <v-btn x-small dark fab absolute top right color="black" style="top:181px;right:52px;opacity:.6;"
+              @click="onDeleteImg"
+            >
+              <v-icon dark>mdi-close</v-icon>
+            </v-btn>
+            <img 
+              class="mx-auto mt-3"
+              ref="img"
+              style="width: 87%; border-radius: 10px;"
+              :src="imgPath+img"
+              alt="reviewImg"
+            />
+          </div>
+          
           <!-- 리뷰 내용 -->
-          <v-list-item>0
+          <v-list-item>
             <v-textarea
               v-model = "content"
-              min-height = "300px"
+              solo
               prepend-inner-icon="mdi-lead-pencil"
-              rows="2" class="mx-2" 
+              rows="2" class="mx-5 mt-6" 
               placeholder="리뷰를 작성해주세요."
               clearable
             ></v-textarea>
@@ -59,7 +81,11 @@ export default {
         star5: "s5",
       },
       checkedStars: false,
+      uploadimg: false,
+      showImg : true,
       content: '',
+      img: 'no_image.jpg',
+      imgPath: 'http://j3b102.p.ssafy.io/:8080/img/post?imgname=', 
     }
   },
 
@@ -83,12 +109,37 @@ export default {
         }
       }
     },
+    onDeleteImg() {
+      console.log('ondeleteimg')
+      this.showImg = false;
+      this.postimgurl = null;
+      this.postimg = 'no_image.jpg';
+      this.uploadimg = false;
+    },
+    onClickImageUpload() {
+      this.$refs.imageInput.click();
+    },
+    onChangeImages(e) {
+      console.log('onchangeImages')
+      this.showImg = true;
+      this.uploadimg = true;
+      this.file = e.target.files[0];
+      this.imgPath = URL.createObjectURL(this.file);
+      this.img = '';
+
+    },
   }
 }
 </script>
 
 <style scoped>
- /* .v-input__slot {
-   min-height: 100px !important;
- } */
+  .reviewImg {
+     background-color: #E1F5FE;
+    width: 60%;
+    padding: 5px 0px 12px 0px;
+    border-radius: 15px;
+  }
+  .reviewImg:hover {
+   cursor: pointer;
+  }
 </style>
