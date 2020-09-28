@@ -12,9 +12,11 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,7 @@ import com.blocker.dto.BoardTagDto;
 import com.blocker.dto.CategoryDto;
 import com.blocker.dto.EditorInvestmentDto;
 import com.blocker.dto.InvestmentDto;
+import com.blocker.dto.SaleBoardDto;
 import com.blocker.dto.TagDto;
 import com.blocker.repository.BoardCategoryRepository;
 import com.blocker.repository.BoardTagRepository;
@@ -37,6 +40,8 @@ import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.TagRepository;
 import com.blocker.request.InvestmentRequest;
 import com.blocker.request.InvestmentResponse;
+import com.blocker.request.SaleBoardResponse;
+import com.blocker.service.InvestmentService;
 import com.blocker.util.BasicResponse;
 import com.blocker.util.webhook;
 
@@ -49,6 +54,8 @@ public class InvestController {
 
 	@Autowired
 	private InvestmentRepository investmentRepository;
+	@Autowired
+	private InvestmentService investmentService;
 	@Autowired
 	private EditorInvestmentRepository editorinvestmentRepository;
 	@Autowired
@@ -66,7 +73,7 @@ public class InvestController {
 		final BasicResponse result = new BasicResponse();
 		try {
 			InvestmentDto investmentdto = new InvestmentDto();
-			
+
 			UUID uuid = UUID.randomUUID();
 			investmentdto.setAddress(uuid.toString());
 			investmentdto.setUserid(pinvestment.getUserid());
@@ -80,6 +87,7 @@ public class InvestController {
 			investmentdto.setPicture(pinvestment.getPicture());
 			investmentdto.setPjtname(pinvestment.getPjtName());
 			investmentdto.setUrl(pinvestment.getUrl());
+			investmentdto.setIsfinish(false);// true면 이미 종료된 투자
 
 			InvestmentDto tempInvestmentDto = investmentRepository.save(investmentdto);
 
@@ -167,15 +175,15 @@ public class InvestController {
 		}
 	}
 
-	@GetMapping("/investList")
-	@ApiOperation(value = "저장되어있는 모든 투자 게시글을보여줌")
+	@GetMapping("/investList/{page}")
+	@ApiOperation(value = "저장되어있는 나의 모든 투자 게시글을보여줌")
 	@ResponseBody
-	public Object investList(@RequestParam String userid) {
+	public Object investMyList(@RequestParam String userid, @PathVariable int page) {
 		final BasicResponse result = new BasicResponse();
 		List<InvestmentDto> list = new ArrayList<>();
 		List<InvestmentResponse> resultDatas = new ArrayList<>();
 
-		list = investmentRepository.findAllByUserid(userid);
+		list = investmentService.getAllMyinvestmentList(userid, page);
 		try {
 			for (Iterator<InvestmentDto> iter = list.iterator(); iter.hasNext();) {
 				InvestmentDto investmentDto = iter.next();
@@ -192,6 +200,7 @@ public class InvestController {
 				investmentResponse.setPjtName(investmentDto.getPjtname());
 				investmentResponse.setUrl(investmentDto.getUrl());
 				investmentResponse.setUserid(investmentDto.getUserid());
+				investmentResponse.setIsfinish(investmentDto.isIsfinish());
 
 				// editor
 				Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
@@ -213,6 +222,53 @@ public class InvestController {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
+
+	@GetMapping("/getAllInvestBoard/{page}")
+	@ApiOperation(value = "저장되어있는 모든사람의 투자 게시글을보여줌")
+	@ResponseBody
+	public Object getAllInvestBoard(@PathVariable int page) {
+		final BasicResponse result = new BasicResponse();
+		List<InvestmentResponse> resultDatas = new ArrayList<>();
+		List<InvestmentDto> list = investmentService.getAllInvestmentList(page);
+
+		try {
+			for (Iterator<InvestmentDto> iter = list.iterator(); iter.hasNext();) {
+				InvestmentDto investmentDto = iter.next();
+				InvestmentResponse investmentResponse = new InvestmentResponse();
+				investmentResponse.setAddress(investmentDto.getAddress());
+				investmentResponse.setCompName(investmentDto.getCompname());
+				investmentResponse.setDeadLine(investmentDto.getDeadline());
+				investmentResponse.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
+				investmentResponse.setGoalPrice(investmentDto.getGoalprice());
+				investmentResponse.setIdentity(investmentDto.getIdentity());
+				investmentResponse.setIntroduce(investmentDto.getIntroduce());
+				investmentResponse.setOneLineIntro(investmentDto.getOnelineintro());
+				investmentResponse.setPicture(investmentDto.getPicture());
+				investmentResponse.setPjtName(investmentDto.getPjtname());
+				investmentResponse.setUrl(investmentDto.getUrl());
+				investmentResponse.setUserid(investmentDto.getUserid());
+				investmentResponse.setIsfinish(investmentDto.isIsfinish());
+
+				// editor
+				Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
+						.getEditorInvestmentDtoByInvestaddress(investmentDto.getAddress());
+				if (opEditorInvestmentDto.isPresent()) {
+					investmentResponse.setEditorhtml(opEditorInvestmentDto.get().getEditorhtml());
+				}
+				resultDatas.add(investmentResponse);
+			}
+			result.data = "success";
+			result.object = resultDatas;
+			result.status = true;
+		} catch (Exception e) {
+			result.data = "fail";
+			result.object = null;
+			result.status = false;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+
 	@ExceptionHandler(Exception.class)
 	public void nullex(Exception e) {
 		System.err.println("invest 부분에서 " + e.getClass());
