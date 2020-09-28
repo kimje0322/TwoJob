@@ -308,37 +308,8 @@
             <!-- 댓글 -->
             <div v-if="tabItem=='comments'" class="my-4" style="background-color: #f8f9fa ;">
               <div>
-                <p style="margin-left:10px">총 25건의 후기가 있습니다.</p>
-                <div style="text-align: center;">
-                  <img style="width: 65%" src="../../assets/평점.png" alt />
-                </div>
-                <h5>전체 후기</h5>
-                <!-- 1 -->
-                <div class="mt-3">
-                  <v-icon style="display:inline" size="38">mdi-emoticon-happy-outline</v-icon>
-                  <strong>
-                    <p style="display:inline; margin: 2px 0px 0px 3px;">솜사탕강쥐</p>
-                  </strong>
-                  <span class="ml-2" style="color: grey">2020.09.15</span>
-                  <!-- <p class="mx-5">{{ reviews }}</p> -->
-                </div>
-                <!-- 2 -->
-                <div class="mt-3">
-                  <v-icon style="display:inline" size="38">mdi-emoticon-happy-outline</v-icon>
-                  <strong>
-                    <p style="display:inline; margin: 2px 0px 0px 3px;">동백꽃</p>
-                  </strong>
-                  <span class="ml-2" style="color: grey">2020.09.15</span>
-                  <!-- <p class="mx-5">{{ reviews }}</p> -->
-                </div>
-                <div class="mt-3">
-                  <v-icon style="display:inline" size="38">mdi-emoticon-happy-outline</v-icon>
-                  <strong>
-                    <p style="display:inline; margin: 2px 0px 0px 3px;">싸피인</p>
-                  </strong>
-                  <span class="ml-2" style="color: grey">2020.09.15</span>
-                  <!-- <p class="mx-5">{{ reviews }}</p> -->
-                </div>
+                <input type="text" placeholder="댓글을 입력해주세요.">
+                <v-btn>댓글</v-btn>
               </div>
             </div>
           </v-tab-item>
