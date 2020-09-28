@@ -12,7 +12,6 @@
         <div>
           <router-link to="/shoppingproject">
             <h5>프로젝트</h5>
-            
           </router-link>
         </div>
         <div>
@@ -60,22 +59,28 @@
       </v-container>
     </v-app>
 
-    <div>
-      <!-- 리뷰 모달 -->
-      <v-dialog max-width="640" min-height="500" v-model="reviewDialog">
-        <ShoppingReview @closeReviewDialog="closeReviewDialog"></ShoppingReview>
-      </v-dialog>
-
-      <!-- 임시 리뷰작성 버튼 activator -->
-      <div style="text-align: end; margin-right: 70px;">
-        <v-btn 
-          @click="openReviewDialog(-1)"
-          outlined>
-          리뷰 작성
-        </v-btn>
+    <!-- 품절임박 -->
+    <div style="margin-left: 5%;">
+      <h4 style="font-weight: 600">품절임박<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
+    </div>
+    <div style="display: flex; padding: 1% 0">
+      <div v-for="(item, i) in deadlineItems" :key="i" style="display: inline-block; flex:1">
+        <v-card :loading="loading" class="my-12" max-width="320" style="margin: auto">
+          <router-link to="/ShoppingDetail">
+          <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
+          </router-link>
+          <v-card-title style="font-weight: 600; margin: auto">{{item.title}}
+            <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.deadline}}개 남음</v-chip></div>
+          </v-card-title>
+          <v-card-text>
+            <div style="margin-bottom: 15px;">{{item.content}}</div>
+            <!-- <div style="color: black;">
+              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.price}} 원</h5>
+            </div> -->
+          </v-card-text>
+        </v-card>
       </div>
     </div>
-
     <!-- 인기순 -->
     <div style="margin-left: 5%; margin-top: 3%">
       <h4 style="font-weight: 600">인기순<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
@@ -125,17 +130,13 @@
 import "../../../public/css/InvestHome.scss";
 import "../../../public/css/ShoppingHome.scss";
 import Navbar from "../../components/Navbar.vue";
-// 쇼핑 리뷰
-import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
 
 export default {
   components: {
-    Navbar, 
-    ShoppingReview,
+    Navbar
   },
   data() {
     return {
-      reviewDialog: '',
       categoryList: [
         { icon: "book-multiple-outline", name: "전체", key: "all" },
         { icon: "laptop-windows", name: "테크, 가전", key: "tech" },
@@ -239,15 +240,7 @@ export default {
     };
   },
   methods: {
-    openReviewDialog() {
-      this.reviewDialog = true;
-    },
-    closeReviewDialog() {
-      this.reviewDialog = false;
-    },
-    openDialog() {
-      this.reviewDialog = true;
-    }
+
   },
 };
 </script>

@@ -90,13 +90,13 @@
         </div>
       </div>
       <div style="padding: 1% 0">
-        <div v-for="(item, i) in shoppingList" :key="i" style="display: inline-block; width: 30%; margin-bottom: 30px;">
+        <div v-for="(item, i) in shoppingProjects" :key="i" style="display: inline-block; width: 30%; margin-bottom: 30px;">
           <v-card class="my-12" max-width="320" style="margin: auto">
             <router-link to="/shoppingdetail">
             <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
             </router-link>
             <v-card-title style="font-weight: 600; margin: auto">
-              {{item.pjtname}}
+              {{item.title}}
               <div style="margin-left: auto;">
                 <v-chip class="projectBadge">{{item.deadline}}일 남음</v-chip>
               </div>
@@ -195,9 +195,6 @@
 import "../../../public/css/InvestHome.scss";
 import "../../../public/css/ShoppingHome.scss";
 import Navbar from "../../components/Navbar.vue";
-import axios from "axios";
-
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   components: {
@@ -205,8 +202,6 @@ export default {
   },
   data() {
     return {
-      page: 0,
-      shoppingList: [],
       categoryList: [
         { icon: "book-multiple-outline", name: "전체", key: "all" },
         { icon: "laptop-windows", name: "테크, 가전", key: "tech" },
@@ -283,17 +278,6 @@ export default {
   },
   watch: {
 
-  },
-  mounted() {
-    axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}`)
-      .then(response => {
-        console.log(response.data)
-        this.shoppingList = response.data.object}
-      )
-      .catch(error => {
-          console.log('오류임')
-          console.log(error)
-        });
   },
   methods: {
     nowstate(val) {
