@@ -18,7 +18,7 @@
         <div style="height: 600px">
           <div>
             <span class="userimgbox" style="width: 35px; height: 35px">
-              <img class="userimg" :src="userInfo.img" style="height: 100%" />
+              <img class="userimg" :src="userimg" style="height: 100%" />
             </span>
             <span> userInfo.name </span>
           </div>
@@ -71,16 +71,19 @@ const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 export default {
   data() {
     return {
-      userlst: [],
+			userlst: [],
+			
+			userimg: "",
     };
   },
   methods: {
-    // init() {
+    init() {
+			this.userimg = store.state.userInfo.img
     // 	axios
     // 		.get( `${SERVER_URL}`)
     // 		.then((res) => {
     // 		})
-    // }
+    }
   },
 };
 </script>
