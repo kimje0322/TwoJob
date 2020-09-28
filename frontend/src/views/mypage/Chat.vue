@@ -17,8 +17,8 @@
         </div>
         <div style="height: 600px">
           <div>
-            <span class="userimgbox" style="width: 35px; height: 35px">
-              <img class="userimg" :src="userimg" style="height: 100%" />
+            <span class="userimgbox" style="width: 15px; height: 15px">
+              <img class="userimg" :src="userimg" style="height: 10%" />
             </span>
             <span> userInfo.name </span>
           </div>
@@ -36,24 +36,20 @@
           "
         >
           <div>프로필 부분</div>
-					<div style="display: flex; flex: 1 1 0%; flex-direction: row-reverse;">
-						<div style="position: relative; display: flex; flex-direction: column;">
-							<div style="padding-left: 12px; height: 550px; ">
-								여기에 대화내용이나와야 됨
-							</div>
-							<div style="border-top: none; position: absolute;">
-								<div style="padding: 9px 0; font-size: 14px;">
-									<div>
-										메세지를 입력하세요
-									</div>
-
-								</div>
-
-							</div>
-
-						</div>
-
-					</div>
+          <div style="display: flex; flex: 1 1 0%; flex-direction: row-reverse">
+            <div
+              style="position: relative; display: flex; flex-direction: column"
+            >
+              <div style="padding-left: 12px; height: 550px">
+                여기에 대화내용이나와야 됨
+              </div>
+              <div style="border-top: none; position: absolute">
+                <div style="padding: 9px 0; font-size: 14px">
+                  <div>메세지를 입력하세요</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -71,19 +67,25 @@ const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 export default {
   data() {
     return {
-			userlst: [],
-			
-			userimg: "",
+      userlst: [],
+
+      userimg: "",
     };
   },
+  components: {
+    Navbar,
+	},
+	mounted() {
+		// this.userimg = store.state.userInfo.img;
+		this.userimg = store.state.userInfo.img;
+	},
   methods: {
-    init() {
-			this.userimg = store.state.userInfo.img
-    // 	axios
-    // 		.get( `${SERVER_URL}`)
-    // 		.then((res) => {
-    // 		})
-    }
+    // init() {
+      // 	axios
+      // 		.get( `${SERVER_URL}`)
+      // 		.then((res) => {
+      // 		})
+    // },
   },
 };
 </script>
@@ -91,13 +93,13 @@ export default {
 <style>
 .userimgbox {
   border-radius: 70%;
-  width: 55px;
-  height: 55px;
+  width: 1px;
+  height: 15px;
   overflow: hidden;
 }
 .userimg {
-  width: 100%;
-  height: 100%;
+  width: 10%;
+  height: 10%;
   object-fit: cover;
 }
 </style>
