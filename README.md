@@ -145,13 +145,13 @@
 
 
 
-## 기술 스택
+## 🔧기술 스택
 
 ![](기타/image/기술스택.PNG)
 
 
 
-## :pencil:commit message rule
+## :pencil: ​commit message rule
 
 ```
 [FE/BE/BC/etc] 동사 + 페이지 이름 + 추가하고 싶은 메시지 
