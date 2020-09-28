@@ -224,6 +224,9 @@ export default {
       }
     },
   },
+  mounted() {
+    
+  },
   methods: {
     openState() {
       this.openstate = !this.openstate
