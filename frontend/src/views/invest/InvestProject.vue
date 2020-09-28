@@ -127,6 +127,8 @@
 <script>
 import Navbar from "../../components/Navbar.vue";
 import "../../../public/css/InvestProject.scss";
+import axios from "axios";
+const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   components: {
@@ -202,6 +204,8 @@ export default {
           percent: "88",
         },
       ],
+      // page
+      page: 0,
     };
   },
   watch: {
@@ -223,6 +227,15 @@ export default {
         this.longrate = false
       }
     },
+  },
+  mounted() {
+    axios.get(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   },
   methods: {
     openState() {

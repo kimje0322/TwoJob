@@ -1,12 +1,12 @@
 <template>
-  <div class="home">
+  <div class="myinvestpjt">
     <!-- 상단 Navbar -->
-    <navbar />
-    <div style="max-width: 1000px; margin: 10px auto 20px">
+    <navbar style="border-bottom: 1px solid lightgray" />
+    <div style="padding: 1% 10%">
       <h3 style="font-weight: 800">나의 프로젝트</h3>
     </div>
     <!-- 프로젝트 메뉴바 -->
-    <div style="max-width: 1000px; max-height: 1000px; margin: 0 auto">
+    <div style="padding: 0 10%">
       <!-- 프로젝트 메뉴 -->
       <div class="writeMenuBar">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
@@ -16,61 +16,46 @@
             :key="i"
             :href="`#tab-${i}`"
             class="writeMenu"
-            >{{ item }}</v-tab
-          >
+          >{{ item }}</v-tab>
           <!-- 금손 프로젝트 창 -->
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
               <v-card-text>
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
-                <div style="display: flex; padding: 1% 0">
+                <div style="padding: 1% 0">
                   <div
-                    v-for="(item, i) in likeItems"
+                    v-for="(item, i) in investList"
                     :key="i"
-                    style="display: inline-block; flex: 1"
+                    style="display: inline-block; width: 33%; margin-bottom: 20px"
                   >
-                    <v-card class="my-12" max-width="270px" style="margin: auto">
-                      <v-img
-                        height="250"
-                        src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
-                      ></v-img>
-                      <v-card-title style="font-size: 15px; font-weight: 600; margin: auto"
-                        >{{ item.title }}
+                    <v-card class="my-12" max-width="75%" max-height="600px" style="margin: auto">
+                      <v-img height="250" :src="item.picture"></v-img>
+                      <v-card-title style="font-weight: 600; margin: auto">
+                        {{ item.pjtName }}
                         <div style="margin-left: auto">
-                          <v-chip class="likeBadge" style="font-size: 12px;"
-                            >{{ item.likenum }}명 좋아요</v-chip
-                          >
+                          <v-chip class="likeBadge" style="font-size: 12px">100명 좋아요</v-chip>
                         </div>
                       </v-card-title>
-                      <v-card-text style="max-height: 90px;">
+                      <!-- max-height: 120px -->
+                      <v-card-text style="">
+                        <div style="margin-bottom: 15px;">{{item.oneLineIntro}}</div>
                         <div style="color: black">
                           <h5
-                            style="
-                              display: inline-block;
-                              height: 41.6px;
-                              line-height: 41.6px;
-                            "
-                          >
-                            {{ item.price }} 원
-                          </h5>
+                            style="display: inline-block; height: 41.6px; line-height: 41.6px;"
+                          >{{ item.goalPrice }} 원</h5>
                           <div style="display: inline-block; float: right">
                             <h3
-                              style="
-                                display: inline-block;
-                                color: rgb(22, 150, 245);
-                              "
-                            >
-                              {{ item.percent }}%
-                            </h3>
+                              style="display: inline-block; color: rgb(22, 150, 245);"
+                            >{{ item.percent }}%</h3>
                             <h5
-                              style="
-                                display: inline-block;
-                                color: rgb(123, 197, 254);
-                              "
-                            >
-                              달성
-                            </h5>
+                              style="display: inline-block; color: rgb(123, 197, 254);"
+                            >달성</h5>
                           </div>
+                        </div>
+                        <!-- 영수증 등록, 상품 판매 글쓰기 -->
+                        <div style="margin-bottom: 10px">
+                          <v-btn style="background-color:rgb(22, 150, 245); color: white; width: 50%; margin-right: 10%;">사용내역 등록</v-btn>
+                          <router-link :to="{ name: 'WriteShopping', params: { address : item.address }}"><v-btn style="background-color:#a9a9a9; color: white; width: 40%">쇼핑 글쓰기</v-btn></router-link>
                         </div>
                       </v-card-text>
                     </v-card>
@@ -82,25 +67,19 @@
           <!-- 큰손 프로젝트 창 -->
           <v-tab-item :value="'tab-1'">
             <v-card flat tile>
-              <v-card-text>
-               
-              </v-card-text>
+              <v-card-text></v-card-text>
             </v-card>
           </v-tab-item>
           <!-- 판매 프로젝트 창 -->
           <v-tab-item :value="'tab-2'">
             <v-card flat tile>
-              <v-card-text>
-               
-              </v-card-text>
+              <v-card-text></v-card-text>
             </v-card>
           </v-tab-item>
           <!-- 구매 프로젝트 창 -->
           <v-tab-item :value="'tab-3'">
             <v-card flat tile>
-              <v-card-text>
-               
-              </v-card-text>
+              <v-card-text></v-card-text>
             </v-card>
           </v-tab-item>
         </v-tabs>
@@ -115,6 +94,7 @@ import store from "../../store/index.js";
 import Navbar from "../../components/Navbar.vue";
 import Web3 from "web3";
 import Swal from "sweetalert2";
+import "../../../public/css/MyInvestPjt.scss";
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
@@ -172,16 +152,22 @@ export default {
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
-    // 나의 프로젝트 내역 가져오기
+    this.userid = store.state.userInfo.id;
     axios
-      .get(`${SERVER_URL}/investment/investList?userid=${store.state.userInfo.id}`)
-      .then((res) => {
-        console.log(res)
-      })
-
+      .get(
+        `${SERVER_URL}/investment/investList/${this.page}?userid=${this.userid}`
+      )
+      .then((response) => {
+        console.log(response);
+        this.investList = response.data.object;
+      });
   },
   data() {
     return {
+      userid: "",
+      page: 0,
+      // 투자리스트
+      investList: [],
       userimg: "",
       username: "",
       userbalance: "",
@@ -233,6 +219,19 @@ export default {
     };
   },
   computed: {},
+  method: {
+    init() {
+      // 나의 프로젝트 내역 가져오기
+      axios
+        .get(
+          `${SERVER_URL}/investment/investList?userid=${store.state.userInfo.id}`
+        )
+        .then((res) => {
+          console.log(res);
+          this.investlst = res.data.object;
+        });
+    },
+  },
   watch: {
     date1(val) {
       this.dateFormatted1 = this.formatDate(this.date1);
@@ -309,7 +308,7 @@ export default {
   right: 1%;
 }
 .v-card__text {
-  padding: 16px 5%;
+  padding: 0 16px 5px 16px;
   color: black !important;
 }
 h5 {
@@ -370,7 +369,7 @@ input:hover {
   border: 2px solid rgb(22, 150, 245);
 }
 .v-card__text {
-  height: 600px;
+  /* height: 600px; */
 }
 .v-card--flat {
   background-color: rgba(173, 220, 254, 0.4);
@@ -449,5 +448,8 @@ input:hover {
   background-color: red !important;
   color: white !important;
   text-align: right;
+}
+.theme--dark.v-tabs > .v-tabs-bar {
+  background-color: unset;
 }
 </style>

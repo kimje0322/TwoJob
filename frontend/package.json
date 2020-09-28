@@ -19,6 +19,7 @@
     "vue": "^2.6.10",
     "vue-router": "^3.4.5",
     "vue-sweetalert2": "^3.0.8",
+    "vueperslides": "^2.10.8",
     "vuetify": "^2.3.10",
     "vuetify-datetime-picker": "^2.1.1",
     "vuex": "^3.5.1",

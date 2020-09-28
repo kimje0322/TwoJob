@@ -2,8 +2,6 @@ package com.blocker.dto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,8 +15,8 @@ public class InvestmentDto {
 	String address;
 
 	@Column
-	String userid;//유저아이디
-	
+	String userid;// 유저아이디
+
 	@Column
 	String identity;// 개인인지 사업자인지
 
@@ -47,5 +45,9 @@ public class InvestmentDto {
 	int expectedsaleprice;// 판매 예정금액
 
 	@Column
+	boolean isfinish;
+
+	@Column
 	String picture;// 대표사진이름
+
 }
