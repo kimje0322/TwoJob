@@ -208,6 +208,7 @@ export default {
   },
   data() {
     return {
+      userid: '',
       // 추가된 상품
       showCategory: [],
       addedItem: false,
@@ -297,6 +298,15 @@ export default {
       }
     }
   },
+  mounted() {
+    if (store.state.isSigned) {
+      this.userInfo = store.state.userInfo;
+      this.userid = store.state.userInfo.id;
+      this.login = store.state.isSigned;
+    } else {
+      this.login = false;
+    }
+  },
   methods: {
     onSave() {
       this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
@@ -360,10 +370,11 @@ export default {
         cancelButtonText: '취소하기',
         reverseButtons: true
       }).then((result) => {
+        console.log(this.userid)
         if (result.value) {
           axios.post(`${SERVER_URL}/sale/create`, {
-            address: "abc",
-            investaddress: "abc",
+            userid: this.userid,
+            investaddress: "28d999c6-7a39-4dae-a651-bb46512b549c",
             pjtname: this.title,
             picture: "정성오",
             startdate: this.dateFormatted1,
@@ -372,10 +383,13 @@ export default {
             // categorys: this.checkCategory,
             // tags: this.tags,
             editorhtml: this.editortext,
-            userid: "string",
-
           })
             .then(response => {
+              if(response.data.data == 'success'){
+
+              }else{
+                alert(실패)
+              }
               Swal.fire({
                 // position: 'top-end',
                 icon: 'success',
