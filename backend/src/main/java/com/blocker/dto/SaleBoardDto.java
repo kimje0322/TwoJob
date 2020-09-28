@@ -29,9 +29,12 @@ public class SaleBoardDto {
 	int saleprice;
 	@Column
 	String picture;
-	
-	public SaleBoardDto() {}
-	
+	@Column
+	boolean isfinish;
+
+	public SaleBoardDto() {
+	}
+
 	public SaleBoardDto(SaleBoardRequest saleBoardRequest) {
 		this.investaddress = saleBoardRequest.getInvestaddress();
 		this.userid = saleBoardRequest.getUserid();
@@ -41,7 +44,7 @@ public class SaleBoardDto {
 		this.saleprice = saleBoardRequest.getSaleprice();
 		this.picture = saleBoardRequest.getPicture();
 	}
-	
+
 	public SaleBoardDto(SaleBoardDto saleBoardDto) {
 		this.address = saleBoardDto.getAddress();
 		this.investaddress = saleBoardDto.getInvestaddress();
@@ -52,5 +55,5 @@ public class SaleBoardDto {
 		this.saleprice = saleBoardDto.getSaleprice();
 		this.picture = saleBoardDto.getPicture();
 	}
-	
+
 }

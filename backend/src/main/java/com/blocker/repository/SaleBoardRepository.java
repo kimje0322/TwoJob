@@ -3,14 +3,19 @@ package com.blocker.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.blocker.dto.SaleBoardDto;
 
 @Repository
-public interface SaleBoardRepository extends JpaRepository<SaleBoardDto, String>{
+public interface SaleBoardRepository extends JpaRepository<SaleBoardDto, String> {
+
+	@Query(value = "select * from saleboard where userid = :userid", countQuery = "selet count (*) from saleboard where userid =: userid", nativeQuery = true)
+	List<SaleBoardDto> findAllByUserid(Pageable page, String userid);
 
 	Optional<SaleBoardDto> findSaleBoardDtoByAddress(String address);
-	List<SaleBoardDto> findAllByUserid(String userid);
+
 }
