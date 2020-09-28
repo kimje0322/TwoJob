@@ -9,12 +9,12 @@
       </div>
       <div>
         <router-link to="/investhome">
-          <h5>투자목록</h5>
+          <h5>투자하기</h5>
         </router-link>
       </div>
       <div>
         <router-link to="/shoppinghome">
-          <h5>쇼핑목록</h5>
+          <h5>쇼핑하기</h5>
         </router-link>
       </div>
       <div v-if="!login">
