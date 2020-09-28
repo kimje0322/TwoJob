@@ -1,6 +1,9 @@
 package com.blocker.controller;
 
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blocker.dto.Chatroom;
 import com.blocker.service.FundingService;
 import com.blocker.util.webhook;
 
@@ -66,11 +70,24 @@ public class FundingController {
 	public ResponseEntity<String> SellItems(@RequestParam("accessToken") String accessToken, @RequestParam("campaignId") String campaignId, @RequestParam("count") Integer cnt, @RequestParam("money") Integer money) throws Exception {
 		return new ResponseEntity<String>(fundingService.sellItem(accessToken, campaignId, cnt, money),HttpStatus.OK);
 	}
-	
+	@ApiOperation(value = "testg ")
+	@GetMapping(value = "/testd")
+	public void test() {
+//		Chatroom c = new Chatroom();
+//		System.out.println(3/0);
+		
+		int test = Integer.parseInt("dddd");
+
+	}
 	@ExceptionHandler(Exception.class)
 	public void nullex(Exception e) {
+		StringWriter errors = new StringWriter();
+        e.printStackTrace(new PrintWriter(errors));
+        String result = errors.toString();
 		System.err.println("Funding 부분에서 " + e.getClass());
+		System.out.println(result);
 		webhook w = new webhook();
 		w.send("Funding 부분에서 " + e.getClass());
+		//w.postHttpsRequest(result, e.getClass().toString());
 	}
 }
