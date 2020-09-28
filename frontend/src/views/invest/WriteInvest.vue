@@ -437,7 +437,7 @@ export default {
             userid: this.userInfo.id,
             pjtName: this.title,
             oneLineIntro: this.content,
-            deadLine: this.dateformatted,
+            deadLine: this.dateFormatted,
             goalPrice: this.targetPrice,
             expectedSalePrice: this.sellPrice,
             picture: this.picture,
