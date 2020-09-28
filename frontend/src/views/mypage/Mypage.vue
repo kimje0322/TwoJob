@@ -192,7 +192,9 @@
                           <span style="margin-right: 5px;">
                             <i class="far fa-comments fa-lg"></i>
                           </span>
-                          <strong style="font-size: 17px;">1 : 1 문의</strong>
+                          <strong style="font-size: 17px;">
+                            <a href="/chat">1 : 1 문의</a>
+                            </strong>
                         </div>
                       </div>
                       <div style="margin: 100px 20px 0;">
@@ -230,17 +232,10 @@
 </template>
 
 <script>
-// import Vue from 'vue'
 import axios from "axios";
-// import router from "@/routes";
 
-// import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
-// import 'bootstrap/dist/css/bootstrap.css'
-// import 'bootstrap-vue/dist/bootstrap-vue.css'
-// import "../../../public/css/Home.scss";
 import store from "../../store/index.js";
 import Navbar from "../../components/Navbar.vue";
-// import "@/../public/css/WriteInvest.scss";
 import "@/../public/css/Mypage.scss"
 import Web3 from "web3";
 import Swal from "sweetalert2";
