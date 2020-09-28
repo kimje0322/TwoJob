@@ -55,7 +55,7 @@
                         <!-- 영수증 등록, 상품 판매 글쓰기 -->
                         <div style="margin-bottom: 10px">
                           <v-btn style="background-color:rgb(22, 150, 245); color: white; width: 50%; margin-right: 10%;">사용내역 등록</v-btn>
-                          <router-link :to="{ name: 'WriteShopping', params: { address : item.address }}"><v-btn style="background-color:#a9a9a9; color: white; width: 40%">쇼핑 글쓰기</v-btn></router-link>
+                          <router-link :to="{ name: 'WriteShopping', params: { address : item.address }}"><v-btn style="background-color:#a9a9a9; color: white; width: 40%">쇼핑 오픈</v-btn></router-link>
                         </div>
                       </v-card-text>
                     </v-card>
