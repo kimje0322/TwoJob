@@ -234,6 +234,7 @@ export default {
     return {
       // 개인정보
       userInfo: {},
+      userid: "",
       login: false,
       tab: null,
       text: ["1", "2", "3"],
@@ -335,6 +336,7 @@ export default {
   mounted() {
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
+      this.userid = store.state.userInfo.id
       this.login = store.state.isSigned;
     } else {
       this.login = false;
@@ -433,8 +435,9 @@ export default {
         reverseButtons: true,
       }).then((result) => {
         if (result.value) {
+          console.log(typeof(this.userInfo.id))
           axios.post(`${SERVER_URL}/investment/create`, {
-            userid: this.userInfo.id,
+            userid: this.userid,
             pjtName: this.title,
             oneLineIntro: this.content,
             deadLine: this.dateFormatted,
