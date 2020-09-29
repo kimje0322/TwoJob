@@ -182,7 +182,7 @@
                 </div>
               </div>
               <!-- 프로젝트 이력 -->
-              <div style="display: flex; text-align: center; margin-top: 30px">
+              <div style="display: flex; text-align: center; margin: 80px 0 20px 0">
                 <h4 style="flex: 1">투자 프로젝트</h4>
                 <h4 style="flex: 1">쇼핑 프로젝트</h4>
               </div>
@@ -273,43 +273,39 @@
                     :bullets="false"
                     style="padding: 0 5%;"
                   >
-                    <vueper-slide v-for="(item, i) in items" :key="i" :image="item.src"/>
+                    <vueper-slide v-for="(item, i) in items" :key="i" :image="item.src" />
                   </vueper-slides>
                 </div>
               </div>
             </div>
             <!-- 투자 설명서 -->
-            <div
-              v-if="tabItem=='pjtInfo'"
-              class="mt-2"
-              style="text-align: center; background-color: #f8f9fa ;"
-            >
-              <img
-                style="width: 60%"
-                src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812123041902_22.png/wadiz/format/jpg/quality/80/optimize"
-                alt
-              />
-              <img
-                style="width: 60%"
-                src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812123820943_38.png/wadiz/format/jpg/quality/80/optimize"
-                alt
-              />
-              <img
-                style="width: 60%"
-                src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812124034563_3.png/wadiz/format/jpg/quality/80/optimize"
-                alt
-              />
-              <img
-                style="width: 60%"
-                src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812130135430_57.png/wadiz/format/jpg/quality/80/optimize"
-                alt
-              />
+            <div v-if="tabItem=='pjtInfo'" class="mt-2" style="text-align: center;">
+              <div v-for="(item, i) in items" :key="i">
+                <img style="width: 60%" :src="item.src" alt />
+              </div>
             </div>
             <!-- 댓글 -->
-            <div v-if="tabItem=='comments'" class="my-4" style="background-color: #f8f9fa ;">
-              <div>
-                <input type="text" placeholder="댓글을 입력해주세요.">
-                <v-btn>댓글</v-btn>
+            <div v-if="tabItem=='comments'" class="my-4">
+              <div style="padding: 0 10%; margin-bottom: 50px">
+                <input class="commentInput" type="text" placeholder="댓글을 입력해주세요." />
+                <v-btn class="commentBtn">댓글</v-btn>
+              </div>
+              <hr />
+              <p style="margin-left:10px">총 25건의 댓글이 있습니다.</p>
+              <div style="padding: 0 5%; display: flex; margin-bottom: 10px">
+                <div style="padding-right: 2%">
+                  <v-avatar style="width: 60px; height: 60px">
+                    <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+                  </v-avatar>
+                </div>
+                <div>
+                  <strong>
+                    <p style="display:inline; margin: 2px 0px 0px 3px;">솜사탕강쥐</p>
+                  </strong>
+                  <span class="ml-2" style="color: grey">2020.09.15</span>
+                  <p
+                  >저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..</p>
+                </div>
               </div>
             </div>
           </v-tab-item>
@@ -466,5 +462,19 @@ export default {
 }
 .v-slide-group__content a {
   text-decoration: none;
+}
+.commentInput {
+  width: 80%;
+  height: 40px;
+  border: 1px solid lightgray;
+  padding: 10px;
+  margin-right: 3%;
+}
+.commentBtn {
+  width: 15%;
+  background-color: rgb(22, 150, 245) !important;
+  color: white;
+  height: 40px !important;
+  margin-bottom: 3px;
 }
 </style>
