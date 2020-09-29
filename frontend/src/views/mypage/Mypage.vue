@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="mypage">
     <!-- 상단 Navbar -->
     <navbar />
     <!-- 투자 글쓰기 메뉴바 -->
@@ -19,7 +19,6 @@
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
               <v-card-text>
-                <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
                 <div>
                   <!-- <div style="width: 55px; display: inline-block; margin: 0 auto 25px;"> -->
                   <div style="margin-top: 40px; float: left">
@@ -159,12 +158,10 @@
                     </div>
                   </div>
                 </div>
-
-                <!-- <div style="display: inline-block; margin-left: 200px;"></div> -->
               </v-card-text>
             </v-card>
           </v-tab-item>
-          <!-- 금손 정보 창 -->
+          <!-- 쇼핑 마이페이지 -->
           <v-tab-item :value="'tab-1'">
             <v-card flat tile>
               <v-card-text>
@@ -454,7 +451,7 @@ export default {
       userbalance: "",
       tab: null,
       text: ["1", "2", "3"],
-      tabs: ["큰손", "금손"],
+      tabs: ["투자", "쇼핑"],
       title: "",
       content: "",
       // 날짜
