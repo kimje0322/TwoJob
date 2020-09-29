@@ -1,6 +1,5 @@
 <template>
     <v-card flat tile>
-
       <!-- 리뷰 작성부분 --> 
       <v-card-text style="height:450;" class="pa-1">
         <v-list>
@@ -12,6 +11,7 @@
           <div style="text-align: center; margin-top: 30px;">
             <h4>상품은 만족하셨나요?</h4>
             <v-icon :class="key"
+            v-model="satisfaction"
             v-for="key in stars"
             :key="key"
             @click="starPoint(key)" size=43 
@@ -20,6 +20,7 @@
             </v-icon>
             <h4 class="mt-5">상품 설명서와 비슷했나요?</h4>
             <v-icon :class="key"
+            v-model="similarity"
             v-for="key in circles"
             :key="key"
             @click="circlePoint(key)" size=43
@@ -35,8 +36,8 @@
           </div>
           <!-- 이미지 첨부된 경우 -->
           <!-- 이미지 삭제 버튼 -->
-          <div v-show="uploadimg">
-            <v-btn x-small dark fab absolute top right color="black" style="top:181px;right:52px;opacity:.6;"
+          <div v-show="imgPath">
+            <v-btn x-small dark fab absolute top right color="black" style="top:293px;right:47px;opacity:.6;"
               @click="onDeleteImg"
             >
               <v-icon dark>mdi-close</v-icon>
@@ -45,11 +46,10 @@
               class="mx-auto mt-3"
               ref="img"
               style="width: 87%; border-radius: 10px;"
-              :src="imgPath+img"
+              :src="imgPath"
               alt="reviewImg"
             />
-          </div>
-          
+          </div>        
           <!-- 리뷰 내용 -->
           <v-list-item>
             <v-textarea
@@ -63,24 +63,29 @@
           </v-list-item>
         </v-list>
       </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="dialog=true">취소</v-btn>
-          <v-btn text color="blue">등록</v-btn>
-        </v-card-actions>
+    <!-- <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn text @click="dialog=false">취소</v-btn>
+      <v-btn text color="blue">등록</v-btn>
+    </v-card-actions> -->
   </v-card>
 </template>
 
 <script>
 import axios from "axios";
 import "../../../public/css/ShoppingHome.scss";
+import { componentsPlugin } from 'bootstrap-vue';
 
+const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   data() {
     return {
       dialog: false,
+      satisfaction: "",
+      similarity: "",
+      starpoint: '',
+      circlepoint: '',
       stars: {
         star1: "s1",
         star2: "s2",
@@ -100,8 +105,8 @@ export default {
       uploadimg: false,
       showImg : true,
       content: '',
-      img: 'no_image.jpg',
-      imgPath: 'http://j3b102.p.ssafy.io/:8080/img/post?imgname=', 
+      img: '',
+      imgPath: '', 
     }
   },
 
@@ -109,25 +114,30 @@ export default {
     // point 자리에 key값 s1,s2,s3,s4,s5
     starPoint(point) {
       if (this.checkedStars) {
-        var lastPoint = point.slice(-1);
-        var blank = lastPoint*1 + 1;
-        for (var i = 0; i <= lastPoint; i++) {
+        
+        this.satisfaction = point.slice(-1)*1;
+        var blank = this.satisfaction + 1;
+        for (var i = 0; i <= this.satisfaction; i++) {
           $(`.${`s${i}`}`).css("color", "#00B0FF");
         }
-        for (var j = blank; j <= 5; j++) {
-          $(`.${`s${j}`}`).css("color", "#E0E0E0");
+        if (this.satisfaction < 5) {
+          for (var j = blank; j <= 5; j++) {
+            $(`.${`s${j}`}`).css("color", "#E0E0E0");
+          }
         }
       } else {
-        this.checkedStars = true;
-        var lastPoint = point.slice(-1)
-        for (var i = 0; i <= lastPoint; i++) {
+        this.satisfaction = point.slice(-1)*1
+        // console.log(this.satisfaction+'만족도다')
+        for (var i = 0; i <= this.satisfaction; i++) {
           $(`.${`s${i}`}`).css("color", "#00B0FF");
         }
+        this.checkedStars = true;
       }
     },
     circlePoint(point) {
       if (this.checkedCircles) {
         var lastPoint = point.slice(-1);
+        this.similarity = lastPoint*1
         var blank = lastPoint*1 + 1;
         for (var i = 0; i <= lastPoint; i++) {
           $(`.${`c${i}`}`).css("color", "#00B0FF");
@@ -138,6 +148,7 @@ export default {
       } else {
         this.checkedCircles = true;
         var lastPoint = point.slice(-1)
+        this.similarity = lastPoint*1
         for (var i = 0; i <= lastPoint; i++) {
           $(`.${`c${i}`}`).css("color", "#00B0FF");
         }
@@ -146,11 +157,12 @@ export default {
     onDeleteImg() {
       console.log('ondeleteimg')
       this.showImg = false;
-      this.postimgurl = null;
-      this.postimg = 'no_image.jpg';
       this.uploadimg = false;
+      this.imgPath = '';
     },
     onClickImageUpload() {
+      console.log('onClickImageUpload');
+      console.log(this.satisfaction+'만족도');
       this.$refs.imageInput.click();
     },
     onChangeImages(e) {
@@ -158,8 +170,29 @@ export default {
       this.showImg = true;
       this.uploadimg = true;
       this.file = e.target.files[0];
-      this.imgPath = URL.createObjectURL(this.file);
-      this.img = '';
+      // console.log(this.file);
+      // this.imgPath = URL.createObjectURL(this.file);
+      // this.img = '';
+      var formData = new FormData();
+      formData.append("img", this.file);
+      axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
+                headers: { 'Content-Type': 'multipart/form-data' } 
+        }).then(response => {
+            const cutUrl = response.data.substr(18, response.data.length-17)
+            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+            this.imgPath = imgUrl;
+            for (var i = 0; i <= this.satisfaction; i++) {
+              $(`.${`s${i}`}`).css("color", "#00B0FF");
+            }
+        });
+      // var spoint = `s${this.satisfaction}`
+      // var cpoint = `c${this.similarity}`
+      // this.starPoint(spoint);
+      // this.circlePoint(cpoint);
+      // console.log('after axios');
+      // console.log('showImg'+this.showImg);
+      // console.log('uploadimg'+this.uploadimg);
+      // console.log('imgPath'+this.imgPath);
     },
   }
 }
@@ -176,3 +209,4 @@ export default {
    cursor: pointer;
   }
 </style>
+
