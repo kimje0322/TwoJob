@@ -58,15 +58,15 @@
         ></v-select>
       </div>
       <div style="display: inline-block">
-        <v-select 
-        :items="successRate" 
-        label="달성률" 
-        outlined 
-        hide-details
-        v-model="nowrate"
-        @click="openRate"
-        :class="{checkrate: checkrate, longrate: longrate}"
-        class="origin"
+        <v-select
+          :items="successRate"
+          label="달성률"
+          outlined
+          hide-details
+          v-model="nowrate"
+          @click="openRate"
+          :class="{checkrate: checkrate, longrate: longrate}"
+          class="origin"
         ></v-select>
       </div>
       <div style="width: 150px; display: inline-block; float: right">
@@ -96,28 +96,34 @@
         </div>
       </div>
       <div style="padding: 1% 0">
-        <div v-for="(item, i) in investProjects" :key="i" style="display: inline-block; width: 30%; margin-bottom: 30px;">
-          <v-card class="my-12" max-width="320" style="margin: auto">
-            <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
-            <v-card-title style="font-weight: 600; margin: auto">
-              {{item.title}}
-              <div style="margin-left: auto;">
-                <v-chip class="projectBadge">{{item.deadline}}일 남음</v-chip>
-              </div>
-            </v-card-title>
-            <v-card-text>
-              <div style="margin-bottom: 15px;">{{item.content}}</div>
-              <div style="color: black;">
-                <h5
-                  style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                >{{item.price}} 원</h5>
-                <div style="display: inline-block; float: right;">
-                  <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
-                  <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
+        <div
+          v-for="(item, i) in investProjects"
+          :key="i"
+          style="display: inline-block; width: 30%; margin-bottom: 30px;"
+        >
+          <router-link to="/investdetail">
+            <v-card class="my-12" max-width="320" style="margin: auto">
+              <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
+              <v-card-title style="font-weight: 600; margin: auto">
+                {{item.pjtName}}
+                <div style="margin-left: auto;">
+                  <v-chip class="projectBadge">{{item.lastday}}일 남음</v-chip>
                 </div>
-              </div>
-            </v-card-text>
-          </v-card>
+              </v-card-title>
+              <v-card-text>
+                <div style="margin-bottom: 15px;">{{item.oneLineIntro}}</div>
+                <div style="color: black;">
+                  <h5
+                    style="display: inline-block; height: 41.6px; line-height: 41.6px"
+                  >{{item.goalPrice}} 원</h5>
+                  <div style="display: inline-block; float: right;">
+                    <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
+                    <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </router-link>
         </div>
       </div>
     </div>
@@ -163,120 +169,97 @@ export default {
       checkrate: false,
       longrate: false,
       openrate: false,
-      successRate: [
-        "전체 프로젝트",
-        "50% 이하",
-        "50% ~ 75%",
-        "75% ~ 100%",
-      ],
+      successRate: ["전체 프로젝트", "50% 이하", "50% ~ 75%", "75% ~ 100%"],
       // 필터
       nowfilter: "",
       openfilter: false,
       filter: ["최신순", "인기순"],
       // 프로젝트
-      investProjects: [
-        {
-          title: "특별한 자전거",
-          deadline: "1",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,500,500",
-          percent: "98",
-        },
-        {
-          title: "특별한 숟가락",
-          deadline: "3",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,300,500",
-          percent: "95",
-        },
-        {
-          title: "달라진 안경",
-          deadline: "7",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,500",
-          percent: "88",
-        },
-        {
-          title: "달라진 안경",
-          deadline: "7",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,500",
-          percent: "88",
-        },
-      ],
+      investProjects: [],
       // page
       page: 0,
     };
   },
   watch: {
     nowstate(val) {
-      if(this.nowstate) {
-        this.checkstate = true
-      }
-      else {
-        this.checkstate = false
+      if (this.nowstate) {
+        this.checkstate = true;
+      } else {
+        this.checkstate = false;
       }
     },
     nowrate(val) {
-      if(this.nowrate=="전체 프로젝트") {
-        this.longrate = true
-        this.checkrate = false
-      }
-      else if(this.nowrate){
-        this.checkrate = true
-        this.longrate = false
+      if (this.nowrate == "전체 프로젝트") {
+        this.longrate = true;
+        this.checkrate = false;
+      } else if (this.nowrate) {
+        this.checkrate = true;
+        this.longrate = false;
       }
     },
   },
   mounted() {
-    axios.get(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`)
-      .then(response => {
-        console.log(response)
+    axios
+      .get(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`)
+      .then((response) => {
+        if (response.data.data == "success") {
+          this.investProjects = response.data.object;
+          console.log(this.investProjects);
+          this.investProjects.forEach((investPjt) => {
+            const day = investPjt.deadLine.substring(8, 10);
+            let today = new Date();
+            today.setDate(day - today.getDate());
+            // console.log(today.getDate())
+            this.$set(investPjt, "lastday", today.getDate());
+          });
+        }
       })
-      .catch(error => {
-        console.log(error)
-      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // console.log(this.investProjects)
+
+    // for(var i=0; i<this.investProjects.length; i++) {
+    //   console.log(this.investProjects[i])
+    // }
   },
   methods: {
     openState() {
-      this.openstate = !this.openstate
-      if(this.openstate) {
-        this.nowstate = ''
-        $('.v-menu').css('display', 'block')
-      }
-      else{
-        $('.v-menu').css('display', 'none')
+      this.openstate = !this.openstate;
+      if (this.openstate) {
+        this.nowstate = "";
+        $(".v-menu").css("display", "block");
+      } else {
+        $(".v-menu").css("display", "none");
       }
     },
     openRate() {
-      this.openrate = !this.openrate
-      if(this.openrate) {
-        this.nowrate = ''
-        $('.v-menu').css('display', 'block')
-      }
-      else{
-        $('.v-menu').css('display', 'none')
+      this.openrate = !this.openrate;
+      if (this.openrate) {
+        this.nowrate = "";
+        $(".v-menu").css("display", "block");
+      } else {
+        $(".v-menu").css("display", "none");
       }
     },
     filterInit() {
-      this.nowstate = ''
-      this.checkstate = false
-      this.opensate = false
-      this.nowrate = ""
-      this.checkrate = false
-      this.longrate = false
-      this.openrate = false
+      this.nowstate = "";
+      this.checkstate = false;
+      this.opensate = false;
+      this.nowrate = "";
+      this.checkrate = false;
+      this.longrate = false;
+      this.openrate = false;
     },
     openFilter() {
-      this.openfilter = !this.openfilter
-      if(this.openfilter) {
-        this.nowfilter = ''
-        $('.v-menu').css('display', 'block')
+      this.openfilter = !this.openfilter;
+      if (this.openfilter) {
+        this.nowfilter = "";
+        $(".v-menu").css("display", "block");
+      } else {
+        $(".v-menu").css("display", "none");
       }
-      else{
-        $('.v-menu').css('display', 'none')
-      }
-    }
+    },
   },
 };
 </script>
@@ -367,5 +350,4 @@ export default {
   color: white !important;
   text-align: right;
 }
-
 </style>
