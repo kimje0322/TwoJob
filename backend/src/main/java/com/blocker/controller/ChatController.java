@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.dto.ChatMessage;
 import com.blocker.dto.Chatroom;
+import com.blocker.dto.Member;
 import com.blocker.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
@@ -50,10 +53,31 @@ public class ChatController {
 		System.out.println("val = " + val);
 		messagingTemplate.convertAndSend("/sub/notice","hello");
 	}
-	@PostMapping("/room")
-	public void createRoom(@RequestParam("from") String from, @RequestParam("to") String to) {
-		chatService.makeChatRoom(from, to);
+	
+	// 룸 이름, 보낸사람, 받는사람, 시간, 이미지 
+	@GetMapping("/chatlist")
+	public ResponseEntity<?> myroomlist(@RequestParam("accessToken") String accessToken) {
+		Object result = chatService.getMyChat(accessToken);
+		if(result.getClass() == List.class){
+    		return new ResponseEntity<List<Chatroom>>((List<Chatroom>)result, HttpStatus.OK);
+    	}else if(result.getClass() == String.class) {
+    		return new ResponseEntity<String>((String)result, HttpStatus.OK);
+    	}else {
+    		return new ResponseEntity<Integer>((Integer)result, HttpStatus.OK);
+    	}
 	}
+	@PostMapping("/startchat")
+	public ResponseEntity<?> createRoom(@RequestParam("fromAccessToken") String fromAccessToken, @RequestParam("toOauthID") String toId) {
+		Object result = chatService.makeChatRoom(fromAccessToken, toId);
+		if(result.getClass() == Chatroom.class){
+    		return new ResponseEntity<Chatroom>((Chatroom)result, HttpStatus.OK);
+    	}else if(result.getClass() == String.class) {
+    		return new ResponseEntity<String>((String)result, HttpStatus.OK);
+    	}else {
+    		return new ResponseEntity<Integer>((Integer)result, HttpStatus.OK);
+    	}
+	}
+	
 	@GetMapping("/allroom")
 	public List<Chatroom> allroom() {
 		return chatService.allroom();
