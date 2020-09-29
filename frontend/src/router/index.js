@@ -10,12 +10,14 @@ import SearchDetail from "@/views/search/SearchDetail.vue"
 import ShoppingHome from "@/views/shopping/ShoppingHome.vue";
 import ShoppingDetail from "@/views/shopping/ShoppingDetail.vue";
 import ShoppingProject from "@/views/shopping/ShoppingProject.vue";
+import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
 import Mypage from "@/views/mypage/Mypage.vue";
 import WriteShopping from "@/views/shopping/WriteShopping.vue";
 import MyInvestPjt from "@/views/mypage/MyInvestPjt.vue"
 import LikeList from "@/views/mypage/LikeList.vue"
 import Messenger from "@/views/mypage/Messenger.vue"
 import Chat from "@/views/mypage/Chat.vue"
+// import ChatRoom from "@/views/c"
 
 Vue.use(VueRouter);
 
@@ -79,7 +81,13 @@ const routes = [{
         component: Mypage,
     },
     {
+        path: "/shoppingreview",
+        name: "ShoppingReview",
+        component: ShoppingReview,
+    },
+    {
         path: "/writeshopping",
+        path: "/writeshopping/:address?",
         name: "WriteShopping",
         component: WriteShopping,
     },

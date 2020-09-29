@@ -72,45 +72,32 @@
               <span>{{detailItems.deadline}} 24:00 마감</span>
             </div>
             <!-- 태그 -->
-            <strong>
-              <p class="listTitle" style="margin-bottom: 1%">태그</p>
-            </strong>
-            <v-chip class="mr-1" small>#다이슨</v-chip>
-            <v-chip class="mr-1" small>#헤어</v-chip>
-            <v-chip class="mr-1" small>#스탠드</v-chip>
-            <br />
-            <br />
-            <v-btn class="investBtn white--text" style="width: 100%">
+            <div style="margin-bottom: 3%">
+              <strong>
+                <p class="listTitle" style="margin-bottom: 1%">태그</p>
+              </strong>
+              <v-chip class="mr-1" small>#다이슨</v-chip>
+              <v-chip class="mr-1" small>#헤어</v-chip>
+              <v-chip class="mr-1" small>#스탠드</v-chip>
+            </div>
+            <!-- 투자하기 버튼 -->
+            <v-btn class="investBtn white--text" style="width: 100%; height: 42px">
               <v-icon size="25" class="mr-1">mdi-cash-usd</v-icon>투자 하기
             </v-btn>
-
-            <v-container class="cardContainer">
-              <v-row class="cards">
-                <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
-                <v-col class="otherCard" cols="6">
-                  <v-card
-                    style="text-align: center; padding: 5px 2px 5px 2px"
-                    class="pa-2"
-                    outlined
-                    tile
-                  >
-                    <v-icon size="20" class="mr-2">mdi-heart</v-icon>22
-                    <br />
-                  </v-card>
-                </v-col>
-                <v-col class="otherCard" cols="6">
-                  <v-card
-                    style="text-align: center; padding: 5px 2px 5px 2px"
-                    class="pa-2"
-                    outlined
-                    tile
-                  >
-                    <v-icon size="20" class="mr-1">mdi-message-bulleted</v-icon>문의
-                    <br />
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-container>
+            <!-- 좋아요 문의하기 버튼 -->
+            <div style="display: flex; margin-top: 15px;">
+              <button style="flex: 1;" @click="likebtn">
+                <div class="btns" style="margin-right: 5px">
+                  <v-icon size="20" class="mr-2 like">mdi-heart</v-icon>{{likeCount}}
+                </div>
+              </button>
+              <button style="flex: 1;">
+                <div class="btns">
+                  <v-icon size="20" class="mr-1">mdi-message-bulleted</v-icon>문의
+                </div>
+              </button>
+              
+            </div>
           </div>
         </div>
         <!-- 금손님 정보 -->
@@ -154,7 +141,7 @@
           <v-tab-item v-for="tabItem in tabItems" :key="tabItem" :value="'tab-' + tabItem">
             <!-- 프로젝트 이력 -->
             <div v-if="tabItem=='projects'" class="mt-2">
-              <div style="overflow: hidden">
+              <div style="overflow: hidden; margin-bottom: 50px">
                 <div style="float:left; width: 33%">
                   <div style="text-align: center">
                     <h5 style="margin-bottom: 1.25rem">프로젝트 성공률</h5>
@@ -181,8 +168,9 @@
                   </div>
                 </div>
               </div>
+              <hr>
               <!-- 프로젝트 이력 -->
-              <div style="display: flex; text-align: center; margin-top: 30px">
+              <div style="display: flex; text-align: center; margin: 20px 0">
                 <h4 style="flex: 1">투자 프로젝트</h4>
                 <h4 style="flex: 1">쇼핑 프로젝트</h4>
               </div>
@@ -260,84 +248,51 @@
                   </div>
                 </div>
                 <!-- 투자금 사용 내역 -->
-                <div style="margin: 30px 0">
+                <div style="margin: 30px 0; padding: 0 5%">
                   <!-- <h5>투자금 사용 내역</h5> -->
                   <vueper-slides
                     class="no-shadow"
-                    :visible-slides="4"
+                    :visible-slides="5"
                     slide-multiple
                     :gap="3"
-                    :slide-ratio="1 / 3"
+                    :slide-ratio="1 / 4"
                     :dragging-distance="200"
                     :breakpoints="{ 800: { visibleSlides: 2, slideMultiple: 2 } }"
                     :bullets="false"
                     style="padding: 0 5%;"
                   >
-                    <vueper-slide v-for="(item, i) in items" :key="i" :image="item.src"/>
+                    <vueper-slide v-for="(item, i) in items" :key="i" :image="item.src" />
                   </vueper-slides>
                 </div>
               </div>
             </div>
             <!-- 투자 설명서 -->
-            <div
-              v-if="tabItem=='pjtInfo'"
-              class="mt-2"
-              style="text-align: center; background-color: #f8f9fa ;"
-            >
-              <img
-                style="width: 60%"
-                src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812123041902_22.png/wadiz/format/jpg/quality/80/optimize"
-                alt
-              />
-              <img
-                style="width: 60%"
-                src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812123820943_38.png/wadiz/format/jpg/quality/80/optimize"
-                alt
-              />
-              <img
-                style="width: 60%"
-                src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812124034563_3.png/wadiz/format/jpg/quality/80/optimize"
-                alt
-              />
-              <img
-                style="width: 60%"
-                src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812130135430_57.png/wadiz/format/jpg/quality/80/optimize"
-                alt
-              />
+            <div v-if="tabItem=='pjtInfo'" class="mt-2" style="text-align: center;">
+              <div v-for="(item, i) in items" :key="i">
+                <img style="width: 60%" :src="item.src" alt />
+              </div>
             </div>
             <!-- 댓글 -->
-            <div v-if="tabItem=='comments'" class="my-4" style="background-color: #f8f9fa ;">
-              <div>
-                <p style="margin-left:10px">총 25건의 후기가 있습니다.</p>
-                <div style="text-align: center;">
-                  <img style="width: 65%" src="../../assets/평점.png" alt />
+            <div v-if="tabItem=='comments'" class="my-4">
+              <div style="padding: 0 10%; margin-bottom: 50px">
+                <input v-model="comment" class="commentInput" type="text" placeholder="댓글을 입력해주세요." />
+                <v-btn @click="oncomment" class="commentBtn">댓글</v-btn>
+              </div>
+              <hr />
+              <p style="margin-left:10px">총 25건의 댓글이 있습니다.</p>
+              <div style="padding: 0 5%; display: flex; margin-bottom: 10px">
+                <div style="padding-right: 2%">
+                  <v-avatar style="width: 60px; height: 60px">
+                    <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+                  </v-avatar>
                 </div>
-                <h5>전체 후기</h5>
-                <!-- 1 -->
-                <div class="mt-3">
-                  <v-icon style="display:inline" size="38">mdi-emoticon-happy-outline</v-icon>
+                <div>
                   <strong>
                     <p style="display:inline; margin: 2px 0px 0px 3px;">솜사탕강쥐</p>
                   </strong>
                   <span class="ml-2" style="color: grey">2020.09.15</span>
-                  <!-- <p class="mx-5">{{ reviews }}</p> -->
-                </div>
-                <!-- 2 -->
-                <div class="mt-3">
-                  <v-icon style="display:inline" size="38">mdi-emoticon-happy-outline</v-icon>
-                  <strong>
-                    <p style="display:inline; margin: 2px 0px 0px 3px;">동백꽃</p>
-                  </strong>
-                  <span class="ml-2" style="color: grey">2020.09.15</span>
-                  <!-- <p class="mx-5">{{ reviews }}</p> -->
-                </div>
-                <div class="mt-3">
-                  <v-icon style="display:inline" size="38">mdi-emoticon-happy-outline</v-icon>
-                  <strong>
-                    <p style="display:inline; margin: 2px 0px 0px 3px;">싸피인</p>
-                  </strong>
-                  <span class="ml-2" style="color: grey">2020.09.15</span>
-                  <!-- <p class="mx-5">{{ reviews }}</p> -->
+                  <p
+                  >저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..</p>
                 </div>
               </div>
             </div>
@@ -362,6 +317,9 @@ export default {
   },
   data() {
     return {
+      // 좋아요
+      isliked: false,
+      likeCount: 0,
       currentItem: "tab-Web",
       tabItems: ["projects", "pjtInfo", "comments"],
       items: [
@@ -372,6 +330,18 @@ export default {
         {
           src:
             "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193147129_73945.jpg/wadiz/format/jpg/quality/80/optimize",
+        },
+        {
+          src:
+            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
+        },
+        {
+          src:
+            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
+        },
+        {
+          src:
+            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
         },
         {
           src:
@@ -423,8 +393,28 @@ export default {
         },
       ],
       model: null,
+      // 댓글
+      commentList: [],
+      comment: "",
     };
   },
+  methods: {
+    likebtn() {
+      this.isliked = !this.isliked
+      if(this.isliked) {
+        $('.like').css('color', 'red')
+        this.likeCount += 1
+      }
+      else{
+        $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
+        this.likeCount -= 1
+      }
+    },
+    oncomment() {
+      this.commentList.push(this.comment)
+      this.comment = ""
+    }
+  }
 };
 </script>
 
@@ -495,5 +485,25 @@ export default {
 }
 .v-slide-group__content a {
   text-decoration: none;
+}
+.commentInput {
+  width: 80%;
+  height: 40px;
+  border: 1px solid lightgray;
+  padding: 10px;
+  margin-right: 3%;
+}
+.commentBtn {
+  width: 15%;
+  background-color: rgb(22, 150, 245) !important;
+  color: white;
+  height: 40px !important;
+  margin-bottom: 3px;
+}
+.btns {
+  height: 38px;
+  text-align: center;
+  line-height: 38px;
+  border: 1px solid lightgray;
 }
 </style>

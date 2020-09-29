@@ -297,8 +297,9 @@ export default {
             axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
                 headers: { 'Content-Type': 'multipart/form-data' } 
             }).then(response => {
-                console.log(response.data);
-              callback(response.data)
+                const cutUrl = response.data.substr(18, response.data.length-17)
+                const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+              callback(imgUrl)
             });
           },
         },
@@ -336,6 +337,7 @@ export default {
   mounted() {
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
+      this.userid = store.state.userInfo.id
       this.login = store.state.isSigned;
     } else {
       this.login = false;
@@ -434,6 +436,7 @@ export default {
         reverseButtons: true,
       }).then((result) => {
         if (result.value) {
+          console.log(typeof(this.userInfo.id))
           axios.post(`${SERVER_URL}/investment/create`, {
             userid: this.userid,
             pjtName: this.title,

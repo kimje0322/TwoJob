@@ -1,26 +1,25 @@
 .shoppingHome {
-  .v-window__prev {
-    background: unset !important;
-  }
-  
-  .v-window__next {
-    right: 5px !important;
-    background: unset !important;
+    .v-input__slot {
+        min-height: 150px !important;
     }
-  
-  .v-carousel__controls {
-    background: unset !important;
-  }
-  
-  .v-window__prev .mdi-chevron-left {
-    font-size: 100px !important;
-  }
-  
-  .v-window__next .mdi-chevron-right {
-    font-size: 100px !important;
-  }
-  .v-application--wrap {
-      min-height: 0 !important;
-      background-color: #f8f9fa;
-  }
+    .v-window__prev {
+        background: unset !important;
+    }
+    .v-window__next {
+        right: 5px !important;
+        background: unset !important;
+    }
+    .v-carousel__controls {
+        background: unset !important;
+    }
+    .v-window__prev .mdi-chevron-left {
+        font-size: 100px !important;
+    }
+    .v-window__next .mdi-chevron-right {
+        font-size: 100px !important;
+    }
+    .v-application--wrap {
+        min-height: 0 !important;
+        background-color: #f8f9fa;
+    }
 }
