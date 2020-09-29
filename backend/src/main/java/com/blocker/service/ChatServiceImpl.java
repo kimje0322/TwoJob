@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -66,7 +68,6 @@ public class ChatServiceImpl implements ChatService{
 					Chatroom c = new Chatroom();
 					c.setUser1(user1);
 					c.setUser2(user2);
-					c.setToimg(mem.get().getProfileImg()!=null?mem.get().getProfileImg():null);
 					chatRoomRepository.save(c);
 					return "success";
 				}
@@ -76,7 +77,7 @@ public class ChatServiceImpl implements ChatService{
 		}else if(result.getClass() == String.class){
 			return (String)result;
 		}else {
-			 return String.valueOf(result);
+			return String.valueOf(result);
 		}
 	}
 	@Override
@@ -85,6 +86,15 @@ public class ChatServiceImpl implements ChatService{
 		if(result.getClass() == Member.class) {
 			Member m = (Member)result;
 			List<Chatroom> chat = chatRoomRepository.findByUser1OrUser2(m.getOauthId(), m.getOauthId());
+			for(int i=0; i<chat.size(); i++) {
+				if(chat.get(i).getUser1().equals(m.getOauthId())){
+					Optional<Member> m2 = memberRepository.findById(chat.get(i).getUser2());
+					chat.get(i).setToimg(m2.get().getProfileImg());
+				}else {
+					Optional<Member> m2 = memberRepository.findById(chat.get(i).getUser1());
+					chat.get(i).setToimg(m2.get().getProfileImg());
+				}
+			}
 			return chat;
 		}else if(result.getClass() == String.class){
 			return (String)result;
@@ -92,19 +102,20 @@ public class ChatServiceImpl implements ChatService{
 			return String.valueOf(result);
 		}
 	}
-	// 사용자 이름으로 바꿔야함.
-	@Override
-	public List<Chatroom> allroom() {
-		return chatRoomRepository.findAll();
-	}
 
 	// 특정 채팅방 조회
 	@Override
 	public Chatroom getRoom(Long id) {
-		List<ChatMessage> allmesssage = MessageRepository.findByRoomId(id);
-		return chatRoomRepository.findById(id).get();
+		Optional<Chatroom> c = chatRoomRepository.findById(id);
+		if(c.isPresent()) {
+			return c.get();
+		}else {
+			return null;
+		}
 	}
-
+	public Page<ChatMessage> message(Long id,PageRequest pageable) {
+		return MessageRepository.findByRoomId(id, pageable);
+	}
 	@Override
 	public void saveMessage(ChatMessage msg) {
 		MessageRepository.save(msg);
