@@ -72,45 +72,32 @@
               <span>{{detailItems.deadline}} 24:00 마감</span>
             </div>
             <!-- 태그 -->
-            <strong>
-              <p class="listTitle" style="margin-bottom: 1%">태그</p>
-            </strong>
-            <v-chip class="mr-1" small>#다이슨</v-chip>
-            <v-chip class="mr-1" small>#헤어</v-chip>
-            <v-chip class="mr-1" small>#스탠드</v-chip>
-            <br />
-            <br />
-            <v-btn class="investBtn white--text" style="width: 100%">
+            <div style="margin-bottom: 3%">
+              <strong>
+                <p class="listTitle" style="margin-bottom: 1%">태그</p>
+              </strong>
+              <v-chip class="mr-1" small>#다이슨</v-chip>
+              <v-chip class="mr-1" small>#헤어</v-chip>
+              <v-chip class="mr-1" small>#스탠드</v-chip>
+            </div>
+            <!-- 투자하기 버튼 -->
+            <v-btn class="investBtn white--text" style="width: 100%; height: 42px">
               <v-icon size="25" class="mr-1">mdi-cash-usd</v-icon>투자 하기
             </v-btn>
-
-            <v-container class="cardContainer">
-              <v-row class="cards">
-                <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
-                <v-col class="otherCard" cols="6">
-                  <v-card
-                    style="text-align: center; padding: 5px 2px 5px 2px"
-                    class="pa-2"
-                    outlined
-                    tile
-                  >
-                    <v-icon size="20" class="mr-2">mdi-heart</v-icon>22
-                    <br />
-                  </v-card>
-                </v-col>
-                <v-col class="otherCard" cols="6">
-                  <v-card
-                    style="text-align: center; padding: 5px 2px 5px 2px"
-                    class="pa-2"
-                    outlined
-                    tile
-                  >
-                    <v-icon size="20" class="mr-1">mdi-message-bulleted</v-icon>문의
-                    <br />
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-container>
+            <!-- 좋아요 문의하기 버튼 -->
+            <div style="display: flex; margin-top: 15px;">
+              <button style="flex: 1;" @click="likebtn">
+                <div class="btns" style="margin-right: 5px">
+                  <v-icon size="20" class="mr-2 like">mdi-heart</v-icon>{{likeCount}}
+                </div>
+              </button>
+              <button style="flex: 1;">
+                <div class="btns">
+                  <v-icon size="20" class="mr-1">mdi-message-bulleted</v-icon>문의
+                </div>
+              </button>
+              
+            </div>
           </div>
         </div>
         <!-- 금손님 정보 -->
@@ -154,7 +141,7 @@
           <v-tab-item v-for="tabItem in tabItems" :key="tabItem" :value="'tab-' + tabItem">
             <!-- 프로젝트 이력 -->
             <div v-if="tabItem=='projects'" class="mt-2">
-              <div style="overflow: hidden">
+              <div style="overflow: hidden; margin-bottom: 50px">
                 <div style="float:left; width: 33%">
                   <div style="text-align: center">
                     <h5 style="margin-bottom: 1.25rem">프로젝트 성공률</h5>
@@ -181,8 +168,9 @@
                   </div>
                 </div>
               </div>
+              <hr>
               <!-- 프로젝트 이력 -->
-              <div style="display: flex; text-align: center; margin: 80px 0 20px 0">
+              <div style="display: flex; text-align: center; margin: 20px 0">
                 <h4 style="flex: 1">투자 프로젝트</h4>
                 <h4 style="flex: 1">쇼핑 프로젝트</h4>
               </div>
@@ -260,14 +248,14 @@
                   </div>
                 </div>
                 <!-- 투자금 사용 내역 -->
-                <div style="margin: 30px 0">
+                <div style="margin: 30px 0; padding: 0 5%">
                   <!-- <h5>투자금 사용 내역</h5> -->
                   <vueper-slides
                     class="no-shadow"
-                    :visible-slides="4"
+                    :visible-slides="5"
                     slide-multiple
                     :gap="3"
-                    :slide-ratio="1 / 3"
+                    :slide-ratio="1 / 4"
                     :dragging-distance="200"
                     :breakpoints="{ 800: { visibleSlides: 2, slideMultiple: 2 } }"
                     :bullets="false"
@@ -287,8 +275,8 @@
             <!-- 댓글 -->
             <div v-if="tabItem=='comments'" class="my-4">
               <div style="padding: 0 10%; margin-bottom: 50px">
-                <input class="commentInput" type="text" placeholder="댓글을 입력해주세요." />
-                <v-btn class="commentBtn">댓글</v-btn>
+                <input v-model="comment" class="commentInput" type="text" placeholder="댓글을 입력해주세요." />
+                <v-btn @click="oncomment" class="commentBtn">댓글</v-btn>
               </div>
               <hr />
               <p style="margin-left:10px">총 25건의 댓글이 있습니다.</p>
@@ -329,6 +317,9 @@ export default {
   },
   data() {
     return {
+      // 좋아요
+      isliked: false,
+      likeCount: 0,
       currentItem: "tab-Web",
       tabItems: ["projects", "pjtInfo", "comments"],
       items: [
@@ -339,6 +330,18 @@ export default {
         {
           src:
             "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193147129_73945.jpg/wadiz/format/jpg/quality/80/optimize",
+        },
+        {
+          src:
+            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
+        },
+        {
+          src:
+            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
+        },
+        {
+          src:
+            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
         },
         {
           src:
@@ -390,8 +393,28 @@ export default {
         },
       ],
       model: null,
+      // 댓글
+      commentList: [],
+      comment: "",
     };
   },
+  methods: {
+    likebtn() {
+      this.isliked = !this.isliked
+      if(this.isliked) {
+        $('.like').css('color', 'red')
+        this.likeCount += 1
+      }
+      else{
+        $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
+        this.likeCount -= 1
+      }
+    },
+    oncomment() {
+      this.commentList.push(this.comment)
+      this.comment = ""
+    }
+  }
 };
 </script>
 
@@ -476,5 +499,11 @@ export default {
   color: white;
   height: 40px !important;
   margin-bottom: 3px;
+}
+.btns {
+  height: 38px;
+  text-align: center;
+  line-height: 38px;
+  border: 1px solid lightgray;
 }
 </style>
