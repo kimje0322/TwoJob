@@ -61,11 +61,6 @@
     </v-app>
 
     <div>
-      <!-- 리뷰 모달 -->
-      <v-dialog max-width="640" min-height="500" v-model="reviewDialog">
-        <ShoppingReview @closeReviewDialog="closeReviewDialog"></ShoppingReview>
-      </v-dialog>
-
       <!-- 임시 리뷰작성 버튼 activator -->
       <div style="text-align: end; margin-right: 70px;">
         <v-btn 
@@ -74,6 +69,17 @@
           리뷰 작성
         </v-btn>
       </div>
+      
+      <!-- 리뷰 모달 -->
+      <v-dialog max-width="640" min-height="500" v-model="reviewDialog">
+        <ShoppingReview @closeReviewDialog="closeReviewDialog"></ShoppingReview>
+        <v-card-actions style="background-color: white;">
+          <v-spacer></v-spacer>
+          <v-btn text @click="reviewDialog=false">취소</v-btn>
+          <v-btn text color="blue">등록</v-btn>
+        </v-card-actions>
+      </v-dialog>
+      
     </div>
 
     <!-- 인기순 -->
@@ -82,7 +88,7 @@
     </div>
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in likeItems" :key="i" style="display: inline-block; flex:1">
-        <v-card :loading="loading" class="my-12" max-width="320" style="margin: auto">
+        <v-card class="my-12" max-width="320" style="margin: auto">
           <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
           <v-card-title style="font-weight: 600; margin: auto">{{item.title}}
             <div style="margin-left: auto;"><v-chip class="likeBadge">{{item.likenum}}명 좋아요</v-chip></div>
@@ -245,9 +251,6 @@ export default {
     closeReviewDialog() {
       this.reviewDialog = false;
     },
-    // openDialog() {
-    //   this.reviewDialog = true;
-    // }
   },
 };
 </script>

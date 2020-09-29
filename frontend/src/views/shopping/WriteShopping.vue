@@ -27,6 +27,7 @@
                   <h5>대표 사진</h5>
                   <v-file-input
                     v-model="thumbnail"
+                    @change="onThumbnail"
                     :rules="rules"
                     accept="image/png, image/jpeg, image/bmp"
                     placeholder="Pick an thumbnail"
@@ -225,6 +226,7 @@ export default {
       // 가격
       price: 0,
       // 사진
+      picture: "",
       thumbnail: "",
       rules: [
         (value) =>
@@ -263,8 +265,10 @@ export default {
             axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
                 headers: { 'Content-Type': 'multipart/form-data' } 
             }).then(response => {
+                const cutUrl = response.data.substr(18, response.data.length-17)
+                const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
                 console.log(response.data);
-              callback(response.data)
+              callback(imgUrl)
             });
           },
         },
@@ -307,6 +311,20 @@ export default {
     }
   },
   methods: {
+    onThumbnail(e) {
+       var formData = new FormData();
+        formData.append("img", e);
+        console.log(e)
+        axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
+            headers: { 'Content-Type': 'multipart/form-data' } 
+        }).then(response => {
+            const cutUrl = response.data.substr(18, response.data.length-17)
+            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+            console.log(response.data);
+            this.picture = imgUrl;
+
+        });
+    },
     onSave() {
       this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
       // console.log(this.editortext)
@@ -375,7 +393,7 @@ export default {
             userid: this.userid,
             investaddress: "28d999c6-7a39-4dae-a651-bb46512b549c",
             pjtname: this.title,
-            picture: "정성오",
+            picture: this.picture,
             startdate: this.dateFormatted1,
             saleprice: this.price,
             url: "abc",
