@@ -1,10 +1,12 @@
 package com.blocker.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,6 +23,7 @@ import com.blocker.dto.ChatMessage;
 import com.blocker.dto.Chatroom;
 import com.blocker.dto.Member;
 import com.blocker.service.ChatService;
+import com.blocker.util.PageRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,7 +61,7 @@ public class ChatController {
 	@GetMapping("/chatlist")
 	public ResponseEntity<?> myroomlist(@RequestParam("accessToken") String accessToken) {
 		Object result = chatService.getMyChat(accessToken);
-		if(result.getClass() == List.class){
+		if(result.getClass() == List.class || result.getClass() == ArrayList.class){
     		return new ResponseEntity<List<Chatroom>>((List<Chatroom>)result, HttpStatus.OK);
     	}else if(result.getClass() == String.class) {
     		return new ResponseEntity<String>((String)result, HttpStatus.OK);
@@ -78,19 +81,13 @@ public class ChatController {
     	}
 	}
 	
-	@GetMapping("/allroom")
-	public List<Chatroom> allroom() {
-		return chatService.allroom();
-	}
 
 	@GetMapping("/room/{roomId}")
 	public Chatroom roomInfo(@PathVariable Integer roomId) {
 		return chatService.getRoom(Long.valueOf(roomId));
 	}
-	
-	
-	@GetMapping("/test")
-	public void test() {
-		
+	@GetMapping("/getMessage")
+	public Page<ChatMessage> getMessage(@RequestParam("roomId") Long id, PageRequest pageable) {
+		return chatService.message(id, pageable.of());
 	}
 }
