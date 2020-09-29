@@ -224,7 +224,7 @@ import { Editor } from "@toast-ui/vue-editor";
 import axios from "axios";
 import store from '../../store/index.js'
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "http://localhost:8080";
 export default {
   components: {
     Navbar,
@@ -234,7 +234,7 @@ export default {
     return {
       // 개인정보
       userInfo: {},
-      userid: "",
+      userid: store.state.userInfo.id,
       login: false,
       tab: null,
       text: ["1", "2", "3"],
