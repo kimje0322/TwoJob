@@ -17,6 +17,7 @@ import MyInvestPjt from "@/views/mypage/MyInvestPjt.vue"
 import LikeList from "@/views/mypage/LikeList.vue"
 import Messenger from "@/views/mypage/Messenger.vue"
 import Chat from "@/views/mypage/Chat.vue"
+// import ChatRoom from "@/views/c"
 
 Vue.use(VueRouter);
 

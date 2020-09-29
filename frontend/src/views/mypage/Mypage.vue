@@ -3,35 +3,46 @@
     <!-- 상단 Navbar -->
     <navbar />
     <!-- 투자 글쓰기 메뉴바 -->
-    <div style="max-width: 1000px; max-height: 1000px; margin: 0 auto;">
+    <div style="max-width: 1000px; max-height: 1000px; margin: 0 auto">
       <!-- 투자 글쓰기 메뉴 -->
-      <div class="writeMenuBar" style="background-color: white !important;">
+      <div class="writeMenuBar" style="background-color: white !important">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab
-            style="color: black;"
+            style="color: black"
             v-for="(item, i) in tabs"
             :key="i"
             :href="`#tab-${i}`"
             class="writeMenu"
-          >{{ item }}</v-tab>
-          <!-- 투자 마이페이지 -->
+            >{{ item }}</v-tab
+          >
+          <!-- 프로젝트 정보 창 -->
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
               <v-card-text>
                 <div>
-                  <div style="margin-top: 40px; float: left;">
-                    <img :src="userimg" style="height: 100px; border-radius: 50%" />
-                    <div style="text-align: center; margin-top: 20px;">
-                      <h5>{{username}} 님</h5>
-                      <p>총 {{userbalance}}.0 원</p>
+                  <!-- <div style="width: 55px; display: inline-block; margin: 0 auto 25px;"> -->
+                  <div style="margin-top: 40px; float: left">
+                    <img
+                      :src="userimg"
+                      style="height: 100px; border-radius: 50%"
+                    />
+                    <div style="text-align: center; margin-top: 20px">
+                      <h5>{{ username }} 님</h5>
+                      <p>총 {{ userbalance }}.0 원</p>
                       <router-link to="/">
                         <v-btn
                           @click="onLogout"
-                          style="vertical-align: middle; background-color: mintcream;"
-                        >로그아웃</v-btn>
+                          style="
+                            vertical-align: middle;
+                            background-color: mintcream;
+                          "
+                          >로그아웃</v-btn
+                        >
                       </router-link>
                       <br />
-                      <v-btn @click="onWallet" style="margin-top: 20px">지갑생성</v-btn>
+                      <v-btn @click="onWallet" style="margin-top: 20px"
+                        >지갑생성</v-btn
+                      >
                     </div>
                   </div>
                   <div class="project_info">
@@ -42,21 +53,24 @@
                           <li class="info_li">
                             <a href="/myinvestpjt" class="pjt_a">
                               <span class="pjt_span">
-                                생성한 프로젝트
-                                <h3 style="padding-top: 7px;">
+                                투자 프로젝트
+                                <h3 style="padding-top: 7px">
                                   XX
-                                  <h5 style="display: inline-block;">회</h5>
+                                  <h5 style="display: inline-block">회</h5>
                                 </h3>
                               </span>
                             </a>
                           </li>
-                          <li class="info_li" style="border-left: 2px solid #e9ecef;">
+                          <li
+                            class="info_li"
+                            style="border-left: 2px solid #e9ecef"
+                          >
                             <a href="#" class="pjt_a">
                               <span class="pjt_span">
-                                참여한 프로젝트
-                                <h3 style="padding-top: 7px;">
+                                판매 프로젝트
+                                <h3 style="padding-top: 7px">
                                   XX
-                                  <h5 style="display: inline-block;">회</h5>
+                                  <h5 style="display: inline-block">회</h5>
                                 </h3>
                               </span>
                             </a>
@@ -64,49 +78,79 @@
                         </ul>
                         <ul class="open_pjt">
                           <li class="opjt_li">
-                            <a href="/writeinvest" class="opjt_a">투자 프로젝트 생성</a>
+                            <a href="/writeinvest" class="opjt_a"
+                              >투자 프로젝트 생성</a
+                            >
                           </li>
                           <li class="opjt_li">
                             <a href="#" class="opjt_a">판매 프로젝트 생성</a>
                           </li>
                         </ul>
                       </div>
-                      <div style="margin-top: 15px;">
+                      <div style="margin-top: 15px">
                         <div
-                          style="padding: 18px 12px; float: left; width: 50%; border-top: 2px solid #f2f4f6; border-bottom: 2px solid #f2f4f6;"
+                          style="
+                            padding: 18px 12px;
+                            float: left;
+                            width: 50%;
+                            border-top: 2px solid #f2f4f6;
+                            border-bottom: 2px solid #f2f4f6;
+                          "
                         >
-                          <span style="margin-right: 5px;">
+                          <span style="margin-right: 5px">
                             <i class="far fa-heart fa-lg"></i>
                           </span>
-                          <strong style="font-size: 17px;">찜 한 목록</strong>
+                          <strong style="font-size: 17px">찜 한 목록</strong>
                         </div>
                         <div
-                          style="padding: 18px 12px; float: left; width: 50%; border-top: 2px solid #f2f4f6; border-bottom: 2px solid #f2f4f6;"
+                          style="
+                            padding: 18px 12px;
+                            float: left;
+                            width: 50%;
+                            border-top: 2px solid #f2f4f6;
+                            border-bottom: 2px solid #f2f4f6;
+                          "
                         >
-                          <span style="margin-right: 5px;">
+                          <span style="margin-right: 5px">
                             <i class="far fa-comments fa-lg"></i>
                           </span>
-                          <strong style="font-size: 17px;">1 : 1 문의</strong>
+                          <strong style="font-size: 17px"> 1 : 1 문의 </strong>
                         </div>
                       </div>
-                      <div style="margin: 100px 20px 0;">
-                        <h4 style="display: inline-block; font-size: 17px; font-weight: 600; ">거래내역</h4>
+                      <div style="margin: 100px 20px 0">
+                        <h4
+                          style="
+                            display: inline-block;
+                            font-size: 17px;
+                            font-weight: 600;
+                          "
+                        >
+                          거래내역
+                        </h4>
                         <span style="float: right">더보기</span>
-                        <div style="margin-top: 18px;">
+                        <div style="margin-top: 18px">
                           <div>
                             <img
                               :src="userimg"
-                              style="height: 40px; border-radius: 50%; display: inline-block;"
+                              style="
+                                height: 40px;
+                                border-radius: 50%;
+                                display: inline-block;
+                              "
                             />
-                            <span style="margin-left: 100px;">프로젝트 명</span>
+                            <span style="margin-left: 100px">프로젝트 명</span>
                             <span style="float: right">+ 120,0000 ETH</span>
                           </div>
-                          <div style="margin-top: 15px;">
+                          <div style="margin-top: 15px">
                             <img
                               :src="userimg"
-                              style="height: 40px; border-radius: 50%; display: inline-block;"
+                              style="
+                                height: 40px;
+                                border-radius: 50%;
+                                display: inline-block;
+                              "
                             />
-                            <span style="margin-left: 100px;">프로젝트 명</span>
+                            <span style="margin-left: 100px">프로젝트 명</span>
                             <span style="float: right">+ 120,0000 ETH</span>
                           </div>
                         </div>
@@ -122,16 +166,24 @@
             <v-card flat tile>
               <v-card-text>
                 <div>
-                  <div style="margin-top: 40px; float: left;">
-                    <img :src="userimg" style="height: 100px; border-radius: 50%" />
-                    <div style="text-align: center; margin-top: 20px;">
-                      <h5>{{username}} 님</h5>
-                      <p>총 {{userbalance}}.0 원</p>
+                  <!-- <div style="width: 55px; display: inline-block; margin: 0 auto 25px;"> -->
+                  <div style="margin-top: 40px; float: left">
+                    <img
+                      :src="userimg"
+                      style="height: 100px; border-radius: 50%"
+                    />
+                    <div style="text-align: center; margin-top: 20px">
+                      <h5>{{ username }} 님</h5>
+                      <p>총 {{ userbalance }}.0 원</p>
                       <router-link to="/">
                         <v-btn
                           @click="onLogout"
-                          style="vertical-align: middle; background-color: mintcream;"
-                        >로그아웃</v-btn>
+                          style="
+                            vertical-align: middle;
+                            background-color: mintcream;
+                          "
+                          >로그아웃</v-btn
+                        >
                       </router-link>
                     </div>
                   </div>
@@ -144,20 +196,23 @@
                             <a href="/writeinvest" class="pjt_a">
                               <span class="pjt_span">
                                 투자하기
-                                <h3 style="padding-top: 7px;">
+                                <h3 style="padding-top: 7px">
                                   XX
-                                  <h5 style="display: inline-block;">회</h5>
+                                  <h5 style="display: inline-block">회</h5>
                                 </h3>
                               </span>
                             </a>
                           </li>
-                          <li class="info_li" style="border-left: 2px solid #e9ecef;">
+                          <li
+                            class="info_li"
+                            style="border-left: 2px solid #e9ecef"
+                          >
                             <a href="#" class="pjt_a">
                               <span class="pjt_span">
                                 판매하기
-                                <h3 style="padding-top: 7px;">
+                                <h3 style="padding-top: 7px">
                                   XX
-                                  <h5 style="display: inline-block;">회</h5>
+                                  <h5 style="display: inline-block">회</h5>
                                 </h3>
                               </span>
                             </a>
@@ -165,49 +220,128 @@
                         </ul>
                         <ul class="open_pjt">
                           <li class="opjt_li">
-                            <a href="/writeinvest" class="opjt_a">투자 프로젝트 생성</a>
+                            <a href="/writeinvest" class="opjt_a"
+                              >투자 프로젝트 생성</a
+                            >
                           </li>
                           <li class="opjt_li">
                             <a href="#" class="opjt_a">판매 프로젝트 생성</a>
                           </li>
                         </ul>
                       </div>
-                      <div style="margin-top: 15px;">
+                      <div style="margin-top: 15px">
                         <div
-                          style="padding: 18px 12px; float: left; width: 50%; border-top: 2px solid #f2f4f6; border-bottom: 2px solid #f2f4f6;"
+                          style="
+                            padding: 18px 12px;
+                            float: left;
+                            width: 50%;
+                            border-top: 2px solid #f2f4f6;
+                            border-bottom: 2px solid #f2f4f6;
+                          "
                         >
-                          <span style="margin-right: 5px;">
+                          <span style="margin-right: 5px">
                             <i class="far fa-heart fa-lg"></i>
                           </span>
-                          <strong style="font-size: 17px;">찜 한 목록</strong>
+                          <strong style="font-size: 17px">찜 한 목록</strong>
                         </div>
                         <div
-                          style="padding: 18px 12px; float: left; width: 50%; border-top: 2px solid #f2f4f6; border-bottom: 2px solid #f2f4f6;"
+                          style="
+                            padding: 18px 12px;
+                            float: left;
+                            width: 50%;
+                            border-top: 2px solid #f2f4f6;
+                            border-bottom: 2px solid #f2f4f6;
+                          "
                         >
-                          <span style="margin-right: 5px;">
+                          <span style="margin-right: 5px">
                             <i class="far fa-comments fa-lg"></i>
                           </span>
-                          <a href="/chat">1 : 1 문의</a>
+                          <!-- <strong style="font-size: 17px" @click="onChat()"> -->
+                          <v-btn @click="onChat(-1)"> 1 : 1 문의 </v-btn>
+                          <!-- </strong> -->
+
+                          <v-dialog
+                            max-width="500"
+                            min-height="700"
+                            v-model="chatroom"
+                          >
+                            <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
+                          </v-dialog>
+                          <!-- <v-dialog
+                            v-model="chat_dialog"
+                            scrollable
+                            max-width="400px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                @click="chat_dialog = true"
+                                v-bind="attrs"
+                                style="font-size: 17px"
+                                v-on="on"
+                              >
+                                1 : 1 문의 ㄱㄱ
+                              </v-btn>
+                            </template>
+                            <v-card>
+                              <v-card-title>채팅방 목록</v-card-title>
+                              <v-divider></v-divider>
+                              <v-card-text style="height: 300px">
+                                <v-radio-group
+                                  column
+                                  v-for="(lst, i) in chat_lst"
+                                  :key="i"
+                                >
+                                  <v-radio :label="lst"></v-radio>
+                                </v-radio-group>
+                              </v-card-text>
+                              <v-divider></v-divider>
+                              <v-card-actions>
+                                <v-btn
+                                  color="blue darken-1"
+                                  text
+                                  @click="chat_dialog = false"
+                                >
+                                  close
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog> -->
                         </div>
                       </div>
-                      <div style="margin: 100px 20px 0;">
-                        <h4 style="display: inline-block; font-size: 17px; font-weight: 600; ">거래내역</h4>
+                      <div style="margin: 100px 20px 0">
+                        <h4
+                          style="
+                            display: inline-block;
+                            font-size: 17px;
+                            font-weight: 600;
+                          "
+                        >
+                          거래내역
+                        </h4>
                         <span style="float: right">더보기</span>
-                        <div style="margin-top: 18px;">
+                        <div style="margin-top: 18px">
                           <div>
                             <img
                               :src="userimg"
-                              style="height: 40px; border-radius: 50%; display: inline-block;"
+                              style="
+                                height: 40px;
+                                border-radius: 50%;
+                                display: inline-block;
+                              "
                             />
-                            <span style="margin-left: 100px;">바꿔버ㅏ=-ㅏdfdfdfㅏㅏddd 프로젝트 명</span>
+                            <span style="margin-left: 100px">프로젝트 명</span>
                             <span style="float: right">+ 120,0000 ETH</span>
                           </div>
-                          <div style="margin-top: 15px;">
+                          <div style="margin-top: 15px">
                             <img
                               :src="userimg"
-                              style="height: 40px; border-radius: 50%; display: inline-block;"
+                              style="
+                                height: 40px;
+                                border-radius: 50%;
+                                display: inline-block;
+                              "
                             />
-                            <span style="margin-left: 100px;">dfdfddddfdfddf프로젝트 명</span>
+                            <span style="margin-left: 100px">프로젝트 명</span>
                             <span style="float: right">+ 120,0000 ETH</span>
                           </div>
                         </div>
@@ -227,20 +361,33 @@
 <script>
 import axios from "axios";
 
+// import Vuetify from 'vuetify'
+
 import store from "../../store/index.js";
 import Navbar from "../../components/Navbar.vue";
 import "@/../public/css/Mypage.scss";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 
+import ChatRoom from "@/views/mypage/ChatRoom.vue";
+
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   methods: {
+    closeChatRoom() {
+      this.chatroom = false;
+    },
+    onChat() {
+      // window.open("");
+      this.chatroom = true;
+      console.log("모달 열어보자" + this.chatroom)
+      // this.$router.push("/chat")
+    },
     onLogout() {
       // this.$store.reset()
-      store.state.isSigned = false;
       console.log("로그아웃됨");
+      store.state.isSigned = false;
       console.log("store.state.isSigned " + store.state.isSigned);
       // this.$router.push("/");
     },
@@ -285,6 +432,7 @@ export default {
   },
   components: {
     Navbar,
+    ChatRoom,
   },
   mounted() {
     this.userimg = store.state.userInfo.img;
@@ -293,6 +441,11 @@ export default {
   },
   data() {
     return {
+      chatroom: false,
+      chat_dialog: false,
+      room_dialog: false,
+      chat_lst: ["user1", "user2", "user3"],
+
       userimg: "",
       username: "",
       userbalance: "",

@@ -245,9 +245,9 @@ export default {
     closeReviewDialog() {
       this.reviewDialog = false;
     },
-    openDialog() {
-      this.reviewDialog = true;
-    }
+    // openDialog() {
+    //   this.reviewDialog = true;
+    // }
   },
 };
 </script>
