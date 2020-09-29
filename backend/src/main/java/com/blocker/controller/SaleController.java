@@ -3,7 +3,10 @@ package com.blocker.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import javax.ws.rs.POST;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,12 +23,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.dto.EditorSaleDto;
+import com.blocker.dto.ReviewDto;
 import com.blocker.dto.SaleBoardDto;
 import com.blocker.repository.EditorSaleRepository;
 import com.blocker.repository.InvestmentRepository;
+import com.blocker.repository.ReviewRepository;
 import com.blocker.repository.SaleBoardRepository;
 import com.blocker.request.SaleBoardRequest;
 import com.blocker.request.SaleBoardResponse;
+import com.blocker.request.SaleBoardReviewRequest;
+import com.blocker.request.SaleDetailResponse;
+import com.blocker.service.ReviewService;
 import com.blocker.service.SaleService;
 import com.blocker.util.BasicResponse;
 import com.blocker.util.webhook;
@@ -45,6 +53,8 @@ public class SaleController {
 	EditorSaleRepository editorSaleRepository;
 	@Autowired
 	InvestmentRepository investmentRepository;
+	@Autowired
+	ReviewService reviewService;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "판매 게시글 생성")
@@ -89,6 +99,7 @@ public class SaleController {
 				if (!editorSaleDto.getEditorhtml().isEmpty()) {
 					data.setEditorhtml(editorSaleDto.getEditorhtml());
 				}
+				data.setAddress(saleBoardDto.getAddress());
 				data.setInvestaddress(saleBoardDto.getInvestaddress());
 				data.setPicture(saleBoardDto.getPicture());
 				data.setPjtname(saleBoardDto.getPjtname());
@@ -112,7 +123,7 @@ public class SaleController {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
-	
+
 	@GetMapping("/getAllSaleList/{page}")
 	@ApiOperation(value = "내가 올린 판매 게시글 리스트 가져오기")
 	public Object getAllSaleList(@PathVariable int page) {
@@ -129,6 +140,7 @@ public class SaleController {
 				if (!editorSaleDto.getEditorhtml().isEmpty()) {
 					data.setEditorhtml(editorSaleDto.getEditorhtml());
 				}
+				data.setAddress(saleBoardDto.getAddress());
 				data.setInvestaddress(saleBoardDto.getInvestaddress());
 				data.setPicture(saleBoardDto.getPicture());
 				data.setPjtname(saleBoardDto.getPjtname());
@@ -151,6 +163,62 @@ public class SaleController {
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
+	}
+
+	@PostMapping("/Review")
+	@ApiOperation(value = "리뷰쓰기")
+	public Object Review(@RequestBody SaleBoardReviewRequest saleBoardReviewRequest) {
+		final BasicResponse result = new BasicResponse();
+
+		try {
+			ReviewDto reviewDto = new ReviewDto();
+			reviewDto.setReviewexplain(saleBoardReviewRequest.getReviewexplain());
+			reviewDto.setPicture(saleBoardReviewRequest.getReviewPicture());
+			reviewDto.setSaleaddress(saleBoardReviewRequest.getSaleaddress());
+			reviewDto.setSatisfied(saleBoardReviewRequest.getSatisfied());
+			reviewDto.setSimilar(saleBoardReviewRequest.getSimilar());
+			reviewDto.setUserid(saleBoardReviewRequest.getUserid());
+
+			reviewDto = reviewService.createReview(reviewDto);
+			result.data = "success";
+			result.object = reviewDto;
+			result.status = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("리뷰등록 중 실패하였습니다");
+			result.data = "fail";
+			result.object = null;
+			result.status = false;
+		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@GetMapping("/getDetail/{page}")
+	@ApiOperation(value = "판매 디테일페이지 가져오기")
+	public Object getDetail(@RequestParam String address, @PathVariable int page) {
+		final BasicResponse result = new BasicResponse();
+		try {
+			Optional<SaleBoardDto> opSaleBoardDto = saleService.getSaleBoard(address);
+			if (opSaleBoardDto.isPresent()) {
+				SaleDetailResponse saleDetailResponse = new SaleDetailResponse(opSaleBoardDto.get(),
+						reviewService.getReviews(address, page));
+				System.out.println(saleDetailResponse.getSaleBoardDto().toString());
+				result.data = "success";
+				result.object = saleDetailResponse;
+				result.status = true;
+			} else {
+				result.data = "success";
+				result.object = null;
+				result.status = true;
+			}
+		} catch (Exception e) {
+			System.out.println("리뷰를 가져오던도중 애러발생");
+			result.data = "fail";
+			result.object = null;
+			result.status = false;
+		}
+
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(Exception.class)
