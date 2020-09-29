@@ -25,6 +25,7 @@ import com.blocker.dto.Member;
 import com.blocker.service.ChatService;
 import com.blocker.util.PageRequest;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins = { "*" }, maxAge = 6000)
@@ -58,6 +59,7 @@ public class ChatController {
 	}
 	
 	// 룸 이름, 보낸사람, 받는사람, 시간, 이미지 
+	@ApiOperation(value ="[채팅방 목록] 내가 참여한 채팅방의 목록을 가져온다. params : [accessToken] result : List<chatRoom>")
 	@GetMapping("/chatlist")
 	public ResponseEntity<?> myroomlist(@RequestParam("accessToken") String accessToken) {
 		Object result = chatService.getMyChat(accessToken);
@@ -69,6 +71,7 @@ public class ChatController {
     		return new ResponseEntity<Integer>((Integer)result, HttpStatus.OK);
     	}
 	}
+	@ApiOperation(value ="[채팅시작하기] 특정한 사람과의 채팅을 시작(채팅방 생성), 보내는 사람의 accessToken과 받는사람의 OauthId를 활용함  params : [fromAccessToken, toOauthID] result : 성공하면 success, 실패하면 fail")
 	@PostMapping("/startchat")
 	public ResponseEntity<?> createRoom(@RequestParam("fromAccessToken") String fromAccessToken, @RequestParam("toOauthID") String toId) {
 		Object result = chatService.makeChatRoom(fromAccessToken, toId);
@@ -81,7 +84,7 @@ public class ChatController {
     	}
 	}
 	
-
+	@ApiOperation(value ="[특정 채팅방의 정보를 가져옵니다.] roomId에 따라 특정 채팅방의 정보를 가져옵니다. params : [roomId] result : 성공하면 해당 채팅방 return, 없으면 null 리턴")
 	@GetMapping("/room/{roomId}")
 	public Chatroom roomInfo(@PathVariable Integer roomId) {
 		return chatService.getRoom(Long.valueOf(roomId));
