@@ -14,14 +14,22 @@
             <v-icon :class="key"
             v-for="key in stars"
             :key="key"
-            @click="starPoint(key)" size=33 
+            @click="starPoint(key)" size=43 
             style="color: #E0E0E0">
             mdi-star
             </v-icon>
+            <h4 class="mt-5">상품 설명서와 비슷했나요?</h4>
+            <v-icon :class="key"
+            v-for="key in circles"
+            :key="key"
+            @click="circlePoint(key)" size=43
+            style="color: #E0E0E0">
+            mdi-circle-slice-8
+            </v-icon>
           </div>
           <!-- 이미지 업로드 버튼 -->
-          <input ref="imageInput" type="file" @change="onChangeImages" hidden/>
-          <div v-if="!uploadimg" @click="onClickImageUpload" class="reviewImg mx-auto mt-3">
+          <input ref="imageInput" type="file" @change="onChangeImages" hidden />
+          <div v-if="!uploadimg" @click="onClickImageUpload" class="reviewImg mx-auto mt-5">
             <v-icon>mdi-camera-plus-outline</v-icon>
             <span style="display:inline-block; margin-top:10px">사진 첨부하기</span>  
           </div>
@@ -80,7 +88,15 @@ export default {
         star4: "s4",
         star5: "s5",
       },
+      circles: {
+        circle1: "c1",
+        circle2: "c2",
+        circle3: "c3",
+        circle4: "c4",
+        circle5: "c5",
+      },
       checkedStars: false,
+      checkedCircles: false,
       uploadimg: false,
       showImg : true,
       content: '',
@@ -109,6 +125,24 @@ export default {
         }
       }
     },
+    circlePoint(point) {
+      if (this.checkedCircles) {
+        var lastPoint = point.slice(-1);
+        var blank = lastPoint*1 + 1;
+        for (var i = 0; i <= lastPoint; i++) {
+          $(`.${`c${i}`}`).css("color", "#00B0FF");
+        }
+        for (var j = blank; j <= 5; j++) {
+          $(`.${`c${j}`}`).css("color", "#E0E0E0");
+        }
+      } else {
+        this.checkedCircles = true;
+        var lastPoint = point.slice(-1)
+        for (var i = 0; i <= lastPoint; i++) {
+          $(`.${`c${i}`}`).css("color", "#00B0FF");
+        }
+      }
+    },
     onDeleteImg() {
       console.log('ondeleteimg')
       this.showImg = false;
@@ -126,7 +160,6 @@ export default {
       this.file = e.target.files[0];
       this.imgPath = URL.createObjectURL(this.file);
       this.img = '';
-
     },
   }
 }
