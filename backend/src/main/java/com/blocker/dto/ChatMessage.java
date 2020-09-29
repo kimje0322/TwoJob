@@ -38,7 +38,10 @@ public class ChatMessage {
 	@Column(columnDefinition = "TEXT")
     private String message;
 	
+	@Column
     private String time;
+	
+	@Column
 	private MessageType type;
 	public ChatMessage(Long roomid, String sender, String message, String time) {
 		super();

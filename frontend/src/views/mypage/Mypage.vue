@@ -51,7 +51,10 @@
                               </h2>
                             </a>
                           </li>
-                          <li class="info_li" style="border-left: 2px solid #e9ecef;">
+                          <li
+                            class="info_li"
+                            style="border-left: 2px solid #e9ecef"
+                          >
                             <a href="#" class="pjt_a">
                               <span class="pjt_span">참여한 프로젝트</span>
                               <h2 style="margin-top: 20px;">
@@ -63,7 +66,9 @@
                         </ul>
                         <ul class="open_pjt">
                           <li class="opjt_li">
-                            <a href="/writeinvest" class="opjt_a">투자 프로젝트 생성</a>
+                            <a href="/writeinvest" class="opjt_a"
+                              >투자 프로젝트 생성</a
+                            >
                           </li>
                           <li class="opjt_li">
                             <a href="#" class="opjt_a">쇼핑 프로젝트 생성</a>
@@ -139,7 +144,10 @@
                               </h2>
                             </a>
                           </li>
-                          <li class="info_li" style="border-left: 2px solid #e9ecef;">
+                          <li
+                            class="info_li"
+                            style="border-left: 2px solid #e9ecef"
+                          >
                             <a href="#" class="pjt_a">
                               <span class="pjt_span">참여한 프로젝트</span>
                               <h2 style="margin-top: 20px;">
@@ -151,7 +159,9 @@
                         </ul>
                         <ul class="open_pjt">
                           <li class="opjt_li">
-                            <a href="/writeinvest" class="opjt_a">투자 프로젝트 생성</a>
+                            <a href="/writeinvest" class="opjt_a"
+                              >투자 프로젝트 생성</a
+                            >
                           </li>
                           <li class="opjt_li">
                             <a href="#" class="opjt_a">쇼핑 프로젝트 생성</a>
@@ -215,20 +225,33 @@
 <script>
 import axios from "axios";
 
+// import Vuetify from 'vuetify'
+
 import store from "../../store/index.js";
 import Navbar from "../../components/Navbar.vue";
 import "@/../public/css/Mypage.scss";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 
+import ChatRoom from "@/views/mypage/ChatRoom.vue";
+
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   methods: {
+    closeChatRoom() {
+      this.chatroom = false;
+    },
+    onChat() {
+      // window.open("");
+      this.chatroom = true;
+      console.log("모달 열어보자" + this.chatroom)
+      // this.$router.push("/chat")
+    },
     onLogout() {
       // this.$store.reset()
-      store.state.isSigned = false;
       console.log("로그아웃됨");
+      store.state.isSigned = false;
       console.log("store.state.isSigned " + store.state.isSigned);
       // this.$router.push("/");
     },
@@ -273,6 +296,7 @@ export default {
   },
   components: {
     Navbar,
+    ChatRoom,
   },
   mounted() {
     this.userimg = store.state.userInfo.img;
@@ -281,6 +305,11 @@ export default {
   },
   data() {
     return {
+      chatroom: false,
+      chat_dialog: false,
+      room_dialog: false,
+      chat_lst: ["user1", "user2", "user3"],
+
       userimg: "",
       username: "",
       userbalance: "",
