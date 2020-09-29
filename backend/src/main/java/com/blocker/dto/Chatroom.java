@@ -28,10 +28,13 @@ public class Chatroom {
 	@Column
 	private String user2;
 	
-	public Chatroom(String user1, String user2) {
+	private String toimg;
+	
+	public Chatroom(String user1, String user2,String toimg) {
 		super();
 		this.user1 = user1;
 		this.user2 = user2;
+		this.toimg = toimg;
 	}
 	
 }
