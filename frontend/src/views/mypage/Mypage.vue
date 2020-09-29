@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="mypage">
     <!-- 상단 Navbar -->
     <navbar />
     <!-- 투자 글쓰기 메뉴바 -->
@@ -14,13 +14,11 @@
             :href="`#tab-${i}`"
             class="writeMenu"
           >{{ item }}</v-tab>
-          <!-- 프로젝트 정보 창 -->
+          <!-- 투자 마이페이지 -->
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
               <v-card-text>
-                <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
                 <div>
-                  <!-- <div style="width: 55px; display: inline-block; margin: 0 auto 25px;"> -->
                   <div style="margin-top: 40px; float: left;">
                     <img :src="userimg" style="height: 100px; border-radius: 50%" />
                     <div style="text-align: center; margin-top: 20px;">
@@ -32,8 +30,8 @@
                           style="vertical-align: middle; background-color: mintcream;"
                         >로그아웃</v-btn>
                       </router-link>
-                      <br>
-                      <v-btn @click="onWallet" style="margin-top: 20px">지갑생성</v-btn>   
+                      <br />
+                      <v-btn @click="onWallet" style="margin-top: 20px">지갑생성</v-btn>
                     </div>
                   </div>
                   <div class="project_info">
@@ -44,7 +42,7 @@
                           <li class="info_li">
                             <a href="/myinvestpjt" class="pjt_a">
                               <span class="pjt_span">
-                                투자 프로젝트
+                                생성한 프로젝트
                                 <h3 style="padding-top: 7px;">
                                   XX
                                   <h5 style="display: inline-block;">회</h5>
@@ -55,7 +53,7 @@
                           <li class="info_li" style="border-left: 2px solid #e9ecef;">
                             <a href="#" class="pjt_a">
                               <span class="pjt_span">
-                                판매 프로젝트
+                                참여한 프로젝트
                                 <h3 style="padding-top: 7px;">
                                   XX
                                   <h5 style="display: inline-block;">회</h5>
@@ -116,17 +114,14 @@
                     </div>
                   </div>
                 </div>
-
-                <!-- <div style="display: inline-block; margin-left: 200px;"></div> -->
               </v-card-text>
             </v-card>
           </v-tab-item>
-          <!-- 금손 정보 창 -->
+          <!-- 쇼핑 마이페이지 -->
           <v-tab-item :value="'tab-1'">
             <v-card flat tile>
               <v-card-text>
                 <div>
-                  <!-- <div style="width: 55px; display: inline-block; margin: 0 auto 25px;"> -->
                   <div style="margin-top: 40px; float: left;">
                     <img :src="userimg" style="height: 100px; border-radius: 50%" />
                     <div style="text-align: center; margin-top: 20px;">
@@ -192,9 +187,7 @@
                           <span style="margin-right: 5px;">
                             <i class="far fa-comments fa-lg"></i>
                           </span>
-                          <!-- <strong style="font-size: 17px;"> -->
-                            <a href="/chat">1 : 1 문의</a>
-                            <!-- </strong> -->
+                          <a href="/chat">1 : 1 문의</a>
                         </div>
                       </div>
                       <div style="margin: 100px 20px 0;">
@@ -236,7 +229,7 @@ import axios from "axios";
 
 import store from "../../store/index.js";
 import Navbar from "../../components/Navbar.vue";
-import "@/../public/css/Mypage.scss"
+import "@/../public/css/Mypage.scss";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 
@@ -253,46 +246,42 @@ export default {
     },
     onWallet() {
       // var Web3 = require('web3');
-      var web3 = new Web3('http://j3b102.p.ssafy.io:8545');
+      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
 
-      var Accounts = require('web3-eth-accounts');
-      var accounts = new Accounts('http://j3b102.p.ssafy.io:8545');
+      var Accounts = require("web3-eth-accounts");
+      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
       var result = web3.eth.accounts.create();
-      console.log(accounts)
-      console.log(result)
+      console.log(accounts);
+      console.log(result);
 
-      store.commit("setAddress", result.address)
-      
+      store.commit("setAddress", result.address);
+
       const fd = new FormData();
       fd.append("accessToken", store.state.accessToken);
       fd.append("address", store.state.address);
       fd.append("privatekey", result.privateKey);
-      axios
-        .post(`${SERVER_URL}/wallet/regist`, fd)
-        .then((res) => {
-          console.log("wow!!success!!")
-          console.log(res)
-          console.log(fd)
-          if(res.data == 401){
-            store.state.isSigned = false;
-          }
-          else if (res.data == 'success'){
-            Swal.fire({
-              icon: "success",
-              title: "지갑 생성 성공",
-              text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
-              // showCancelButton: true,
-              // cancelButtonColor: "#d33",
-              // confirmButtonColor: "#3085d6",
-              confirmButtonText: "확인",
-              // cancelButtonText: "취소하기",
-            })
-          }
-        })
+      axios.post(`${SERVER_URL}/wallet/regist`, fd).then((res) => {
+        console.log("wow!!success!!");
+        console.log(res);
+        console.log(fd);
+        if (res.data == 401) {
+          store.state.isSigned = false;
+        } else if (res.data == "success") {
+          Swal.fire({
+            icon: "success",
+            title: "지갑 생성 성공",
+            text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
+            // showCancelButton: true,
+            // cancelButtonColor: "#d33",
+            // confirmButtonColor: "#3085d6",
+            confirmButtonText: "확인",
+            // cancelButtonText: "취소하기",
+          });
+        }
+      });
 
-    
       // alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
-    }
+    },
   },
   components: {
     Navbar,
@@ -309,7 +298,7 @@ export default {
       userbalance: "",
       tab: null,
       text: ["1", "2", "3"],
-      tabs: ["큰손", "금손"],
+      tabs: ["투자", "쇼핑"],
       title: "",
       content: "",
       // 날짜
