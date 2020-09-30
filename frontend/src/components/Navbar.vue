@@ -29,21 +29,23 @@
         <!-- <v-btn @click="onchargebox"> -->
         <v-btn @click.stop="openbox = true">
           <!-- <i class="fas fa-user fa-lg"></i> -->
-          <span class="userimgbox" style="width: 35px; height: 35px">
+          <!-- <span class="userimgbox" style="width: 35px; height: 35px">
             <img class="userimg" :src="userInfo.img" style="height: 100%" />
-          </span>
-          <h5
-            style="
+          </span>-->
+          <v-avatar style="width: 35px; height: 35px; margin: 0">
+            <img :src="userInfo.img" alt="John" />
+          </v-avatar>
+          <div>
+            <h5
+              style="
               display: inline-block;
               margin: 0;
-              padding-left: 10px;
               font-size: 17px;
               font-weight: 550;
             "
-          >
-            {{ userInfo.name }}
-          </h5>
-          <span>님</span>
+            >{{ userInfo.name }}</h5>
+            <span>님</span>
+          </div>
         </v-btn>
         <div class="chargebox" style="inline-block" v-if="openbox">
           <v-card style="padding: 0; margin: 0">
@@ -52,12 +54,7 @@
               <br />
               {{ asset }}원
             </v-card-title>
-            <v-text-field
-              class="moneyinput"
-              v-model="money"
-              label="충전금액"
-              required
-            ></v-text-field>
+            <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
             <v-card-actions class="moneybtns">
               <v-spacer></v-spacer>
               <v-btn class="chargebtn" text @click="onKakao">
@@ -79,8 +76,7 @@
                     background: rgb(22, 150, 245) !important;
                     color: white;
                   "
-                  >마이페이지</v-btn
-                >
+                >마이페이지</v-btn>
               </router-link>
             </div>
           </v-card>
@@ -141,7 +137,7 @@ export default {
       //if(this.index!=-1){
       console.log("충전할 금액은");
       console.log(store.state.charge);
-      console.log(store.state.userInfo.id)
+      console.log(store.state.userInfo.id);
       axios
         .get(
           `${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${store.state.userInfo.id}`
