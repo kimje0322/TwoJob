@@ -244,6 +244,17 @@
                           </span>
                           <strong style="font-size: 17px">찜 한 목록</strong>
                         </div>
+                        <v-app ></v-app>
+                        <div>
+                          <v-dialog
+                            max-width="500"
+                            min-height="400"
+                            v-model="chatroom"
+                          >
+                            <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
+                          </v-dialog>
+                        </div>
+
                         <div
                           style="
                             padding: 18px 12px;
@@ -256,17 +267,12 @@
                           <span style="margin-right: 5px">
                             <i class="far fa-comments fa-lg"></i>
                           </span>
-                          <!-- <strong style="font-size: 17px" @click="onChat()"> -->
-                          <v-btn @click="onChat(-1)"> 1 : 1 문의 </v-btn>
-                          <!-- </strong> -->
 
-                          <v-dialog
-                            max-width="500"
-                            min-height="700"
-                            v-model="chatroom"
-                          >
-                            <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
-                          </v-dialog>
+                          <strong style="font-size: 17px" @click="onChat()">
+                          <!-- <v-btn @click="onChat()"> 1 : 1 문의 </v-btn> -->
+                          1 : 1 문의
+                          </strong>
+
                           <!-- <v-dialog
                             v-model="chat_dialog"
                             scrollable
@@ -370,6 +376,7 @@ import Web3 from "web3";
 import Swal from "sweetalert2";
 
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
+// import ChatRoom from '../../components/ChatRoom.vue'
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
@@ -381,7 +388,7 @@ export default {
     onChat() {
       // window.open("");
       this.chatroom = true;
-      console.log("모달 열어보자" + this.chatroom)
+      console.log("모달 열어보자" + this.chatroom);
       // this.$router.push("/chat")
     },
     onLogout() {

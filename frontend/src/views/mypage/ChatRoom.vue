@@ -1,100 +1,58 @@
 <template>
-  <div>
-    <v-card flat title style="background-color: black;">
+  <div class="chatroom">
+    <v-card flat tile style="background-color: black">
       <v-card-text style="height: 550" class="pa-1">
         <v-list>
           <v-toolbar dense elevation="1">
             <h5 class="mx-auto">1 : 1 채팅</h5>
           </v-toolbar>
 
-					<v-list-item>
-						
-          <div style="display: flex">
-            <div style="min-width: 300px; flex: 0 0 25%">
-              <div
-                style="
-                  align-items: center;
-                  box-sizing: border-box;
-                  display: flex;
-                  height: 60px;
-                  padding: 10px 16px;
-                "
-              >
-                <h2>채팅</h2>
-              </div>
-              <div style="height: 600px">
-                <div style="padding: 5px 10px">
-                  <div
-                    v-for="(lst, i) in userlst"
-                    :key="i"
-                    style="padding: 7px 0"
-                  >
-                    <img
-                      :src="userimg"
-                      style="
-                        height: 40px;
-                        border-radius: 50%;
-                        display: inline-block;
-                      "
-                    />
-                    <span> {{ lst.user1 }} </span>
-                  </div>
+          <v-list-item>
+            <div style="display: flex">
+              <div style="min-width: 300px; flex: 0 0 25%">
+                <div
+                  style="
+                    align-items: center;
+                    box-sizing: border-box;
+                    display: flex;
+                    height: 60px;
+                    padding: 10px 16px;
+                  "
+                >
+                  <h2>채팅</h2>
+                </div>
+                <div style="height: 600px">
+                  <div style="padding: 5px 10px">
+                    <div
+                      v-for="(lst, i) in userlst"
+                      :key="i"
+                      style="padding: 7px 0"
+                    >
+                      <img
+                        :src="lst.toimg"
+                        style="
+													width: 40px;
+                          height: 40px;
+                          border-radius: 50%;
+                          display: inline-block;
+                        "
+                      />
+                      <span style="margin-left: 20px;" @click="openChat(lst.user1, lst.toimg)" v-if="lst.user1 != username"> {{ lst.user1 }} </span>
+											<span style="margin-left: 20px;" @click="openChat(lst.user1, lst.toimg)" v-else> {{ lst.user2 }} </span>
+                    </div>
+										<v-app></v-app>
+										<v-dialog max-width="640" min-height="500" v-model="openchat">
+											<Chat @closeChat="closeChat"></Chat>
+										</v-dialog>
 
-                  <!-- <span class="userimgbox" style="width: 15px; height: 15px">
+                    <!-- <span class="userimgbox" style="width: 15px; height: 15px">
               <img class="userimg" :src="userimg" style="height: 10%" />
             </span> -->
-                </div>
-              </div>
-            </div>
-            <div style="border-left: 1px solid rgba(0, 0, 0, 0.1); flex: 3">
-              <div
-                style="
-                  align-items: center;
-                  border-bottom: none;
-                  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-                  display: flex;
-                  height: 60px;
-                  padding-left: 16px;
-                "
-              >
-                <div>
-                  <span>
-                    <img
-                      :src="userimg"
-                      style="
-                        height: 40px;
-                        border-radius: 50%;
-                        display: inline-block;
-                      "
-                    />
-                  </span>
-                  <span style="padding-left: 10px"> user name 나옴 </span>
-                  <!-- 프로필 부분 -->
-                </div>
-                <!-- <div style="display: flex; flex: 1 1 0%"> -->
-                <div>
-                  dfdsds
-                  <div
-                    style="
-                      position: relative;
-                      display: flex;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="padding-left: 12px; height: 550px">
-                      여기에 대화내용이나와야 됨
-                    </div>
-                    <div style="border-top: none; position: absolute">
-                      <div style="padding: 9px 0; font-size: 14px">
-                        <div>메세지를 입력하세요</div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-					</v-list-item>
+          </v-list-item>
         </v-list>
       </v-card-text>
     </v-card>
@@ -105,6 +63,12 @@
 <script>
 import axios from "axios";
 import store from "@/store/index.js";
+import "@/../public/css/ChatRoom.scss";
+import router from "@/router";
+
+import Chat from "../../components/Chat.vue"
+
+
 // import Navbar from "../../components/Navbar.vue";
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
@@ -117,6 +81,8 @@ export default {
   data() {
     return {
 			// dialog: false,
+			openchat: false,
+			username: store.state.userInfo.name,
       userlst: [],
 
       userimg: "",
@@ -129,10 +95,12 @@ export default {
   mounted() {
     // this.userimg = store.state.userInfo.img;
     this.userimg = store.state.userInfo.img;
-    axios.get(`${SERVER_URL}/chat/chatlist?accessToken=${store.state.accessToken}`).then((res) => {
-      console.log(res);
-      this.userlst = res.data;
-    });
+    axios
+      .get(`${SERVER_URL}/chat/chatlist?accessToken=${store.state.accessToken}`)
+      .then((res) => {
+        console.log(res);
+        this.userlst = res.data;
+      });
 
     // 소켓 연결
     function connect() {
@@ -161,6 +129,17 @@ export default {
     connect();
   },
   methods: {
+		openChat(name, img) {
+			let chatinfo = {
+				chatname: name,
+				chatprofile: img,
+			};
+			this.openchat = true;
+			// router.push( { name: "Chat", query: chatinfo })
+		},
+		closeChat() {
+			this.openchat = false;
+		}
     // init() {
     // 	axios
     // 		.get( `${SERVER_URL}`)

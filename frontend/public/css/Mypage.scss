@@ -1,8 +1,11 @@
 .mypage {
-  .v-slide-group__wrapper {
-    background-color: unset;
-  }
-  .theme--dark.v-tabs > .v-tabs-bar {
-    background-color: #f8f9fa;
-  }
+    .v-slide-group__wrapper {
+        background-color: unset;
+    }
+    .theme--dark.v-tabs>.v-tabs-bar {
+        background-color: #f8f9fa;
+    }
+    .v-application--wrap {
+        display: none;
+    }
 }
