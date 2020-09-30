@@ -13,5 +13,7 @@ public class SaleBoardResponse {
 	int saleprice;
 	String picture;
 	String editorhtml;
+	String compname;
+	String onelineintro;
 	boolean isfinish;
 }

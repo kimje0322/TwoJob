@@ -142,6 +142,7 @@ public class SaleController {
 				SaleBoardDto saleBoardDto = iter.next();
 				EditorSaleDto editorSaleDto = editorSaleRepository
 						.findEditorSaleDtoByAddress(saleBoardDto.getAddress());
+				InvestmentDto investmentDto = investmentService.getInvestment(saleBoardDto.getInvestaddress()).get();
 				SaleBoardResponse data = new SaleBoardResponse();
 				if (!editorSaleDto.getEditorhtml().isEmpty()) {
 					data.setEditorhtml(editorSaleDto.getEditorhtml());
@@ -155,6 +156,8 @@ public class SaleController {
 				data.setUrl(saleBoardDto.getUrl());
 				data.setUserid(saleBoardDto.getUserid());
 				data.setIsfinish(saleBoardDto.isIsfinish());
+				data.setCompname(investmentDto.getCompname());
+				data.setOnelineintro(investmentDto.getOnelineintro());
 				resultDatalist.add(data);
 			}
 			result.data = "success";
@@ -206,11 +209,13 @@ public class SaleController {
 		try {
 			Optional<SaleBoardDto> opSaleBoardDto = saleService.getSaleBoard(address);
 			if (opSaleBoardDto.isPresent()) {
-				InvestmentDto tempInvestmentDto = investmentService.getInvestment(opSaleBoardDto.get().getInvestaddress())
-						.get();
+				InvestmentDto tempInvestmentDto = investmentService
+						.getInvestment(opSaleBoardDto.get().getInvestaddress()).get();
 				SaleDetailResponse saleDetailResponse = new SaleDetailResponse(opSaleBoardDto.get(),
 						tempInvestmentDto.getCompname(), tempInvestmentDto.getOnelineintro());
-				System.out.println(saleDetailResponse.getSaleBoardDto().toString());
+				saleDetailResponse.setUrl(tempInvestmentDto.getUrl());
+				saleDetailResponse.setIntroduce(tempInvestmentDto.getIntroduce());
+
 				result.data = "success";
 				result.object = saleDetailResponse;
 				result.status = true;
@@ -237,7 +242,7 @@ public class SaleController {
 		try {
 			Page<ReviewDto> reviewList = reviewService.getReviews(address, page);
 			ReviewsResponse reviewsResponse = new ReviewsResponse(reviewList.getContent(), reviewList.getTotalPages());
-			
+
 			result.object = reviewsResponse;
 			result.data = "success";
 			result.status = true;

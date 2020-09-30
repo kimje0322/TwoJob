@@ -14,6 +14,8 @@ public class SaleDetailResponse {
 	SaleBoardDto saleBoardDto;
 	String compname;
 	String onelineIntro;
+	String url;
+	String introduce;
 
 	public SaleDetailResponse(SaleBoardDto psalebordDto, String pcompname, String ponelineIntro) {
 		this.saleBoardDto = new SaleBoardDto();
