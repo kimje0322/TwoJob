@@ -19,11 +19,6 @@
             <h5>오픈예정</h5>
           </router-link>
         </div>
-        <div>
-          <router-link to="/writeshopping">
-            <h5>쇼핑 오픈</h5>
-          </router-link>
-        </div>
       </div>
     </div>
     <hr>
@@ -73,7 +68,7 @@
     <div class="projectList" style="padding: 10px 3%;">
       <div style="height: 45px;">
         <div style="display: inline-block;">
-          <span style="color: rgb(22, 150, 245);">4</span>
+          <span style="color: rgb(22, 150, 245);">16</span>
           <span>개의 프로젝트가 있습니다.</span>
         </div>
         <div style="width: 100px; display: inline-block; float: right;">
@@ -92,15 +87,18 @@
       </div>
       <div style="padding: 1% 0">
         <div v-for="(item, i) in shoppingList" :key="i" style="display: inline-block; width: 30%; margin-bottom: 30px;">
-          <v-card class="my-12" max-width="320" style="margin: auto">
+          <v-card class="my-12" height="436px" max-width="320" style="margin: auto">
             <router-link to="/shoppingdetail">
             <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
             </router-link>
+            <p class="mt-2 mb-1 ml-3">{{item.compname}}</p>
             <v-card-title style="font-weight: 600; margin: auto">
               {{item.pjtname}}
             </v-card-title>
             <v-card-text>
-              <div style="margin-bottom: 15px;">{{item.intro}}</div>
+              <div style="margin-bottom: 15px;">
+                <p>{{item.onelineintro}}</p>
+              </div>
               <div style="color: black;">
                 <h5
                   style="display: inline-block; height: 41.6px; line-height: 41.6px"
@@ -343,5 +341,8 @@ export default {
 }
 .pa-2 {
   padding:8px;
+}
+.v-card__title {
+  padding-top: 0px;
 }
 </style>
