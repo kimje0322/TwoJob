@@ -8,10 +8,11 @@
     <div class="entirePage">
       <div class="shoppingDetail">
         <!-- 좌측: 상품 사진 -->
-        <div class="shoppingimg">
+        <div class="shoppingimg"
+          >
           <v-carousel>
             <v-carousel-item
-              v-for="(item,i) in items"
+              v-for="(item,i) in picitems"
               :key="i"
               :src="item.src"
               reverse-transition="fade-transition"
@@ -22,9 +23,11 @@
         <!-- 우측: 상품 디테일 -->
         <div style="float: left; width:36%; margin-top:10px;">
           <!-- 기업명 -->
-          <p>다이슨</p>
+          <p>{{items.compname}}</p>
           <!-- 상품 제목 -->
-          <h3>{{ detailItems.title }}</h3>
+          <h3>{{ items.introduce }}</h3>
+          <!-- 지울거임 -->
+          <p>{{items.saleBoardDto.pjtname}}</p>
           <hr />
           <p style="font-size: 1.2em">
             <strong>
@@ -126,27 +129,6 @@
 
       <v-tabs-items v-model="currentItem">
         <v-tab-item v-for="tabItem in tabItems" :key="tabItem" :value="'tab-' + tabItem">
-          <!-- 프로젝트 이력 -->
-          <!-- <div v-if="tabItem=='projects'" class="mt-2">
-            <div style="float:left; width: 33%">
-              <div style="text-align: center">
-                <p>프로젝트 성공률</p>
-                <img style="width: 50%;" src="../../assets/80.png" alt="">
-              </div>
-            </div>
-            <div style="float:left; width: 33%">
-              <div style="text-align: center">
-                <p>성공 프로젝트</p>
-                <p class="projectsNum mt-4">8</p>
-              </div>
-            </div>
-            <div style="float:left; width: 33%">
-              <div style="text-align: center">
-                <p>만든 프로젝트</p>
-                <p class="projectsNum mt-4">10</p>
-              </div>
-            </div>
-          </div>-->
           <!-- 상품 설명서 -->
           <div
             v-if="tabItem=='pjtInfo'"
@@ -219,6 +201,9 @@
 <script>
 import "../../../public/css/ShoppingDetail.scss";
 import Navbar from "../../components/Navbar.vue";
+import axios from 'axios';
+
+const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   components: {
@@ -228,7 +213,8 @@ export default {
     return {
       currentItem: "tab-Web",
       tabItems: ["pjtInfo", "reviews"],
-      items: [
+      items: [],
+      picitems: [
         {
           src:
             "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193143172_73945.jpg/wadiz/format/jpg/quality/80/optimize",
@@ -253,12 +239,62 @@ export default {
         "저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..",
     };
   },
-};
+  created() {
+    // 쇼핑 pjt 디테일 정보 
+    // address 변수값으로 넣기
+    axios
+      .get(`${SERVER_URL}/sale/getDetail?address=239a52e9-380b-4e98-a641-b33c749162ef`)
+      .then((res) => {
+        this.items = res.data.object
+      })
+      .catch((error) => {
+        console.log(error)
+      });
+
+    // 쇼핑 리뷰 조회
+    // page값, address 변수로 넣기 (0 => 페이지 길이만큼 반복문)
+    axios
+      .post(`${SERVER_URL}/sale/getReviews/0`, {
+        address: '239a52e9-380b-4e98-a641-b33c749162ef',
+        page: 0,
+      })
+      .then((res) => {
+        console.log(res)
+        console.log('리뷰조회성공')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  // created() {
+  //   // 쇼핑 pjt 디테일 정보 
+  //   // address 변수값으로 넣기
+  //   axios
+  //     .get(`${SERVER_URL}/sale/getDetail?address=239a52e9-380b-4e98-a641-b33c749162ef`)
+  //     .then((response) => {
+  //     this.items = response.data.object
+  //     console.log(this.items)
+  //     })
+  //     .catch((error) => {
+  //       console.log(error)
+  //   });
+    
+  //   // 리뷰 조회
+  //   // page값 변수로 넣기 (0 => 페이지 길이만큼 반복문)
+  //   axios
+  //     .get(`${SERVER_URL}/sale/getReviews/0`)
+  //     .then((response) => {
+  //       console.log(response)
+  //     })
+  //     .catch((error) => {
+  //     console.log(error)
+  // });
+}
 </script>
 
 <style scoped>
 .shoppingTitle {
-  /* background-image: url("../../assets/커플티2.png"); */
   width: 100% !important;
 }
 .tabBtn {

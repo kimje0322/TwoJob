@@ -20,11 +20,6 @@
             <h5>오픈예정</h5>
           </router-link>
         </div>
-        <div>
-          <router-link to="/writeshopping">
-            <h5>쇼핑 오픈</h5>
-          </router-link>
-        </div>
       </div>
     </div>
     <!-- 쇼핑홈 광고사진 -->

@@ -68,6 +68,9 @@
       <v-btn text @click="dialog=false">취소</v-btn>
       <v-btn text color="blue">등록</v-btn>
     </v-card-actions> -->
+
+    <!-- 페이지 이동후 삭제할 버튼, axios 요청 이 페이지에서 하기위함 -->
+    <v-btn color="warning" @click="createReview">임시등록 버튼</v-btn>
   </v-card>
 </template>
 
@@ -82,8 +85,8 @@ export default {
   data() {
     return {
       dialog: false,
-      satisfaction: "",
-      similarity: "",
+      satisfaction: 0,
+      similarity: 0,
       starpoint: '',
       circlepoint: '',
       stars: {
@@ -109,12 +112,18 @@ export default {
       imgPath: '', 
     }
   },
-
+  updated() {
+    if (this.satisfaction) {
+      this.starPoint('s' + this.satisfaction)
+    }
+    if (this.similarity) {
+      this.circlePoint('c' + this.similarity)
+    }
+  },
   methods: {
     // point 자리에 key값 s1,s2,s3,s4,s5
     starPoint(point) {
       if (this.checkedStars) {
-        console.log('두번째 이후'+this.satisfaction+'만족도다')
         this.satisfaction = point.slice(-1)*1;
         var blank = this.satisfaction + 1;
         for (var i = 0; i <= this.satisfaction; i++) {
@@ -127,7 +136,6 @@ export default {
         }
       } else {
         this.satisfaction = point.slice(-1)*1
-        console.log('첫 만족도'+this.satisfaction+'만족도다')
         for (var i = 0; i <= this.satisfaction; i++) {
           $(`.${`s${i}`}`).css("color", "#00B0FF");
         }
@@ -137,9 +145,7 @@ export default {
     circlePoint(point) {
       if (this.checkedCircles) {        
         var lastPoint = point.slice(-1);
-        console.log(this.similarity+'유사도다')
         this.similarity = lastPoint*1
-        console.log(this.similarity+'유사도다')
         var blank = lastPoint*1 + 1;
         for (var i = 0; i <= lastPoint; i++) {
           $(`.${`c${i}`}`).css("color", "#00B0FF");
@@ -149,17 +155,14 @@ export default {
         }
       } else {
         this.checkedCircles = true;
-        console.log(this.checkedCircles)
         var lastPoint = point.slice(-1)
         this.similarity = lastPoint*1
-        console.log(this.similarity+'유사도다')
         for (var i = 0; i <= lastPoint; i++) {
           $(`.${`c${i}`}`).css("color", "#00B0FF");
         }
       }
     },
     onDeleteImg() {
-      console.log("ondeleteimg");
       this.showImg = false;
       this.uploadimg = false;
       this.imgPath = '';
@@ -169,18 +172,6 @@ export default {
       console.log(this.satisfaction+'만족도');
       this.$refs.imageInput.click();
     },
-    updated() {
-      console.log('업데이트 함수'+this.satisfaction+'만족/유사'+this.similarity)
-      if (this.satisfaction) {
-        this.starPoint('s' + this.satisfaction)
-        console.log('업데이트 만족도'+this.satisfaction)
-      }
-      if (this.similarity) {
-        this.circlePoint('c' + this.similarity)
-        console.log('업데이트 유사도'+this.similarity)
-
-      }
-    },
     onChangeImages(e) {
       console.log("onchangeImages");
       this.showImg = true;
@@ -189,6 +180,7 @@ export default {
       // console.log(this.file);
       // this.imgPath = URL.createObjectURL(this.file);
       // this.img = '';
+
       var formData = new FormData();
       formData.append("img", this.file);
       axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
@@ -196,17 +188,26 @@ export default {
         }).then(response => {
             const cutUrl = response.data.substr(18, response.data.length-17)
             const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
-            this.imgPath = imgUrl;
-            this.updated();
+            this.imgPath = imgUrl;   
         });
-      // var spoint = `s${this.satisfaction}`
-      // var cpoint = `c${this.similarity}`
-      // this.starPoint(spoint);
-      // this.circlePoint(cpoint);
-      // console.log('after axios');
-      // console.log('showImg'+this.showImg);
-      // console.log('uploadimg'+this.uploadimg);
-      // console.log('imgPath'+this.imgPath);
+    },
+    // 리뷰등록 버튼
+    // saleaddress, userid 가져오기
+    createReview() {
+      axios.post(`${SERVER_URL}/sale/Review`, {
+        reviewPicture: this.imgPath,
+        reviewexplain: this.content,
+        saleaddress: '239a52e9-380b-4e98-a641-b33c749162ef',
+        satisfied: this.satisfaction,
+        similar: this.similarity,
+        userid: "3"
+      })
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
     },
   },
 };
