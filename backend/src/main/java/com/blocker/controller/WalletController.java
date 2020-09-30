@@ -32,7 +32,7 @@ public class WalletController {
 	}
 	@PostMapping("/ether")
 	@ApiOperation(value = "[이더 충전] 지갑에 ethere를 충전. param : [email, ether], result : 토큰 만료면 error code,, 지갑이 존재하지 않으면 novalid, 충전에 성공하면 success를 return")
-	public ResponseEntity<String> charge(@RequestParam("accessToken") String accessToken,@RequestParam("ether") Double ether) {
+	public ResponseEntity<String> charge(@RequestParam("accessToken") String accessToken,@RequestParam("ether") Double ether) throws Exception {
 		return new ResponseEntity<String>(walletService.charge_ether(accessToken, ether), HttpStatus.OK);
 	}
 	@ApiOperation(value = "[지갑 조회] address를 이용해 지갑의 값을 조회. param : [address], result : 지갑이 존재하지 않으면 novalid, 지갑이 존재하면 해당 지갑의 balance를 return")

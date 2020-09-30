@@ -155,7 +155,7 @@ export default {
       }
     },
     onDeleteImg() {
-      console.log('ondeleteimg')
+      console.log("ondeleteimg");
       this.showImg = false;
       this.uploadimg = false;
       this.imgPath = '';
@@ -166,7 +166,7 @@ export default {
       this.$refs.imageInput.click();
     },
     onChangeImages(e) {
-      console.log('onchangeImages')
+      console.log("onchangeImages");
       this.showImg = true;
       this.uploadimg = true;
       this.file = e.target.files[0];
@@ -194,8 +194,8 @@ export default {
       // console.log('uploadimg'+this.uploadimg);
       // console.log('imgPath'+this.imgPath);
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>

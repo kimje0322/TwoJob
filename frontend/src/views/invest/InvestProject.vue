@@ -290,7 +290,7 @@ export default {
 }
 .categoryCard:hover {
   border: 2px solid rgb(22, 150, 245);
-  background-color: rgba(173, 220, 254, 0.4);
+  /* background-color: rgba(173, 220, 254, 0.4); */
   cursor: pointer;
 }
 .filterBox {

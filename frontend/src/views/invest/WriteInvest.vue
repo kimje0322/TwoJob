@@ -28,8 +28,8 @@
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab v-for="(item, i) in tabs" :key="i" :href="`#tab-${i}`" class="writeMenu">{{ item }}</v-tab>
           <!-- 투자오픈버튼 -->
-          <div class="openbtn" @click="openInvestBtn">
-            <v-btn color="rgb(22, 150, 245)" style="font-weight: 600">투자 프로젝트 오픈</v-btn>
+          <div class="openbtnBox" @click="openInvestBtn">
+            <v-btn class="openBtn" color="#808080" style="">투자 프로젝트 오픈</v-btn>
           </div>
           <!-- 프로젝트 정보 창 -->
           <v-tab-item :value="'tab-0'">
@@ -198,10 +198,19 @@
                     <h5
                       style="display: inline-block; height: 36px; line-height: 36px; Smargin: 0;"
                     >투자설명</h5>
-                    <v-btn @click="onSave" style="float: right; background-color: white; color: rgb(22, 150,245); font-weight: 600">저장하기</v-btn>
+                    <v-btn
+                      @click="onSave"
+                      style="float: right; background-color: white; color: rgb(22, 150,245); font-weight: 600"
+                    >저장하기</v-btn>
                   </div>
                   <!-- <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea> -->
-                  <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />
+                  <editor
+                    ref="toastuiEditor"
+                    v-model="editortext"
+                    initialEditType="wysiwyg"
+                    height="800px"
+                    :options="editorOptions"
+                  />
                 </div>
               </v-card-text>
             </v-card>
@@ -222,7 +231,7 @@ import "codemirror/lib/codemirror.css";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import { Editor } from "@toast-ui/vue-editor";
 import axios from "axios";
-import store from '../../store/index.js'
+import store from "../../store/index.js";
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 export default {
@@ -234,7 +243,7 @@ export default {
     return {
       // 개인정보
       userInfo: {},
-      userid: "",
+      userid: store.state.userInfo.id,
       login: false,
       tab: null,
       text: ["1", "2", "3"],
@@ -276,7 +285,7 @@ export default {
       // 금손 정보
       items: ["개인", "개인 사업자/기업"],
       select: "",
-      companyName: "",
+      companyName: "회사",
       introduce: "",
       siteUrl: "",
       openMenutab: false,
@@ -288,27 +297,30 @@ export default {
       editorOptions: {
         hooks: {
           addImageBlobHook: function (blob, callback) {
-            console.log(blob)
+            console.log(blob);
             // const imageURL = URL.createObjectURL(blob)
             // callback(imageURL);
             var formData = new FormData();
             formData.append("img", blob);
 
-            axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
-                headers: { 'Content-Type': 'multipart/form-data' } 
-            }).then(response => {
-                const cutUrl = response.data.substr(18, response.data.length-17)
-                const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
-              callback(imgUrl)
-            });
+            axios
+              .post(`${SERVER_URL}/investment/changePath`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+              })
+              .then((response) => {
+                const cutUrl = response.data.substr(
+                  18,
+                  response.data.length - 17
+                );
+                const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+                callback(imgUrl);
+              });
           },
         },
       },
     };
   },
-  computed: {
-
-  },
+  computed: {},
   watch: {
     date(val) {
       this.dateFormatted = this.formatDate(this.date);
@@ -333,11 +345,31 @@ export default {
         this.individual = false;
       }
     },
+    editortext(val) {
+      if (
+        this.userid &&
+        this.title &&
+        this.content &&
+        this.dateFormatted &&
+        this.targetPrice &&
+        this.sellPrice &&
+        this.picture &&
+        this.checkCategory &&
+        this.tags &&
+        this.select &&
+        this.companyName &&
+        this.introduce &&
+        this.siteUrl &&
+        this.editortext
+      ) {
+        $('.openBtn').css('color', 'rgb(22, 150, 245)')
+      }
+    }
   },
   mounted() {
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
-      this.userid = store.state.userInfo.id
+      this.userid = store.state.userInfo.id;
       this.login = store.state.isSigned;
     } else {
       this.login = false;
@@ -360,21 +392,23 @@ export default {
       this.targetPrice = "";
     },
     removeSellPrice() {
-      this.receivePrice = "";
+      this.sellPrice = "";
     },
     onthumbnail(event) {
-      console.log(event)
       var formData = new FormData();
       formData.append("img", event);
 
-      axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
-          headers: { 'Content-Type': 'multipart/form-data' }
-      }).then(response => {
-          console.log(response.data);
-          this.picture = response.data
-      }).catch(error => {
-          console.log(error)
+      axios
+        .post(`${SERVER_URL}/investment/changePath`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
         })
+        .then((response) => {
+          this.picture = response.data;
+          console.log(typeof(this.picture))
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     checkcategory(category) {
       if (this.checkCategory.indexOf(category) >= 0) {
@@ -403,71 +437,76 @@ export default {
         $(".v-menu").css("display", "none");
       }
     },
-    // uploadImage() {
-    //   var formData = new FormData();
-    //   for (var x=0; x<this.editorImages.length; x++){
-    //     formData.append("files", this.editorImages[x])
-    //   }
-    //   // formData.append("image", blob); // 설명서 사진
-    //   // formData.append("image-name", blob.name); // 사진 이름
-
-    //   axios.post(`URL`, formData, { 
-    //       headers: { 'Content-Type': 'multipart/form-data' } 
-    //   }).then(response => {
-    //     // // console.log(response);
-    //     // this.image = response.data;
-    //   });
-    // },
     onSave() {
       this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
-      console.log(this.editortext)
+      console.log(this.editortext);
     },
     openInvestBtn() {
-      console.log("클릭");
-      Swal.fire({
-        icon: "warning",
-        title: "",
-        text: "프로젝트를 오픈하기 전 저장하기 버튼을 꼭 클릭해 주세요.",
-        showCancelButton: true,
-        cancelButtonColor: "#d33",
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "오픈하기",
-        cancelButtonText: "취소하기",
-        reverseButtons: true,
-      }).then((result) => {
-        if (result.value) {
-          console.log(typeof(this.userInfo.id))
-          axios.post(`${SERVER_URL}/investment/create`, {
-            userid: this.userid,
-            pjtName: this.title,
-            oneLineIntro: this.content,
-            deadLine: this.dateFormatted,
-            goalPrice: this.targetPrice,
-            expectedSalePrice: this.sellPrice,
-            picture: this.picture,
-            categorys: this.checkCategory,
-            tags: this.tags,
-            identity: this.select,
-            compName: this.companyName,
-            introduce: this.introduce,
-            url: this.siteUrl,
-            editorhtml: this.editortext
-          })
-            .then(response => {
-              Swal.fire({
-                // position: 'top-end',
-                icon: 'success',
-                title: '',
-                text: '프로젝트가 성공적으로 오픈되었습니다.',
-                showConfirmButton: false,
-                // timer: 1500
+      if (
+        this.userid &&
+        this.title &&
+        this.content &&
+        this.dateFormatted &&
+        this.targetPrice &&
+        this.sellPrice &&
+        this.picture &&
+        this.checkCategory &&
+        this.tags &&
+        this.select &&
+        this.companyName &&
+        this.introduce &&
+        this.siteUrl &&
+        this.editortext
+      ) {
+        Swal.fire({
+          icon: "warning",
+          title: "",
+          text: "프로젝트를 오픈하기 전 저장하기 버튼을 꼭 클릭해 주세요.",
+          showCancelButton: true,
+          cancelButtonColor: "#d33",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "오픈하기",
+          cancelButtonText: "취소하기",
+          reverseButtons: true,
+        }).then((result) => {
+          if (result.value) {
+            axios
+              .post(`${SERVER_URL}/investment/create`, {
+                userid: this.userid,
+                pjtName: this.title,
+                oneLineIntro: this.content,
+                deadLine: this.dateFormatted,
+                goalPrice: this.targetPrice,
+                expectedSalePrice: this.sellPrice,
+                picture: this.picture,
+                categorys: this.checkCategory,
+                tags: this.tags,
+                identity: this.select,
+                compName: this.companyName,
+                introduce: this.introduce,
+                url: this.siteUrl,
+                editorhtml: this.editortext,
               })
-            })
-            .catch(error => {
-              console.log(error)
-            })
-        }
-      })
+              .then((response) => {
+                if (response.data.data == "success") {
+                  Swal.fire({
+                    // position: 'top-end',
+                    icon: "success",
+                    title: "",
+                    text: "프로젝트가 성공적으로 오픈되었습니다.",
+                    showConfirmButton: false,
+                    // timer: 1500
+                  });
+                } else {
+                  alert("프로젝트 오픈에 실패했습니다.");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        });
+      }
     },
   },
 };
@@ -511,7 +550,7 @@ export default {
 .v-tab:before {
   background-color: unset;
 }
-.openbtn {
+.openbtnBox {
   line-height: 45px;
   position: absolute;
   right: 1%;

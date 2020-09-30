@@ -74,6 +74,7 @@ public class InvestController {
 		try {
 			InvestmentDto investmentdto = new InvestmentDto();
 
+			System.out.println("userid==========>" + pinvestment.getUserid());
 			UUID uuid = UUID.randomUUID();
 			investmentdto.setAddress(uuid.toString());
 			investmentdto.setUserid(pinvestment.getUserid());

@@ -16,15 +16,22 @@
           <h2>채팅</h2>
         </div>
         <div style="height: 600px">
-          <div>
-            <span class="userimgbox" style="width: 15px; height: 15px">
+          <div style="padding: 5px 10px">
+            <div v-for="(lst, i) in userlst" :key="i" style="padding: 7px 0">
+              <img
+                :src="userimg"
+                style="height: 40px; border-radius: 50%; display: inline-block"
+              />
+              <span> {{ lst.user1 }} </span>
+            </div>
+
+            <!-- <span class="userimgbox" style="width: 15px; height: 15px">
               <img class="userimg" :src="userimg" style="height: 10%" />
-            </span>
-            <span> userInfo.name </span>
+            </span> -->
           </div>
         </div>
       </div>
-      <div style="border-left: 1px solid rgba(0, 0, 0, 0.1); flex: 3">
+      <!-- <div style="border-left: 1px solid rgba(0, 0, 0, 0.1); flex: 3">
         <div
           style="
             align-items: center;
@@ -51,7 +58,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -64,6 +71,10 @@ import Navbar from "../../components/Navbar.vue";
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
+var sock = new SockJS("http://j3b102.p.ssafy:8080/notice");
+var ws = Stomp.over(sock);
+var reconnect = 0;
+
 export default {
   data() {
     return {
@@ -74,17 +85,47 @@ export default {
   },
   components: {
     Navbar,
-	},
-	mounted() {
-		// this.userimg = store.state.userInfo.img;
-		this.userimg = store.state.userInfo.img;
-	},
+  },
+  mounted() {
+    // this.userimg = store.state.userInfo.img;
+    this.userimg = store.state.userInfo.img;
+    axios.get(`${SERVER_URL}/chat/chatlist?accessToken=${store.state.accessToken}`).then((res) => {
+      console.log(res);
+      this.userlst = res.data;
+    });
+
+    // 소켓 연결
+    function connect() {
+      // pub/sub event
+      ws.connect(
+        {},
+        function (frame) {
+          ws.subscribe("/sub/notice", function (message) {
+            console.log("!!!!!!!!!!!!event>>", message);
+          });
+          ws.send("/pub/notice", {}, "msg: Haha~~~");
+        },
+        function (error) {
+          console.log("에러다에러!!!!!")
+          if (reconnect++ <= 5) {
+            setTimeout(function () {
+              console.log("connection reconnect");
+              sock = new SockJS("http://j3b102.p.ssafy.io:8080/notice");
+              ws = Stomp.over(sock);
+              connect();
+            }, 10 * 1000);
+          }
+        }
+      );
+    }
+    connect();
+  },
   methods: {
     // init() {
-      // 	axios
-      // 		.get( `${SERVER_URL}`)
-      // 		.then((res) => {
-      // 		})
+    // 	axios
+    // 		.get( `${SERVER_URL}`)
+    // 		.then((res) => {
+    // 		})
     // },
   },
 };
