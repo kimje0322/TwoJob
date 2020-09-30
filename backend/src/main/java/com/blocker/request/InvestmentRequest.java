@@ -17,7 +17,16 @@ public class InvestmentRequest {
 	int goalPrice;// 달성금액
 	int expectedSalePrice;// 판매 예정금액
 	String picture;// 대표사진이름
-	List<String> categorys;//카테고리
-	List<String> tags;//테그
+	List<String> categorys;// 카테고리
+	List<String> tags;// 테그
 	String editorhtml;
+
+	public InvestmentRequest() {
+
+	}
+
+	public InvestmentRequest(List<String> pcategorys, List<String> ptags) {
+		this.categorys = pcategorys;
+		this.tags = ptags;
+	}
 }

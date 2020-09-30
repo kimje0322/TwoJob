@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.ws.rs.POST;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -88,10 +89,10 @@ public class SaleController {
 	public Object saleMyList(@RequestParam String userid, @PathVariable int page) {
 		final BasicResponse result = new BasicResponse();
 		List<SaleBoardResponse> resultDatalist = new ArrayList<>();
-		List<SaleBoardDto> list = saleService.getAllMySaleList(userid, page);
+		Page<SaleBoardDto> list = saleService.getAllMySaleList(userid, page);
 
 		try {
-			for (Iterator<SaleBoardDto> iter = list.iterator(); iter.hasNext();) {
+			for (Iterator<SaleBoardDto> iter = list.getContent().iterator(); iter.hasNext();) {
 				SaleBoardDto saleBoardDto = iter.next();
 				EditorSaleDto editorSaleDto = editorSaleRepository
 						.findEditorSaleDtoByAddress(saleBoardDto.getAddress());

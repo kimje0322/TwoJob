@@ -1,8 +1,10 @@
 package com.blocker.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +17,9 @@ public class InvestmentService {
 	@Autowired
 	InvestmentRepository investmentRepository;
 
-	public List<InvestmentDto> getAllMyinvestmentList(String userid, int page) {
+	public Page<InvestmentDto> getAllMyinvestmentList(String userid, int page) {
 		PageRequest pageRequest = PageRequest.of(page, 9);
-		return investmentRepository.findAllByUserid(pageRequest, userid).getContent();
+		return investmentRepository.findAllByUserid(pageRequest, userid);
 	}
 
 	public List<InvestmentDto> getAllInvestmentList(int page) {
@@ -25,4 +27,9 @@ public class InvestmentService {
 
 		return investmentRepository.findAll(pageRequest).getContent();
 	}
+	
+	public Optional<InvestmentDto> getInvestment(String address) {
+		return investmentRepository.findInvestmentDtoByAddress(address);
+	}
+	
 }
