@@ -7,12 +7,12 @@
           <h3>TwoJob</h3>
         </router-link>
       </div>
-      <div>
+      <div class="navbarItem">
         <router-link to="/investhome">
           <h5>투자하기</h5>
         </router-link>
       </div>
-      <div>
+      <div class="navbarItem">
         <router-link to="/shoppinghome">
           <h5>쇼핑하기</h5>
         </router-link>
@@ -20,18 +20,11 @@
       <div v-if="!login">
         <button @click="onClick">
           <h5 style="margin: 0">로그인</h5>
-          <!-- <a id="kakao-login-btn"></a> -->
-          <!-- <a href="http://developers.kakao.com/logout"></a> -->
           <a href="http://developers.kakao.com/logout"></a>
         </button>
       </div>
       <v-row v-else style="display: inline-block; width: 150px">
-        <!-- <v-btn @click="onchargebox"> -->
         <v-btn @click.stop="openbox = true">
-          <!-- <i class="fas fa-user fa-lg"></i> -->
-          <!-- <span class="userimgbox" style="width: 35px; height: 35px">
-            <img class="userimg" :src="userInfo.img" style="height: 100%" />
-          </span>-->
           <v-avatar style="width: 35px; height: 35px; margin: 0">
             <img :src="userInfo.img" alt="John" />
           </v-avatar>
@@ -49,21 +42,17 @@
         </v-btn>
         <div class="chargebox" style="inline-block" v-if="openbox">
           <v-card style="padding: 0; margin: 0">
+            <v-icon style="margin-right: 10px">mdi-close</v-icon>
             <v-card-title class="headline">
               {{ userInfo.name }}님의 자산 현황
-              <br />
-              {{ asset }}원
             </v-card-title>
+            <h5 style="text-align: center">{{ asset }}원</h5>
             <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
+
             <v-card-actions class="moneybtns">
               <v-spacer></v-spacer>
               <v-btn class="chargebtn" text @click="onKakao">
                 충전하기
-                <!-- <div style="inline-block" v-if="kakaopay">
-                  <v-card>
-
-                  </v-card>
-                </div>-->
               </v-btn>
               <v-btn class="closebtn" text @click="openbox = false">닫기</v-btn>
             </v-card-actions>
@@ -244,7 +233,10 @@ export default {
 }
 .items div {
   display: inline-block;
-  margin: 0 10% 0 0;
+  margin: 0 5% 0 0;
+}
+.navbarItem {
+  margin-right: 8% !important;
 }
 .items div a {
   color: black;
@@ -278,13 +270,13 @@ export default {
   color: white !important;
   margin-right: 30px;
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: 1rem !important;
 }
 .closebtn {
   background: red;
   color: white !important;
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: 1rem !important;
 }
 .userimgbox {
   border-radius: 70%;

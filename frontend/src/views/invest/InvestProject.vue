@@ -269,7 +269,7 @@ export default {
   height: 50px;
   text-align: center;
   line-height: 50px;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid lightgray;
   border-top: 1px solid lightgray;
 }
 .items div {

@@ -363,7 +363,6 @@ export default {
         this.select &&
         this.companyName &&
         this.introduce &&
-        this.siteUrl &&
         this.editortext
       ) {
         $(".openBtn").css("background-color", "rgb(22, 150, 245)");
@@ -470,7 +469,6 @@ export default {
         this.select &&
         this.companyName &&
         this.introduce &&
-        this.siteUrl &&
         this.editortext
       ) {
         Swal.fire({
@@ -503,7 +501,8 @@ export default {
                 editorhtml: this.editortext,
               })
               .then((response) => {
-                if (response.data.data == "success") {
+                console.log(response)
+                if (response.data.data == "Success") {
                   Swal.fire({
                     // position: 'top-end',
                     icon: "success",
@@ -532,7 +531,7 @@ export default {
   height: 50px;
   text-align: center;
   line-height: 50px;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid lightgray;
   border-top: 1px solid lightgray;
   margin-bottom: 15px;
 }
