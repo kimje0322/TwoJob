@@ -24,16 +24,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.dto.EditorSaleDto;
+import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.ReviewDto;
 import com.blocker.dto.SaleBoardDto;
 import com.blocker.repository.EditorSaleRepository;
 import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.ReviewRepository;
 import com.blocker.repository.SaleBoardRepository;
+import com.blocker.request.ReviewsResponse;
 import com.blocker.request.SaleBoardRequest;
 import com.blocker.request.SaleBoardResponse;
 import com.blocker.request.SaleBoardReviewRequest;
 import com.blocker.request.SaleDetailResponse;
+import com.blocker.service.InvestmentService;
 import com.blocker.service.ReviewService;
 import com.blocker.service.SaleService;
 import com.blocker.util.BasicResponse;
@@ -56,6 +59,8 @@ public class SaleController {
 	InvestmentRepository investmentRepository;
 	@Autowired
 	ReviewService reviewService;
+	@Autowired
+	InvestmentService investmentService;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "판매 게시글 생성")
@@ -126,7 +131,7 @@ public class SaleController {
 	}
 
 	@GetMapping("/getAllSaleList/{page}")
-	@ApiOperation(value = "내가 올린 판매 게시글 리스트 가져오기")
+	@ApiOperation(value = "모든 판매 게시글 리스트 가져오기")
 	public Object getAllSaleList(@PathVariable int page) {
 		final BasicResponse result = new BasicResponse();
 		List<SaleBoardResponse> resultDatalist = new ArrayList<>();
@@ -137,6 +142,7 @@ public class SaleController {
 				SaleBoardDto saleBoardDto = iter.next();
 				EditorSaleDto editorSaleDto = editorSaleRepository
 						.findEditorSaleDtoByAddress(saleBoardDto.getAddress());
+				InvestmentDto investmentDto = investmentService.getInvestment(saleBoardDto.getInvestaddress()).get();
 				SaleBoardResponse data = new SaleBoardResponse();
 				if (!editorSaleDto.getEditorhtml().isEmpty()) {
 					data.setEditorhtml(editorSaleDto.getEditorhtml());
@@ -150,6 +156,8 @@ public class SaleController {
 				data.setUrl(saleBoardDto.getUrl());
 				data.setUserid(saleBoardDto.getUserid());
 				data.setIsfinish(saleBoardDto.isIsfinish());
+				data.setCompname(investmentDto.getCompname());
+				data.setOnelineintro(investmentDto.getOnelineintro());
 				resultDatalist.add(data);
 			}
 			result.data = "success";
@@ -194,16 +202,20 @@ public class SaleController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@GetMapping("/getDetail/{page}")
+	@GetMapping("/getDetail")
 	@ApiOperation(value = "판매 디테일페이지 가져오기")
-	public Object getDetail(@RequestParam String address, @PathVariable int page) {
+	public Object getDetail(@RequestParam String address) {
 		final BasicResponse result = new BasicResponse();
 		try {
 			Optional<SaleBoardDto> opSaleBoardDto = saleService.getSaleBoard(address);
 			if (opSaleBoardDto.isPresent()) {
+				InvestmentDto tempInvestmentDto = investmentService
+						.getInvestment(opSaleBoardDto.get().getInvestaddress()).get();
 				SaleDetailResponse saleDetailResponse = new SaleDetailResponse(opSaleBoardDto.get(),
-						reviewService.getReviews(address, page));
-				System.out.println(saleDetailResponse.getSaleBoardDto().toString());
+						tempInvestmentDto.getCompname(), tempInvestmentDto.getOnelineintro());
+				saleDetailResponse.setUrl(tempInvestmentDto.getUrl());
+				saleDetailResponse.setIntroduce(tempInvestmentDto.getIntroduce());
+
 				result.data = "success";
 				result.object = saleDetailResponse;
 				result.status = true;
@@ -213,13 +225,35 @@ public class SaleController {
 				result.status = true;
 			}
 		} catch (Exception e) {
-			System.out.println("리뷰를 가져오던도중 애러발생");
+			System.out.println("판매 디테일을 가져오던도중 애러발생");
 			result.data = "fail";
 			result.object = null;
 			result.status = false;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 
-		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@PostMapping("/getReviews/{page}")
+	@ApiOperation(value = "판매게시글의 리뷰를 보여줌")
+	public Object getReviews(@RequestParam String address, @PathVariable int page) {
+		final BasicResponse result = new BasicResponse();
+		try {
+			Page<ReviewDto> reviewList = reviewService.getReviews(address, page);
+			ReviewsResponse reviewsResponse = new ReviewsResponse(reviewList.getContent(), reviewList.getTotalPages());
+
+			result.object = reviewsResponse;
+			result.data = "success";
+			result.status = true;
+		} catch (Exception e) {
+			result.data = "fail";
+			result.status = true;
+			e.printStackTrace();
+			System.out.println("리뷰를 가져오기 실패");
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
 	}
 
 	@ExceptionHandler(Exception.class)
