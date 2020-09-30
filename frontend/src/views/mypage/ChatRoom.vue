@@ -1,6 +1,6 @@
 <template>
   <div class="chatroom">
-    <v-card flat tile style="background-color: black">
+    <v-card flat tile>
       <v-card-text style="height: 550" class="pa-1">
         <v-list>
           <v-toolbar dense elevation="1">
@@ -10,7 +10,7 @@
           <v-list-item>
             <div style="display: flex">
               <div style="min-width: 300px; flex: 0 0 25%">
-                <div
+                <!-- <div
                   style="
                     align-items: center;
                     box-sizing: border-box;
@@ -20,7 +20,7 @@
                   "
                 >
                   <h2>채팅</h2>
-                </div>
+                </div> -->
                 <div style="height: 600px">
                   <div style="padding: 5px 10px">
                     <div
@@ -29,25 +29,44 @@
                       style="padding: 7px 0"
                     >
                       <img
-                        :src="lst.toimg"
+                        v-if="lst.toimg == null"
+                        src="https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg"
                         style="
-													width: 40px;
+                          width: 40px;
                           height: 40px;
                           border-radius: 50%;
                           display: inline-block;
                         "
                       />
-                      <span style="margin-left: 20px;" @click="openChat(lst.user1, lst.toimg)" v-if="lst.user1 != username"> {{ lst.user1 }} </span>
-											<span style="margin-left: 20px;" @click="openChat(lst.user1, lst.toimg)" v-else> {{ lst.user2 }} </span>
+                      <img
+                        v-else
+                        :src="lst.toimg"
+                        style="
+                          width: 40px;
+                          height: 40px;
+                          border-radius: 50%;
+                          display: inline-block;
+                        "
+                      />
+                      <span
+                        style="margin-left: 20px"
+                        @click="openChat(lst.user1, lst.toimg)"
+                        v-if="lst.user1 != username"
+                      >
+                        {{ lst.user1 }}
+                      </span>
+                      <span
+                        style="margin-left: 20px"
+                        @click="openChat(lst.user1, lst.toimg)"
+                        v-else
+                      >
+                        {{ lst.user2 }}
+                      </span>
                     </div>
-										<v-app></v-app>
+                    <!-- <v-app></v-app>
 										<v-dialog max-width="640" min-height="500" v-model="openchat">
 											<Chat @closeChat="closeChat"></Chat>
-										</v-dialog>
-
-                    <!-- <span class="userimgbox" style="width: 15px; height: 15px">
-              <img class="userimg" :src="userimg" style="height: 10%" />
-            </span> -->
+										</v-dialog> -->
                   </div>
                 </div>
               </div>
@@ -66,8 +85,7 @@ import store from "@/store/index.js";
 import "@/../public/css/ChatRoom.scss";
 import router from "@/router";
 
-import Chat from "../../components/Chat.vue"
-
+import Chat from "../../components/Chat.vue";
 
 // import Navbar from "../../components/Navbar.vue";
 
@@ -80,9 +98,9 @@ var reconnect = 0;
 export default {
   data() {
     return {
-			// dialog: false,
-			openchat: false,
-			username: store.state.userInfo.name,
+      // dialog: false,
+      openchat: false,
+      username: store.state.userInfo.name,
       userlst: [],
 
       userimg: "",
@@ -100,6 +118,10 @@ export default {
       .then((res) => {
         console.log(res);
         this.userlst = res.data;
+        if (this.userlst.toimg == null) {
+          this.userlst.toimg =
+            "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
+        }
       });
 
     // 소켓 연결
@@ -129,17 +151,17 @@ export default {
     connect();
   },
   methods: {
-		openChat(name, img) {
-			let chatinfo = {
-				chatname: name,
-				chatprofile: img,
-			};
-			this.openchat = true;
-			// router.push( { name: "Chat", query: chatinfo })
-		},
-		closeChat() {
-			this.openchat = false;
-		}
+    openChat(name, img) {
+      // let chatinfo = {
+      // 	chatname: name,
+      // 	chatprofile: img,
+      // };
+      // this.openchat = true;
+      // router.push( { name: "Chat", query: chatinfo })
+    },
+    closeChat() {
+      this.openchat = false;
+    },
     // init() {
     // 	axios
     // 		.get( `${SERVER_URL}`)
