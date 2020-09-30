@@ -124,9 +124,9 @@ export default {
     };
   },
   mounted() {
-    console.log(location.href);
-    console.log("이거봐라라ㅏㅏㅏ???");
-    console.log(location.href.includes("pg_token"));
+    // console.log(location.href);
+    // console.log("이거봐라라ㅏㅏㅏ???");
+    // console.log(location.href.includes("pg_token"));
     if (location.href.includes("pg_token")) {
       //     window.opener.closed = true;
       this.index = location.href.indexOf("pg_token");
