@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.Tuple;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -86,7 +87,9 @@ public class FundingServiceImpl implements FundingService{
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
 
 					System.out.println("후 = " +contract.isValid());
-					contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getAddress()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
+					System.out.println("주소? " + myInvest.getAddress());
+					TransactionReceipt tr =contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getAddress()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
+					System.out.println(tr.getGasUsed());
 					System.out.println("fundingCampaign succss");
 					return "success";
 				}else {

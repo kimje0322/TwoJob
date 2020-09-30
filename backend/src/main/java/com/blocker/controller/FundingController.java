@@ -4,6 +4,7 @@ package com.blocker.controller;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -80,11 +81,8 @@ public class FundingController {
 	@ApiOperation(value = "testg ")
 	@GetMapping(value = "/testd")
 	public void test() {
-//		Chatroom c = new Chatroom();
-//		System.out.println(3/0);
-		
-		int test = Integer.parseInt("dddd");
-
+		//int test = Integer.parseInt("dddd");
+		System.out.println("dd? " + BigInteger.valueOf(4_300_000));
 	}
 //	@ExceptionHandler(Exception.class)
 //	public void nullex(Exception e) {
