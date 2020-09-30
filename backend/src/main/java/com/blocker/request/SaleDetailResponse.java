@@ -12,9 +12,10 @@ import lombok.Data;
 @Data
 public class SaleDetailResponse {
 	SaleBoardDto saleBoardDto;
-	List<ReviewDto> reviews;
+	String compname;
+	String onelineIntro;
 
-	public SaleDetailResponse(SaleBoardDto psalebordDto, List<ReviewDto> list) {
+	public SaleDetailResponse(SaleBoardDto psalebordDto, String pcompname, String ponelineIntro) {
 		this.saleBoardDto = new SaleBoardDto();
 		this.saleBoardDto.setAddress(psalebordDto.getAddress());
 		this.saleBoardDto.setInvestaddress(psalebordDto.getInvestaddress());
@@ -25,6 +26,7 @@ public class SaleDetailResponse {
 		this.saleBoardDto.setUrl(psalebordDto.getUrl());
 		this.saleBoardDto.setUserid(psalebordDto.getUserid());
 
-		this.reviews = list;
+		this.compname = pcompname;
+		this.onelineIntro = ponelineIntro;
 	}
 }
