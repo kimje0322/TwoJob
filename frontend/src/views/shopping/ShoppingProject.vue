@@ -29,7 +29,7 @@
     <hr>
     <!-- 카테고리 -->
     <div style="margin-bottom: 1rem;">
-      <v-container class="cateContainer" style="text-align:center">
+      <v-container class="cateContainer" style="text-align:center;">
         <v-row no-gutters>
           <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
           <v-col cols="12" sm="1"></v-col>
@@ -340,5 +340,8 @@ export default {
   background-color: rgb(22, 150, 245) !important;
   color: white !important;
   text-align: right;
+}
+.pa-2 {
+  padding:8px;
 }
 </style>
