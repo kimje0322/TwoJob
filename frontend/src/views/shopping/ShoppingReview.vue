@@ -114,7 +114,7 @@ export default {
     // point 자리에 key값 s1,s2,s3,s4,s5
     starPoint(point) {
       if (this.checkedStars) {
-        
+        console.log('두번째 이후'+this.satisfaction+'만족도다')
         this.satisfaction = point.slice(-1)*1;
         var blank = this.satisfaction + 1;
         for (var i = 0; i <= this.satisfaction; i++) {
@@ -127,7 +127,7 @@ export default {
         }
       } else {
         this.satisfaction = point.slice(-1)*1
-        // console.log(this.satisfaction+'만족도다')
+        console.log('첫 만족도'+this.satisfaction+'만족도다')
         for (var i = 0; i <= this.satisfaction; i++) {
           $(`.${`s${i}`}`).css("color", "#00B0FF");
         }
@@ -135,9 +135,11 @@ export default {
       }
     },
     circlePoint(point) {
-      if (this.checkedCircles) {
+      if (this.checkedCircles) {        
         var lastPoint = point.slice(-1);
+        console.log(this.similarity+'유사도다')
         this.similarity = lastPoint*1
+        console.log(this.similarity+'유사도다')
         var blank = lastPoint*1 + 1;
         for (var i = 0; i <= lastPoint; i++) {
           $(`.${`c${i}`}`).css("color", "#00B0FF");
@@ -147,8 +149,10 @@ export default {
         }
       } else {
         this.checkedCircles = true;
+        console.log(this.checkedCircles)
         var lastPoint = point.slice(-1)
         this.similarity = lastPoint*1
+        console.log(this.similarity+'유사도다')
         for (var i = 0; i <= lastPoint; i++) {
           $(`.${`c${i}`}`).css("color", "#00B0FF");
         }
@@ -164,6 +168,18 @@ export default {
       console.log('onClickImageUpload');
       console.log(this.satisfaction+'만족도');
       this.$refs.imageInput.click();
+    },
+    updated() {
+      console.log('업데이트 함수'+this.satisfaction+'만족/유사'+this.similarity)
+      if (this.satisfaction) {
+        this.starPoint('s' + this.satisfaction)
+        console.log('업데이트 만족도'+this.satisfaction)
+      }
+      if (this.similarity) {
+        this.circlePoint('c' + this.similarity)
+        console.log('업데이트 유사도'+this.similarity)
+
+      }
     },
     onChangeImages(e) {
       console.log("onchangeImages");
@@ -181,9 +197,7 @@ export default {
             const cutUrl = response.data.substr(18, response.data.length-17)
             const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
             this.imgPath = imgUrl;
-            for (var i = 0; i <= this.satisfaction; i++) {
-              $(`.${`s${i}`}`).css("color", "#00B0FF");
-            }
+            this.updated();
         });
       // var spoint = `s${this.satisfaction}`
       // var cpoint = `c${this.similarity}`
