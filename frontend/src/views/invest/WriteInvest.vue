@@ -29,7 +29,7 @@
           <v-tab v-for="(item, i) in tabs" :key="i" :href="`#tab-${i}`" class="writeMenu">{{ item }}</v-tab>
           <!-- 투자오픈버튼 -->
           <div class="openbtnBox" @click="openInvestBtn">
-            <v-btn class="openBtn" color="#808080" style="">투자 프로젝트 오픈</v-btn>
+            <v-btn class="openBtn" color="#808080" style>투자 프로젝트 오픈</v-btn>
           </div>
           <!-- 프로젝트 정보 창 -->
           <v-tab-item :value="'tab-0'">
@@ -40,7 +40,12 @@
                   <h5>프로젝트명</h5>
                   <input v-model="title" type="text" placeholder="프로젝트명을 입력해주세요." />
                   <h5>프로젝트 한줄 소개</h5>
-                  <input v-model="content" type="text" placeholder="프로젝트에대해 100자이내로 설명해주세요." />
+                  <input
+                    v-model="content"
+                    type="text"
+                    maxlength="50"
+                    placeholder="프로젝트에대해 50자이내로 설명해주세요."
+                  />
                   <h5>프로젝트 마감 날짜</h5>
                   <div>
                     <!-- 마감날짜 -->
@@ -124,7 +129,7 @@
                       v-model="model"
                       hide-details
                       hide-selected
-                      label="태그를 입력해주세요."
+                      label="태그를 입력 후 엔터를 눌러주세요."
                       multiple
                       small-chips
                       solo
@@ -257,8 +262,7 @@ export default {
       targetPrice: 0,
       sellPrice: 0,
       // 사진
-      pp: "응?",
-      thumbnail: "file",
+      thumbnail: "",
       picture: "",
       rules: [
         (thumbnail) =>
@@ -362,9 +366,20 @@ export default {
         this.siteUrl &&
         this.editortext
       ) {
-        $('.openBtn').css('color', 'rgb(22, 150, 245)')
+        $(".openBtn").css("background-color", "rgb(22, 150, 245)");
+        $(".openBtn").css("color", "white");
       }
-    }
+      else{
+        $(".openBtn").css("background-color", "#808080");
+        $(".openBtn").css("color", "white");
+      }
+    },
+    targetPrice(val) {
+      return (this.targetPrice = this.targetPrice.replace(/[^0-9]/g, ""));
+    },
+    sellPrice(val) {
+      return (this.sellPrice = this.sellPrice.replace(/[^0-9]/g, ""));
+    },
   },
   mounted() {
     if (store.state.isSigned) {
@@ -404,7 +419,7 @@ export default {
         })
         .then((response) => {
           this.picture = response.data;
-          console.log(typeof(this.picture))
+          console.log(typeof this.picture);
         })
         .catch((error) => {
           console.log(error);
@@ -427,7 +442,7 @@ export default {
       this.model.forEach((tag) => {
         tags.push(tag.text);
       });
-      this.$refs.feeditem.searchTag(tags);
+      // this.$refs.feeditem.searchTag(tags);
     },
     openMenu() {
       this.openMenutab = !this.openMenutab;
@@ -600,7 +615,9 @@ input:hover {
   margin-bottom: 10px;
 }
 .categorybtn:hover {
-  border: 2px solid rgb(22, 150, 245);
+  /* border: 2px solid rgb(22, 150, 245); */
+  background-color: rgb(22, 150, 245) !important;
+  color: white;
 }
 .searchBarBtn {
   border: 1px solid lightgray;
@@ -612,6 +629,7 @@ input:hover {
   resize: none;
   padding: 8px;
   margin: 0 0 20px 10px;
+  width: 90%;
 }
 #introduce:hover {
   border: 2px solid rgb(22, 150, 245);
