@@ -363,7 +363,6 @@ export default {
         this.select &&
         this.companyName &&
         this.introduce &&
-        this.siteUrl &&
         this.editortext
       ) {
         $(".openBtn").css("background-color", "rgb(22, 150, 245)");
@@ -470,7 +469,6 @@ export default {
         this.select &&
         this.companyName &&
         this.introduce &&
-        this.siteUrl &&
         this.editortext
       ) {
         Swal.fire({
