@@ -11,7 +11,7 @@
           <div style="text-align: center; margin-top: 30px;">
             <h4>상품은 만족하셨나요?</h4>
             <v-icon :class="key"
-            v-model="satisfaction"
+            
             v-for="key in stars"
             :key="key"
             @click="starPoint(key)" size=43 
@@ -20,7 +20,7 @@
             </v-icon>
             <h4 class="mt-5">상품 설명서와 비슷했나요?</h4>
             <v-icon :class="key"
-            v-model="similarity"
+           
             v-for="key in circles"
             :key="key"
             @click="circlePoint(key)" size=43
