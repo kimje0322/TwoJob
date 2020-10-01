@@ -3,12 +3,12 @@
     <v-card flat tile>
       <v-card-text style="height: 500; width: 800" class="pa-1">
         <v-list>
-          <v-toolbar dense elevation="1">
+          <!-- <v-toolbar dense elevation="1">
             <h5 class="mx-auto">1 : 1 채팅</h5>
-          </v-toolbar>
+          </v-toolbar> -->
 
           <v-list-item style="padding: 0">
-            <div style="width: 200px">
+            <div style="width: 270px">
               <div>
                 <!-- <div
                   style="
@@ -22,11 +22,15 @@
                   <h2>채팅</h2>
                 </div> -->
                 <div style="height: 600px">
-                  <div style="padding: 5px 15px; float: left">
+                  <div style="padding: 5px 0; float: left; width: 220px; ">
+                    <div style="height: 55px; padding: 12px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1); border-bottom: none; font-weight:">
+                      <h5 style="font-size: 15px; padding: auto; text-align: center">1 : 1 채팅</h5>
+                    </div>
                     <div
+                      class="profile"
                       v-for="(lst, i) in userlst"
                       :key="i"
-                      style="padding: 7px 0"
+                      style="padding: 10px 0"
                     >
                       <img
                         v-if="lst.toimg == null"
@@ -119,7 +123,9 @@
               </div>
               <div style="height: 500px">
                 <!-- 대화창 -->
-                <div style="height: 480px">
+                <div
+                  style="height: 480px; overflow-x: hidden; overflow-y: auto"
+                >
                   <div
                     v-for="(lst, i) in chatmessage"
                     :key="i"
@@ -170,9 +176,9 @@
                       v-on:keypress.enter="sendMessage"
                     />
                   </div>
-                  <div style="display: inline-block; float: right; flex: 8">
+                  <!-- <div style="display: inline-block; float: right; flex: 8">
                     <v-btn @click="sendMessage"> 전송 </v-btn>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -227,7 +233,7 @@ export default {
   mounted() {
     // sender
     this.sender = localStorage.getItem("wschat.sender");
-
+    console.log("이거는 sender야" +  this.sender)
     // this.userimg = store.state.userInfo.img;
     this.userimg = store.state.userInfo.img;
     axios
@@ -272,6 +278,15 @@ export default {
       this.chatusername = name;
       this.chatuserimg = img;
       this.chatroomid = roomid;
+
+      this.chatmessage = [];
+      this.totalmessage = "";
+
+      // function connect(){
+      //   ws.connect({}, function(frame) {
+      //     ws.subscribe("/sub/chat/room/" + vm.$data.roomid, )
+      //   })
+      // }
 
       axios
         .get(
@@ -343,5 +358,8 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.profile:hover {
+  background-color: #efefef;
 }
 </style>
