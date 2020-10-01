@@ -308,6 +308,9 @@ import Navbar from "../../components/Navbar.vue";
 import "../../../public/css/InvestDetail.scss";
 import { VueperSlides, VueperSlide } from "vueperslides";
 import "vueperslides/dist/vueperslides.css";
+import axios from "axios";
+
+const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   components: {
@@ -317,6 +320,8 @@ export default {
   },
   data() {
     return {
+      // 주소
+      nowAddress: "",
       // 좋아요
       isliked: false,
       likeCount: 0,
@@ -397,6 +402,14 @@ export default {
       commentList: [],
       comment: "",
     };
+  },
+  mounted() {
+    console.log(typeof(this.$route.params.address))
+    this.nowAddress = this.$route.params.address
+    axios.post(`${SERVER_URL}/investment/getDetail`, {address: this.nowAddress})
+      .then(response => {
+        console.log(response)
+      })
   },
   methods: {
     likebtn() {

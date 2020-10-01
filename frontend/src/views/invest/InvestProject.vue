@@ -101,29 +101,29 @@
           :key="i"
           style="display: inline-block; width: 30%; margin-bottom: 30px;"
         >
-          <router-link to="/investdetail">
-            <v-card class="my-12" max-width="320" style="margin: auto">
+          <v-card class="my-12" max-width="320" style="margin: auto">
+            <router-link :to="{ name: 'InvestDetail', params: { address : item.address }}" >
               <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
-              <v-card-title style="font-weight: 600; margin: auto">
-                {{item.pjtName}}
-                <div style="margin-left: auto;">
-                  <v-chip class="projectBadge">{{item.lastday}}일 남음</v-chip>
+            </router-link>
+            <v-card-title style="font-weight: 600; margin: auto">
+              {{item.pjtName}}
+              <div style="margin-left: auto;">
+                <v-chip class="projectBadge">{{item.lastday}}일 남음</v-chip>
+              </div>
+            </v-card-title>
+            <v-card-text>
+              <div style="margin-bottom: 15px;">{{item.oneLineIntro}}</div>
+              <div style="color: black;">
+                <h5
+                  style="display: inline-block; height: 41.6px; line-height: 41.6px"
+                >{{item.goalPrice}} 원</h5>
+                <div style="display: inline-block; float: right;">
+                  <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
+                  <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
                 </div>
-              </v-card-title>
-              <v-card-text>
-                <div style="margin-bottom: 15px;">{{item.oneLineIntro}}</div>
-                <div style="color: black;">
-                  <h5
-                    style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                  >{{item.goalPrice}} 원</h5>
-                  <div style="display: inline-block; float: right;">
-                    <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
-                    <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-card>
-          </router-link>
+              </div>
+            </v-card-text>
+          </v-card>
         </div>
       </div>
     </div>
