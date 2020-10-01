@@ -247,8 +247,8 @@
                         <v-app ></v-app>
                         <div>
                           <v-dialog
-                            max-width="500"
-                            min-height="400"
+                            max-width="800"
+                            min-height="500"
                             v-model="chatroom"
                           >
                             <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
