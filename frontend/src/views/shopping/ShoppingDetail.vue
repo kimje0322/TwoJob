@@ -1,15 +1,14 @@
 <template>
   <div class="shoppingDetail">
-    <navbar/>
+    <navbar />
     <!-- 상품 게시글 제목 -->
-    <div class="shoppingTitle" style="height: 230px; background-color: lightgrey;">
-      <h4 style="text-align: center; padding-top:95px;">Ostay Hair dryer Dock for Dyson</h4>
-    </div>
-    <div class="entirePage">
-      <div class="shoppingDetail">
+    <div class="shoppingImg" 
+    style="height: 300px; background-color: lightgrey; display: flex; justify-content: center; align-items: center"
+    ></div>
+    <div class="shoppingInfoBox">
+      <div class="shoppingInfo">
         <!-- 좌측: 상품 사진 -->
-        <div class="shoppingimg"
-          >
+        <div class="shoppingThumnail">
           <v-carousel>
             <v-carousel-item
               v-for="(item,i) in picitems"
@@ -21,7 +20,7 @@
           </v-carousel>
         </div>
         <!-- 우측: 상품 디테일 -->
-        <div style="float: left; width:36%; margin-top:10px;">
+        <div style="float: left; width:36%;">
           <!-- 기업명 -->
           <p>{{items.compname}}</p>
           <!-- 상품 제목 -->
@@ -39,8 +38,12 @@
             <strong>
               <p class="listTitle" style="margin-bottom: 1%">상품 카테고리</p>
             </strong>
-            <v-chip class="categoryBadge mr-1" small>홈리빙</v-chip>
-            <v-chip class="categoryBadge mr-1" small>드라이기</v-chip>
+            <v-chip 
+              v-for="(value, key) in detailItems.category"
+              :key="key"
+              class="categoryBadge mr-1" 
+              small
+            >{{value}}</v-chip>
           </div>
           <!-- 가격 -->
           <div style="margin-bottom: 4%">
@@ -61,34 +64,19 @@
           <v-btn class="perchaseBtn white--text">
             <v-icon size="18" class="mr-1">mdi-cart-outline</v-icon>상품 구매
           </v-btn>
-
-          <v-container class="cardContainer">
-            <v-row class="cards">
-              <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
-              <v-col class="otherCard" cols="5">
-                <v-card
-                  style="text-align: center; padding: 5px 2px 5px 2px"
-                  class="pa-2"
-                  outlined
-                  tile
-                >
-                  <v-icon size="20" class="mr-2">mdi-heart</v-icon>22
-                  <br />
-                </v-card>
-              </v-col>
-              <v-col class="otherCard" cols="5">
-                <v-card
-                  style="text-align: center; padding: 5px 2px 5px 2px"
-                  class="pa-2"
-                  outlined
-                  tile
-                >
-                  <v-icon size="20" class="mr-1">mdi-message-bulleted</v-icon>문의
-                  <br />
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
+          <!-- 좋아요 & 문의 버튼 -->
+          <div style="display: flex; margin-top: 15px;">
+            <button style="flex: 1;">
+              <div class="btns" style="margin-right: 5px">
+                <v-icon size="20" class="mr-2">mdi-heart</v-icon>22
+              </div>
+            </button>
+            <button style="flex: 1;">
+              <div class="btns">
+                <v-icon size="20" class="mr-1">mdi-message-bulleted</v-icon>문의
+              </div>
+            </button>
+          </div>
         </div>
       </div>
       <!-- 금손님 정보 -->
@@ -173,23 +161,6 @@
                 <span class="ml-2" style="color: grey">2020.09.15</span>
                 <p class="mx-5">{{ reviews }}</p>
               </div>
-              <!-- 2 -->
-              <div class="mt-3">
-                <v-icon style="display:inline" size="38">mdi-emoticon-happy-outline</v-icon>
-                <strong>
-                  <p style="display:inline; margin: 2px 0px 0px 3px;">동백꽃</p>
-                </strong>
-                <span class="ml-2" style="color: grey">2020.09.15</span>
-                <p class="mx-5">{{ reviews }}</p>
-              </div>
-              <div class="mt-3">
-                <v-icon style="display:inline" size="38">mdi-emoticon-happy-outline</v-icon>
-                <strong>
-                  <p style="display:inline; margin: 2px 0px 0px 3px;">싸피인</p>
-                </strong>
-                <span class="ml-2" style="color: grey">2020.09.15</span>
-                <p class="mx-5">{{ reviews }}</p>
-              </div>
             </div>
           </div>
         </v-tab-item>
@@ -207,7 +178,7 @@ const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   components: {
-    Navbar
+    Navbar,
   },
   data() {
     return {
@@ -230,8 +201,10 @@ export default {
       ],
       detailItems: {
         title: "Ostay 다이슨 헤어드라이어",
-        category:
-          "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+        category: {
+          tech: "테크, 가전",
+          home: "홈리빙",
+        },
         perchase: "1,370,502",
         percent: "95",
       },
@@ -245,9 +218,12 @@ export default {
     axios
       .get(`${SERVER_URL}/sale/getDetail?address=239a52e9-380b-4e98-a641-b33c749162ef`)
       .then((res) => {
-        this.items = res.data.object
+        this.items = res.data.object;
+        console.log('이게 items')
+        console.log(this.items)
       })
       .catch((error) => {
+        console.log('dto찾는 items...')
         console.log(error)
       });
 
@@ -255,57 +231,61 @@ export default {
     // page값, address 변수로 넣기 (0 => 페이지 길이만큼 반복문)
     axios
       .post(`${SERVER_URL}/sale/getReviews/0`, {
-        address: '239a52e9-380b-4e98-a641-b33c749162ef',
+        address: this.shoppingAddress,
         page: 0,
       })
-      .then((res) => {
-        console.log(res)
-        console.log('리뷰조회성공')
+      .then((response) => {
+        console.log('리뷰 조회 성공!')
+        console.log(response)
       })
       .catch((error) => {
         console.log(error)
       })
-  }
-
-  // created() {
-  //   // 쇼핑 pjt 디테일 정보 
-  //   // address 변수값으로 넣기
-  //   axios
-  //     .get(`${SERVER_URL}/sale/getDetail?address=239a52e9-380b-4e98-a641-b33c749162ef`)
-  //     .then((response) => {
-  //     this.items = response.data.object
-  //     console.log(this.items)
-  //     })
-  //     .catch((error) => {
-  //       console.log(error)
-  //   });
-    
-  //   // 리뷰 조회
-  //   // page값 변수로 넣기 (0 => 페이지 길이만큼 반복문)
-  //   axios
-  //     .get(`${SERVER_URL}/sale/getReviews/0`)
-  //     .then((response) => {
-  //       console.log(response)
-  //     })
-  //     .catch((error) => {
-  //     console.log(error)
-  // });
+  },
+  mounted() {
+    this.shoppingAddress = this.$route.params.address
+    const frm = new FormData();
+    frm.append("address",this.shoppingAddress)
+    axios.post(`${SERVER_URL}/sale/getReviews/0`, frm
+    )
+      .then(response => {
+        console.log(response)
+        console.dir(response)    
+      })
+  },
 }
 </script>
 
 <style scoped>
-.shoppingTitle {
-  width: 100% !important;
+.shoppingImg {
+  background-image: url("https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193143172_73945.jpg/wadiz/format/jpg/quality/80/optimize");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0.3;
 }
 .tabBtn {
   font-style: normal;
   font-size: 15px !important;
 }
-.entirePage {
-  margin: 30px 150px 0px 200px;
+.shoppingInfoBox {
+  /* margin: 0 150px; */
+  position: absolute;
+  width: 100%;
+  top: 250px;
+  padding: 0 10%;
+  border-radius: 4px;
 }
-.shoppingDetail {
-  height: 500px;
+.shoppingInfo {
+  overflow: hidden;
+  width: 100%;
+  background: white;
+  padding: 2%;
+}
+.shoppingThumnail {
+  width: 45%;
+  margin-right: 7%;
+  float: left;
 }
 .shoppingimg {
   width: 45%;
@@ -318,7 +298,8 @@ export default {
   color: white !important;
 }
 .perchaseBtn {
-  width: 83%;
+  width: 100%;
+  height: 42px !important;
   justify-content: center;
   /* text-align: center; */
   color: white !important;
@@ -347,5 +328,11 @@ p {
 .projectsNum {
   font-size: 3.3rem;
   font-weight: bold;
+}
+.btns {
+  height: 38px;
+  text-align: center;
+  line-height: 38px;
+  border: 1px solid lightgray;
 }
 </style>
