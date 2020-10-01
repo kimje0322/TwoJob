@@ -119,7 +119,36 @@
               </div>
               <div style="height: 500px">
                 <!-- 대화창 -->
-                <div style="height: 480px"></div>
+                <div style="height: 480px">
+                  <div
+                    v-for="(lst, i) in chatmessage"
+                    :key="i"
+                    style="margin: 20px 10px"
+                  >
+                    <div
+                      style="
+                        width: 250px;
+                        height: 30px;
+                        background-color: rgb(0, 153, 255);
+                        border-radius: 18px;
+                        padding: 5px;
+                        color: white;
+                        margin-bottom: 40px;
+                      "
+                    >
+                      {{ lst.message }}
+                      <div
+                        style="
+                          color: rgba(0, 0, 0, 0.4);
+                          margin-bottom: 5px;
+                          text-align: right;
+                        "
+                      >
+                        {{ lst.time }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <!-- 메세지 입력창 -->
                 <div style="height: 40px">
                   <div
@@ -137,10 +166,12 @@
                       type="text"
                       placeholder="메시지를 입력하세요."
                       style="margin-top: 8px; margin-left: 5px; float: left"
+                      v-model="message"
+                      v-on:keypress.enter="sendMessage"
                     />
                   </div>
                   <div style="display: inline-block; float: right; flex: 8">
-                    <v-btn> 전송 </v-btn>
+                    <v-btn @click="sendMessage"> 전송 </v-btn>
                   </div>
                 </div>
               </div>
@@ -182,6 +213,11 @@ export default {
       chatusername: "",
       chatuserimg: "",
       chatroomid: "",
+      chatmessage: [],
+      totalmessage: "",
+
+      message: "",
+      sender: "",
     };
   },
   components: {
@@ -189,6 +225,9 @@ export default {
   },
 
   mounted() {
+    // sender
+    this.sender = localStorage.getItem("wschat.sender");
+
     // this.userimg = store.state.userInfo.img;
     this.userimg = store.state.userInfo.img;
     axios
@@ -233,10 +272,26 @@ export default {
       this.chatusername = name;
       this.chatuserimg = img;
       this.chatroomid = roomid;
-      
+
       axios
-      .get(`${SERVER_URL}/chat/getMessage?direction=ASC&page=0&roomid=${this.chatroomid}&size=`)
-      
+        .get(
+          `${SERVER_URL}/chat/getMessage?direction=ASC&page=0&roomId=${this.chatroomid}&size=1`
+        )
+        .then((res) => {
+          console.log(res);
+          this.totalmessage = res.data.totalElements;
+          console.log(this.totalmessage);
+          axios
+            .get(
+              `${SERVER_URL}/chat/getMessage?direction=ASC&page=0&roomId=${this.chatroomid}&size=${this.totalmessage}`
+            )
+            .then((res) => {
+              this.chatmessage = res.data.content;
+              console.log(this.chatmessage);
+            });
+          // this.chatmessage =
+        });
+
       // axios
       //   .get(`${SERVER_URL}/chat/room/${this.chatroomid}`)
       //   .then((res) => {
@@ -259,6 +314,20 @@ export default {
     // 		.then((res) => {
     // 		})
     // },
+
+    // 채팅 전송
+    sendMessage: function (recv) {
+      ws.send(
+        "/pub/chat/message",
+        {},
+        JSON.stringify({
+          type: "TALK",
+          roomId: this.chatroomid,
+          sender: this.sender,
+          message: this.message,
+        })
+      );
+    },
   },
 };
 </script>
