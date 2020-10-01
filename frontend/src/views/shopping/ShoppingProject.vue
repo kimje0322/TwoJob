@@ -190,7 +190,6 @@ export default {
   created() {
     axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}`)
       .then(response => {
-        console.log('디테일로이동')
         this.shoppingList = response.data.object
         console.log(this.shoppingList)
       })
