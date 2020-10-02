@@ -146,6 +146,7 @@ public class InvestController {
 				boardCategoryRepository.save(boardCategoryDto);
 			}
 
+			result.object = tempInvestmentDto;
 			result.data = "Success";
 			result.status = true;
 		} catch (Exception e) {
@@ -343,13 +344,17 @@ public class InvestController {
 			List<getAllMyPjtResponse> resultdatas = new ArrayList<>();
 			for (Iterator<InvestmentDto> iter = templist.iterator(); iter.hasNext();) {
 				InvestmentDto pinvestmentdDto = iter.next();
+				System.out.println("address=====>" + pinvestmentdDto.getAddress());
 				Optional<SaleBoardDto> opsaleBoardDto = saleService
 						.getSaleBoardByInvestAddress(pinvestmentdDto.getAddress());
+				System.out.println("opsaleBoardDto=====>"+opsaleBoardDto.isPresent());
 				if (opsaleBoardDto.isPresent()) {
+					System.out.println(opsaleBoardDto.get().toString());
 					getAllMyPjtResponse data = new getAllMyPjtResponse(pinvestmentdDto, opsaleBoardDto.get(),
 							pageInvestment.getTotalPages());
 					resultdatas.add(data);
 				} else {
+					System.out.println(pageInvestment.getTotalPages());
 					getAllMyPjtResponse data = new getAllMyPjtResponse(pinvestmentdDto, pageInvestment.getTotalPages());
 					resultdatas.add(data);
 				}

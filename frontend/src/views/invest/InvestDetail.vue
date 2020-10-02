@@ -404,11 +404,15 @@ export default {
     };
   },
   mounted() {
-    console.log(typeof(this.$route.params.address))
     this.nowAddress = this.$route.params.address
-    axios.post(`${SERVER_URL}/investment/getDetail`, {address: this.nowAddress})
+    console.log('address===>'+this.nowAddress)
+    const frm = new FormData();
+    frm.append("address",this.nowAddress)
+    axios.post(`http://localhost:8080/investment/getDetail`, frm
+    )
       .then(response => {
         console.log(response)
+        console.dir(response)
       })
   },
   methods: {
