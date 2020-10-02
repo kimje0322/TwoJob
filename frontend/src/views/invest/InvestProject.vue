@@ -177,7 +177,7 @@ export default {
       // 프로젝트
       investProjects: [],
       // page
-      page: 0,
+      page: 1,
     };
   },
   watch: {
@@ -202,9 +202,9 @@ export default {
     axios
       .get(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`)
       .then((response) => {
+        console.log(response)
         if (response.data.data == "success") {
           this.investProjects = response.data.object;
-          console.log(this.investProjects);
           this.investProjects.forEach((investPjt) => {
             const day = investPjt.deadLine.substring(8, 10);
             let today = new Date();

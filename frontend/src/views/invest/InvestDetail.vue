@@ -13,10 +13,10 @@
           <!-- 좌측: 상품 사진 -->
           <div class="investThumnail">
             <v-carousel>
+              <!-- v-for="(item,i) in items"
+                :key="i" -->
               <v-carousel-item
-                v-for="(item,i) in items"
-                :key="i"
-                :src="item.src"
+                :src="investPjt.picture"
                 reverse-transition="fade-transition"
                 transition="fade-transition"
               ></v-carousel-item>
@@ -27,10 +27,10 @@
             <!-- 기업명
             <p>다이슨</p>-->
             <!-- 상품 제목 -->
-            <h3>{{ detailItems.title }}</h3>
+            <h3>{{ investPjt.pjtName }}</h3>
             <hr />
             <p style="font-size: 1.2em">
-              <span style="color: rgb(22, 150, 245);">{{ detailItems.invest }}</span>명 투자 중
+              <span style="color: rgb(22, 150, 245);">없음</span>명 투자 중
             </p>
             <!-- 카테고리 -->
             <div style="margin-bottom: 4%">
@@ -38,7 +38,7 @@
                 <p class="listTitle" style="margin-bottom: 1%">투자 카테고리</p>
               </strong>
               <v-chip
-                v-for="(value, key) in detailItems.category"
+                v-for="(value, key) in investPjt.categorys"
                 :key="key"
                 class="categoryBadge mr-1"
                 small
@@ -49,36 +49,34 @@
               <strong>
                 <p class="listTitle" style="margin-bottom: 1%">모인금액</p>
               </strong>
-              <h3 class="totalPrice">{{detailItems.totalPrice}}</h3>
+              <h3 class="totalPrice">없음</h3>
               <strong>
                 <span>원 달성</span>
               </strong>
               <div style="display: inline-block; margin-left: 5%">
                 <h3
                   style="display: inline-block; color:rgb(22, 150, 245); font-weight: 600; margin-right: 5px"
-                >{{detailItems.percent}}%</h3>
+                >없음%</h3>
                 <h5 style="display: inline-block;">달성</h5>
               </div>
               <p style="font-size: 13px">
                 목표 금액인
-                <strong>{{detailItems.goalPrice}}</strong>원이 모여야만 결제됩니다.
+                <strong>{{investPjt.goalPrice}}</strong>원이 모여야만 결제됩니다.
               </p>
             </div>
             <!-- 마감일 -->
             <div style="margin-bottom: 4%;">
               <strong>
-                <p class="listTitle" style="margin: 0 2% 1% 0; display: inline-block">10일 남음</p>
+                <p class="listTitle" style="margin: 0 2% 1% 0; display: inline-block">{{investPjt.lastday}}일 남음</p>
               </strong>
-              <span>{{detailItems.deadline}} 24:00 마감</span>
+              <span>{{investPjt.deadLine}} 24:00 마감</span>
             </div>
             <!-- 태그 -->
             <div style="margin-bottom: 3%">
               <strong>
                 <p class="listTitle" style="margin-bottom: 1%">태그</p>
               </strong>
-              <v-chip class="mr-1" small>#다이슨</v-chip>
-              <v-chip class="mr-1" small>#헤어</v-chip>
-              <v-chip class="mr-1" small>#스탠드</v-chip>
+              <v-chip v-for="(tag, i) in investPjt.tags" :key="i" class="mr-1" small>#{{tag}}</v-chip>
             </div>
             <!-- 투자하기 버튼 -->
             <v-btn class="investBtn white--text" style="width: 100%; height: 42px">
@@ -109,11 +107,11 @@
             <img class="makerImg" src="../../assets/금손.jpg" alt />
           </div>
           <div style="float:left; margin: 3px 0 0 15px;">
-            <p style="font-size: 0.9rem; margin-bottom:5px;">
-              (주)강한하늘 대표
-              <strong>강하늘</strong>
-            </p>
-            <p style="font-size: 0.9rem;">여행을 다니며 영감을 얻는 사업가 강하늘입니다.</p>
+            <span style="font-size: 0.9rem; margin-bottom:5px;">
+              (주){{investPjt.compName}}
+            </span>
+            <span><strong>글쓴이 이름</strong></span>
+            <p style="font-size: 0.9rem;" v-html="investPjt.introduce">{{investPjt.introduce}}</p>
           </div>
         </div>
         <hr />
@@ -250,7 +248,7 @@
                 <!-- 투자금 사용 내역 -->
                 <div style="margin: 30px 0; padding: 0 5%">
                   <!-- <h5>투자금 사용 내역</h5> -->
-                  <vueper-slides
+                  <!-- <vueper-slides
                     class="no-shadow"
                     :visible-slides="5"
                     slide-multiple
@@ -262,14 +260,15 @@
                     style="padding: 0 5%;"
                   >
                     <vueper-slide v-for="(item, i) in items" :key="i" :image="item.src" />
-                  </vueper-slides>
+                  </vueper-slides> -->
                 </div>
               </div>
             </div>
             <!-- 투자 설명서 -->
             <div v-if="tabItem=='pjtInfo'" class="mt-2" style="text-align: center;">
-              <div v-for="(item, i) in items" :key="i">
-                <img style="width: 60%" :src="item.src" alt />
+              <div class="editorContent" v-html="investPjt.editorhtml">
+                {{investPjt.editorhtml}}
+                <!-- <img style="width: 60%" :src="item.src" alt /> -->
               </div>
             </div>
             <!-- 댓글 -->
@@ -322,57 +321,15 @@ export default {
     return {
       // 주소
       nowAddress: "",
+      // 프로젝트 정보
+      investPjt: {},
+      // 프로젝트 이력
+      page: 0,
       // 좋아요
       isliked: false,
       likeCount: 0,
       currentItem: "tab-Web",
       tabItems: ["projects", "pjtInfo", "comments"],
-      items: [
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193143172_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193147129_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-      ],
-      detailItems: {
-        title: "Ostay 다이슨 헤어드라이어",
-        invest: "1,370,502",
-        category: {
-          tech: "테크, 가전",
-          home: "홈리빙",
-        },
-        totalPrice: "1,000,000",
-        goalPrice: "1,500,000",
-        percent: "75",
-        deadline: "2020.10.05",
-      },
       successRate: "80",
       // 프로젝트 이력
       projectList: [
@@ -405,11 +362,32 @@ export default {
   },
   mounted() {
     this.nowAddress = this.$route.params.address
-    console.log('address===>'+this.nowAddress)
+    // 투자 프로젝트 정보 가져오기
     const frm = new FormData();
     frm.append("address",this.nowAddress)
-    axios.post(`http://localhost:8080/investment/getDetail`, frm
-    )
+    axios.post(`${SERVER_URL}/investment/getDetail`, frm)
+      .then(response => {
+        this.investPjt = response.data.object
+        // 마감일 기준 남은날짜 계산
+        const day = this.investPjt.deadLine.substring(8, 10);
+        let today = new Date();
+        today.setDate(day - today.getDate());
+        this.$set(this.investPjt, "lastday", today.getDate());
+        // 사진 url 처리
+        const cutUrl = this.investPjt.picture.substr(18, this.investPjt.picture.length - 17);
+        const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+        this.investPjt.picture = imgUrl
+        // 배경 이미지
+        $('.investImg').css('background-image', `url(${this.investPjt.picture})`)
+        // 글쓴이 소개글 엔터 변환
+        this.investPjt.introduce = this.investPjt.introduce.split('\n').join('<br />');
+        // 투자 설명서 엔터 변환
+        this.investPjt.editorhtml = this.investPjt.editorhtml.split('\n').join('<br />');
+      })
+    // 금손 프로젝트 이력 가져오기
+    const fd = new FormData();
+    fd.append("userid",this.investPjt.userid)
+    axios.post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
       .then(response => {
         console.log(response)
         console.dir(response)

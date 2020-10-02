@@ -36,7 +36,7 @@ public class WalletController {
 		return new ResponseEntity<String>(walletService.charge_ether(accessToken, ether), HttpStatus.OK);
 	}
 	@ApiOperation(value = "[지갑 조회] address를 이용해 지갑의 값을 조회. param : [address], result : 지갑이 존재하지 않으면 novalid, 지갑이 존재하면 해당 지갑의 balance를 return")
-	@GetMapping("/ToAdress")
+	@GetMapping("/toaddress")
 	public ResponseEntity<?> get(@RequestParam("address") String address) {
 		Object result = walletService.getBalance(address);
 		if(result.equals("novalid")) {
@@ -46,7 +46,7 @@ public class WalletController {
 		}
 	}
 	@ApiOperation(value = "[지갑 조회] 사용자 id를 이용해 지갑을 조회. param : [oauthid], result : 지갑이 존재하지 않으면 novalid, 지갑이 존재하면 해당 지갑을 return")
-	@GetMapping("/ToId")
+	@GetMapping("/toid")
 	public ResponseEntity<?> getByUser(@RequestParam("oauthid") String id) {
 		Object result = walletService.getWallet(id);
 		if(result.equals("novalid")) {

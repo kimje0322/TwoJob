@@ -86,59 +86,33 @@
         </div>
       </div>
       <div style="padding: 1% 0">
-        <div v-for="(item, i) in shoppingList" :key="i" style="display: inline-block; width: 30%; margin-bottom: 30px;">
-          <v-card class="my-12" height="436px" max-width="320" style="margin: auto">
-            <router-link to="/shoppingdetail">
-            <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
-            </router-link>
-            <p class="mt-2 mb-1 ml-3">{{item.compname}}</p>
-            <v-card-title style="font-weight: 600; margin: auto">
-              {{item.pjtname}}
-            </v-card-title>
-            <v-card-text>
-              <div style="margin-bottom: 15px;">
-                <p>{{item.onelineintro}}</p>
-              </div>
-              <div style="color: black;">
-                <h5
-                  style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                >{{item.saleprice}} 원</h5>
-                <div style="display: inline-block; float: right;">
-                  <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.sold}}21개</h3>
-                  <h5 style="display: inline-block; color:rgb(123, 197, 254)">구매중</h5>
+        <div v-for="(item, i) in shoppingList" :key="i" 
+          style="display: inline-block; width: 30%; margin-bottom: 30px;"
+        > 
+          <router-link :to="{name: 'ShoppingDetail', params: { address : item.address }}">
+            <v-card class="my-12 pjtCard" height="436px" max-width="320" style="margin: auto">
+              <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>   
+              <p class="mt-2 mb-1 ml-3">{{item.compname}}</p>
+              <v-card-title style="font-weight: 600; margin: auto">
+                {{item.pjtname}}
+              </v-card-title>
+              <v-card-text>
+                <div style="margin-bottom: 15px;">
+                  <p>{{item.onelineintro}}</p>
                 </div>
-              </div>
-            </v-card-text>
-          </v-card>
+                <div style="color: black;">
+                  <h5
+                    style="display: inline-block; height: 41.6px; line-height: 41.6px"
+                  >{{item.saleprice}} 원</h5>
+                  <div style="display: inline-block; float: right;">
+                    <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.sold}}21개</h3>
+                    <h5 style="display: inline-block; color:rgb(123, 197, 254)">구매중</h5>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </router-link>
         </div>
-      </div>
-    </div>
-    <div style="padding: 1% 0">
-      <div
-        v-for="(item, i) in investProjects"
-        :key="i"
-        style="display: inline-block; width: 30%; margin-bottom: 30px;"
-        >
-        <router-link to="/investdetail">
-          <v-card class="my-12" max-width="320" style="margin: auto">
-            <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
-            <v-card-title style="font-weight: 600; margin: auto">
-              {{item.pjtName}}
-            </v-card-title>
-            <v-card-text>
-              <div style="margin-bottom: 15px;">{{item.editorhtml}}</div>
-              <div style="color: black;">
-                <h5
-                  style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                >{{item.goalPrice}} 원</h5>
-                <div style="display: inline-block; float: right;">
-                  <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
-                  <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
-                </div>
-              </div>
-            </v-card-text>
-          </v-card>
-        </router-link>
       </div>
     </div>
   </div>
@@ -204,25 +178,33 @@ export default {
     };
   },
   watch: {
-
-  },
-  created() {
-    axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}`)
-      .then(response => {
-        console.log(response.data)
-        this.shoppingList = response.data.object
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  },
-  methods: {
     nowstate(val) {
       if(this.nowstate) {
         this.checkstate = true
       }
       else {
         this.checkstate = false
+      }
+    },
+  },
+  created() {
+    axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}`)
+      .then(response => {
+        this.shoppingList = response.data.object
+        console.log(this.shoppingList)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  },
+  methods: {
+    openState() {
+      this.openstate = !this.openstate;
+      if (this.openstate) {
+        this.nowstate = "";
+        $(".v-menu").css("display", "block");
+      } else {
+        $(".v-menu").css("display", "none");
       }
     },
     filterInit() {
@@ -233,6 +215,15 @@ export default {
       this.checkrate = false
       this.longrate = false
       this.openrate = false
+    },
+    openFilter() {
+      this.openfilter = !this.openfilter;
+      if (this.openfilter) {
+        this.nowfilter = "";
+        $(".v-menu").css("display", "block");
+      } else {
+        $(".v-menu").css("display", "none");
+      }
     },
   },
 };
@@ -344,5 +335,8 @@ export default {
 }
 .v-card__title {
   padding-top: 0px;
+}
+a {
+  text-decoration: none;
 }
 </style>
