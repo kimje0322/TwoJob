@@ -374,9 +374,12 @@ export default {
         today.setDate(day - today.getDate());
         this.$set(this.investPjt, "lastday", today.getDate());
         // 사진 url 처리
+        console.log('사진 처리보기')
+        console.log(this.investPjt.picture)
         const cutUrl = this.investPjt.picture.substr(18, this.investPjt.picture.length - 17);
         const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
         this.investPjt.picture = imgUrl
+        console.log(this.investPjt.picture)
         // 배경 이미지
         $('.investImg').css('background-image', `url(${this.investPjt.picture})`)
         // 글쓴이 소개글 엔터 변환

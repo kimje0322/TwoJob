@@ -3,16 +3,17 @@
     <navbar />
     <!-- 상품 게시글 제목 -->
     <div class="shoppingImg" 
+    v-bind:style="{ 'background-image': 'url(' + picture + ')' }"
     style="height: 300px; display: flex; justify-content: center; align-items: center"
     >
-      <h4 class="intro">{{ items.introduce }}</h4>
+      <h4 class="intro">{{ items.onelineIntro }}</h4>
       <div class="img-cover"></div>
     </div>
     <div class="shoppingInfoBox">
       <div class="shoppingInfo">
         <!-- 좌측: 상품 사진 -->
         <div class="shoppingThumnail">
-          <img src="shoppingPjt.picture" alt="">
+          <img :src="picture" alt="">
         </div>
         <!-- 우측: 상품 디테일 -->
         <div style="float: left; width:36%;">
@@ -32,7 +33,7 @@
               <p class="listTitle" style="margin-bottom: 1%">상품 카테고리</p>
             </strong>
             <v-chip 
-              v-for="(value, key) in detailItems.category"
+              v-for="(value, key) in items.categorys"
               :key="key"
               class="categoryBadge mr-1" 
               small
@@ -43,15 +44,17 @@
             <strong>
               <p class="listTitle" style="margin-bottom: 1%">판매가</p>
             </strong>
-            <h5>75,000원</h5>
+            <h5>{{items.saleBoardDto.saleprice}}원</h5>
           </div>
           <!-- 태그 -->
           <strong>
             <p class="listTitle" style="margin-bottom: 1%">태그</p>
           </strong>
-          <v-chip class="mr-1" small>#다이슨</v-chip>
-          <v-chip class="mr-1" small>#헤어</v-chip>
-          <v-chip class="mr-1" small>#스탠드</v-chip>
+          <v-chip 
+            v-for="(val, key) in items.tags"
+            :key="key"
+            class="mr-1" small
+          >#{{val}}</v-chip>
           <br />
           <br />
           <v-btn class="perchaseBtn white--text">
@@ -82,10 +85,9 @@
         </div>
         <div style="float:left; margin: 3px 0 0 15px;">
           <p style="font-size: 0.9rem; margin-bottom:5px;">
-            (주)강한하늘 대표
-            <strong>강하늘</strong>
+            <strong>{{items.compname}}</strong>
           </p>
-          <p style="font-size: 0.9rem;">여행을 다니며 영감을 얻는 사업가 강하늘입니다.</p>
+          <p style="font-size: 0.9rem;">{{ items.introduce }}</p>
         </div>
       </div>
       <hr style="margin-top: 80px" />
@@ -107,7 +109,6 @@
         </v-tab>
       </v-tabs>
       <br />
-
       <v-tabs-items v-model="currentItem">
         <v-tab-item v-for="tabItem in tabItems" :key="tabItem" :value="'tab-' + tabItem">
           <!-- 상품 설명서 -->
@@ -115,8 +116,7 @@
             v-if="tabItem=='pjtInfo'"
             class="mt-2"
             style="text-align: center; background-color: #f8f9fa ;"
-          >
-            
+          >        
           </div>
           <!-- 리뷰 -->
           <div v-if="tabItem=='reviews'" class="my-4" style="background-color: #f8f9fa ;">
@@ -126,8 +126,8 @@
                 <img style="width: 65%" src="../../assets/평점.png" alt />
               </div>
               <div style="text-align: center;">
-                <!-- <h2>상품 설명서 유사도 {{review.similar}}</h2>
-                <h2>상품 만족도 {{review.satisfied}}</h2> -->
+                <h2>상품 설명서 정확도 {{accuracy}}</h2>
+                <h2>상품 만족도 {{satisfy}}</h2>
               </div>
               
               <!-- 리뷰 -->
@@ -169,20 +169,7 @@ export default {
       items: [],
       reviewDate: '',
       shoppingPjt: '',
-      picitems: [
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193143172_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193147129_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193112234_73945.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-      ],
+      picture: '',
       detailItems: {
         title: "Ostay 다이슨 헤어드라이어",
         category: {
@@ -190,26 +177,22 @@ export default {
           home: "홈리빙",
         },
         perchase: "1,370,502",
-        percent: "95",
       },
       reviews: [],
+      accuracy: 0,
+      satisfy: 0,
     };
   },
   created() {
     this.shoppingAddress = this.$route.params.address
     // 쇼핑 디테일 정보 
-    // address 변수값으로 넣기
     axios
       .get(`${SERVER_URL}/sale/getDetail?address=${this.shoppingAddress}`)
       .then((res) => {
         this.items = res.data.object;
         console.log('이게 items')
         console.log(this.items)
-        const cutUrl = this.items.saleBoardDto.picture.substr(18, this.investPjt.picture.length - 17);
-        const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
-        this.items.picture = imgUrl
-        // 배경 이미지
-        $('.shoppingImg').css('background-image', `url(${this.items.saleBoardDto.picture})`)
+        this.picture = this.items.saleBoardDto.picture;
         // 글쓴이 소개글 엔터 변환
         // this.investPjt.introduce = this.investPjt.introduce.split('\n').join('<br />');
         // 투자 설명서 엔터 변환
@@ -237,6 +220,16 @@ export default {
         }
         // console.dir(response)    
       })
+    // 상품 만족도, 정확도 (리뷰)
+    axios.get(`${SERVER_URL}/sale/accuracy?address=${this.shoppingAddress}`)
+      .then(res => {
+        this.satisfy = res.data.object.satisfy
+        this.accuracy = res.data.object.accuracy
+      })
+      .catch(error => {
+        console.log(error)
+        console.log('아니얌')
+      })
   },
 }
 </script>
@@ -244,7 +237,6 @@ export default {
 <style scoped>
 .shoppingImg {
   position: relative;
-  /* background-image: url("https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193143172_73945.jpg/wadiz/format/jpg/quality/80/optimize"); */
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -255,7 +247,7 @@ export default {
    position: absolute;
    height: 100%;
    width: 100%;
-   background-color: rgba(0, 0, 0, 0.35);                                                                 
+   background-color: rgba(0, 0, 0, 0.6);                                                                 
    z-index:1;
 }
 .tabBtn {
@@ -282,12 +274,12 @@ export default {
   margin-right: 7%;
   float: left;
 }
-.shoppingimg {
-  width: 45%;
+/* .shoppingimg {
+  width: 45%; */
   /* height: 20% ; */
-  margin-right: 7%;
+  /* margin-right: 7%;
   float: left;
-}
+} */
 .categoryBadge {
   background-color: rgb(123, 197, 254) !important;
   color: white !important;
@@ -296,7 +288,7 @@ export default {
   width: 100%;
   height: 42px !important;
   justify-content: center;
-  /* text-align: center; */
+  text-align: center;
   color: white !important;
   background-color: rgb(22, 150, 245) !important;
 }
