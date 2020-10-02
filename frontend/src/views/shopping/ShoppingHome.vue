@@ -67,7 +67,7 @@
       
       <!-- 리뷰 모달 -->
       <v-dialog max-width="640" min-height="500" v-model="reviewDialog">
-        <ShoppingReview @closeReviewDialog="closeReviewDialog"></ShoppingReview>
+        <ShoppingReview></ShoppingReview>
         <v-card-actions style="background-color: white;">
           <v-spacer></v-spacer>
           <v-btn text @click="reviewDialog=false">취소</v-btn>
@@ -243,9 +243,9 @@ export default {
     openReviewDialog() {
       this.reviewDialog = true;
     },
-    closeReviewDialog() {
-      this.reviewDialog = false;
-    },
+    // closeReviewDialog() {
+    //   this.reviewDialog = false;
+    // },
   },
 };
 </script>

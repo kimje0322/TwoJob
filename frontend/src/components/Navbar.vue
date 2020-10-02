@@ -66,17 +66,20 @@
                 </v-btn>
                 <v-divider class="my-2"></v-divider>
                 <div>
-                  <v-btn depressed rounded text @click="onChargeDialog">
+                  <v-btn depressed rounded text @click="onChargeDialog()">
+                  <!-- <v-btn depressed rounded text @click="chargeDialog=!chargeDialog">   -->
                     충전하기
                   </v-btn>
+                  <v-app class="vApp">
                   <!-- 충전하기 모달 -->
                   <v-dialog  max-width="640" min-height="500" v-model="chargeDialog">
-                    <v-card-actions style="background-color: white">
+                    <Charge></Charge>
+                    <!-- <v-card-actions style="background-color: white;">
                       <v-spacer></v-spacer>
-                      <v-btn text @click="chargeDialog = false">취소</v-btn>
-                      <v-btn text color="blue">충전하기</v-btn>
-                    </v-card-actions>
+                      <v-btn text @click="chargeDialog=false">취소</v-btn>
+                    </v-card-actions> -->
                   </v-dialog>
+                  </v-app>
                 </div>
                 <v-divider class="my-2"></v-divider>
                 <router-link to="/mypage">
@@ -135,12 +138,16 @@
 import axios from "axios";
 import store from "../store/index.js";
 import "../../public/css/Navbar.scss";
+import Charge from "@/components/Charge.vue";
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
 const redirect_uri = "http://j3b102.p.ssafy.io:8080";
 
 export default {
+  components: {
+    Charge,
+  },
   data() {
     return {
       // kakopay: false,
@@ -265,14 +272,19 @@ export default {
       console.log("store.state.isSigned " + store.state.isSigned);
       // this.$router.push("/");
     },
-    onChargeDialog() {
-      this.chargeDialog = !this.chargeDialog;
+    onChargeDialog() {  
+      this.chargeDialog = true;
+      // this.chargeDialog = !this.chargeDialog;
+      console.log(this.chargeDialog)
     },
   },
 };
 </script>
 
 <style scoped>
+#app {
+  display: none;
+}
 .Navbar {
   height: 50px;
   /* text-align: center; */
