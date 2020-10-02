@@ -120,7 +120,7 @@
                       :class="key"
                       v-for="(value, key) in categoryList"
                       :key="key"
-                      @click="checkcategory(key)"
+                      @click="checkcategory(value, key)"
                     >{{value}}</v-btn>
                   </div>
                   <h5>검색용 태그</h5>
@@ -289,7 +289,7 @@ export default {
       // 금손 정보
       items: ["개인", "개인 사업자/기업"],
       select: "",
-      companyName: "회사",
+      companyName: "",
       introduce: "",
       siteUrl: "",
       openMenutab: false,
@@ -361,7 +361,6 @@ export default {
         this.checkCategory &&
         this.tags &&
         this.select &&
-        this.companyName &&
         this.introduce &&
         this.editortext
       ) {
@@ -424,16 +423,16 @@ export default {
           console.log(error);
         });
     },
-    checkcategory(category) {
+    checkcategory(category, key) {
       if (this.checkCategory.indexOf(category) >= 0) {
         const idx = this.checkCategory.indexOf(category);
         this.checkCategory.splice(idx, 1);
-        $(`.${category}`).css("background-color", "white");
-        $(`.${category}`).css("color", "black");
+        $(`.${key}`).css("background-color", "white");
+        $(`.${key}`).css("color", "black");
       } else {
         this.checkCategory.push(category);
-        $(`.${category}`).css("background-color", "rgb(22, 150, 245)");
-        $(`.${category}`).css("color", "white");
+        $(`.${key}`).css("background-color", "rgb(22, 150, 245)");
+        $(`.${key}`).css("color", "white");
       }
     },
     change() {
@@ -467,7 +466,6 @@ export default {
         this.checkCategory &&
         this.tags &&
         this.select &&
-        this.companyName &&
         this.introduce &&
         this.editortext
       ) {
@@ -616,7 +614,7 @@ input:hover {
 .categorybtn:hover {
   /* border: 2px solid rgb(22, 150, 245); */
   background-color: rgb(22, 150, 245) !important;
-  color: white;
+  color: white !important;
 }
 .searchBarBtn {
   border: 1px solid lightgray;
