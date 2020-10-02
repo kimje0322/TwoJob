@@ -280,7 +280,6 @@ public class InvestController {
 	@PostMapping("/getDetail")
 	@ApiOperation(value = "투자게시글에대한 디테일 페이지")
 	public Object getDetail(@RequestParam String address) {
-		System.out.println("address=================================>" + address);
 		final BasicResponse result = new BasicResponse();
 		try {
 			Optional<InvestmentDto> opInvestmentDto = investmentService.getInvestment(address);
