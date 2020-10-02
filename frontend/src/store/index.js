@@ -66,7 +66,7 @@ export default new Vuex.Store({
             state.isSigned = userinfo.login;
         },
         deluserInfo(state) {
-            state.userInfo.email = null;
+            state.userInfo.id = null;
             state.userInfo.name = null;
             state.userInfo.img = null;
             state.isSigned = false;

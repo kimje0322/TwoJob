@@ -17,30 +17,78 @@
           <h5>쇼핑하기</h5>
         </router-link>
       </div>
-      <div v-if="!login">
+      <div class="navbarItem" v-if="!login">
         <button @click="onClick">
           <h5 style="margin: 0">로그인</h5>
           <a href="http://developers.kakao.com/logout"></a>
         </button>
       </div>
-      <v-row v-else style="display: inline-block; width: 150px">
-        <v-btn @click.stop="openbox = true">
-          <v-avatar style="width: 35px; height: 35px; margin: 0">
-            <img :src="userInfo.img" alt="John" />
-          </v-avatar>
-          <div>
-            <h5
-              style="
-              display: inline-block;
-              margin: 0;
-              font-size: 17px;
-              font-weight: 550;
-            "
-            >{{ userInfo.name }}</h5>
-            <span>님</span>
-          </div>
-        </v-btn>
-        <div class="chargebox" style="inline-block" v-if="openbox">
+      <v-row
+        class="navbarItem"
+        v-else
+        justify="center"
+        style="display: inline-block; width: 150px"
+      >
+        <v-menu bottom min-width="200px" rounded offset-y>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on">
+              <v-avatar style="width: 35px; height: 35px; margin: 0">
+                <img :src="userInfo.img" alt="John" />
+              </v-avatar>
+              <div>
+                <h5
+                  style="
+                    display: inline-block;
+                    margin: 0;
+                    font-size: 17px;
+                    font-weight: 550;
+                  "
+                >
+                  {{ userInfo.name }}
+                </h5>
+                <span>님</span>
+              </div>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list-item-content class="justify-center">
+              <div class="mx-auto text-center">
+                <v-avatar
+                  style="width: 50px; height: 50px; margin-bottom: 15px"
+                >
+                  <img :src="userInfo.img" alt="John" />
+                </v-avatar>
+                <h5 style="margin-bottom: 10px">{{ userInfo.name }}</h5>
+                <p class="caption mt-1">{{ asset }}원</p>
+                <v-divider class="my-2"></v-divider>
+                <v-btn depressed rounded text @click="onLogout">
+                  로그아웃
+                </v-btn>
+                <v-divider class="my-2"></v-divider>
+                <div>
+                  <v-btn depressed rounded text @click="onChargeDialog">
+                    충전하기
+                  </v-btn>
+                  <!-- 충전하기 모달 -->
+                  <v-dialog  max-width="640" min-height="500" v-model="chargeDialog">
+                    <v-card-actions style="background-color: white">
+                      <v-spacer></v-spacer>
+                      <v-btn text @click="chargeDialog = false">취소</v-btn>
+                      <v-btn text color="blue">충전하기</v-btn>
+                    </v-card-actions>
+                  </v-dialog>
+                </div>
+                <v-divider class="my-2"></v-divider>
+                <router-link to="/mypage">
+                  <v-btn depressed rounded text> 마이페이지 </v-btn>
+                </router-link>
+              </div>
+            </v-list-item-content>
+          </v-card>
+        </v-menu>
+      </v-row>
+      <!-- 원래 모달 -->
+      <!-- <div class="chargebox" style="inline-block" v-if="openbox">
           <v-card style="padding: 0; margin: 0">
             <v-icon style="margin-right: 10px">mdi-close</v-icon>
             <v-card-title class="headline">
@@ -69,9 +117,9 @@
               </router-link>
             </div>
           </v-card>
-        </div>
-      </v-row>
-      <div>
+        </div> -->
+      <!-- </v-row> -->
+      <div class="navbarItem">
         <router-link to="/search">
           <button style="flex-right: 0">
             <i class="fas fa-search"></i>
@@ -110,6 +158,8 @@ export default {
         img: "",
         login: false,
       },
+      // 충전 모달
+      chargeDialog: false,
     };
   },
   mounted() {
@@ -207,6 +257,17 @@ export default {
         // this.$router.push("/");
       });
     },
+    onLogout() {
+      // this.$store.reset()
+      console.log("로그아웃됨");
+      this.login = false;
+      store.commit("deluserInfo");
+      console.log("store.state.isSigned " + store.state.isSigned);
+      // this.$router.push("/");
+    },
+    onChargeDialog() {
+      this.chargeDialog = !this.chargeDialog;
+    },
   },
 };
 </script>
@@ -231,12 +292,9 @@ export default {
   font-size: 30px;
   letter-spacing: 1.2px;
 }
-.items div {
-  display: inline-block;
-  margin: 0 5% 0 0;
-}
 .navbarItem {
-  margin-right: 8% !important;
+  display: inline-block;
+  margin-right: 5% !important;
 }
 .items div a {
   color: black;
