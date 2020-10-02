@@ -27,4 +27,9 @@ public class ReviewService {
 		PageRequest pageRequest = PageRequest.of(page, 10);
 		return reviewRepository.findAllBySaleaddress(pageRequest, saleaddress);
 	}
+
+	public List<ReviewDto> getReviews(String saleaddress) {
+		return reviewRepository.findAllBySaleaddress(saleaddress);
+	}
+
 }
