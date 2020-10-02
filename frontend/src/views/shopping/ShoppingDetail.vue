@@ -12,15 +12,7 @@
       <div class="shoppingInfo">
         <!-- 좌측: 상품 사진 -->
         <div class="shoppingThumnail">
-          <v-carousel>
-            <v-carousel-item
-              v-for="(item,i) in picitems"
-              :key="i"
-              :src="item.src"
-              reverse-transition="fade-transition"
-              transition="fade-transition"
-            ></v-carousel-item>
-          </v-carousel>
+          <img src="shoppingPjt.picture" alt="">
         </div>
         <!-- 우측: 상품 디테일 -->
         <div style="float: left; width:36%;">
@@ -124,26 +116,7 @@
             class="mt-2"
             style="text-align: center; background-color: #f8f9fa ;"
           >
-            <img
-              style="width: 60%"
-              src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812123041902_22.png/wadiz/format/jpg/quality/80/optimize"
-              alt
-            />
-            <img
-              style="width: 60%"
-              src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812123820943_38.png/wadiz/format/jpg/quality/80/optimize"
-              alt
-            />
-            <img
-              style="width: 60%"
-              src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812124034563_3.png/wadiz/format/jpg/quality/80/optimize"
-              alt
-            />
-            <img
-              style="width: 60%"
-              src="https://cdn.wadiz.kr/ft/images/green001/2020/0812/20200812130135430_57.png/wadiz/format/jpg/quality/80/optimize"
-              alt
-            />
+            
           </div>
           <!-- 리뷰 -->
           <div v-if="tabItem=='reviews'" class="my-4" style="background-color: #f8f9fa ;">
@@ -153,12 +126,11 @@
                 <img style="width: 65%" src="../../assets/평점.png" alt />
               </div>
               <div style="text-align: center;">
-                <h2>상품 설명서 유사도 {{review.similar}}</h2>
-                <h2>상품 만족도 {{review.satisfied}}</h2>
+                <!-- <h2>상품 설명서 유사도 {{review.similar}}</h2>
+                <h2>상품 만족도 {{review.satisfied}}</h2> -->
               </div>
               
-              
-              <!-- 1 -->
+              <!-- 리뷰 -->
               <div 
               class="mt-3"
               v-for="(review, i) in reviews"
@@ -168,7 +140,7 @@
                 <strong>
                   <p style="display:inline; margin: 2px 0px 0px 3px;">솜사탕강쥐</p>
                 </strong>
-                <span class="ml-2" style="color: grey">{{ review.createdate}}}</span>
+                <span class="ml-2" style="color: grey">{{ review.createdate}}</span>
                 <p class="mx-5">{{ review.reviewexplain }}</p>
               </div>
             </div>
@@ -196,6 +168,7 @@ export default {
       tabItems: ["pjtInfo", "reviews"],
       items: [],
       reviewDate: '',
+      shoppingPjt: '',
       picitems: [
         {
           src:
@@ -232,6 +205,16 @@ export default {
         this.items = res.data.object;
         console.log('이게 items')
         console.log(this.items)
+        const cutUrl = this.items.saleBoardDto.picture.substr(18, this.investPjt.picture.length - 17);
+        const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+        this.items.picture = imgUrl
+        // 배경 이미지
+        $('.shoppingImg').css('background-image', `url(${this.items.saleBoardDto.picture})`)
+        // 글쓴이 소개글 엔터 변환
+        // this.investPjt.introduce = this.investPjt.introduce.split('\n').join('<br />');
+        // 투자 설명서 엔터 변환
+        // this.investPjt.editorhtml = this.investPjt.editorhtml.split('\n').join('<br />');
+        // const cutUrl = this.shoppingPjt.picture
       })
       .catch((error) => {
         console.log(error)
@@ -261,7 +244,7 @@ export default {
 <style scoped>
 .shoppingImg {
   position: relative;
-  background-image: url("https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193143172_73945.jpg/wadiz/format/jpg/quality/80/optimize");
+  /* background-image: url("https://cdn.wadiz.kr/wwwwadiz/green001/2020/0811/20200811193143172_73945.jpg/wadiz/format/jpg/quality/80/optimize"); */
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;

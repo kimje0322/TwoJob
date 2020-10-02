@@ -352,12 +352,10 @@ export default {
         this.checkCategory.splice(idx, 1);
         $(`.${category}`).css("background-color", "white");
         $(`.${category}`).css("color", "black");
-        // console.log(this.checkCategory)
       } else {
         this.checkCategory.push(category);
         $(`.${category}`).css("background-color", "rgb(22, 150, 245)");
         $(`.${category}`).css("color", "white");
-        // console.log(this.checkCategory)
       }
     },
     change() {
