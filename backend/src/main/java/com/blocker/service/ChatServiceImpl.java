@@ -90,9 +90,13 @@ public class ChatServiceImpl implements ChatService{
 				if(chat.get(i).getUser1().equals(m.getOauthId())){
 					Optional<Member> m2 = memberRepository.findById(chat.get(i).getUser2());
 					chat.get(i).setToimg(m2.get().getProfileImg());
+					chat.get(i).setUser1(m.getName());
+					chat.get(i).setUser2(m2.get().getName());
 				}else {
 					Optional<Member> m2 = memberRepository.findById(chat.get(i).getUser1());
 					chat.get(i).setToimg(m2.get().getProfileImg());
+					chat.get(i).setUser1(m2.get().getName());
+					chat.get(i).setUser2(m.getName());
 				}
 			}
 			return chat;

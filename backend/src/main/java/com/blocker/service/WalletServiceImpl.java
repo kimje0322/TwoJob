@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.Transfer;
@@ -48,19 +49,19 @@ public class WalletServiceImpl implements WalletService{
 		}
 	}
 	@Override
-	public String charge_ether(String accessToken, Double ether) {
-
+	public String charge_ether(String accessToken, Double ether) throws Exception {
 		Object result =  loginService.getUserInfo(accessToken);
 		if(result.getClass() == Member.class) {
 			Member m = (Member)result;
-			Web3j web3j = Web3j.build(new HttpService());
+			Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
 			Optional<Wallet> wallet = walletRepository.findById(m.getOauthId());
 			if(wallet.isPresent()) {
 				String pk = property.getAdminPK();
 				Credentials credentials = Credentials.create(pk);
 				RawTransactionManager rt = new RawTransactionManager(web3j, credentials);
 				Transfer tf = new Transfer(web3j, rt);
-				tf.sendFunds(wallet.get().getAddress(), BigDecimal.valueOf(ether), Convert.Unit.ETHER).sendAsync();
+				TransactionReceipt tr = tf.sendFunds(wallet.get().getAddress(), BigDecimal.valueOf(ether), Convert.Unit.ETHER).send();
+				System.out.println(tr);
 				return "success";
 			}else {
 				return "novalid";

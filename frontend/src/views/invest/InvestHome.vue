@@ -81,28 +81,6 @@
         </v-card>
       </div>
     </div>
-    <!-- 오픈예정 -->
-    <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">오픈예정<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
-    </div>
-    <div style="padding: 1% 0">
-      <v-card v-for="(item, i) in openItems" :key="i" style="width: 38%; height: 180px; display: inline-block; margin: 0 6% 4% 6%;">
-        <v-img style="width:33%; float:left;" height="180" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
-        <div style="width: 67%; float:right;">
-          <v-card-title style="font-weight: 600;">{{item.title}}
-            <div style="margin-left: auto;">
-              <v-icon style="color:rgb(22, 150, 245); margin-right: 10px">mdi-clock-outline</v-icon><span class="openBadge">{{item.opendate}}일 뒤 오픈</span>
-            </div>
-          </v-card-title>
-          <v-card-text>
-            <div style="margin-bottom: 15px;">{{item.content}}</div>
-            <div style="color: black;">
-              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">목표금액 : {{item.price}} 원</h5>
-            </div>
-          </v-card-text>
-        </div>
-      </v-card>
-    </div>
   </div>
 </template>
 

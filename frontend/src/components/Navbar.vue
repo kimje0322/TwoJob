@@ -7,66 +7,100 @@
           <h3>TwoJob</h3>
         </router-link>
       </div>
-      <div>
+      <div class="navbarItem">
         <router-link to="/investhome">
           <h5>투자하기</h5>
         </router-link>
       </div>
-      <div>
+      <div class="navbarItem">
         <router-link to="/shoppinghome">
           <h5>쇼핑하기</h5>
         </router-link>
       </div>
-      <div v-if="!login">
+      <div class="navbarItem" v-if="!login">
         <button @click="onClick">
           <h5 style="margin: 0">로그인</h5>
-          <!-- <a id="kakao-login-btn"></a> -->
-          <!-- <a href="http://developers.kakao.com/logout"></a> -->
           <a href="http://developers.kakao.com/logout"></a>
         </button>
       </div>
-      <v-row v-else style="display: inline-block; width: 150px">
-        <!-- <v-btn @click="onchargebox"> -->
-        <v-btn @click.stop="openbox = true">
-          <!-- <i class="fas fa-user fa-lg"></i> -->
-          <span class="userimgbox" style="width: 35px; height: 35px">
-            <img class="userimg" :src="userInfo.img" style="height: 100%" />
-          </span>
-          <h5
-            style="
-              display: inline-block;
-              margin: 0;
-              padding-left: 10px;
-              font-size: 17px;
-              font-weight: 550;
-            "
-          >
-            {{ userInfo.name }}
-          </h5>
-          <span>님</span>
-        </v-btn>
-        <div class="chargebox" style="inline-block" v-if="openbox">
+      <v-row
+        class="navbarItem"
+        v-else
+        justify="center"
+        style="display: inline-block; width: 150px"
+      >
+        <v-menu bottom min-width="200px" rounded offset-y>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on">
+              <v-avatar style="width: 35px; height: 35px; margin: 0">
+                <img :src="userInfo.img" alt="John" />
+              </v-avatar>
+              <div>
+                <h5
+                  style="
+                    display: inline-block;
+                    margin: 0;
+                    font-size: 17px;
+                    font-weight: 550;
+                  "
+                >
+                  {{ userInfo.name }}
+                </h5>
+                <span>님</span>
+              </div>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list-item-content class="justify-center">
+              <div class="mx-auto text-center">
+                <v-avatar
+                  style="width: 50px; height: 50px; margin-bottom: 15px"
+                >
+                  <img :src="userInfo.img" alt="John" />
+                </v-avatar>
+                <h5 style="margin-bottom: 10px">{{ userInfo.name }}</h5>
+                <p class="caption mt-1">{{ asset }}원</p>
+                <v-divider class="my-2"></v-divider>
+                <v-btn depressed rounded text @click="onLogout">
+                  로그아웃
+                </v-btn>
+                <v-divider class="my-2"></v-divider>
+                <div>
+                  <v-btn depressed rounded text @click="onChargeDialog">
+                    충전하기
+                  </v-btn>
+                  <!-- 충전하기 모달 -->
+                  <v-dialog  max-width="640" min-height="500" v-model="chargeDialog">
+                    <v-card-actions style="background-color: white">
+                      <v-spacer></v-spacer>
+                      <v-btn text @click="chargeDialog = false">취소</v-btn>
+                      <v-btn text color="blue">충전하기</v-btn>
+                    </v-card-actions>
+                  </v-dialog>
+                </div>
+                <v-divider class="my-2"></v-divider>
+                <router-link to="/mypage">
+                  <v-btn depressed rounded text> 마이페이지 </v-btn>
+                </router-link>
+              </div>
+            </v-list-item-content>
+          </v-card>
+        </v-menu>
+      </v-row>
+      <!-- 원래 모달 -->
+      <!-- <div class="chargebox" style="inline-block" v-if="openbox">
           <v-card style="padding: 0; margin: 0">
+            <v-icon style="margin-right: 10px">mdi-close</v-icon>
             <v-card-title class="headline">
               {{ userInfo.name }}님의 자산 현황
-              <br />
-              {{ asset }}원
             </v-card-title>
-            <v-text-field
-              class="moneyinput"
-              v-model="money"
-              label="충전금액"
-              required
-            ></v-text-field>
+            <h5 style="text-align: center">{{ asset }}원</h5>
+            <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
+
             <v-card-actions class="moneybtns">
               <v-spacer></v-spacer>
               <v-btn class="chargebtn" text @click="onKakao">
                 충전하기
-                <!-- <div style="inline-block" v-if="kakaopay">
-                  <v-card>
-
-                  </v-card>
-                </div>-->
               </v-btn>
               <v-btn class="closebtn" text @click="openbox = false">닫기</v-btn>
             </v-card-actions>
@@ -79,14 +113,13 @@
                     background: rgb(22, 150, 245) !important;
                     color: white;
                   "
-                  >마이페이지</v-btn
-                >
+                >마이페이지</v-btn>
               </router-link>
             </div>
           </v-card>
-        </div>
-      </v-row>
-      <div>
+        </div> -->
+      <!-- </v-row> -->
+      <div class="navbarItem">
         <router-link to="/search">
           <button style="flex-right: 0">
             <i class="fas fa-search"></i>
@@ -125,12 +158,14 @@ export default {
         img: "",
         login: false,
       },
+      // 충전 모달
+      chargeDialog: false,
     };
   },
   mounted() {
-    console.log(location.href);
-    console.log("이거봐라라ㅏㅏㅏ???");
-    console.log(location.href.includes("pg_token"));
+    // console.log(location.href);
+    // console.log("이거봐라라ㅏㅏㅏ???");
+    // console.log(location.href.includes("pg_token"));
     if (location.href.includes("pg_token")) {
       //     window.opener.closed = true;
       this.index = location.href.indexOf("pg_token");
@@ -141,7 +176,7 @@ export default {
       //if(this.index!=-1){
       console.log("충전할 금액은");
       console.log(store.state.charge);
-      console.log(store.state.userInfo.id)
+      console.log(store.state.userInfo.id);
       axios
         .get(
           `${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${store.state.userInfo.id}`
@@ -222,6 +257,17 @@ export default {
         // this.$router.push("/");
       });
     },
+    onLogout() {
+      // this.$store.reset()
+      console.log("로그아웃됨");
+      this.login = false;
+      store.commit("deluserInfo");
+      console.log("store.state.isSigned " + store.state.isSigned);
+      // this.$router.push("/");
+    },
+    onChargeDialog() {
+      this.chargeDialog = !this.chargeDialog;
+    },
   },
 };
 </script>
@@ -246,9 +292,9 @@ export default {
   font-size: 30px;
   letter-spacing: 1.2px;
 }
-.items div {
+.navbarItem {
   display: inline-block;
-  margin: 0 10% 0 0;
+  margin-right: 5% !important;
 }
 .items div a {
   color: black;
@@ -282,13 +328,13 @@ export default {
   color: white !important;
   margin-right: 30px;
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: 1rem !important;
 }
 .closebtn {
   background: red;
   color: white !important;
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: 1rem !important;
 }
 .userimgbox {
   border-radius: 70%;

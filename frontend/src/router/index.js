@@ -40,7 +40,7 @@ const routes = [{
         component: InvestProject,
     },
     {
-        path: "/investdetail",
+        path: "/investdetail/:address?",
         name: "InvestDetail",
         component: InvestDetail,
     },

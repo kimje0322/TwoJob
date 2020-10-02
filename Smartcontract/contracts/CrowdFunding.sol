@@ -1,122 +1,148 @@
-pragma solidity ^0.7.0;
+pragma solidity ^0.5.0;
 
-import "./Campaign.sol";
-import "./ICrowdFunding.sol";
-import "./ISaleItem.sol";
-
-contract CrowdFunding is Campaign, ICrowdFunding, ISaleItem{
+import "./SafeMath.sol";
+import "./TJToken.sol";
+import "./Context.sol";
+import "./Ownable.sol";
+contract CrowdFunding is Context, Ownable{
+  using SafeMath for uint256;
+  enum State { Ready, Open, Close, Sell, SellClose }
+  // 게시글에대한 해시값, 투자를 받는 사람의 주소, 목표금액, 모인금액
+  // 투자한사람들의 개별 투자금액, 투자자들의 주소, 거래의 마감일, 마감일이 종료되었는지 아닌지(마감이되면 true)
+  // 총 판매갯수
+  struct campaignStruct{
+      string uniqueCode;
+      address creator;
+      uint256 fundingGoal;
+      uint256 fundraiseAmount;
+      mapping (address => uint256) investRate;
+      address[] investgators;
+      uint deadline;
+      State state;
+      uint256 totalSell;
+      mapping (string => uint) receipt;
+      uint usedfund;
+      uint receiptNum;
+      string[] recieptImg;
+  }
     mapping(string => campaignStruct) campaigns;
+    //modifier inState(State _state) { require(state == _state); _; }
+    event CampaignCreate(address from, string code, uint amount);
+    event Funding(address from, string code, uint amount);
+    event FundingSuccess(string code);
+    event FundingFail(string code);
+    event Distribute(address to, uint amount);
 
-    /** modifier 는 function의 실행(행동)을 쉽게 변경가능하도록하며, function 실행의 조건을 체크 할수 있다
-     * @param _uniqueCode 해당캠페인의 해시값
-     */
-    modifier campaignNotClosed(string memory _uniqueCode) {require(!campaigns[_uniqueCode].closed); _;}
-    
-    /** 게시글 작성자만 허용
-     * @param _uniqueCode 해당캠페인의 해시값  
-     */
-    modifier campaignOwner(string memory _uniqueCode) {require(msg.sender == campaigns[_uniqueCode].creator); _;}
-
-    /** 마감일이 지났는지 확인하는 modifier
-     * @param _uniqueCode 해당캠페인의 해시값
-     * now는 더이상 지원하지 않기때문에 block.timestamp를 사용함 두개가 같은 의미
-     */
-    modifier becomeDuedate(string memory _uniqueCode) {require(block.timestamp >= campaigns[_uniqueCode].deadline);_;}
-
-    /**투자 게시글 생성 
-       게시글에대한 해시값, 목표금액, 마감일이 파라미터로 넘겨짐
-       투자를 받는 사람의 주소, 목표금액, 모인금액, 투자자들의 개별 투자금액을위한 mapping
-       거래의 마감일, 마감일이 종료되었는지 아닌지
-     */
-    
-    //버전0.6.0부터는 override시 어느 곳으로부터 파생되었는지 명시 해주어야함
-    function createCampaign (string memory _uniqueCode, uint256 _fundingGoal, uint _deadline) public override(ICrowdFunding){
+    function createCampaign (string memory _uniqueCode, uint256 _fundingGoal, uint numberOfDays) public {
+        require(campaigns[_uniqueCode].state != State.Open);
         campaigns[_uniqueCode].uniqueCode = _uniqueCode;
-        campaigns[_uniqueCode].creator = msg.sender;
+        campaigns[_uniqueCode].creator = _msgSender();
         campaigns[_uniqueCode].fundingGoal = _fundingGoal;
         campaigns[_uniqueCode].fundraiseAmount = 0;
-        //mapping을 초기화시켜주기위해 게시자의 주소를 가지고 초기화를해줌 사용하지는 않을예정
-        //campaigns[_uniqueCode].investRate[msg.sender] = 0;
-        campaigns[_uniqueCode].deadline = _deadline;
-        campaigns[_uniqueCode].closed = false;
-
-        campaignStruct storage tempCamp = campaigns[_uniqueCode];
-        emit noticeCreateCampaign(tempCamp.uniqueCode, tempCamp.creator, tempCamp.fundingGoal, tempCamp.fundraiseAmount, tempCamp.deadline);
+        campaigns[_uniqueCode].investRate[_msgSender()] = 0;
+        campaigns[_uniqueCode].deadline = now + (numberOfDays * 1 days);
+        campaigns[_uniqueCode].state = State.Open;
+        campaigns[_uniqueCode].usedfund = 0;
+        campaigns[_uniqueCode].receiptNum = 0;
+        emit CampaignCreate(_msgSender(), _uniqueCode, _fundingGoal);
     }
 
-    /**특정 게시글에 투자하기
-     *@param _uniqueCode 투자하고싶은 게시글에대한 해시값
-     */
-    function FundingCampign(string memory _uniqueCode) payable public override(ICrowdFunding) {
+    function FundingCampign(address _tokenAddress, address _from, string memory _uniqueCode, uint _fundingValue) public {
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
-        
         //게시글 작성자는 투자를 막는다
-        require(msg.sender != tempCamp.creator);
-
-        tempCamp.investgators.push(msg.sender);
-        tempCamp.fundraiseAmount += msg.value;
-        tempCamp.investRate[msg.sender] += msg.value;
+        require(_msgSender() != tempCamp.creator, "you are creator");
+        require(tempCamp.state == State.Open, "please make campaign");
+        //require(now < tempCamp.deadline);
+        TJToken(_tokenAddress).increaseAllowanceToOut(_from, address(this), _fundingValue);
+        TJToken(_tokenAddress).transferFrom(_from, address(this) , _fundingValue);
+        campaigns[_uniqueCode].investgators.push(_msgSender());
+        campaigns[_uniqueCode].fundraiseAmount += (_fundingValue);
+        campaigns[_uniqueCode].investRate[_msgSender()] += (_fundingValue);
+        emit Funding(_msgSender(), _uniqueCode, _fundingValue);
     }
 
-    /**
-     * 마감일이 되면 목표금액에 도달 했을경우 펀딩 금액을 작성자에게 줌 
-     * @param _uniqueCode 게시글에대한 해시값
-     */
-    function DueDay(string memory _uniqueCode) campaignNotClosed(_uniqueCode) campaignOwner(_uniqueCode) becomeDuedate(_uniqueCode) public override(ICrowdFunding) {
+    function receiveFunds(address _tokenAddress, string memory _uniqueCode) public {
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
-
-        if(tempCamp.fundingGoal > tempCamp.fundraiseAmount){
-            // 투자자들에게 투자한 금액 만큼 돈이 송금됨
-            uint256 len = tempCamp.investgators.length;
-            uint count = 0;
-            for(uint i=0; i<len; i++){
-                address invastgator = tempCamp.investgators[count++];
-                //0.5.0부터는 address에서 trasfer를 할 수 없고 두번의 address를 uint160으로 형변환 한뒤에 다시 address로 형변환 해주어야 송금이 가능해 짐
-                address(uint160(invastgator)).transfer(tempCamp.investRate[invastgator]);
-            }
-
-        }else{
-            // creator에게 투자금액이 송금됨
-            msg.sender.transfer(tempCamp.fundraiseAmount);
-        }
-
-        tempCamp.closed = true;
+        require(tempCamp.state == State.Open);
+        require(tempCamp.fundingGoal <= tempCamp.fundraiseAmount);
+        //require(now >= tempCamp.deadline);
+        require(_msgSender() == tempCamp.creator);
+        TJToken(_tokenAddress).transfer(tempCamp.creator, tempCamp.fundraiseAmount);
+        tempCamp.state = State.Sell;
+        emit FundingSuccess(_uniqueCode);
     }
 
-     /** 물건 판매
-    @param _uniqueCode 게시글에 대한 해시값
-    */
-    function SaleItem(string memory _uniqueCode, uint _count) payable public override(ISaleItem){
+    function Refund(address _tokenAddress,string memory _uniqueCode) public {
+      campaignStruct storage tempCamp = campaigns[_uniqueCode];
+      require(tempCamp.state == State.Open);
+      require(tempCamp.fundraiseAmount < tempCamp.fundingGoal);
+      //require(now >= tempCamp.deadline);
+      uint256 len = tempCamp.investgators.length;
+      uint count = 0;
+      for(uint i=0; i<len; i++){
+            address investgator = tempCamp.investgators[count++];
+            TJToken(_tokenAddress).transfer(investgator, tempCamp.investRate[investgator]);
+      }
+      tempCamp.state = State.Close;
+      emit FundingFail(_uniqueCode);
+    }
+
+    function getBalance(address _tokenAddress) public view returns (uint256) {
+      return TJToken(_tokenAddress).balanceOf(address(this));
+    }
+    
+    function getCampaign (string memory _uniqueCode) public view returns (string memory, address, uint256, uint256, uint, State){
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
-        //판매를 하면 해당 금액 만큼 profit에 돈을 저장해두고 일주일후 DistributeProfit을 호출함
-        tempCamp.totalSell += _count;
-        DistributeProfit(_uniqueCode, msg.value);
+        return (tempCamp.uniqueCode, tempCamp.creator, tempCamp.fundingGoal,tempCamp.fundraiseAmount, tempCamp.investRate[_msgSender()], tempCamp.state);
     }
-
-    /** 수익 분배
-     @param _uniqueCode 게시글에 대한 해시값
-    */
-    function DistributeProfit(string memory _uniqueCode, uint256 _money) payable public override(ISaleItem){
+    function getAddress() public view returns (address){
+      return address(this);
+    }
+    function getPeopleNum(string memory _uniqueCode) public view returns (uint256){
+      return campaigns[_uniqueCode].investgators.length;
+    }
+    function test(string memory _uniqueCode) public returns(bool){
+      campaignStruct storage tempCamp = campaigns[_uniqueCode];
+      //TJToken(_tokenAddress).increaseAllowanceToOut(_to, address(this), 10);
+      // TJToken(_msgSender()).allowance(_to, address(this));
+      //return TJToken(_tokenAddress).transfer(tempCamp.creator, tempCamp.fundingGoal);
+      return true;
+    }
+    function usefund(string memory _uniqueCode, string memory _imgName, uint pay) public {
+      require(campaigns[_uniqueCode].state == State.Sell);
+      require(_msgSender() == campaigns[_uniqueCode].creator);
+      campaigns[_uniqueCode].receipt[_imgName] += pay;
+      campaigns[_uniqueCode].receiptNum += 1;
+      campaigns[_uniqueCode].usedfund += pay;
+    }
+    //function getCitizenAddress()public view returns( address  [] memory){
+    //return citizenArray;
+    //  }
+    function getReciept(string memory _uniqueCode) public view returns (String[] memory){
+      return campaigns[_uniqueCode].recieptImg;
+    }
+    function SaleItem(address _tokenAddress, string memory _uniqueCode, uint _count, uint _money) public onlyOwner{
+          campaignStruct storage tempCamp = campaigns[_uniqueCode];
+          require(tempCamp.state == State.Sell);
+          tempCamp.totalSell += _count;
+          DistributeProfit(_tokenAddress, _uniqueCode, _count, _money);
+      }
+    function DistributeProfit(address _tokenAddress, string memory _uniqueCode, uint _count, uint _money) private{
         campaignStruct storage tempCamp = campaigns[_uniqueCode];
 
         address[] memory investgatorsList = tempCamp.investgators;
         uint256 investgatorsCount = investgatorsList.length;
+        uint totalMoney = _money * _count;
         // 판매자에게 나누어지게 될 몫
-        address(uint160(tempCamp.creator)).transfer((_money*30)/100);
+        TJToken(_tokenAddress).transfer(tempCamp.creator, (totalMoney*50)/100);
         // 투자자들에게 나누어지게 될 몫
-        uint256 share = (_money*70)/100;
-
+        uint256 share = (totalMoney*50)/100;
         for(uint256 i=0; i<investgatorsCount; i++){
-
             address investgator = investgatorsList[i];
             //토큰으로 바꿔서 보내줘야됨
-            address(uint160(investgator)).transfer((share)*(tempCamp.investRate[investgator]/tempCamp.fundraiseAmount));
+            uint value = (share)*(tempCamp.investRate[investgator]/tempCamp.fundraiseAmount);
+            TJToken(_tokenAddress).transfer(investgator, value);
+            emit Distribute(investgator, value);
         }
     }
-
-
-
-    
-
-    
 }

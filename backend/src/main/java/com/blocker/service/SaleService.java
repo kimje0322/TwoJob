@@ -1,12 +1,13 @@
 package com.blocker.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.SaleBoardDto;
 import com.blocker.repository.SaleBoardRepository;
 
@@ -15,14 +16,22 @@ public class SaleService {
 	@Autowired
 	SaleBoardRepository saleBoardRepository;
 
-	public List<SaleBoardDto> getAllMySaleList(String userid, int page) {
+	public Page<SaleBoardDto> getAllMySaleList(String userid, int page) {
 		PageRequest pageRequest = PageRequest.of(page, 9);
 		return saleBoardRepository.findAllByUserid(pageRequest, userid);
 	}
-	
+
 	public List<SaleBoardDto> getAllSaleList(int page) {
 		PageRequest pageRequest = PageRequest.of(page, 9);
 
 		return saleBoardRepository.findAll(pageRequest).getContent();
+	}
+
+	public Optional<SaleBoardDto> getSaleBoard(String address) {
+		return saleBoardRepository.findSaleBoardDtoByAddress(address);
+	}
+
+	public Optional<SaleBoardDto> getSaleBoardByInvestAddress(String investaddress) {
+		return saleBoardRepository.findSaleBoardDtoByInvestaddress(investaddress);
 	}
 }

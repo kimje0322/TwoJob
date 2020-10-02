@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,11 +38,14 @@ import com.blocker.repository.BoardTagRepository;
 import com.blocker.repository.CategoryRepository;
 import com.blocker.repository.EditorInvestmentRepository;
 import com.blocker.repository.InvestmentRepository;
+import com.blocker.repository.SaleBoardRepository;
 import com.blocker.repository.TagRepository;
+import com.blocker.repository.getAllMyPjtResponse;
 import com.blocker.request.InvestmentRequest;
 import com.blocker.request.InvestmentResponse;
 import com.blocker.request.SaleBoardResponse;
 import com.blocker.service.InvestmentService;
+import com.blocker.service.SaleService;
 import com.blocker.util.BasicResponse;
 import com.blocker.util.webhook;
 
@@ -66,6 +70,8 @@ public class InvestController {
 	private BoardCategoryRepository boardCategoryRepository;
 	@Autowired
 	private CategoryRepository categoryRepository;
+	@Autowired
+	private SaleService saleService;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "투자 게시글 생성")
@@ -74,6 +80,7 @@ public class InvestController {
 		try {
 			InvestmentDto investmentdto = new InvestmentDto();
 
+			System.out.println("userid==========>" + pinvestment.getUserid());
 			UUID uuid = UUID.randomUUID();
 			investmentdto.setAddress(uuid.toString());
 			investmentdto.setUserid(pinvestment.getUserid());
@@ -180,12 +187,12 @@ public class InvestController {
 	@ResponseBody
 	public Object investMyList(@RequestParam String userid, @PathVariable int page) {
 		final BasicResponse result = new BasicResponse();
-		List<InvestmentDto> list = new ArrayList<>();
+		Page<InvestmentDto> list;
 		List<InvestmentResponse> resultDatas = new ArrayList<>();
 
 		list = investmentService.getAllMyinvestmentList(userid, page);
 		try {
-			for (Iterator<InvestmentDto> iter = list.iterator(); iter.hasNext();) {
+			for (Iterator<InvestmentDto> iter = list.getContent().iterator(); iter.hasNext();) {
 				InvestmentDto investmentDto = iter.next();
 				InvestmentResponse investmentResponse = new InvestmentResponse();
 				investmentResponse.setAddress(investmentDto.getAddress());
@@ -264,6 +271,100 @@ public class InvestController {
 			result.data = "fail";
 			result.object = null;
 			result.status = false;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+
+	@PostMapping("/getDetail")
+	@ApiOperation(value = "투자게시글에대한 디테일 페이지")
+	public Object getDetail(@RequestParam String address) {
+		System.out.println("address=================================>" + address);
+		final BasicResponse result = new BasicResponse();
+		try {
+			Optional<InvestmentDto> opInvestmentDto = investmentService.getInvestment(address);
+			if (opInvestmentDto.isPresent()) {
+				InvestmentDto investmentDto = opInvestmentDto.get();
+				List<BoardTagDto> temptags = boardTagRepository.findAllBoardTagDtoByInvestaddress(address);
+				List<String> tags = new ArrayList<>();
+				for (Iterator<BoardTagDto> iter = temptags.iterator(); iter.hasNext();) {
+					BoardTagDto boardTagDto = iter.next();
+					tags.add(boardTagDto.getTagname());
+				}
+
+				List<BoardCategoryDto> tempcategorys = boardCategoryRepository
+						.findAllBoardCategoryDtoByAddress(address);
+				List<String> categorys = new ArrayList<>();
+				for (Iterator<BoardCategoryDto> iter = tempcategorys.iterator(); iter.hasNext();) {
+					BoardCategoryDto boardCategoryDto = iter.next();
+					categorys.add(boardCategoryDto.getCategoryname());
+				}
+
+				InvestmentRequest data = new InvestmentRequest(categorys, tags);
+				data.setCompName(investmentDto.getCompname());
+				data.setDeadLine(investmentDto.getDeadline());
+				data.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
+				data.setGoalPrice(investmentDto.getGoalprice());
+				data.setIdentity(investmentDto.getIdentity());
+				data.setIntroduce(investmentDto.getIntroduce());
+				data.setOneLineIntro(investmentDto.getOnelineintro());
+				data.setPicture(investmentDto.getPicture());
+				data.setPjtName(investmentDto.getPjtname());
+				data.setUserid(investmentDto.getUserid());
+				data.setUrl(investmentDto.getUrl());
+				data.setEditorhtml(editorinvestmentRepository.getEditorInvestmentDtoByInvestaddress(address).get()
+						.getEditorhtml());
+
+				result.object = data;
+				result.data = "success";
+				result.status = true;
+			} else {
+				result.object = null;
+				result.data = "fail";
+				result.status = false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.object = null;
+			result.data = "fail";
+			result.status = false;
+		}
+
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@PostMapping("/getAllPJT/{page}")
+	@ApiOperation(value = "금손의 모든 프로젝트를 가져옴")
+	public Object getAllMyPjt(@RequestParam String userid, @PathVariable int page) {
+		final BasicResponse result = new BasicResponse();
+		try {
+			Page<InvestmentDto> pageInvestment = investmentService.getAllMyinvestmentList(userid, page);
+			List<InvestmentDto> templist = pageInvestment.getContent();
+			List<getAllMyPjtResponse> resultdatas = new ArrayList<>();
+			for (Iterator<InvestmentDto> iter = templist.iterator(); iter.hasNext();) {
+				InvestmentDto pinvestmentdDto = iter.next();
+				Optional<SaleBoardDto> opsaleBoardDto = saleService
+						.getSaleBoardByInvestAddress(pinvestmentdDto.getAddress());
+				if (opsaleBoardDto.isPresent()) {
+					getAllMyPjtResponse data = new getAllMyPjtResponse(pinvestmentdDto, opsaleBoardDto.get(),
+							pageInvestment.getTotalPages());
+					resultdatas.add(data);
+				} else {
+					getAllMyPjtResponse data = new getAllMyPjtResponse(pinvestmentdDto, pageInvestment.getTotalPages());
+					resultdatas.add(data);
+				}
+
+			}
+
+			result.data = "success";
+			result.object = resultdatas;
+			result.status = true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.data = "fail";
+			result.object = null;
+			result.status = true;
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}

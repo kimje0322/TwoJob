@@ -1,5 +1,6 @@
 package com.blocker.service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
 
@@ -7,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tuples.Tuple;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 
@@ -84,7 +87,9 @@ public class FundingServiceImpl implements FundingService{
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
 
 					System.out.println("후 = " +contract.isValid());
-					contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getAddress()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
+					System.out.println("주소? " + myInvest.getAddress());
+					TransactionReceipt tr =contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getAddress()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
+					System.out.println(tr);
 					System.out.println("fundingCampaign succss");
 					return "success";
 				}else {
@@ -169,6 +174,25 @@ public class FundingServiceImpl implements FundingService{
 			return (String)result;
 		}else {
 			return String.valueOf(result);
+		}
+	}
+	@Override
+	public BigDecimal getfundingrate(String campaignId) throws Exception {
+		Optional<InvestmentDto> invest = investmentRepository.findById(campaignId);
+		if(invest.isPresent())
+		{
+			Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+			Credentials credentials = Credentials.create(property.getAdminPK());
+			CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+			BigInteger fundingGoal = contract.getCampaign(campaignId).send().component3();
+			BigInteger fundingval = contract.getCampaign(campaignId).send().component4();
+			BigDecimal dfundingval = new BigDecimal(fundingval);
+			BigDecimal dfundingGoal = new BigDecimal(fundingGoal);
+			BigDecimal result = dfundingval.divide(dfundingGoal,3, BigDecimal.ROUND_HALF_UP);
+			BigDecimal perResult = result.multiply(new BigDecimal(100));
+			return perResult;
+		}else {
+			return new BigDecimal("0");
 		}
 	}
 	@Override
