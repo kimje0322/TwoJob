@@ -22,9 +22,25 @@
                   <h2>채팅</h2>
                 </div> -->
                 <div style="height: 600px">
-                  <div style="padding: 5px 0; float: left; width: 220px; ">
-                    <div style="height: 55px; padding: 12px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1); border-bottom: none; font-weight:">
-                      <h5 style="font-size: 15px; padding: auto; text-align: center">1 : 1 채팅</h5>
+                  <div style="padding: 5px 0; float: left; width: 220px">
+                    <div
+                      style="
+                        height: 55px;
+                        padding: 12px;
+                        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+                        border-bottom: none;
+                        font-weight: ;
+                      "
+                    >
+                      <h5
+                        style="
+                          font-size: 15px;
+                          padding: auto;
+                          text-align: center;
+                        "
+                      >
+                        1 : 1 채팅
+                      </h5>
                     </div>
                     <div
                       class="profile"
@@ -131,7 +147,9 @@
                     :key="i"
                     style="margin: 20px 10px"
                   >
+                    <!-- 상대방 메시지 -->
                     <div
+                      v-if="lst.sender != username"
                       style="
                         width: 250px;
                         height: 30px;
@@ -140,6 +158,33 @@
                         padding: 5px;
                         color: white;
                         margin-bottom: 40px;
+                      "
+                    >
+                      {{ lst.message }}
+                      <div
+                        style="
+                          color: rgba(0, 0, 0, 0.4);
+                          margin-bottom: 5px;
+                          text-align: left;
+                        "
+                      >
+                        {{ lst.time }}
+                      </div>
+                    </div>
+
+                    <!-- 내 메시지 -->
+                    <div
+                      v-else
+                      style="
+                        float: right;
+                        width: 250px;
+                        height: 30px;
+                        background-color: rgba(0, 0, 0, 0.05);
+                        border-radius: 18px;
+                        padding: 5px;
+                        color: white;
+                        margin-bottom: 40px;
+                        margin-left: 200px;
                       "
                     >
                       {{ lst.message }}
@@ -169,6 +214,7 @@
                     "
                   >
                     <input
+                      id="inputxt"
                       type="text"
                       placeholder="메시지를 입력하세요."
                       style="margin-top: 8px; margin-left: 5px; float: left"
@@ -233,7 +279,7 @@ export default {
   mounted() {
     // sender
     this.sender = localStorage.getItem("wschat.sender");
-    console.log("이거는 sender야" +  this.sender)
+    console.log("이거는 sender야" + this.sender);
     // this.userimg = store.state.userInfo.img;
     this.userimg = store.state.userInfo.img;
     axios
@@ -332,16 +378,18 @@ export default {
 
     // 채팅 전송
     sendMessage: function (recv) {
+      document.getElementById("inputxt").value = null;
       ws.send(
         "/pub/chat/message",
         {},
         JSON.stringify({
           type: "TALK",
           roomId: this.chatroomid,
-          sender: this.sender,
+          sender: store.state.userInfo.name,
           message: this.message,
         })
       );
+      // this.openChat();
     },
   },
 };
