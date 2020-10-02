@@ -191,7 +191,7 @@ export default {
     axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}`)
       .then(response => {
         this.shoppingList = response.data.object
-        console.log(this.shoppingList)
+        // console.log(this.shoppingList)
       })
       .catch(error => {
         console.log(error)
