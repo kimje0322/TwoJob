@@ -211,12 +211,11 @@ export default {
     axios.post(`${SERVER_URL}/sale/getReviews/0`, frm
     )
       .then(response => {
-        console.log('리뷰data')
+        // console.log('리뷰data')
         this.reviews = response.data.object.list;
         // 날짜 slice
         for (var i = 0; i <= this.reviews.length; i++) {
           this.reviews[i].createdate = this.reviews[i].createdate.slice(0, 10);
-          // console.log(this.reviews[i].createdate)
         }
         // console.dir(response)    
       })
@@ -228,7 +227,6 @@ export default {
       })
       .catch(error => {
         console.log(error)
-        console.log('아니얌')
       })
   },
 }
