@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.dto.BoardCategoryDto;
 import com.blocker.dto.BoardTagDto;
+import com.blocker.dto.CommentBoardDto;
 import com.blocker.dto.EditorSaleDto;
 import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.ReviewDto;
@@ -38,11 +39,13 @@ import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.ReviewRepository;
 import com.blocker.repository.SaleBoardRepository;
 import com.blocker.repository.TagRepository;
+import com.blocker.request.CreateCommentRequest;
 import com.blocker.request.ReviewsResponse;
 import com.blocker.request.SaleBoardRequest;
 import com.blocker.request.SaleBoardResponse;
 import com.blocker.request.SaleBoardReviewRequest;
 import com.blocker.request.SaleDetailResponse;
+import com.blocker.service.CommentBoardService;
 import com.blocker.service.EditorSaleService;
 import com.blocker.service.InvestmentService;
 import com.blocker.service.ReviewService;
@@ -307,14 +310,14 @@ public class SaleController {
 				accuracy += reviewDto.getSimilar();
 				satisfy += reviewDto.getSatisfied();
 			}
-			accuracy = Math.round((accuracy/totalCount)*10);
+			accuracy = Math.round((accuracy / totalCount) * 10);
 			accuracy /= 10;
 			data.put("accuracy", accuracy);
 
-			satisfy = Math.round((satisfy/totalCount)*10);
+			satisfy = Math.round((satisfy / totalCount) * 10);
 			satisfy /= 10;
 			data.put("satisfy", satisfy);
-			
+
 			result.object = data;
 			result.data = "success";
 			result.status = true;
@@ -334,5 +337,5 @@ public class SaleController {
 		webhook w = new webhook();
 		w.send("sale 부분에서 " + e.getClass());
 	}
-	
+
 }

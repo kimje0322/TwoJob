@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.blocker.dto.BoardCategoryDto;
 import com.blocker.dto.BoardTagDto;
 import com.blocker.dto.CategoryDto;
+import com.blocker.dto.CommentBoardDto;
 import com.blocker.dto.EditorInvestmentDto;
 import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.SaleBoardDto;
@@ -38,12 +38,12 @@ import com.blocker.repository.BoardTagRepository;
 import com.blocker.repository.CategoryRepository;
 import com.blocker.repository.EditorInvestmentRepository;
 import com.blocker.repository.InvestmentRepository;
-import com.blocker.repository.SaleBoardRepository;
 import com.blocker.repository.TagRepository;
 import com.blocker.repository.getAllMyPjtResponse;
+import com.blocker.request.CreateCommentRequest;
 import com.blocker.request.InvestmentRequest;
 import com.blocker.request.InvestmentResponse;
-import com.blocker.request.SaleBoardResponse;
+import com.blocker.service.CommentBoardService;
 import com.blocker.service.InvestmentService;
 import com.blocker.service.SaleService;
 import com.blocker.util.BasicResponse;
@@ -72,6 +72,8 @@ public class InvestController {
 	private CategoryRepository categoryRepository;
 	@Autowired
 	private SaleService saleService;
+	@Autowired
+	CommentBoardService commentBoardService;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "투자 게시글 생성")
@@ -285,6 +287,7 @@ public class InvestController {
 			Optional<InvestmentDto> opInvestmentDto = investmentService.getInvestment(address);
 			if (opInvestmentDto.isPresent()) {
 				InvestmentDto investmentDto = opInvestmentDto.get();
+				//tags
 				List<BoardTagDto> temptags = boardTagRepository.findAllBoardTagDtoByInvestaddress(address);
 				List<String> tags = new ArrayList<>();
 				for (Iterator<BoardTagDto> iter = temptags.iterator(); iter.hasNext();) {
@@ -292,6 +295,7 @@ public class InvestController {
 					tags.add(boardTagDto.getTagname());
 				}
 
+				//category
 				List<BoardCategoryDto> tempcategorys = boardCategoryRepository
 						.findAllBoardCategoryDtoByAddress(address);
 				List<String> categorys = new ArrayList<>();
@@ -299,8 +303,11 @@ public class InvestController {
 					BoardCategoryDto boardCategoryDto = iter.next();
 					categorys.add(boardCategoryDto.getCategoryname());
 				}
-
-				InvestmentRequest data = new InvestmentRequest(categorys, tags);
+				
+				//comments
+				List<CommentBoardDto> comments = commentBoardService.getAllComment(address);
+				
+				InvestmentRequest data = new InvestmentRequest(categorys, tags, comments);
 				data.setCompName(investmentDto.getCompname());
 				data.setDeadLine(investmentDto.getDeadline());
 				data.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
@@ -374,6 +381,27 @@ public class InvestController {
 		}
 	}
 
+	@PostMapping("/createcomment")
+	@ApiOperation(value = "댓글쓰기")
+	public Object createcomment(@RequestBody CreateCommentRequest pcreateCommentRequest) {
+		final BasicResponse result = new BasicResponse();
+		try {
+			CommentBoardDto commentBoardDto = new CommentBoardDto(pcreateCommentRequest);
+			commentBoardDto = commentBoardService.createComment(commentBoardDto);
+			result.object = commentBoardDto;
+			result.data = "success";
+			result.status = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("댓글생성중 오류 발생");
+			result.object = null;
+			result.data = "fail";
+			result.status = true;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+	
 	@ExceptionHandler(Exception.class)
 	public void nullex(Exception e) {
 		System.err.println("invest 부분에서 " + e.getClass());

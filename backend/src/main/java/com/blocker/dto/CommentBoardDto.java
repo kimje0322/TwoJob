@@ -6,6 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.blocker.request.CreateCommentRequest;
+
 import lombok.Data;
 
 @Data
@@ -23,5 +26,14 @@ public class CommentBoardDto {
 	String content;
 	@Column(name = "createat", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	String createat;
-	
+
+	public CommentBoardDto() {
+	}
+
+	public CommentBoardDto(CreateCommentRequest pcreateCommentRequest) {
+		this.address = pcreateCommentRequest.getAddress();
+		this.userid = pcreateCommentRequest.getUserid();
+		this.content = pcreateCommentRequest.getComment();
+	}
+
 }
