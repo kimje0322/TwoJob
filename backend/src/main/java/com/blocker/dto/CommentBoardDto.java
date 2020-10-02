@@ -18,5 +18,10 @@ public class CommentBoardDto {
 	@Column
 	String address;
 	@Column
-	String cotent;
+	String userid;
+	@Column
+	String content;
+	@Column(name = "createat", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	String createat;
+	
 }

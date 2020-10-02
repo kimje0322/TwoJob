@@ -390,6 +390,7 @@ export default {
     axios.post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
       .then(response => {
         console.log(response)
+        console.dir(response)
       })
   },
   methods: {

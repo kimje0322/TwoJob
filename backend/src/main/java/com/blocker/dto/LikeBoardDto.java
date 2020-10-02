@@ -20,5 +20,9 @@ public class LikeBoardDto {
 	@Column
 	String address;
 	@Column
+	String userid;
+	@Column
 	boolean ischecked;
+	@Column(name = "createat", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	String createat;
 }
