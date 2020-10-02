@@ -2,6 +2,8 @@ package com.blocker.request;
 
 import java.util.List;
 
+import com.blocker.dto.CommentBoardDto;
+
 import lombok.Data;
 
 @Data
@@ -19,14 +21,16 @@ public class InvestmentRequest {
 	String picture;// 대표사진이름
 	List<String> categorys;// 카테고리
 	List<String> tags;// 테그
+	List<CommentBoardDto> comments;// 댓글들
 	String editorhtml;
 
 	public InvestmentRequest() {
 
 	}
 
-	public InvestmentRequest(List<String> pcategorys, List<String> ptags) {
+	public InvestmentRequest(List<String> pcategorys, List<String> ptags, List<CommentBoardDto> pcomments) {
 		this.categorys = pcategorys;
 		this.tags = ptags;
+		this.comments = pcomments;
 	}
 }
