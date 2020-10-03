@@ -18,9 +18,12 @@ public interface LikeBoardRepository extends JpaRepository<LikeBoardDto, String>
 
 	@Query(value = "select * from likeboard where address =:address and userid =:userid", nativeQuery = true)
 	Optional<LikeBoardDto> findLikeBoardDto(String address, String userid);
-	
+
 	@Modifying
 	@Transactional
-	@Query(value = "UPDATE likeboard set ischecked = :ischecked, createat = current_time where address =:address and userid =:userid",nativeQuery = true)
-	int updateLikeboardDto (String address, String userid, boolean ischecked);
+	@Query(value = "UPDATE likeboard set ischecked = :ischecked, createat = current_time where address =:address and userid =:userid", nativeQuery = true)
+	int updateLikeboardDto(String address, String userid, boolean ischecked);
+
+	@Query(value = "select count(*) from likeboard where address =:address and ischecked = true", nativeQuery = true)
+	int countLikeBoard(String address);
 }

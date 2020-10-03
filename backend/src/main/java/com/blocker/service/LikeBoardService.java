@@ -26,4 +26,8 @@ public class LikeBoardService {
 	public int updateLike(LikeBoardDto plikeBoardDto) {
 		return likeBoardRepository.updateLikeboardDto(plikeBoardDto.getAddress(), plikeBoardDto.getUserid(), plikeBoardDto.isIschecked());
 	}
+	
+	public int likeCount(String address) {
+		return likeBoardRepository.countLikeBoard(address);
+	}
 }
