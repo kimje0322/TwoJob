@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,21 +28,24 @@ import org.springframework.web.multipart.MultipartFile;
 import com.blocker.dto.BoardCategoryDto;
 import com.blocker.dto.BoardTagDto;
 import com.blocker.dto.CategoryDto;
+import com.blocker.dto.CommentBoardDto;
 import com.blocker.dto.EditorInvestmentDto;
 import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.SaleBoardDto;
 import com.blocker.dto.TagDto;
+import com.blocker.repository.BoardCategoryMapping;
 import com.blocker.repository.BoardCategoryRepository;
 import com.blocker.repository.BoardTagRepository;
 import com.blocker.repository.CategoryRepository;
 import com.blocker.repository.EditorInvestmentRepository;
 import com.blocker.repository.InvestmentRepository;
-import com.blocker.repository.SaleBoardRepository;
 import com.blocker.repository.TagRepository;
 import com.blocker.repository.getAllMyPjtResponse;
+import com.blocker.request.CreateCommentRequest;
 import com.blocker.request.InvestmentRequest;
 import com.blocker.request.InvestmentResponse;
-import com.blocker.request.SaleBoardResponse;
+import com.blocker.service.BoardCategoryService;
+import com.blocker.service.CommentBoardService;
 import com.blocker.service.InvestmentService;
 import com.blocker.service.SaleService;
 import com.blocker.util.BasicResponse;
@@ -69,9 +71,14 @@ public class InvestController {
 	@Autowired
 	private BoardCategoryRepository boardCategoryRepository;
 	@Autowired
+	private BoardCategoryService boardCategoryService;
+
+	@Autowired
 	private CategoryRepository categoryRepository;
 	@Autowired
 	private SaleService saleService;
+	@Autowired
+	CommentBoardService commentBoardService;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "투자 게시글 생성")
@@ -146,6 +153,7 @@ public class InvestController {
 				boardCategoryRepository.save(boardCategoryDto);
 			}
 
+			result.object = tempInvestmentDto;
 			result.data = "Success";
 			result.status = true;
 		} catch (Exception e) {
@@ -230,39 +238,84 @@ public class InvestController {
 		}
 	}
 
-	@GetMapping("/getAllInvestBoard/{page}")
-	@ApiOperation(value = "저장되어있는 모든사람의 투자 게시글을보여줌")
+	@PostMapping("/getAllInvestBoard/{page}")
+	@ApiOperation(value = "저장되어있는 모든사람의 투자 게시글을보여줌 orderOption = 0전체 1최신 2 인기")
 	@ResponseBody
-	public Object getAllInvestBoard(@PathVariable int page) {
+	public Object getAllInvestBoard(@PathVariable int page, @RequestBody List<String> categoryfilter,
+			@RequestParam int orderOption) {
 		final BasicResponse result = new BasicResponse();
 		List<InvestmentResponse> resultDatas = new ArrayList<>();
-		List<InvestmentDto> list = investmentService.getAllInvestmentList(page);
 
 		try {
-			for (Iterator<InvestmentDto> iter = list.iterator(); iter.hasNext();) {
-				InvestmentDto investmentDto = iter.next();
-				InvestmentResponse investmentResponse = new InvestmentResponse();
-				investmentResponse.setAddress(investmentDto.getAddress());
-				investmentResponse.setCompName(investmentDto.getCompname());
-				investmentResponse.setDeadLine(investmentDto.getDeadline());
-				investmentResponse.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
-				investmentResponse.setGoalPrice(investmentDto.getGoalprice());
-				investmentResponse.setIdentity(investmentDto.getIdentity());
-				investmentResponse.setIntroduce(investmentDto.getIntroduce());
-				investmentResponse.setOneLineIntro(investmentDto.getOnelineintro());
-				investmentResponse.setPicture(investmentDto.getPicture());
-				investmentResponse.setPjtName(investmentDto.getPjtname());
-				investmentResponse.setUrl(investmentDto.getUrl());
-				investmentResponse.setUserid(investmentDto.getUserid());
-				investmentResponse.setIsfinish(investmentDto.isIsfinish());
+			if (categoryfilter.isEmpty()) {
+				Page<InvestmentDto> list = null;
+				if (orderOption == 0) {
+					list = investmentService.getAllInvestmentList(page);
+				} else if (orderOption == 1) {
+					list = investmentService.getAllInvestmentList(page, orderOption);
+				} else {
 
-				// editor
-				Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
-						.getEditorInvestmentDtoByInvestaddress(investmentDto.getAddress());
-				if (opEditorInvestmentDto.isPresent()) {
-					investmentResponse.setEditorhtml(opEditorInvestmentDto.get().getEditorhtml());
 				}
-				resultDatas.add(investmentResponse);
+
+				for (Iterator<InvestmentDto> iter = list.getContent().iterator(); iter.hasNext();) {
+					InvestmentDto investmentDto = iter.next();
+					InvestmentResponse investmentResponse = new InvestmentResponse();
+					investmentResponse.setAddress(investmentDto.getAddress());
+					investmentResponse.setCompName(investmentDto.getCompname());
+					investmentResponse.setDeadLine(investmentDto.getDeadline());
+					investmentResponse.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
+					investmentResponse.setGoalPrice(investmentDto.getGoalprice());
+					investmentResponse.setIdentity(investmentDto.getIdentity());
+					investmentResponse.setIntroduce(investmentDto.getIntroduce());
+					investmentResponse.setOneLineIntro(investmentDto.getOnelineintro());
+					investmentResponse.setPicture(investmentDto.getPicture());
+					investmentResponse.setPjtName(investmentDto.getPjtname());
+					investmentResponse.setUrl(investmentDto.getUrl());
+					investmentResponse.setUserid(investmentDto.getUserid());
+					investmentResponse.setIsfinish(investmentDto.isIsfinish());
+					investmentResponse.setTotalpage(list.getTotalPages());
+
+					// editor
+					Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
+							.getEditorInvestmentDtoByInvestaddress(investmentDto.getAddress());
+					if (opEditorInvestmentDto.isPresent()) {
+						investmentResponse.setEditorhtml(opEditorInvestmentDto.get().getEditorhtml());
+					}
+					resultDatas.add(investmentResponse);
+				}
+			} else {
+				Page<BoardCategoryMapping> list = boardCategoryService.getAllInvestmentListWithCategory(page,
+						categoryfilter);
+				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
+					BoardCategoryMapping nextiter = iter.next();
+					String investaddress = nextiter.getInvestaddress();
+					System.out.println("investaddress=====>" + investaddress);
+					Optional<InvestmentDto> investmentDto = investmentService.getInvestment(investaddress);
+					if (investmentDto.isPresent()) {
+						InvestmentResponse investmentResponse = new InvestmentResponse();
+						investmentResponse.setAddress(investmentDto.get().getAddress());
+						investmentResponse.setCompName(investmentDto.get().getCompname());
+						investmentResponse.setDeadLine(investmentDto.get().getDeadline());
+						investmentResponse.setExpectedSalePrice(investmentDto.get().getExpectedsaleprice());
+						investmentResponse.setGoalPrice(investmentDto.get().getGoalprice());
+						investmentResponse.setIdentity(investmentDto.get().getIdentity());
+						investmentResponse.setIntroduce(investmentDto.get().getIntroduce());
+						investmentResponse.setOneLineIntro(investmentDto.get().getOnelineintro());
+						investmentResponse.setPicture(investmentDto.get().getPicture());
+						investmentResponse.setPjtName(investmentDto.get().getPjtname());
+						investmentResponse.setUrl(investmentDto.get().getUrl());
+						investmentResponse.setUserid(investmentDto.get().getUserid());
+						investmentResponse.setIsfinish(investmentDto.get().isIsfinish());
+						investmentResponse.setTotalpage(list.getTotalPages());
+						// editor
+						Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
+								.getEditorInvestmentDtoByInvestaddress(investmentDto.get().getAddress());
+						if (opEditorInvestmentDto.isPresent()) {
+							investmentResponse.setEditorhtml(opEditorInvestmentDto.get().getEditorhtml());
+						}
+						resultDatas.add(investmentResponse);
+					}
+				}
 			}
 			result.data = "success";
 			result.object = resultDatas;
@@ -284,6 +337,7 @@ public class InvestController {
 			Optional<InvestmentDto> opInvestmentDto = investmentService.getInvestment(address);
 			if (opInvestmentDto.isPresent()) {
 				InvestmentDto investmentDto = opInvestmentDto.get();
+				// tags
 				List<BoardTagDto> temptags = boardTagRepository.findAllBoardTagDtoByInvestaddress(address);
 				List<String> tags = new ArrayList<>();
 				for (Iterator<BoardTagDto> iter = temptags.iterator(); iter.hasNext();) {
@@ -291,6 +345,7 @@ public class InvestController {
 					tags.add(boardTagDto.getTagname());
 				}
 
+				// category
 				List<BoardCategoryDto> tempcategorys = boardCategoryRepository
 						.findAllBoardCategoryDtoByAddress(address);
 				List<String> categorys = new ArrayList<>();
@@ -299,7 +354,10 @@ public class InvestController {
 					categorys.add(boardCategoryDto.getCategoryname());
 				}
 
-				InvestmentRequest data = new InvestmentRequest(categorys, tags);
+				// comments
+				List<CommentBoardDto> comments = commentBoardService.getAllComment(address);
+
+				InvestmentRequest data = new InvestmentRequest(categorys, tags, comments);
 				data.setCompName(investmentDto.getCompname());
 				data.setDeadLine(investmentDto.getDeadline());
 				data.setExpectedSalePrice(investmentDto.getExpectedsaleprice());
@@ -342,13 +400,17 @@ public class InvestController {
 			List<getAllMyPjtResponse> resultdatas = new ArrayList<>();
 			for (Iterator<InvestmentDto> iter = templist.iterator(); iter.hasNext();) {
 				InvestmentDto pinvestmentdDto = iter.next();
+				System.out.println("address=====>" + pinvestmentdDto.getAddress());
 				Optional<SaleBoardDto> opsaleBoardDto = saleService
 						.getSaleBoardByInvestAddress(pinvestmentdDto.getAddress());
+				System.out.println("opsaleBoardDto=====>" + opsaleBoardDto.isPresent());
 				if (opsaleBoardDto.isPresent()) {
+					System.out.println(opsaleBoardDto.get().toString());
 					getAllMyPjtResponse data = new getAllMyPjtResponse(pinvestmentdDto, opsaleBoardDto.get(),
 							pageInvestment.getTotalPages());
 					resultdatas.add(data);
 				} else {
+					System.out.println(pageInvestment.getTotalPages());
 					getAllMyPjtResponse data = new getAllMyPjtResponse(pinvestmentdDto, pageInvestment.getTotalPages());
 					resultdatas.add(data);
 				}
@@ -364,7 +426,28 @@ public class InvestController {
 			result.data = "fail";
 			result.object = null;
 			result.status = true;
-		}finally {
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+
+	@PostMapping("/createcomment")
+	@ApiOperation(value = "댓글쓰기")
+	public Object createcomment(@RequestBody CreateCommentRequest pcreateCommentRequest) {
+		final BasicResponse result = new BasicResponse();
+		try {
+			CommentBoardDto commentBoardDto = new CommentBoardDto(pcreateCommentRequest);
+			commentBoardDto = commentBoardService.createComment(commentBoardDto);
+			result.object = commentBoardDto;
+			result.data = "success";
+			result.status = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("댓글생성중 오류 발생");
+			result.object = null;
+			result.data = "fail";
+			result.status = true;
+		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}

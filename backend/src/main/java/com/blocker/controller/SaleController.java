@@ -1,8 +1,10 @@
 package com.blocker.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,19 +25,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blocker.dto.BoardCategoryDto;
+import com.blocker.dto.BoardTagDto;
+import com.blocker.dto.CommentBoardDto;
 import com.blocker.dto.EditorSaleDto;
 import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.ReviewDto;
 import com.blocker.dto.SaleBoardDto;
+import com.blocker.repository.BoardCategoryRepository;
+import com.blocker.repository.BoardTagRepository;
 import com.blocker.repository.EditorSaleRepository;
 import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.ReviewRepository;
 import com.blocker.repository.SaleBoardRepository;
+import com.blocker.repository.TagRepository;
+import com.blocker.request.CreateCommentRequest;
 import com.blocker.request.ReviewsResponse;
 import com.blocker.request.SaleBoardRequest;
 import com.blocker.request.SaleBoardResponse;
 import com.blocker.request.SaleBoardReviewRequest;
 import com.blocker.request.SaleDetailResponse;
+import com.blocker.service.CommentBoardService;
+import com.blocker.service.EditorSaleService;
 import com.blocker.service.InvestmentService;
 import com.blocker.service.ReviewService;
 import com.blocker.service.SaleService;
@@ -52,6 +63,8 @@ public class SaleController {
 	@Autowired
 	SaleService saleService;
 	@Autowired
+	EditorSaleService editorSaleService;
+	@Autowired
 	SaleBoardRepository saleBoardRepository;
 	@Autowired
 	EditorSaleRepository editorSaleRepository;
@@ -61,6 +74,10 @@ public class SaleController {
 	ReviewService reviewService;
 	@Autowired
 	InvestmentService investmentService;
+	@Autowired
+	BoardCategoryRepository boardCategoryRepository;
+	@Autowired
+	BoardTagRepository boardTagRepository;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "판매 게시글 생성")
@@ -209,10 +226,30 @@ public class SaleController {
 		try {
 			Optional<SaleBoardDto> opSaleBoardDto = saleService.getSaleBoard(address);
 			if (opSaleBoardDto.isPresent()) {
+				EditorSaleDto editorSaleDto = editorSaleService.getEditorSaleDto(opSaleBoardDto.get().getAddress());
 				InvestmentDto tempInvestmentDto = investmentService
 						.getInvestment(opSaleBoardDto.get().getInvestaddress()).get();
+				// category
+				List<String> categorys = new ArrayList<>();
+				List<BoardCategoryDto> tempcategorys = boardCategoryRepository
+						.findAllBoardCategoryDtoByAddress(tempInvestmentDto.getAddress());
+				for (Iterator<BoardCategoryDto> iter = tempcategorys.iterator(); iter.hasNext();) {
+					BoardCategoryDto boardCategoryDto = iter.next();
+					categorys.add(boardCategoryDto.getCategoryname());
+				}
+
+				// tag
+				List<String> tags = new ArrayList<>();
+				List<BoardTagDto> temptags = boardTagRepository
+						.findAllBoardTagDtoByInvestaddress(tempInvestmentDto.getAddress());
+				for (Iterator<BoardTagDto> iter = temptags.iterator(); iter.hasNext();) {
+					BoardTagDto boardTagDto = iter.next();
+					tags.add(boardTagDto.getTagname());
+				}
 				SaleDetailResponse saleDetailResponse = new SaleDetailResponse(opSaleBoardDto.get(),
-						tempInvestmentDto.getCompname(), tempInvestmentDto.getOnelineintro());
+						tempInvestmentDto.getCompname(), tempInvestmentDto.getOnelineintro(), editorSaleDto, tags,
+						categorys);
+
 				saleDetailResponse.setUrl(tempInvestmentDto.getUrl());
 				saleDetailResponse.setIntroduce(tempInvestmentDto.getIntroduce());
 
@@ -256,10 +293,49 @@ public class SaleController {
 		}
 	}
 
+	@GetMapping("/accuracy")
+	@ApiOperation(value = "만족도 유사도 제공")
+	public Object getAccuracy(@RequestParam String address) {
+		final BasicResponse result = new BasicResponse();
+		try {
+			double accuracy = 0;
+			double satisfy = 0;
+			double totalCount = 0;
+			List<ReviewDto> reviews = reviewService.getReviews(address);
+			Map<String, Double> data = new HashMap<>();
+			totalCount = reviews.size();
+			for (Iterator<ReviewDto> iter = reviews.iterator(); iter.hasNext();) {
+				ReviewDto reviewDto = iter.next();
+
+				accuracy += reviewDto.getSimilar();
+				satisfy += reviewDto.getSatisfied();
+			}
+			accuracy = Math.round((accuracy / totalCount) * 10);
+			accuracy /= 10;
+			data.put("accuracy", accuracy);
+
+			satisfy = Math.round((satisfy / totalCount) * 10);
+			satisfy /= 10;
+			data.put("satisfy", satisfy);
+
+			result.object = data;
+			result.data = "success";
+			result.status = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.object = null;
+			result.data = "fail";
+			result.status = true;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+
 	@ExceptionHandler(Exception.class)
 	public void nullex(Exception e) {
 		System.err.println("sale 부분에서 " + e.getClass());
 		webhook w = new webhook();
 		w.send("sale 부분에서 " + e.getClass());
 	}
+
 }
