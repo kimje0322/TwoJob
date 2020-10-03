@@ -49,5 +49,8 @@ public class InvestmentDto {
 
 	@Column
 	String picture;// 대표사진이름
+	
+	@Column(name = "createat", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	String createdat;
 
 }
