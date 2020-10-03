@@ -13,18 +13,24 @@
       <div class="shoppingInfo">
         <!-- 좌측: 상품 사진 -->
         <div class="shoppingThumnail">
-          <img :src="picture" alt="">
+          <v-carousel>
+              <v-carousel-item
+                :src="picture"
+                reverse-transition="fade-transition"
+                transition="fade-transition"
+              ></v-carousel-item>
+            </v-carousel>
         </div>
         <!-- 우측: 상품 디테일 -->
         <div style="float: left; width:36%;">
           <!-- 기업명 -->
-          <p>{{items.compname}}</p>
+          <p class="my-2">{{items.compname}}</p>
           <!-- 상품 제목 -->
-          <h3 class="mt-2">{{items.saleBoardDto.pjtname}}</h3>
+          <h3 class="mt-2">{{dto.pjtname}}</h3>
           <hr />
           <p style="font-size: 1.2em; margin-bottom: 4%">
             <strong>
-              <span style="color: rgb(22, 150, 245);">{{ detailItems.perchase }}</span>
+              <span style="color: rgb(22, 150, 245);">1500</span>
             </strong>개 구매 중
           </p>
           <!-- 카테고리 -->
@@ -44,7 +50,7 @@
             <strong>
               <p class="listTitle" style="margin-bottom: 1%">판매가</p>
             </strong>
-            <h5>{{items.saleBoardDto.saleprice}}원</h5>
+            <h5>{{dto.saleprice}}원</h5>
           </div>
           <!-- 태그 -->
           <strong>
@@ -62,9 +68,9 @@
           </v-btn>
           <!-- 좋아요 & 문의 버튼 -->
           <div style="display: flex; margin-top: 15px;">
-            <button style="flex: 1;">
+            <button @click="likeBtn" style="flex: 1;">
               <div class="btns" style="margin-right: 5px">
-                <v-icon size="20" class="mr-2">mdi-heart</v-icon>22
+                <v-icon size="20" class="mr-2 like">mdi-heart</v-icon>{{likeCount}}
               </div>
             </button>
             <button style="flex: 1;">
@@ -76,30 +82,34 @@
         </div>
       </div>
       <!-- 금손님 정보 -->
-      <div class="mt-5">
+      <div class="infoBottom pt-4">
+      <hr style="width:95%">
+      <div class="ml-5">
         <strong>
-          <p class="mb-3">금손님 정보</p>
+          <p class="mb-3" style="font-size: 1.4rem;">금손님 정보</p>
         </strong>
         <div class="maker" style="float:left">
           <img class="makerImg" src="../../assets/금손.jpg" alt />
         </div>
         <div style="float:left; margin: 3px 0 0 15px;">
-          <p style="font-size: 0.9rem; margin-bottom:5px;">
-            <strong>{{items.compname}}</strong>
+          <p style="font-size: 1.1rem; margin-bottom:5px;">
+            <strong class="mr-2">{{items.compname}}</strong>
+            <v-chip @click="visit(items.url)" label small class="visit px-1">바로가기</v-chip>
           </p>
-          <p style="font-size: 0.9rem;">{{ items.introduce }}</p>
+          <p style="font-size: 1rem;">{{ items.introduce }}</p>
         </div>
       </div>
-      <hr style="margin-top: 80px" />
+        <hr style="margin-top: 100px; width:95%;" class="mx-auto"/>
       <!-- 탭 -->
+      <div class="mt-20">
       <v-tabs
-        style="background-color: #f8f9fa;"
+        style="background-color:#f8f9fa;"
         fixed-tabs
         v-model="currentItem"
         slider-color="rgb(22, 150, 245);"
       >
         <v-tab
-          style="background-color: #f8f9fa;"
+          style="background-color: #f8f9fa"
           v-for="tabItem in tabItems"
           :key="tabItem"
           :href="'#tab-' + tabItem"
@@ -108,6 +118,7 @@
           <v-icon class="tabBtn" v-if="tabItem=='reviews'">리뷰</v-icon>
         </v-tab>
       </v-tabs>
+      </div>
       <br />
       <v-tabs-items v-model="currentItem">
         <v-tab-item v-for="tabItem in tabItems" :key="tabItem" :value="'tab-' + tabItem">
@@ -115,33 +126,77 @@
           <div
             v-if="tabItem=='pjtInfo'"
             class="mt-2"
-            style="text-align: center; background-color: #f8f9fa ;"
-          >        
+            style="text-align: center; background-color: white ;"
+          >
+          <div v-html="items.editorhtml" class="editor">
+            {{items.editorhtml}}
+          </div>       
           </div>
           <!-- 리뷰 -->
-          <div v-if="tabItem=='reviews'" class="my-4" style="background-color: #f8f9fa ;">
+          <div v-if="tabItem=='reviews'" class="my-4">
             <div>
-              <p style="margin-left:10px">총 25건의 후기가 있습니다.</p>
-              <div style="text-align: center;">
-                <img style="width: 65%" src="../../assets/평점.png" alt />
-              </div>
-              <div style="text-align: center;">
-                <h2>상품 설명서 정확도 {{accuracy}}</h2>
-                <h2>상품 만족도 {{satisfy}}</h2>
-              </div>
-              
-              <!-- 리뷰 -->
+                <div class="infoFrame mx-auto py-2 my-3" style="text-align: center;">  
+                  <div class="row">
+                    <div class="col-md-4">
+                      <i class="fas fa-comment-dots fa-6x my-3" style="color: grey"></i><br>
+                      <p style="font-size:1.2rem; color:#424242; font-weight: bold;">전체 리뷰수</p>
+                      <h1 style="font-size:3rem; display:inline-block; font-weight: bold">3</h1><span style="font-weight: bold"> 개</span>
+                    </div>
+                    <div class="col-md-4 px-3">
+                      <i class="fas fa-star fa-6x my-3" style="color:#26C6DA"></i><br>
+                      <p style="font-size:1.2rem; color:#424242; font-weight: bold;">상품 만족도</p>
+                      <h1 style="font-size:3rem; display:inline-block; color:#26C6DA;font-weight: bold">{{satisfy}}</h1><span style="font-weight: bold"> 점</span>
+                    </div>
+                    <div class="col-md-4 px-3">
+                      <i class="fas fa-file-signature fa-6x my-3 ml-2" style="color: #29B6F6"></i><br>
+                      <p style="font-size:1.2rem; color:#424242; font-weight: bold;">설명서 정확도</p>
+                      <h1 style="font-size:3rem; display:inline-block; font-weight: bold; color: #29B6F6">{{accuracy}}</h1><span style="font-weight: bold"> 점</span>
+                    </div>
+                    </div>
+                  </div>
+              <!-- 개별 리뷰 -->
               <div 
-              class="mt-3"
+              class="mt-5 mx-5"
+              style="75%"
               v-for="(review, i) in reviews"
               :key="i"
               >
-                <v-icon style="display:inline" size="38">mdi-emoticon-happy-outline</v-icon>
-                <strong>
-                  <p style="display:inline; margin: 2px 0px 0px 3px;">솜사탕강쥐</p>
-                </strong>
-                <span class="ml-2" style="color: grey">{{ review.createdate}}</span>
-                <p class="mx-5">{{ review.reviewexplain }}</p>
+                <img class="reviewPicture" :src="review.picture" alt="reviewPicture">
+                <div style="display: flex; width: 78%">
+                <div class="userImg" >
+                  <img class="userImage" :src="review.profile" alt="profile">
+                </div>
+                
+                <p class="my-1 mx-2" style="font-size: 1.1rem; font-weight: bold;">{{review.userid}}</p>
+                <p class="my-1 ml-1" style="color: grey">{{review.createdate}}</p><br>
+                </div>
+
+                <div style="width: 78%">
+                <div style="display:flex;" class="ml-4">
+                  <p class="ml-2" style="font-weight: bold">상품 만족도 
+                    <v-chip
+                      small
+                      label
+                      class="ma-2 px-2 satisfaction"
+                    >
+                      {{review.satisfied}}
+                    </v-chip>
+                  </p>
+                  <p class="ml-3" style="font-weight: bold">설명서 정확도
+                    <v-chip
+                      small
+                      label
+                      class="ma-2 px-2 accuracy"
+                    >
+                      {{review.similar}}
+                    </v-chip>
+                  </p>
+                </div>
+                <div class="ml-3">
+                  <p class="mt-1 ml-3">{{review.reviewexplain}}</p>
+                </div>
+                </div>
+                <hr>
               </div>
             </div>
           </div>
@@ -149,12 +204,14 @@
       </v-tabs-items>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 import "../../../public/css/ShoppingDetail.scss";
 import Navbar from "../../components/Navbar.vue";
 import axios from 'axios';
+import store from "../../store/index.js";
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
@@ -167,20 +224,17 @@ export default {
       currentItem: "tab-Web",
       tabItems: ["pjtInfo", "reviews"],
       items: [],
+      dto: {},
       reviewDate: '',
       shoppingPjt: '',
       picture: '',
-      detailItems: {
-        title: "Ostay 다이슨 헤어드라이어",
-        category: {
-          tech: "테크, 가전",
-          home: "홈리빙",
-        },
-        perchase: "1,370,502",
-      },
-      reviews: [],
+      reviews: {},
       accuracy: 0,
       satisfy: 0,
+      // 좋아요
+      isliked: false,
+      likeCount: 0,
+      likeState: 0,
     };
   },
   created() {
@@ -190,14 +244,14 @@ export default {
       .get(`${SERVER_URL}/sale/getDetail?address=${this.shoppingAddress}`)
       .then((res) => {
         this.items = res.data.object;
-        console.log('이게 items')
-        console.log(this.items)
+        // console.log('쇼핑 아이템즈')
+        // console.log(this.items)
+        this.dto = res.data.object.saleBoardDto
         this.picture = this.items.saleBoardDto.picture;
         // 글쓴이 소개글 엔터 변환
-        // this.investPjt.introduce = this.investPjt.introduce.split('\n').join('<br />');
+        this.items.introduce = this.items.introduce.split('\n').join('<br />');
         // 투자 설명서 엔터 변환
-        // this.investPjt.editorhtml = this.investPjt.editorhtml.split('\n').join('<br />');
-        // const cutUrl = this.shoppingPjt.picture
+        this.items.editorhtml = this.items.editorhtml.split('\n').join('<br />');
       })
       .catch((error) => {
         console.log(error)
@@ -211,15 +265,20 @@ export default {
     axios.post(`${SERVER_URL}/sale/getReviews/0`, frm
     )
       .then(response => {
-        // console.log('리뷰data')
         this.reviews = response.data.object.list;
         // 날짜 slice
-        for (var i = 0; i <= this.reviews.length; i++) {
+        for (let i = 0; i < this.reviews.length; i++) {
           this.reviews[i].createdate = this.reviews[i].createdate.slice(0, 10);
+          const userId = this.reviews[i].userid 
+          axios.post(`${SERVER_URL}/util/userinfo?userid=${userId}`)
+          .then(res => {
+            this.reviews[i].userid = res.data.object.name;
+            this.reviews[i].profile = res.data.object.profileImg;
+          })
         }
         // console.dir(response)    
       })
-    // 상품 만족도, 정확도 (리뷰)
+    // 상품 만족도, 정확도 평균(리뷰)
     axios.get(`${SERVER_URL}/sale/accuracy?address=${this.shoppingAddress}`)
       .then(res => {
         this.satisfy = res.data.object.satisfy
@@ -229,6 +288,25 @@ export default {
         console.log(error)
       })
   },
+  methods: {
+    visit(url) {
+      window.open(url);
+    },
+    likeBtn() {
+      axios.post(`${SERVER_URL}/util/createlike`, {
+        address: this.shoppingAddress,
+        userid: store.state.userInfo.id,
+      }).then(res => {
+        this.likeCount = res.data.object.likecount;
+        this.likeState = res.data.object.likestate;
+        if (this.likeState == 1) {
+          $('.like').css('color', 'red')
+        } else {
+          $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
+        }
+      })
+    },
+  }
 }
 </script>
 
@@ -258,7 +336,7 @@ export default {
   position: absolute;
   width: 100%;
   top: 250px;
-  padding: 0 10%;
+  padding: 0 17%;
   border-radius: 4px;
 }
 .shoppingInfo {
@@ -268,7 +346,7 @@ export default {
   padding: 2%;
 }
 .shoppingThumnail {
-  width: 45%;
+  width: 50%;
   margin-right: 7%;
   float: left;
 }
@@ -302,7 +380,18 @@ export default {
   height: 55px;
   overflow: hidden;
 }
+.userImg {
+  border-radius: 70%;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+}
 .makerImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.userImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -328,5 +417,33 @@ p {
   color: white;
   z-index: 2;
   text-align: center;
+}
+.accuracy {
+  background-color: #00B0FF!important;  
+  color: white;
+}
+.satisfaction {
+  background-color: #4DD0E1!important;
+  color: white;
+}
+.reviewPicture {
+  width: 130px;
+  height: 90px;
+  border-radius: 7px;
+  float:right;
+}
+.infoFrame {
+  width: 88%;
+  background-color: #f8f8f8 ;
+  border: 1px solid #cdd3d8;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px 0 rgba(33, 37, 41, 0.11);
+}
+.infoBottom {
+  background-color: white !important;
+}
+.visit {
+  background-color: #4FC3F7 !important;
+  color: white;
 }
 </style>

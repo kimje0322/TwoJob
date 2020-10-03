@@ -11,7 +11,6 @@
           <div style="text-align: center; margin-top: 30px;">
             <h4>상품은 만족하셨나요?</h4>
             <v-icon :class="key"
-            
             v-for="key in stars"
             :key="key"
             @click="starPoint(key)" size=43 
@@ -20,7 +19,6 @@
             </v-icon>
             <h4 class="mt-5">상품 설명서와 비슷했나요?</h4>
             <v-icon :class="key"
-           
             v-for="key in circles"
             :key="key"
             @click="circlePoint(key)" size=43
@@ -29,7 +27,7 @@
             </v-icon>
           </div>
           <!-- 이미지 업로드 버튼 -->
-          <input ref="imageInput" type="file" @change="onChangeImages" hidden />
+          <input :value="this.reviewPic" :rules="rules" ref="imageInput" type="file" @change="onChangeImages" hidden />
           <div v-if="!uploadimg" @click="onClickImageUpload" class="reviewImg mx-auto mt-5">
             <v-icon>mdi-camera-plus-outline</v-icon>
             <span style="display:inline-block; margin-top:10px">사진 첨부하기</span>  
@@ -110,6 +108,13 @@ export default {
       content: '',
       img: '',
       imgPath: '', 
+      reviewPic: '',
+      rules: [
+        (reviewPic) =>
+          !reviewPic ||
+          reviewPic.size < 2000000 ||
+          "2MB 이하의 사진을 올려주세요!",
+      ],
     }
   },
   updated() {
