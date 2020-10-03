@@ -1,5 +1,7 @@
 package com.blocker.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,7 @@ public class UtilController {
 	@ApiOperation(value = "좋아요 클릭 했을경우 object값이 1이면 성공 0이면 실패임")
 	public Object createlike(@RequestBody CreateLikeRequest likeRequest) {
 		final BasicResponse result = new BasicResponse();
+		Map<String, Integer> map = new HashMap<>();
 		try {
 
 			Optional<LikeBoardDto> oplikeBoardDto = likeBoardService.findLike(likeRequest);
@@ -50,15 +53,16 @@ public class UtilController {
 				if (updatelikeBoardDto.isIschecked()) {
 					System.out.println("true=>false");
 					updatelikeBoardDto.setIschecked(false);
-					result.object = false;
+					map.put("likestate", 0);
 				} else {
 					System.out.println("false=>true");
 					updatelikeBoardDto.setIschecked(true);
-					result.object = true;
+					map.put("likestate", 1);
 				}
 
 				likeBoardService.updateLike(updatelikeBoardDto);
-
+				map.put("likecount", likeBoardService.likeCount(likeRequest.getAddress()));
+				result.object = map;
 				result.data = "success";
 				result.status = true;
 			} else {// 그게 아니라면 true값으로 초기화 해줌
@@ -67,8 +71,10 @@ public class UtilController {
 				likeboardDto.setIschecked(true);
 				likeboardDto.setUserid(likeRequest.getUserid());
 				likeboardDto = likeBoardService.CreateLike(likeboardDto);
+				map.put("likestate", 1);
+				map.put("likecount", likeBoardService.likeCount(likeRequest.getAddress()));
 				if (likeboardDto != null) {
-					result.object = true;
+					result.object = map;
 					result.data = "success";
 					result.status = true;
 				} else {
