@@ -16,7 +16,8 @@
             :key="i"
             :href="`#tab-${i}`"
             class="writeMenu"
-          >{{ item }}</v-tab>
+            >{{ item }}</v-tab
+          >
           <!-- 금손 프로젝트 창 -->
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
@@ -26,36 +27,164 @@
                   <div
                     v-for="(item, i) in investList"
                     :key="i"
-                    style="display: inline-block; width: 33%; margin-bottom: 20px"
+                    style="
+                      display: inline-block;
+                      width: 33%;
+                      margin-bottom: 20px;
+                    "
                   >
-                    <v-card class="my-12" max-width="75%" max-height="600px" style="margin: auto">
+                    <v-card
+                      class="my-12"
+                      max-width="75%"
+                      max-height="600px"
+                      style="margin: auto"
+                    >
                       <v-img height="250" :src="item.picture"></v-img>
                       <v-card-title style="font-weight: 600; margin: auto">
                         {{ item.pjtName }}
                         <div style="margin-left: auto">
-                          <v-chip class="likeBadge" style="font-size: 12px">100명 좋아요</v-chip>
+                          <v-chip class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요</v-chip
+                          >
                         </div>
                       </v-card-title>
                       <!-- max-height: 120px -->
                       <v-card-text style="">
-                        <div style="margin-bottom: 15px;">{{item.oneLineIntro}}</div>
+                        <div style="margin-bottom: 15px">
+                          {{ item.oneLineIntro }}
+                        </div>
                         <div style="color: black">
                           <h5
-                            style="display: inline-block; height: 41.6px; line-height: 41.6px;"
-                          >{{ item.goalPrice }} 원</h5>
+                            style="
+                              display: inline-block;
+                              height: 41.6px;
+                              line-height: 41.6px;
+                            "
+                          >
+                            {{ item.goalPrice }} 원
+                          </h5>
                           <div style="display: inline-block; float: right">
                             <h3
-                              style="display: inline-block; color: rgb(22, 150, 245);"
-                            >{{ item.percent }}%</h3>
+                              style="
+                                display: inline-block;
+                                color: rgb(22, 150, 245);
+                              "
+                            >
+                              {{ item.percent }}%
+                            </h3>
                             <h5
-                              style="display: inline-block; color: rgb(123, 197, 254);"
-                            >달성</h5>
+                              style="
+                                display: inline-block;
+                                color: rgb(123, 197, 254);
+                              "
+                            >
+                              달성
+                            </h5>
                           </div>
                         </div>
                         <!-- 영수증 등록, 상품 판매 글쓰기 -->
                         <div style="margin-bottom: 10px">
-                          <v-btn style="background-color:rgb(22, 150, 245); color: white; width: 50%; margin-right: 10%;">사용내역 등록</v-btn>
-                          <router-link :to="{ name: 'WriteShopping', params: { address : item.address }}"><v-btn style="background-color:#a9a9a9; color: white; width: 40%">쇼핑 오픈</v-btn></router-link>
+                          <v-btn
+                            @click.stop="receiptDialog = true"
+                            style="
+                              background-color: rgb(22, 150, 245);
+                              color: white;
+                              width: 50%;
+                              margin-right: 10%;
+                            "
+                            >사용내역 등록</v-btn
+                          >
+                          <!-- 충전하기 모달 -->
+                          <v-dialog
+                            v-model="receiptDialog"
+                            scrollable
+                            max-width="40%"
+                            style="height: 400px"
+                          >
+                            <v-card>
+                              <v-card-title
+                                class="headline lighten-2"
+                                style="padding-bottom: 0 !important"
+                              >
+                                <h4 style="margin-left: 30px">
+                                  투자금 사용내역 등록하기
+                                </h4>
+                              </v-card-title>
+                              <v-divider></v-divider>
+                              <v-card-text style="padding: 50px 50px 30px 50px">
+                                <!-- 이미지 업로드 버튼 -->
+                                <input
+                                  ref="imageInput"
+                                  type="file"
+                                  @change="onChangeImages"
+                                  hidden
+                                />
+                                <div
+                                  v-if="!uploadimg"
+                                  @click="$refs.imageInput.$el.click()"
+                                  class="reviewImg mx-auto mt-5"
+                                >
+                                  <v-icon>mdi-camera-plus-outline</v-icon>
+                                  <span
+                                    style="
+                                      display: inline-block;
+                                      margin-top: 10px;
+                                    "
+                                    >사진 첨부하기</span
+                                  >
+                                </div>
+                                <!-- 이미지 첨부된 경우 -->
+                                <!-- 이미지 삭제 버튼 -->
+                                <div v-show="imgPath">
+                                  <v-btn
+                                    x-small
+                                    dark
+                                    fab
+                                    absolute
+                                    top
+                                    right
+                                    color="black"
+                                    style="
+                                      top: 293px;
+                                      right: 47px;
+                                      opacity: 0.6;
+                                    "
+                                    @click="onDeleteImg"
+                                  >
+                                    <v-icon dark>mdi-close</v-icon>
+                                  </v-btn>
+                                  <img
+                                    class="mx-auto mt-3"
+                                    ref="img"
+                                    style="width: 87%; border-radius: 10px"
+                                    :src="imgPath"
+                                    alt="reviewImg"
+                                  />
+                                </div>
+                              </v-card-text>
+                              <!-- <v-divider></v-divider> -->
+                              <v-card-actions style="background-color: white">
+                                <v-spacer></v-spacer>
+                                <v-btn text @click="receiptDialog = false"
+                                  >닫기</v-btn
+                                >
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
+                          <router-link
+                            :to="{
+                              name: 'WriteShopping',
+                              params: { address: item.address },
+                            }"
+                            ><v-btn
+                              style="
+                                background-color: #a9a9a9;
+                                color: white;
+                                width: 40%;
+                              "
+                              >쇼핑 오픈</v-btn
+                            ></router-link
+                          >
                         </div>
                       </v-card-text>
                     </v-card>
@@ -99,6 +228,24 @@ import "../../../public/css/MyInvestPjt.scss";
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
+  data() {
+    return {
+      userid: "",
+      page: 0,
+      // 투자금 사용내역 모달
+      receiptDialog: false,
+      uploadimg: false,
+      imgPath: '',
+      // 투자리스트
+      investList: [],
+      userimg: "",
+      username: "",
+      userbalance: "",
+      tab: null,
+      text: ["1", "2", "3"],
+      tabs: ["큰손", "금손", "판매", "구매"],
+    };
+  },
   methods: {
     onLogout() {
       store.state.isSigned = false;
@@ -144,6 +291,26 @@ export default {
 
       // alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
     },
+    onChangeImages(event) {
+      this.uploadimg = true;
+      console.log(event)
+      this.file = event.target.files[0];
+      var formData = new FormData();
+      formData.append("img", this.file);
+      axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
+                headers: { 'Content-Type': 'multipart/form-data' } 
+        }).then(response => {
+            const cutUrl = response.data.substr(18, response.data.length-17)
+            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+            this.imgPath = imgUrl;
+        });
+    },
+    onClickImageUpload() {
+      this.$refs.imageInput.$el.click();
+    },
+    onDeleteImg() {
+      this.uploadimg = false;
+    }
   },
   components: {
     Navbar,
@@ -162,62 +329,7 @@ export default {
         this.investList = response.data.object;
       });
   },
-  data() {
-    return {
-      userid: "",
-      page: 0,
-      // 투자리스트
-      investList: [],
-      userimg: "",
-      username: "",
-      userbalance: "",
-      tab: null,
-      text: ["1", "2", "3"],
-      tabs: ["큰손", "금손", "판매", "구매"],
-      title: "",
-      content: "",
-      // 날짜
-      date1: "",
-      dateFormatted1: "",
-      date2: "",
-      dateFormatted2: "",
-      menu1: false,
-      menu2: false,
-      targetPrice: 0,
-      receivePrice: 0,
-      // 사진
-      rules: [
-        (value) =>
-          !value ||
-          value.size < 2000000 ||
-          "Tunbnail size should be less than 2 MB!",
-      ],
-      select: "",
-      openMenutab: false,
-      individual: false,
-      business: false,
-      likeItems: [
-        {
-          title: "특별한 자전거",
-          likenum: "10000",
-          price: "1,500,500",
-          percent: "92",
-        },
-        {
-          title: "특별한 숟가락",
-          likenum: "5000",
-          price: "1,300,500",
-          percent: "85",
-        },
-        {
-          title: "달라진 안경",
-          likenum: "3500",
-          price: "1,000,500",
-          percent: "79",
-        },
-      ],
-    };
-  },
+  
   computed: {},
   method: {
     init() {
@@ -451,5 +563,15 @@ input:hover {
 }
 .theme--dark.v-tabs > .v-tabs-bar {
   background-color: unset;
+}
+.reviewImg {
+  background-color: #E1F5FE;
+  width: 60%;
+  padding: 5px 0px 12px 0px;
+  border-radius: 15px;
+  margin: auto;
+}
+.reviewImg:hover {
+  cursor: pointer;
 }
 </style>

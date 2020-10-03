@@ -1,132 +1,119 @@
 <template>
   <!-- 상단 네브바 -->
   <div class="Navbar">
-    <div class="items">
-      <div class="serviceName">
-        <router-link to="/">
-          <h3>TwoJob</h3>
-        </router-link>
-      </div>
-      <div class="navbarItem">
-        <router-link to="/investhome">
-          <h5>투자하기</h5>
-        </router-link>
-      </div>
-      <div class="navbarItem">
-        <router-link to="/shoppinghome">
-          <h5>쇼핑하기</h5>
-        </router-link>
-      </div>
-      <div class="navbarItem" v-if="!login">
-        <button @click="onClick">
-          <h5 style="margin: 0">로그인</h5>
-          <a href="http://developers.kakao.com/logout"></a>
-        </button>
-      </div>
-      <v-row
-        class="navbarItem"
-        v-else
-        justify="center"
-        style="display: inline-block; width: 150px"
-      >
-        <v-menu bottom min-width="200px" rounded offset-y>
-          <template v-slot:activator="{ on }">
-            <v-btn v-on="on">
-              <v-avatar style="width: 35px; height: 35px; margin: 0">
-                <img :src="userInfo.img" alt="John" />
-              </v-avatar>
-              <div>
-                <h5
-                  style="
-                    display: inline-block;
-                    margin: 0;
-                    font-size: 17px;
-                    font-weight: 550;
-                  "
-                >
-                  {{ userInfo.name }}
-                </h5>
-                <span>님</span>
-              </div>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-list-item-content class="justify-center">
-              <div class="mx-auto text-center">
-                <v-avatar
-                  style="width: 50px; height: 50px; margin-bottom: 15px"
-                >
-                  <img :src="userInfo.img" alt="John" />
-                </v-avatar>
-                <h5 style="margin-bottom: 10px">{{ userInfo.name }}</h5>
-                <p class="caption mt-1">{{ asset }}원</p>
-                <v-divider class="my-2"></v-divider>
-                <v-btn depressed rounded text @click="onLogout">
-                  로그아웃
+    <v-app>
+      <div class="items">
+        <div class="serviceName">
+          <router-link to="/">
+            <h3>TwoJob</h3>
+          </router-link>
+        </div>
+        <div style="text-align: right">
+          <div class="navbarItem">
+            <router-link to="/investhome">
+              <h5 class="navbarmenu">투자하기</h5>
+            </router-link>
+          </div>
+          <div class="navbarItem">
+            <router-link to="/shoppinghome">
+              <h5 class="navbarmenu">쇼핑하기</h5>
+            </router-link>
+          </div>
+          <div class="navbarItem" v-if="!login">
+            <button @click="onLogin">
+              <h5 style="margin: 0">로그인</h5>
+              <a href="http://developers.kakao.com/logout"></a>
+            </button>
+          </div>
+          <v-row
+            class="navbarItem"
+            v-if="login"
+            justify="center"
+            style="display: inline-block;"
+          >
+            <v-menu bottom min-width="200px" rounded offset-y>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" rounded style="padding: 0">
+                  <v-avatar style="width: 35px; height: 35px; margin: 0">
+                    <img :src="userInfo.img" alt="John" />
+                  </v-avatar>
+                  <div>
+                    <h5
+                      style="
+                        display: inline-block;
+                        margin: 0;
+                        font-size: 17px;
+                        font-weight: 550;
+                      "
+                    >
+                      {{ userInfo.name }}
+                    </h5>
+                    <span>님</span>
+                  </div>
                 </v-btn>
-                <v-divider class="my-2"></v-divider>
-                <div>
-                  <v-btn depressed rounded text @click="onChargeDialog">
-                    충전하기
-                  </v-btn>
-                  <!-- 충전하기 모달 -->
-                  <v-dialog  max-width="640" min-height="500" v-model="chargeDialog">
-                    <v-card-actions style="background-color: white">
-                      <v-spacer></v-spacer>
-                      <v-btn text @click="chargeDialog = false">취소</v-btn>
-                      <v-btn text color="blue">충전하기</v-btn>
-                    </v-card-actions>
-                  </v-dialog>
-                </div>
-                <v-divider class="my-2"></v-divider>
-                <router-link to="/mypage">
-                  <v-btn depressed rounded text> 마이페이지 </v-btn>
-                </router-link>
-              </div>
-            </v-list-item-content>
-          </v-card>
-        </v-menu>
-      </v-row>
-      <!-- 원래 모달 -->
-      <!-- <div class="chargebox" style="inline-block" v-if="openbox">
-          <v-card style="padding: 0; margin: 0">
-            <v-icon style="margin-right: 10px">mdi-close</v-icon>
-            <v-card-title class="headline">
-              {{ userInfo.name }}님의 자산 현황
-            </v-card-title>
-            <h5 style="text-align: center">{{ asset }}원</h5>
-            <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
-
-            <v-card-actions class="moneybtns">
-              <v-spacer></v-spacer>
-              <v-btn class="chargebtn" text @click="onKakao">
-                충전하기
+              </template>
+              <v-card>
+                <v-list-item-content class="justify-center">
+                  <div class="mx-auto text-center">
+                    <v-avatar
+                      style="width: 50px; height: 50px; margin-bottom: 15px"
+                    >
+                      <img :src="userInfo.img" alt="John" />
+                    </v-avatar>
+                    <h5 style="margin-bottom: 10px">{{ userInfo.name }}</h5>
+                    <p class="caption mt-1" style="font-size: 15px !important">
+                      {{ asset }}원
+                    </p>
+                    <v-divider class="my-2"></v-divider>
+                    <v-btn depressed rounded text @click="onLogout">
+                      로그아웃
+                    </v-btn>
+                    <v-divider class="my-2"></v-divider>
+                    <v-btn depressed rounded text @click.stop="chargeDialog = true">
+                      충전하기
+                    </v-btn>
+                    <!-- 충전하기 모달 -->
+                    <v-dialog
+                      v-model="chargeDialog"
+                      scrollable
+                      max-width="40%"
+                      style="height: 400px"
+                    >
+                      <v-card>
+                        <v-card-title class="headline lighten-2" style="padding-bottom: 0 !important">
+                          <h4 style="margin-left: 30px">충전하기</h4>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text style="padding: 50px 50px 30px 50px">
+                          <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
+                        </v-card-text>
+                        <!-- <v-divider></v-divider> -->
+                        <v-card-actions style="background-color: white">
+                          <v-spacer></v-spacer>
+                          <v-btn text @click="chargeDialog = false">닫기</v-btn>
+                          <v-btn text color="blue" @click="onKakao">충전하기</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                    <v-divider class="my-2"></v-divider>
+                    <router-link to="/mypage" style="text-decoration: none">
+                      <v-btn depressed rounded text> 마이페이지 </v-btn>
+                    </router-link>
+                  </div>
+                </v-list-item-content>
+              </v-card>
+            </v-menu>
+          </v-row>
+          <div class="navbarItem">
+            <router-link to="/search">
+              <v-btn icon style="flex-right: 0">
+                <i style="color: black" class="fas fa-search"></i>
               </v-btn>
-              <v-btn class="closebtn" text @click="openbox = false">닫기</v-btn>
-            </v-card-actions>
-            <div style="text-align: center; width: 100%; padding: 0 2px">
-              <router-link to="/mypage">
-                <v-btn
-                  @click="openbox = false"
-                  style="
-                    width: 100%;
-                    background: rgb(22, 150, 245) !important;
-                    color: white;
-                  "
-                >마이페이지</v-btn>
-              </router-link>
-            </div>
-          </v-card>
-        </div> -->
-      <!-- </v-row> -->
-      <div class="navbarItem">
-        <router-link to="/search">
-          <button style="flex-right: 0">
-            <i class="fas fa-search"></i>
-          </button>
-        </router-link>
+            </router-link>
+          </div>
+        </div>
       </div>
-    </div>
+    </v-app>
   </div>
 </template>
 
@@ -161,6 +148,11 @@ export default {
       // 충전 모달
       chargeDialog: false,
     };
+  },
+  watch: {
+    money(val) {
+      return (this.money = this.money.replace(/[^0-9]/g, ""));
+    }
   },
   mounted() {
     // console.log(location.href);
@@ -223,7 +215,7 @@ export default {
           console.log(error);
         });
     },
-    onClick() {
+    onLogin() {
       window.Kakao.Auth.loginForm({
         success: this.GetMe,
       });
@@ -266,7 +258,11 @@ export default {
       // this.$router.push("/");
     },
     onChargeDialog() {
-      this.chargeDialog = !this.chargeDialog;
+      console.log("충전모달");
+      console.log(this.chargeDialog);
+      this.chargeDialog = true;
+      console.log(this.chargeDialog);
+      // this.chargeDialog = true;
     },
   },
 };
@@ -295,6 +291,16 @@ export default {
 .navbarItem {
   display: inline-block;
   margin-right: 5% !important;
+  /* height: 50px;
+  line-height: 50px; */
+}
+.navbarItem a h5 {
+  height: 50px;
+  line-height: 50px;
+  margin: 0;
+}
+.navbarmenu:hover {
+  color: rgb(22, 150, 245);
 }
 .items div a {
   color: black;
