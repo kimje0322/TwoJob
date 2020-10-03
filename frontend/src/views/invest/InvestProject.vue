@@ -44,28 +44,13 @@
     </div>
     <!-- 필터 -->
     <div class="filterBox">
-      <!-- 상태 -->
-      <div style="display: inline-block; margin-right: 2%">
-        <v-select
-          :items="state"
-          label="상태"
-          outlined
-          hide-details
-          v-model="nowstate"
-          @click="openState"
-          :class="{checkstate: checkstate}"
-          class="origin"
-        ></v-select>
-      </div>
       <div style="display: inline-block">
         <v-select
-          :items="successRate"
-          label="달성률"
+          :items="filter"
+          label="정렬"
           outlined
           hide-details
-          v-model="nowrate"
-          @click="openRate"
-          :class="{checkrate: checkrate, longrate: longrate}"
+          v-model="nowfilter"
           class="origin"
         ></v-select>
       </div>
@@ -81,18 +66,6 @@
         <div style="display: inline-block;">
           <span style="color: rgb(22, 150, 245);">25,540</span>
           <span>개의 프로젝트가 있습니다.</span>
-        </div>
-        <div style="width: 100px; display: inline-block; float: right;">
-          <v-select
-            :items="filter"
-            hide-details
-            label="최신순"
-            single-line
-            @click="openFilter"
-            v-model="nowfilter"
-            append-icon="mdi-arrow-down-drop-circle-outline"
-            class="filter"
-          ></v-select>
         </div>
       </div>
       <div style="padding: 1% 0">
@@ -157,27 +130,19 @@ export default {
       // 상태
       nowstate: "",
       checkstate: false,
-      openstate: false,
       state: [
         "전체 프로젝트",
         "진행중인 프로젝트",
         "성공한 프로젝트",
         "종료된 프로젝트",
       ],
-      // 달성률
-      nowrate: "",
-      checkrate: false,
-      longrate: false,
-      openrate: false,
-      successRate: ["전체 프로젝트", "50% 이하", "50% ~ 75%", "75% ~ 100%"],
       // 필터
       nowfilter: "",
-      openfilter: false,
       filter: ["최신순", "인기순"],
       // 프로젝트
       investProjects: [],
       // page
-      page: 1,
+      page: 0,
     };
   },
   watch: {
@@ -188,19 +153,14 @@ export default {
         this.checkstate = false;
       }
     },
-    nowrate(val) {
-      if (this.nowrate == "전체 프로젝트") {
-        this.longrate = true;
-        this.checkrate = false;
-      } else if (this.nowrate) {
-        this.checkrate = true;
-        this.longrate = false;
-      }
-    },
   },
   mounted() {
+    const fd = new FormData();
+    fd.append("orderOption", 0)
     axios
-      .get(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`)
+      .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd, {
+        categoryfilter: "all"
+      })
       .then((response) => {
         console.log(response)
         if (response.data.data == "success") {
@@ -224,41 +184,12 @@ export default {
     // }
   },
   methods: {
-    openState() {
-      this.openstate = !this.openstate;
-      if (this.openstate) {
-        this.nowstate = "";
-        $(".v-menu").css("display", "block");
-      } else {
-        $(".v-menu").css("display", "none");
-      }
-    },
-    openRate() {
-      this.openrate = !this.openrate;
-      if (this.openrate) {
-        this.nowrate = "";
-        $(".v-menu").css("display", "block");
-      } else {
-        $(".v-menu").css("display", "none");
-      }
-    },
     filterInit() {
       this.nowstate = "";
       this.checkstate = false;
       this.opensate = false;
-      this.nowrate = "";
-      this.checkrate = false;
-      this.longrate = false;
-      this.openrate = false;
-    },
-    openFilter() {
-      this.openfilter = !this.openfilter;
-      if (this.openfilter) {
-        this.nowfilter = "";
-        $(".v-menu").css("display", "block");
-      } else {
-        $(".v-menu").css("display", "none");
-      }
+      this.nowfilter = "";
+      this.openfilter = false;
     },
   },
 };

@@ -318,7 +318,16 @@ export default {
                 );
                 const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
                 callback(imgUrl);
-              });
+              })
+              .catch(error => {
+                Swal.fire({
+                icon: "warning",
+                title: "",
+                text: "사진의 용량이 너무 큽니다.",
+                confirmButtonText: "닫기",
+                confirmButtonColor: "#d33",
+              })
+              })
           },
         },
       },
@@ -348,30 +357,40 @@ export default {
         this.business = true;
         this.individual = false;
       }
+      this.colorBtn()
     },
-    editortext(val) {
-      if (
-        this.userid &&
-        this.title &&
-        this.content &&
-        this.dateFormatted &&
-        this.targetPrice &&
-        this.sellPrice &&
-        this.picture &&
-        this.checkCategory &&
-        this.tags &&
-        this.select &&
-        this.introduce &&
-        this.editortext
-      ) {
-        $(".openBtn").css("background-color", "rgb(22, 150, 245)");
-        $(".openBtn").css("color", "white");
-      }
-      else{
-        $(".openBtn").css("background-color", "#808080");
-        $(".openBtn").css("color", "white");
-      }
+    // 유효성 검사
+    title() {
+      this.colorBtn()
     },
+    content() {
+      this.colorBtn()
+    },
+    dateFormatted() {
+      this.colorBtn()
+    },
+    targetPrice() {
+      this.colorBtn()
+    },
+    sellPrice() {
+      this.colorBtn()
+    },
+    picture() {
+      this.colorBtn()
+    },
+    checkCategory() {
+      this.colorBtn()
+    },
+    tags() {
+      this.colorBtn()
+    },
+    introduce() {
+      this.colorBtn()
+    },
+    editortext() {
+      this.colorBtn()
+    },
+    // 숫자만 입력 가능
     targetPrice(val) {
       return (this.targetPrice = this.targetPrice.replace(/[^0-9]/g, ""));
     },
@@ -410,17 +429,26 @@ export default {
     onthumbnail(event) {
       var formData = new FormData();
       formData.append("img", event);
-
       axios
         .post(`${SERVER_URL}/investment/changePath`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((response) => {
-          this.picture = response.data;
-          console.log(typeof this.picture);
+          const cutUrl = response.data.substr(18, response.data.length - 17);
+          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+          this.picture = imgUrl;
+          $('.v-file-input__text').text(event.name)
         })
         .catch((error) => {
-          console.log(error);
+          Swal.fire({
+          icon: "warning",
+          title: "",
+          text: "사진의 용량이 너무 큽니다.",
+          confirmButtonText: "닫기",
+          confirmButtonColor: "#d33",
+        }).then((result) => {
+          $('.v-file-input__text').text('다시 입력해주세요.')
+        })
         });
     },
     checkcategory(category, key) {
@@ -440,7 +468,6 @@ export default {
       this.model.forEach((tag) => {
         tags.push(tag.text);
       });
-      // this.$refs.feeditem.searchTag(tags);
     },
     openMenu() {
       this.openMenutab = !this.openMenutab;
@@ -453,6 +480,29 @@ export default {
     onSave() {
       this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
       console.log(this.editortext);
+    },
+    colorBtn() {
+      if (
+        this.userid &&
+        this.title &&
+        this.content &&
+        this.dateFormatted &&
+        this.targetPrice &&
+        this.sellPrice &&
+        this.picture &&
+        this.checkCategory &&
+        this.tags &&
+        this.select &&
+        this.introduce &&
+        this.editortext
+      ) {
+        $(".openBtn").css("background-color", "rgb(22, 150, 245)");
+        $(".openBtn").css("color", "white");
+      }
+      else{
+        $(".openBtn").css("background-color", "#808080");
+        $(".openBtn").css("color", "white");
+      }
     },
     openInvestBtn() {
       if (
@@ -481,6 +531,7 @@ export default {
           reverseButtons: true,
         }).then((result) => {
           if (result.value) {
+            // 백엔드에 저장
             axios
               .post(`${SERVER_URL}/investment/create`, {
                 userid: this.userid,
@@ -500,6 +551,20 @@ export default {
               })
               .then((response) => {
                 console.log(response)
+                // 블록체인
+                const fd = new FormData();
+                fd.append("accessToken", store.state.accessToken)
+                fd.append("canpaignId", response.data.object.address)
+                // console.log(store.state.accessToken)
+                // console.log(response.data.object.address)
+                // {
+                //   accessToken: store.state.accessToken,
+                //   canpaignId: response.data.object.address,
+                // }
+                axios.post(`${SERVER_URL}/funding/createfunding`, fd)
+                .then(response =>{
+                  console.log(response)
+                })
                 if (response.data.data == "Success") {
                   Swal.fire({
                     // position: 'top-end',
@@ -509,6 +574,7 @@ export default {
                     showConfirmButton: false,
                     // timer: 1500
                   });
+                  this.$router.push('/investhome');
                 } else {
                   alert("프로젝트 오픈에 실패했습니다.");
                 }
