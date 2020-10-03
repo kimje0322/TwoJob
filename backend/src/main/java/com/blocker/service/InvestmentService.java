@@ -35,7 +35,13 @@ public class InvestmentService {
 	public Page<InvestmentDto> getAllInvestmentList(int page, int orderOption) {
 		PageRequest pagerequest = PageRequest.of(page, 9);
 		// 최신순
-		return investmentRepository.findAllInvestmentDtoOrderbyCreatedat(pagerequest);
+		if (orderOption == 1) {
+			System.out.println(1);
+			return investmentRepository.findAllInvestmentDtoOrderbyCreatedat(pagerequest);
+		} else {//인기순
+			System.out.println(2);
+			return investmentRepository.findAllInvestmentDtoOrderbyLikecount(pagerequest);
+		}
 	}
 
 }
