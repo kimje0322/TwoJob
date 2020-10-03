@@ -79,7 +79,7 @@
                   </v-dialog>
                 </div>
                 <v-divider class="my-2"></v-divider>
-                <router-link to="/mypage">
+                <router-link :to="{ name: 'Mypage', params: { userid : userInfo.id }}">
                   <v-btn depressed rounded text> 마이페이지 </v-btn>
                 </router-link>
               </div>

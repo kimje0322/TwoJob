@@ -108,10 +108,11 @@
                   border-bottom: none;
                 "
               >
-                <div
-                  v-if="chatusername != null"
-                  style="diplay: inline-block; float: left"
-                >
+                <div v-if="click == false">
+                  <h5>채팅 상대를 선택해주세요</h5>
+                </div>
+                <!-- v-if="chatusername != null" -->
+                <div v-else style="diplay: inline-block; float: left">
                   <img
                     v-if="chatuserimg == null"
                     src="https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg"
@@ -142,6 +143,7 @@
                 <div
                   style="height: 480px; overflow-x: hidden; overflow-y: auto"
                 >
+                  <!-- <div v-if="chatmessage"></div> -->
                   <div
                     v-for="(lst, i) in chatmessage"
                     :key="i"
@@ -201,7 +203,7 @@
                   </div>
                 </div>
                 <!-- 메세지 입력창 -->
-                <div style="height: 40px">
+                <div v-if="click == true" style="height: 40px">
                   <div
                     style="
                       display: inline-block;
@@ -261,6 +263,7 @@ export default {
       userlst: [],
 
       userimg: "",
+      click: false,
 
       chatusername: "",
       chatuserimg: "",
@@ -321,6 +324,8 @@ export default {
   },
   methods: {
     openChat(roomid, name, img) {
+      this.click = true;
+
       this.chatusername = name;
       this.chatuserimg = img;
       this.chatroomid = roomid;
@@ -352,33 +357,13 @@ export default {
             });
           // this.chatmessage =
         });
-
-      // axios
-      //   .get(`${SERVER_URL}/chat/room/${this.chatroomid}`)
-      //   .then((res) => {
-      //     connsole.log(res)
-      //   })
-
-      // let chatinfo = {
-      // 	chatname: name,
-      // 	chatprofile: img,
-      // };
-      // this.openchat = true;
-      // router.push( { name: "Chat", query: chatinfo })
     },
     closeChat() {
       this.openchat = false;
     },
-    // init() {
-    // 	axios
-    // 		.get( `${SERVER_URL}`)
-    // 		.then((res) => {
-    // 		})
-    // },
 
     // 채팅 전송
     sendMessage: function (recv) {
-      document.getElementById("inputxt").value = null;
       ws.send(
         "/pub/chat/message",
         {},
@@ -389,7 +374,18 @@ export default {
           message: this.message,
         })
       );
+      axios
+        .get(
+          `${SERVER_URL}/chat/getMessage?direction=ASC&page=0&roomId=${
+            this.chatroomid
+          }&size=${this.totalmessage + 1}`
+        )
+        .then((res) => {
+          this.chatmessage = res.data.content;
+          console.log(this.chatmessage);
+        });
       // this.openChat();
+      // document.getElementById("inputxt").value = null;
     },
   },
 };
