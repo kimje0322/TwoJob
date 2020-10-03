@@ -48,14 +48,17 @@ public class UtilController {
 				LikeBoardDto updatelikeBoardDto = oplikeBoardDto.get();
 
 				if (updatelikeBoardDto.isIschecked()) {
+					System.out.println("true=>false");
 					updatelikeBoardDto.setIschecked(false);
+					result.object = false;
 				} else {
+					System.out.println("false=>true");
 					updatelikeBoardDto.setIschecked(true);
+					result.object = true;
 				}
 
-				int data = likeBoardService.updateLike(updatelikeBoardDto);
+				likeBoardService.updateLike(updatelikeBoardDto);
 
-				result.object = data;
 				result.data = "success";
 				result.status = true;
 			} else {// 그게 아니라면 true값으로 초기화 해줌
@@ -63,15 +66,12 @@ public class UtilController {
 				likeboardDto.setAddress(likeRequest.getAddress());
 				likeboardDto.setIschecked(true);
 				likeboardDto.setUserid(likeRequest.getUserid());
-				System.out.println(1);
 				likeboardDto = likeBoardService.CreateLike(likeboardDto);
 				if (likeboardDto != null) {
-					System.out.println(2);
-					result.object = likeboardDto;
+					result.object = true;
 					result.data = "success";
 					result.status = true;
 				} else {
-					System.out.println(3);
 					System.out.println("save도중에 애러가 발생함");
 					result.object = null;
 					result.data = "sql error";
@@ -110,5 +110,5 @@ public class UtilController {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
-	
+
 }

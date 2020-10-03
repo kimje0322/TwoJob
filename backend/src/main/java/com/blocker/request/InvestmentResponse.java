@@ -22,4 +22,5 @@ public class InvestmentResponse {
 	List<String> categorys;// 카테고리
 	List<String> tags;// 테그
 	String editorhtml;
+	int totalpage;
 }
