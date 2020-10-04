@@ -6,14 +6,12 @@
       <h1 class="my-element my-5" style="font-size:3vw">Get funding with <span class="twojob">TwoJob</span></h1>
     </div>
     <!-- 투자홈 광고사진 -->
-    <div class="firstPic">
-    </div>
-    <img style="100%" class="mx-0 py-0" src="../assets/images/배경12.png" alt="">
-    <div class="homeDiv mx-auto" style="display:flex"> 
+    <img style="width:100%; margin-bottom: 8%" class="mx-0 py-0" src="../assets/images/배경12.png" alt="">
+    <div class="homeDiv mx-auto mt-5" style="display:flex"> 
       <img class="homeImg1" src="../assets/images/home8.jpg" alt="">
       <div class="mt-4 ml-5 pt-3 pl-4">
         <h1 class="engTitle mt-5" style="font-size:5vw">Reliable</h1>
-        <h1 class="korTitle">신뢰가능한</h1>
+        <h3 class="korTitle">신뢰가능한</h3>
         <p class="mt-5 ml-2" style="font-size:1vw">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
       </div>
     </div>
@@ -21,7 +19,7 @@
     <div class="homeDiv mx-auto" style="display:flex"> 
       <div class="mt-4 ml-5 mr-5 pt-3 pl-4 pr-4">
         <h1 class="engTitle mt-5" style="font-size:4.7vw">Reasonable</h1>
-        <h1 class="korTitle mr-2" style="text-align: end">합리적인</h1>
+        <h3 class="korTitle mr-2" style="text-align: end">합리적인</h3>
         <p class="mt-5 mr-2" style="font-size:1vw; text-align: end">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
       </div>
       <img class="homeImg2 ml-2" src="../assets/images/home5.jpg" alt="">
@@ -31,7 +29,7 @@
       <img class="homeImg3 mr-1" src="../assets/images/하늘filter.jpg" alt="">
       <div class="mt-4 ml-4 pt-3 pl-3">
         <h1 class="engTitle mt-5" style="font-size:4.6vw">Transparent</h1>
-        <h1 class="korTitle ml-2">투명한</h1>
+        <h3 class="korTitle ml-2">투명한</h3>
         <p class="mt-5 ml-2" style="font-size:1vw">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
       </div>
     </div>
@@ -310,8 +308,5 @@ export default {
   font-family: 'Libre Baskerville', serif;
   animation: slideInLeft; /* referring directly to the animation's @keyframe declaration */
   animation-duration: 1.7s; /* don't forget to set a duration! */
-}
-.firstPic {
-  background-image: url(../assets/images/배경12.png);
 }
 </style>

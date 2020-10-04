@@ -1,0 +1,12 @@
+.Navbar {
+    .v-btn--contained {
+        background-color: unset !important;
+        box-shadow: unset !important;
+    }
+    .v-menu {
+        display: unset;
+    }
+    .v-application--wrap {
+        min-height: unset;
+    }
+}
