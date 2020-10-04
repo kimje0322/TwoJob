@@ -1,10 +1,7 @@
 <template>
   <div class="home">
     <!-- 상단 Navbar -->
-    <HomeNav />
-    <div class="mt-5" style="text-align:center;">
-      <h1 class="my-element my-5" style="font-size:3vw">Get funding with <span class="twojob">TwoJob</span></h1>
-    </div>
+    <navbar />
     <!-- 투자홈 광고사진 -->
     <img style="width:100%; margin-bottom: 8%" class="mx-0 py-0" src="../assets/images/배경12.png" alt="">
     <div class="homeDiv mx-auto mt-5" style="display:flex"> 
@@ -35,7 +32,7 @@
     </div>
 
 
-    <!-- <div class="homeImg">
+    <div class="homeImg">
       <v-carousel>
         <v-carousel-item          
           v-for="(item, i) in items" :key="i"
@@ -44,8 +41,8 @@
           transition="fade-transition"
         ></v-carousel-item>
       </v-carousel>
-      <img style="width: 100%" src="../assets/images/home.gif" alt="home-main">
-    </div> -->
+      <!-- <img style="width: 100%" src="../assets/images/home.gif" alt="home-main"> -->
+    </div>
     <!-- <button @click="onWallet" style="margin-left: 200px;">
       눌러봐
     </button> -->
@@ -171,7 +168,7 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 // import 'bootstrap-vue/dist/bootstrap-vue.css'
 import "../../public/css/Home.scss";
 import store from "../store/index.js";
-import HomeNav from "../components/HomeNav.vue";
+import Navbar from "../components/Navbar.vue";
 import Web3 from "web3";
 import { registerWallet } from "@/api/wallet.js";
 
@@ -198,7 +195,7 @@ export default {
   methods: {
   },
   components: {
-    HomeNav,
+    Navbar,
   },
   data() {
     return {
@@ -246,7 +243,7 @@ export default {
   margin-bottom: 3%;
 }
 .home_info {
-  padding: 50px 0;
+  padding: 200px 0;
   margin: 0 150px;
 }
 .info_left {

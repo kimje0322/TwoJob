@@ -241,7 +241,7 @@ public class InvestController {
 	@PostMapping("/getAllInvestBoard/{page}")
 	@ApiOperation(value = "저장되어있는 모든사람의 투자 게시글을보여줌 orderOption = 0전체 1최신 2 인기")
 	@ResponseBody
-	public Object getAllInvestBoard(@PathVariable int page, @RequestBody List<String> categoryfilter,
+	public Object getAllInvestBoard(@PathVariable int page,@RequestParam List<String> categoryfilter,
 			@RequestParam int orderOption) {
 		final BasicResponse result = new BasicResponse();
 		List<InvestmentResponse> resultDatas = new ArrayList<>();
