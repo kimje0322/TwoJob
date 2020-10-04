@@ -58,6 +58,7 @@
                           display: inline-block;
                         "
                       />
+
                       <img
                         v-else
                         :src="lst.toimg"
@@ -73,7 +74,11 @@
                         @click="openChat(lst.roomid, lst.user1, lst.toimg)"
                         v-if="lst.user1 != username"
                       >
+                        <!-- <router-link
+                          :to="{ name: 'Mypage', params: { userid: lst.}}"
+                        > -->
                         {{ lst.user1 }}
+                        <!-- </router-link> -->
                       </span>
                       <span
                         style="margin-left: 20px"
@@ -201,6 +206,10 @@
                       </div>
                     </div>
                   </div>
+                  <div v-for="(message, j) in messages" :key="j">
+                    {{ message }}
+                    dd
+                  </div>
                 </div>
                 <!-- 메세지 입력창 -->
                 <div v-if="click == true" style="height: 40px">
@@ -272,6 +281,7 @@ export default {
       totalmessage: "",
 
       message: "",
+      messages: [],
       sender: "",
     };
   },
@@ -282,7 +292,7 @@ export default {
   mounted() {
     // sender
     this.sender = localStorage.getItem("wschat.sender");
-    console.log("이거는 sender야" + this.sender);
+    // console.log("이거는 sender야" + this.sender);
     // this.userimg = store.state.userInfo.img;
     this.userimg = store.state.userInfo.img;
     axios
@@ -321,6 +331,38 @@ export default {
       );
     }
     connect();
+
+    function connection() {
+      // pub/sub event
+      ws.connection(
+        {},
+        function (frame) {
+          ws.subscribe("/sub/chat/room" + this.chatroomid, function (message) {
+            var recv = JSON.parse(message.body);
+            vm.recvMessage(recv);
+          });
+          ws.send(
+            "/pub/chat/message",
+            {},
+            JSON.stringify({
+              type: "ENTER",
+              roomid: this.chatroomid,
+              sender: store.state.userInfo.name,
+            })
+          );
+        },
+        function (error) {
+          if (reconnect++ <= 5) {
+            setTimeout(function () {
+              console.log("connection reconnect");
+              sock = new SockJS("http://j3b102.p.ssafy.io:8080/ws-stomp");
+              ws = Stomp.over(sock);
+              connection();
+            }, 10 * 1000);
+          }
+        }
+      );
+    }
   },
   methods: {
     openChat(roomid, name, img) {
@@ -358,6 +400,7 @@ export default {
           // this.chatmessage =
         });
     },
+
     closeChat() {
       this.openchat = false;
     },
@@ -374,18 +417,34 @@ export default {
           message: this.message,
         })
       );
-      axios
-        .get(
-          `${SERVER_URL}/chat/getMessage?direction=ASC&page=0&roomId=${
-            this.chatroomid
-          }&size=${this.totalmessage + 1}`
-        )
-        .then((res) => {
-          this.chatmessage = res.data.content;
-          console.log(this.chatmessage);
-        });
+      this.message = "";
+
+      // this.openChat(this.chatroomid, this.chatusername, this.chatuserimg);
+      
+      // axios
+      //   .get(
+      //     `${SERVER_URL}/chat/getMessage?direction=ASC&page=0&roomId=${
+      //       this.chatroomid
+      //     }&size=${this.totalmessage + 1}`
+      //   )
+      //   .then((res) => {
+      //     this.chatmessage = res.data.content;
+      //     console.log(this.chatmessage);
+      //   });
       // this.openChat();
       // document.getElementById("inputxt").value = null;
+    },
+
+    // 채팅 수신
+    recvMessage: function (recv) {
+      this.messages.unshift({
+        "type": recv.type,
+        "sender": recv.type == "ENTER" ? "[알림]" : recv.sender,
+        "message": recv.message,
+        "time": recv.time,
+      });
+      console.log("메시지 수신")
+      console.log(this.messages)
     },
   },
 };
