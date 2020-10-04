@@ -247,14 +247,13 @@ public class InvestController {
 		List<InvestmentResponse> resultDatas = new ArrayList<>();
 
 		try {
+			System.out.println(categoryfilter.isEmpty());
 			if (categoryfilter.isEmpty()) {
 				Page<InvestmentDto> list = null;
-				if (orderOption == 0) {
+				if (orderOption == 0) {System.out.println(0);
 					list = investmentService.getAllInvestmentList(page);
-				} else if (orderOption == 1) {
+				}else {
 					list = investmentService.getAllInvestmentList(page, orderOption);
-				} else {
-
 				}
 
 				for (Iterator<InvestmentDto> iter = list.getContent().iterator(); iter.hasNext();) {
@@ -285,7 +284,7 @@ public class InvestController {
 				}
 			} else {
 				Page<BoardCategoryMapping> list = boardCategoryService.getAllInvestmentListWithCategory(page,
-						categoryfilter);
+						categoryfilter,orderOption);
 				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
 					BoardCategoryMapping nextiter = iter.next();
 					String investaddress = nextiter.getInvestaddress();
