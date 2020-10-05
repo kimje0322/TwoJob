@@ -442,6 +442,7 @@ export default {
     ChatRoom,
   },
   mounted() {
+    // if ()
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
