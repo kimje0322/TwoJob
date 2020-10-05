@@ -142,11 +142,10 @@
                             to="/chat"
                             style="text-decoration: none; color: black"
                             > -->
-                            <span style="font-size: 18px" @click="onChat()"
-                              >채팅 목록</span
-                            >
-                            <!-- </router-link -->
-                          
+                          <span style="font-size: 18px" @click="onChat()"
+                            >채팅 목록</span
+                          >
+                          <!-- </router-link -->
                         </div>
                       </div>
                     </div>
@@ -236,8 +235,8 @@ import Web3 from "web3";
 import Swal from "sweetalert2";
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
 
-const SERVER_URL = "https://www.twojob.ga/api";
-// const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+// const SERVER_URL = "https://www.twojob.ga/api";
+const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   methods: {
@@ -301,25 +300,40 @@ export default {
     ChatRoom,
   },
   mounted() {
+    var idx = window.location.href.indexOf("mypage");
+    console.log(idx);
+    var pageid = window.location.href.substring(
+      idx + 7,
+      window.location.href.length - 1
+    );
+    console.log(pageid);
+    console.log(pageid + "asdfadsddd");
+
+    const fd = new FormData();
+    fd.append("userid", pageid);
+    console.log("pageid" + pageid)
+    axios.post(`${SERVER_URL}/util/userinfo`, fd).then((res) => {
+      console.log("성공인가??");
+      console.log(res)
+    });
+
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
-    console.log("이건 유저 발란스 값" + this.userbalance)
+    console.log("이건 유저 발란스 값" + this.userbalance);
 
     // 거래내역
     // axios
     // .get(`http://j3b102.p.ssafy.io:8080/mypage/tojalist`)
 
     axios
-      .get(
-        `${SERVER_URL}/mypage/myproject?oauthId=${store.state.userInfo.id}`
-      )
+      .get(`${SERVER_URL}/mypage/myproject?oauthId=${store.state.userInfo.id}`)
       .then((res) => {
         console.log(store.state.userInfo.id);
         console.log(res);
         console.log("성공");
-        this.investnum = res.data.createNum
-        this.shoppingnum = res.data.saleNum
+        this.investnum = res.data.createNum;
+        this.shoppingnum = res.data.saleNum;
       });
   },
   data() {
