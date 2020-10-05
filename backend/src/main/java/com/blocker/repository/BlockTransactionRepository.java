@@ -14,6 +14,6 @@ public interface BlockTransactionRepository extends JpaRepository<BlockTransacti
 	List<BlockTransaction> findByToaddressAndType(String address,TransactType type);
 	Page<BlockTransaction> findByToaddressAndTypeflag(String address, int typeflag,Pageable pageable);
 	
-	@Query(value = "select fromaddress from blocktransact where toaddress = :address and type = :type Group By fromaddress")
-	List<BlockTransaction> findAddress(String address, TransactType type);
+//	@Query(value = "select fromaddress from blocktransact where toaddress = :address and type = :type Group By fromaddress")
+//	List<BlockTransaction> findAddress(String address, TransactType type);
 }

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.dto.Chatroom;
+import com.blocker.dto.TransactType;
+import com.blocker.repository.BlockTransactionRepository;
 import com.blocker.service.FundingService;
 import com.blocker.service.ScheduleTask;
 import com.blocker.util.webhook;
@@ -32,6 +34,8 @@ import io.swagger.annotations.ApiOperation;
 public class FundingController {
 	@Autowired
 	FundingService fundingService;
+	@Autowired
+	BlockTransactionRepository blockTransactionRepository;
 	@ApiOperation(value = "funding deploy하기, 건들지 마십숑")
 	@PostMapping(value = "/deploy")
 	public void Deploy() throws Exception {
@@ -84,7 +88,8 @@ public class FundingController {
 	@ApiOperation(value = "testg ")
 	@GetMapping(value = "/testd")
 	public void test() throws Exception {
-		fundingService.makeAllTask();
+		//fundingService.makeAllTask();
+		//blockTransactionRepository.findAddress("123", TransactType.BUY);
 //		Date now = new Date();
 //		Calendar calUntil = Calendar.getInstance();
 //		calUntil.set( Calendar.YEAR, 2020);
