@@ -152,6 +152,7 @@ import Web3 from "web3";
 import Swal from "sweetalert2";
 
 const SERVER_URL = "https://www.twojob.ga/api";
+// const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
 const redirect_uri = "https://www.twojob.ga/api";
 
@@ -186,7 +187,7 @@ export default {
   mounted() {
     axios
       .get(
-        `http://j3b102.p.ssafy.io:8080/wallet/toid?oauthid=${store.state.userInfo.id}`
+        `${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`
       )
       .then((res) => {
         console.log(res.data.balance);

@@ -236,8 +236,8 @@ import Web3 from "web3";
 import Swal from "sweetalert2";
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
 
-// const SERVER_URL = "https://www.twojob.ga/api";
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
+// const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   methods: {
@@ -310,11 +310,9 @@ export default {
     // axios
     // .get(`http://j3b102.p.ssafy.io:8080/mypage/tojalist`)
 
-
-
     axios
       .get(
-        `http://j3b102.p.ssafy.io:8080/mypage/myproject?oauthId=${store.state.userInfo.id}`
+        `${SERVER_URL}/mypage/myproject?oauthId=${store.state.userInfo.id}`
       )
       .then((res) => {
         console.log(store.state.userInfo.id);
