@@ -28,7 +28,7 @@
             <h3>{{ investPjt.pjtName }}</h3>
             <hr />
             <p style="font-size: 1.2em">
-              <span style="color: rgb(22, 150, 245);">없음</span>명 투자 중
+              <span style="color: rgb(22, 150, 245);">{{investPjt.investnum}}</span>명 투자 중
             </p>
             <!-- 카테고리 -->
             <div style="margin-bottom: 4%">
@@ -54,7 +54,7 @@
               <div style="display: inline-block; margin-left: 5%">
                 <h3
                   style="display: inline-block; color:rgb(22, 150, 245); font-weight: 600; margin-right: 5px"
-                >없음%</h3>
+                >{{investPjt.rate}}%</h3>
                 <h5 style="display: inline-block;">달성</h5>
               </div>
               <p style="font-size: 13px">
@@ -77,22 +77,44 @@
               <v-chip v-for="(tag, i) in investPjt.tags" :key="i" class="mr-1" small>#{{tag}}</v-chip>
             </div>
             <!-- 투자하기 버튼 -->
-            <v-btn class="investBtn white--text" style="width: 100%; height: 42px">
+            <v-btn :disabled="islogin==false" class="investBtn white--text" style="width: 100%; height: 42px" @click="oninvestbtn">
               <v-icon size="25" class="mr-1">mdi-cash-usd</v-icon>투자 하기
             </v-btn>
+            <!-- 투자하기 모달 -->
+            <v-dialog
+              v-model="investbtn"
+              scrollable
+              max-width="40%"
+              style="height: 400px"
+            >
+              <v-card>
+                <v-card-title class="headline lighten-2" style="padding-bottom: 0 !important">
+                  <h4 style="margin-left: 30px">투자하기</h4>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text style="padding: 50px 50px 30px 50px">
+                  <v-text-field class="moneyinput" v-model="investmoney" label="투자금액" required></v-text-field>
+                </v-card-text>
+                <!-- <v-divider></v-divider> -->
+                <v-card-actions style="background-color: white">
+                  <v-spacer></v-spacer>
+                  <v-btn text @click="investbtn = false">닫기</v-btn>
+                  <v-btn text color="blue" @click="oninvest">투자하기</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
             <!-- 좋아요 문의하기 버튼 -->
             <div style="display: flex; margin-top: 15px;">
-              <button style="flex: 1;" @click="likebtn">
+              <button :disabled="islogin==false" style="flex: 1;" @click="likebtn">
                 <div class="btns" style="margin-right: 5px">
                   <v-icon size="20" class="mr-2 like">mdi-heart</v-icon>{{likeCount}}
                 </div>
               </button>
-              <button style="flex: 1;">
+              <button :disabled="islogin==false" style="flex: 1;">
                 <div class="btns">
                   <v-icon size="20" class="mr-1">mdi-message-bulleted</v-icon>문의
                 </div>
               </button>
-              
             </div>
           </div>
         </div>
@@ -286,26 +308,25 @@
             </div>
             <!-- 댓글 -->
             <div v-if="tabItem=='comments'" class="my-4">
-              <div style="padding: 0 10%; margin-bottom: 50px">
-                <input v-model="comment" class="commentInput" type="text" placeholder="댓글을 입력해주세요." />
+              <div v-if="islogin" style="padding: 0 10%; margin-bottom: 50px">
+                <input v-model="comment" @keyup.enter="oncomment" class="commentInput" type="text" placeholder="댓글을 입력해주세요." />
                 <v-btn @click="oncomment" class="commentBtn">댓글</v-btn>
               </div>
-              <hr />
+              <hr v-if="islogin" />
               <p style="margin-left:10px">총 25건의 댓글이 있습니다.</p>
-              <div style="padding: 0 5%; display: flex; margin-bottom: 10px">
+              <div v-for="(comment, i) in commentList" :key="i" style="padding: 0 5%; display: flex; margin-bottom: 10px">
                 <div style="padding-right: 2%">
                   <v-avatar style="width: 60px; height: 60px">
-                    <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+                    <img :src="comment.profileImg" alt="John" />
                   </v-avatar>
                 </div>
                 <div>
                   <strong>
-                    <p style="display:inline; margin: 2px 0px 0px 3px;">솜사탕강쥐</p>
+                    <p style="display:inline; margin: 2px 0px 0px 3px;">{{comment.name}}</p>
                   </strong>
-                  <span class="ml-2" style="color: grey">2020.09.15</span>
-                  <v-btn icon><v-icon>mdi-trash-can-outline</v-icon></v-btn>
-                  <p
-                  >저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..</p>
+                  <span class="ml-2" style="color: grey">{{comment.createat}}</span>
+                  <v-btn icon v-if="comment.userid==userid" @click="delcomment(comment)"><v-icon>mdi-trash-can-outline</v-icon></v-btn>
+                  <p>{{comment.content}}</p>
                 </div>
               </div>
             </div>
@@ -323,6 +344,7 @@ import { VueperSlides, VueperSlide } from "vueperslides";
 import "vueperslides/dist/vueperslides.css";
 import axios from "axios";
 import store from "../../store/index.js";
+import Swal from "sweetalert2";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
@@ -334,6 +356,9 @@ export default {
   },
   data() {
     return {
+      // 로그인 여부
+      islogin: store.state.isSigned,
+      userid: store.state.userInfo.id,
       // 주소
       nowAddress: "",
       // 프로젝트 정보
@@ -355,6 +380,9 @@ export default {
       // 댓글
       commentList: [],
       comment: "",
+      // 투자하기 버튼
+      investbtn: false,
+      investmoney: "",
     };
   },
   mounted() {
@@ -365,7 +393,7 @@ export default {
     frm.append("userid", store.state.userInfo.id)
     axios.post(`${SERVER_URL}/investment/getDetail`, frm)
       .then(response => {
-        console.log(response)
+        // console.log(response)
         // 좋아요
         this.likeCount = response.data.object.likecount
         this.isliked = response.data.object.like
@@ -375,15 +403,35 @@ export default {
           $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
         }
         this.investPjt = response.data.object.object
+        // 댓글 사용자 정보 가져오기
+        this.commentList = this.investPjt.comments
+        this.commentList.forEach(comment=>{
+          comment.createat = `${comment.createat.substring(0, 4)}.${comment.createat.substring(5, 7)}.${comment.createat.substring(8, 10)}`
+          const fc = new FormData();
+          fc.append("userid", comment.userid)
+          axios.post(`${SERVER_URL}/util/userinfo`, fc)
+            .then(response=> {
+              this.$set(comment, "name", response.data.object.name)
+              this.$set(comment, "profileImg", response.data.object.profileImg)
+            })
+        })
+        // 투자한 사람 수 axios 보내기
+        axios.get(`${SERVER_URL}/funding/fundernum?campaignId=${this.investPjt.address}`)
+          .then(response => {
+            this.$set(this.investPjt, "investnum", response.data)
+          })
+        // 달성률 axios 보내기
+        const fr = new FormData();
+        fr.append("campaignId", this.investPjt.address)
+        axios.post(`${SERVER_URL}/funding/fundingrate`, fr)
+          .then(response => {
+            this.$set(this.investPjt, "rate", response.data);
+          })
         // 마감일 기준 남은날짜 계산
         const day = this.investPjt.deadLine.substring(8, 10);
         let today = new Date();
         today.setDate(day - today.getDate());
         this.$set(this.investPjt, "lastday", today.getDate());
-        // 사진 url 처리
-        // const cutUrl = this.investPjt.picture.substr(18, this.investPjt.picture.length - 17);
-        // const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
-        // this.investPjt.picture = imgUrl
         // 배경 이미지
         $('.investImg').css('background-image', `url(${this.investPjt.picture})`)
         // 글쓴이 소개글 엔터 변환
@@ -395,7 +443,7 @@ export default {
         fu.append("userid", this.investPjt.userid)
         axios.post(`${SERVER_URL}/util/userinfo`, fu)
           .then(response =>{
-            console.log(response)
+            // console.log(response)
             this.writer = response.data.object
           })
         // 금손 프로젝트 이력 가져오기
@@ -403,7 +451,7 @@ export default {
         fd.append("userid", this.investPjt.userid)
         axios.post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
           .then(response => {
-            console.log(response)
+            // console.log(response)
             this.projectList = response.data.object
             this.totalPage = response.data.object[0].totalpages
             this.projectList.forEach(item => {
@@ -442,7 +490,7 @@ export default {
         userid: store.state.userInfo.id
       })
         .then(response => {
-          console.log(response)
+          // console.log(response)
           this.likeCount = response.data.object.likecount
           if(response.data.object.likestate) {
             $('.like').css('color', 'red')
@@ -464,7 +512,18 @@ export default {
         })
     },
     oncomment() {
-      this.commentList.push(this.comment)
+      // const today = new Date();
+      // let year = today.getFullYear(); // 년도
+      // let month = today.getMonth() + 1;  // 월
+      // let date = today.getDate();  // 날짜
+      // const day = `${year}.${month}.${date}`
+      // this.commentList.push({
+      //   content: this.comment,
+      //   createat: day,
+      //   name: store.state.userInfo.name,
+      //   profileImg: store.state.userInfo.img,
+      //   userid: store.state.userInfo.id
+      // })
       axios.post(`${SERVER_URL}/investment/createcomment`, {
         address: this.$route.params.address,
         comment: this.comment,
@@ -472,8 +531,55 @@ export default {
       })
         .then(response => {
           console.log(response)
+          this.commentList.push(response.data.object)
         })
       this.comment = ""
+    },
+    delcomment(comment) {
+      const idx = this.commentList.indexOf(comment);
+      this.commentList.splice(idx, 1);
+      const fcd = new FormData();
+      fcd.append("num", comment.num)
+      // axios.delete(`${SERVER_URL}/investment/deletecomment`, )
+    },
+    oninvestbtn() {
+      this.investbtn = !this.investbtn
+    },
+    oninvest(){
+      // console.log('투자하기 버튼')
+      const fd = new FormData();
+      fd.append("Value", this.investmoney)
+      fd.append("accessToken", store.state.accessToken)
+      fd.append("campaignId", this.$route.params.address)
+      this.investmoney = ""
+      this.investbtn = false
+      axios.post(`${SERVER_URL}/funding/tofunding`, fd)
+        let timerInterval;
+        Swal.fire({
+          title: `${this.investPjt.pjtName}프로젝트에 투자하기`,
+          html: "<b></b> milliseconds 기다려주세요.",
+          timer: 5000,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+            timerInterval = setInterval(() => {
+              const content = Swal.getContent();
+              if (content) {
+                const b = content.querySelector("b");
+                if (b) {
+                  b.textContent = Swal.getTimerLeft();
+                }
+              }
+            }, 100);
+          },
+          onClose: () => {
+            clearInterval(timerInterval);
+          },
+        })
+        .then(response =>{
+          // console.log(response)
+        })
+      
     }
   }
 };
