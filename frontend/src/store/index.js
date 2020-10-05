@@ -25,9 +25,12 @@ export default new Vuex.Store({
             walletAddress: null
         },
 
+        // 지갑이 있는지 여부
+        iswallet: false,
+
         accessToken: null,
         address: null,
-        balance: null,
+        balance: "",
         charge: null,
 
         askusername: null,

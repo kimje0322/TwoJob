@@ -138,12 +138,14 @@
                           >
                             <i class="fas fa-comments"></i>
                           </span>
-                          <router-link
+                          <!-- <router-link
                             to="/chat"
                             style="text-decoration: none; color: black"
-                            ><span style="font-size: 18px" @click="onChat()"
+                            > -->
+                            <span style="font-size: 18px" @click="onChat()"
                               >채팅 목록</span
-                            ></router-link
+                            >
+                            <!-- </router-link -->
                           >
                         </div>
                       </div>
@@ -232,7 +234,9 @@ import Navbar from "../../components/Navbar.vue";
 import "@/../public/css/Mypage.scss";
 import Web3 from "web3";
 import Swal from "sweetalert2";
+import ChatRoom from "@/views/mypage/ChatRoom.vue";
 
+// const SERVER_URL = "https://www.twojob.ga/api";
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
@@ -294,6 +298,7 @@ export default {
   },
   components: {
     Navbar,
+    ChatRoom,
   },
   mounted() {
     this.userimg = store.state.userInfo.img;

@@ -40,7 +40,7 @@
                       style="margin: auto"
                     >
                       <v-img height="250" :src="item.picture"></v-img>
-                      <v-card-title style="font-weight: 300; margin: auto">
+                      <v-card-title style="font-weight: 600; margin: auto; color: rgba(0, 0, 0, 0.87); font-family: BPreplayExtended;">
                         <p v-if="item.pjtname.length > 6">
                             {{ item.pjtname.substring(0, 8) }} ...
                         </p>
@@ -63,8 +63,8 @@
                         </div> -->
                       </v-card-title>
                       <!-- max-height: 120px -->
-                      <v-card-text style="">
-                        <div style="margin-bottom: 15px">
+                      <v-card-text style="height: 70px;">
+                        <div style="margin-bottom: 10px; font-size: 0.875rem; font-weight:400; line-height: 1.375rem; letter-spacing: 0.0071428571em; color: rgb(0, 0, 0, 0.6)">
                           {{ item.onelineintro }}
                         </div>
                         <!-- <div style="color: black">
