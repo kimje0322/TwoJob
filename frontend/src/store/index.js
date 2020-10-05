@@ -29,8 +29,15 @@ export default new Vuex.Store({
         balance: null,
         charge: null,
 
+        askusername: null,
+        askuserid: null,
+
     },
     mutations: {
+        setAsk(state, askusername, askuserid) {
+            state.askusername = askusername;
+            state.askuserid = askuserid;
+        },
         setCharge(state, charge) {
             state.charge = charge;
         },
@@ -59,7 +66,7 @@ export default new Vuex.Store({
         },
         setUserInfo(state, userinfo) {
             console.log(userinfo)
-            // state.userInfo.email = userinfo.email;
+                // state.userInfo.email = userinfo.email;
             state.userInfo.id = userinfo.id;
             state.userInfo.name = userinfo.name;
             state.userInfo.img = userinfo.img;
