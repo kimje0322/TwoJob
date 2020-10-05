@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.blocker.dto.InvestmentDto;
+import java.lang.String;
 
 @Repository
 public interface InvestmentRepository extends JpaRepository<InvestmentDto, String> {
@@ -20,10 +21,10 @@ public interface InvestmentRepository extends JpaRepository<InvestmentDto, Strin
 //	List<InvestmentDto> findAllByuseridWithoutPageNav(String userid);
 
 	Optional<InvestmentDto> findInvestmentDtoByAddress(String address);
-
 	@Query(value = "select * from investmentboard order by createat", countQuery = "select count(*) from investmentboard order by createat", nativeQuery = true)
 	Page<InvestmentDto> findAllInvestmentDtoOrderbyCreatedat(Pageable page);
 
 	@Query(value = "select * from investmentboard i order by (select count(*) from likeboard where address = i.address) desc", nativeQuery = true)
 	Page<InvestmentDto> findAllInvestmentDtoOrderbyLikecount(Pageable page);
+	List<InvestmentDto> findByIsfinishOrderByDeadlineAsc(Boolean flag);
 }
