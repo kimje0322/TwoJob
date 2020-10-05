@@ -8,11 +8,11 @@
       <div style="margin-top: 45px; margin-right: 5%">
         <!-- <img :src="userimg" style="height: 100px; border-radius: 50%" /> -->
         <v-avatar style="width: 150px; height: 150px">
-          <img :src="userimg" alt="John" />
+          <img :src="pageuserimg" alt="John" />
         </v-avatar>
         <div style="text-align: center; margin-top: 20px">
-          <h5>{{ username }} 님</h5>
-          <p v-if="iswallet">총 {{ userbalance }} 원</p>
+          <h5>{{ pageusername }} 님</h5>
+          <p v-if="iswallet">총 {{ pageuserbalance }} 원</p>
           <div style="margin-top: 50px">
             <router-link to="/" style="text-decoration: none">
               <v-btn class="logoutBtn" @click="onLogout">로그아웃</v-btn>
@@ -302,20 +302,42 @@ export default {
   mounted() {
     var idx = window.location.href.indexOf("mypage");
     console.log(idx);
-    var pageid = window.location.href.substring(
+    const pageid = window.location.href.substring(
       idx + 7,
-      window.location.href.length - 1
+      window.location.href.length
     );
     console.log(pageid);
-    console.log(pageid + "asdfadsddd");
-
+    // console.log(pageid + "asdfadsddd");
+    console.log(typeof pageid)
     const fd = new FormData();
     fd.append("userid", pageid);
     console.log("pageid" + pageid)
-    axios.post(`${SERVER_URL}/util/userinfo`, fd).then((res) => {
+    this.pageuserid = pageid
+    axios.post(`${SERVER_URL}/util/userinfo`, fd ).then((res) => {
       console.log("성공인가??");
       console.log(res)
+      this.pageuserimg = res.data.object.profileImg;
+      this.pageusername = res.data.object.name;
+      this.pageuseraccestoken = res.data.object.accessToken
     });
+
+
+    axios
+      .get(`${SERVER_URL}/wallet/toid?oauthid=${this.pageuserid}`)
+      .then((res) => {
+        this.pageuserbalance = res.data.balance
+        console.log(res.data.balance);
+        // this.mywallet = res.data.address;
+        // console.log("여기여기``");
+        // console.log(this.mywallet);
+        // this.iswallet = true;
+        // store.commit("setBalance", res.data.balance);
+        // store.state.balance = res.data.balance;
+        // console.log(store.state.balance + 123123);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
@@ -338,6 +360,12 @@ export default {
   },
   data() {
     return {
+      pageuserid: "",
+      pageuserimg: "",
+      pageusername: "",
+      pageuseraccestoken: "",
+      pageuserbalance: "",
+
       investnum: "",
       shoppingnum: "",
       iswallet: true,

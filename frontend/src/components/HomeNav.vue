@@ -235,7 +235,8 @@ export default {
       } else if (title == '쇼핑 프로젝트') {
         this.$router.push('/shoppinghome');
       } else if (title == '마이페이지') {
-        this.$router.push('/mypage');
+        // this.$router.push('/mypage');
+        this.$router.push({ name: 'Mypage', params: { userid: this.userInfo.id}})
       } else if (title == '로그아웃'){
         this.onLogout();
       }
