@@ -35,7 +35,7 @@ public class ScheduleTask extends Thread {
 			e.printStackTrace();
 		}
 	}
-	public void work(){
+	public synchronized void work(){
 		try {
 			BigDecimal result = fundingService.getfundingrate(campaignId);
 			if(result.compareTo(new BigDecimal("100")) == -1) {

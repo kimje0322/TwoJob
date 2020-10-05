@@ -13,6 +13,6 @@ public interface FundingService {
 	public String getPepleNum(String campaignId) throws Exception;
 	public String sellItem(String accessToken,String campaignId, Integer cnt, Integer money) throws Exception;
 	public BigDecimal getfundingrate(String campaignId) throws Exception;
-	public void makeAllTask();
+	public void makeAllTask() throws Exception;
 	public Map<String, String> getMyProject(String oauthId) throws Exception;
 }

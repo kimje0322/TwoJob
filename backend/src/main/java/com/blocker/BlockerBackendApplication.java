@@ -27,7 +27,7 @@ public class BlockerBackendApplication implements CommandLineRunner{
 	}
 	@Override
 	public void run(String... args) throws Exception {
-		//fundingService.makeAllTask();
+		fundingService.makeAllTask();
 	}
 
 }
