@@ -2,23 +2,35 @@ package com.blocker.service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.Tuple;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 
+import com.blocker.dto.BlockTransaction;
 import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.Member;
 import com.blocker.dto.Property;
+import com.blocker.dto.SaleBoardDto;
+import com.blocker.dto.TransactType;
 import com.blocker.dto.Wallet;
+import com.blocker.repository.BlockTransactionRepository;
 import com.blocker.repository.InvestmentRepository;
+import com.blocker.repository.MemberRepository;
+import com.blocker.repository.SaleBoardRepository;
 import com.blocker.repository.WalletRepository;
 import com.blocker.wrapper.CrowdFunding;
 
@@ -28,11 +40,18 @@ public class FundingServiceImpl implements FundingService{
 	@Autowired
 	Property property;
 	@Autowired
+	MemberRepository memberRepository;
+	@Autowired
 	LoginService loginService;
 	@Autowired
 	WalletRepository walletRepository;
 	@Autowired
 	InvestmentRepository investmentRepository;
+	@Autowired
+	SaleBoardRepository saleBoardRepository;
+	@Autowired
+	BlockTransactionRepository blockTransactionRepository;
+
 	@Override
 	public void Deploy() throws Exception {
 		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
@@ -56,8 +75,11 @@ public class FundingServiceImpl implements FundingService{
 					Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
 					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-					contract.createCampaign(String.valueOf(myInvest.getAddress()), Convert.toWei(String.valueOf(myInvest.getGoalprice()), Convert.Unit.ETHER).toBigInteger(), new BigInteger("123123123123")).send();
+					TransactionReceipt tr = contract.createCampaign(String.valueOf(myInvest.getAddress()), Convert.toWei(String.valueOf(myInvest.getGoalprice()), Convert.Unit.ETHER).toBigInteger()).send();
 					System.out.println("캠페인 생성 완료!");
+					BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),tr.getFrom(),m.getProfileImg(),Double.valueOf("0"),TransactType.CREATE,1);
+					blockTransactionRepository.save(transact);
+					makeTask(myInvest);
 					return "success";
 				}else {
 					return "noInvest";
@@ -89,7 +111,8 @@ public class FundingServiceImpl implements FundingService{
 					System.out.println("후 = " +contract.isValid());
 					System.out.println("주소? " + myInvest.getAddress());
 					TransactionReceipt tr =contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getAddress()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
-					System.out.println(tr);
+					BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),tr.getFrom(),m.getProfileImg(),Double.valueOf(value),TransactType.FUND,1);
+					blockTransactionRepository.save(transact);
 					System.out.println("fundingCampaign succss");
 					return "success";
 				}else {
@@ -104,53 +127,56 @@ public class FundingServiceImpl implements FundingService{
 			return String.valueOf(result);
 		}
 	}
-	public String receiveFund(String accessToken, String campaignid) throws Exception {
-		Object result =  loginService.getUserInfo(accessToken);
-		if(result.getClass() == Member.class) {
-			Member m = (Member)result;
-			Optional<Wallet> wallets = walletRepository.findById(m.getOauthId());
-			Optional<InvestmentDto> Invest = investmentRepository.findById(campaignid);
-			if(wallets.isPresent()) {
-				if(Invest.isPresent()) {
-					Wallet mywallet = wallets.get();
-					InvestmentDto myInvest = Invest.get();
-					Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
-					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
-					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-					contract.receiveFunds(property.getTokenAddr(), String.valueOf(myInvest.getAddress())).send();
-					System.out.println("receiveFund Success");
-					return "success";
-				}else {
-					return "noInvest";
-				}
-			}else {
-				return "noWallet";
+	public String receiveFund(String campaignid) throws Exception {
+		Optional<InvestmentDto> Invest = investmentRepository.findById(campaignid);
+		if(Invest.isPresent()) {
+			InvestmentDto myInvest = Invest.get();
+			Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+			Credentials credentials = Credentials.create(property.getAdminPK());
+			CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+			TransactionReceipt tr = contract.receiveFunds(property.getTokenAddr(), String.valueOf(myInvest.getAddress())).send();
+			Optional<Wallet> mywallet = walletRepository.findByAddress(contract.getCampaign(campaignid,property.getAdminAddr()).send().component2());
+			Optional<Member> m =memberRepository.findById(mywallet.get().getOauthId());
+			List<BlockTransaction> list = blockTransactionRepository.findByToaddressAndType(myInvest.getAddress(),TransactType.FUND);
+			long value = 0;
+			for(int i=0; i<list.size(); i++) {
+				value+= list.get(i).getValue();
 			}
-		}else if(result.getClass() == String.class){
-			return (String)result;
+			BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),m.get().getProfileImg(),mywallet.get().getAddress(),Double.valueOf(value),TransactType.RECEIVE,1);
+			blockTransactionRepository.save(transact);
+			System.out.println("receiveFund Success");
+			return "success";
 		}else {
-			return String.valueOf(result);
+			return "noInvest";
 		}
 	}
 	@Override
-	public void reFund(String campaignId) throws Exception {
-		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
-		Credentials credentials = Credentials.create(property.getAdminPK());
-		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-		contract.Refund(property.getTokenAddr(), campaignId).send();
-		System.out.println("환불 완료");
+	public String reFund(String campaignId) throws Exception {
+		Optional<InvestmentDto> Invest = investmentRepository.findById(campaignId);
+		if(Invest.isPresent()) {
+			InvestmentDto myInvest = Invest.get();
+			Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+			Credentials credentials = Credentials.create(property.getAdminPK());
+			CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+			TransactionReceipt tr = contract.Refund(property.getTokenAddr(), campaignId).send();
+			List<BlockTransaction> list = blockTransactionRepository.findByToaddressAndType(myInvest.getAddress(),TransactType.FUND);
+			for(int i=0; i<list.size(); i++) {
+				String address = list.get(i).getFromaddress();
+				Optional<Wallet> mywallet = walletRepository.findByAddress(address);
+				Optional<Member> m =memberRepository.findById(mywallet.get().getOauthId());
+				Double value = list.get(i).getValue();
+				BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),m.get().getProfileImg(),mywallet.get().getAddress(),value,TransactType.REFUND,1);
+				blockTransactionRepository.save(transact);
+			}
+			System.out.println("환불 완료");
+			return "success";
+		}else {
+			return "noInvest";
+		}
 	}
+
 	@Override
-	public String getPepleNum(String campaignId) throws Exception {
-		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
-		Credentials credentials = Credentials.create(property.getAdminPK());
-		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-		String val = String.valueOf(contract.getPeopleNum(campaignId).send());
-		System.out.println(val);
-		return val;
-	}
-	@Override
-	public String sellItem(String accessToken,String campaignId, int cnt, int money) throws Exception {
+	public String sellItem(String accessToken,String campaignId, Integer cnt, Integer money) throws Exception {
 		Object result =  loginService.getUserInfo(accessToken);
 		if(result.getClass() == Member.class) {
 			Member m = (Member)result;
@@ -158,10 +184,35 @@ public class FundingServiceImpl implements FundingService{
 			if(wallets.isPresent()) {
 				Optional<InvestmentDto> invest = investmentRepository.findById(campaignId);
 				if(invest.isPresent()) {
+					InvestmentDto myInvest = invest.get();
+					Wallet mywallet = wallets.get();
 					Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
 					Credentials credentials = Credentials.create(property.getAdminPK());
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());		
-					contract.SaleItem(property.getTokenAddr(), campaignId, BigInteger.valueOf(cnt), BigInteger.valueOf(money)).send();
+					TransactionReceipt tr = contract.SaleItem(property.getTokenAddr(), campaignId, mywallet.getAddress(),BigInteger.valueOf(cnt), BigInteger.valueOf(money)).send();
+					Double val = (double)(cnt*money)/2;
+					Double value = Math.round((val) * 100) / 100.0;
+					BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),mywallet.getAddress(),m.getProfileImg(),value,TransactType.SALE,2);
+					blockTransactionRepository.save(transact);
+//					List<BlockTransaction> list = blockTransactionRepository.findAddress(myInvest.getAddress(),TransactType.FUND);
+//					for(int i=0; i<list.size(); i++) {
+//						String address = list.get(i).getFromaddress();
+//						Optional<Wallet> wallet2 = walletRepository.findByAddress(address);
+//						Optional<Member> m2 =memberRepository.findById(wallet2.get().getOauthId());
+//						BigInteger fundraise = contract.getCampaign(address, property.getAdminAddr()).send().component4();
+//						BigInteger investraise = contract.getCampaign(address, property.getAdminAddr()).send().component5();
+//						BigDecimal dfundraise = new BigDecimal(fundraise);
+//						BigDecimal dinvestraise = new BigDecimal(investraise);
+//						BigDecimal resultval = new BigDecimal("0");
+//						if(dfundraise.equals(new BigDecimal("0"))) {
+//							resultval = new BigDecimal("0");
+//						}else {
+//							resultval = dinvestraise.divide(dfundraise,3, BigDecimal.ROUND_HALF_UP);
+//						}
+//						BigDecimal myval = BigDecimal.valueOf(value).multiply(resultval);
+//						BlockTransaction transact2 = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),m2.get().getProfileImg(),wallet2.get().getAddress(),myval.doubleValue(),TransactType.SALEPARTIN,2);
+//						blockTransactionRepository.save(transact2);
+//					}
 					System.out.println("판매완료!");
 					return "scucess";
 				}else {
@@ -184,10 +235,13 @@ public class FundingServiceImpl implements FundingService{
 			Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
 			Credentials credentials = Credentials.create(property.getAdminPK());
 			CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-			BigInteger fundingGoal = contract.getCampaign(campaignId).send().component3();
-			BigInteger fundingval = contract.getCampaign(campaignId).send().component4();
+			BigInteger fundingGoal = contract.getCampaign(campaignId,property.getAdminAddr()).send().component3();
+			BigInteger fundingval = contract.getCampaign(campaignId,property.getAdminAddr()).send().component4();
 			BigDecimal dfundingval = new BigDecimal(fundingval);
 			BigDecimal dfundingGoal = new BigDecimal(fundingGoal);
+			if(dfundingGoal.equals(new BigDecimal("0"))) {
+				return new BigDecimal("0");
+			}
 			BigDecimal result = dfundingval.divide(dfundingGoal,3, BigDecimal.ROUND_HALF_UP);
 			BigDecimal perResult = result.multiply(new BigDecimal(100));
 			return perResult;
@@ -202,9 +256,105 @@ public class FundingServiceImpl implements FundingService{
 		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
 
 		//System.out.println(contract.test(property.getTokenAddr(), new BigInteger("100")).send());
-		System.out.println(contract.getAddress().send());
+		//System.out.println(contract.getAddress().send());
 		//System.out.println(contract.getSender().send());
-		System.out.println(contract.getCampaign(campaignId).send());
+		System.out.println(contract.getCampaign(campaignId,property.getAdminAddr()).send());
 		System.out.println(contract.getBalance(property.getTokenAddr()).send());
+	}
+	@Override
+	public String createSale(String accessToken, String id) throws Exception {
+		Object result =  loginService.getUserInfo(accessToken);
+		if(result.getClass() == Member.class) {
+			Member m = (Member)result;
+			Optional<Wallet> wallets = walletRepository.findById(m.getOauthId());
+			Optional<SaleBoardDto> Invest = saleBoardRepository.findById(id);
+			if(wallets.isPresent()) {
+				if(Invest.isPresent()) {
+					Wallet mywallet = wallets.get();
+					SaleBoardDto myInvest = Invest.get();
+					Optional<InvestmentDto> Invest1 = investmentRepository.findById(myInvest.getInvestaddress());
+					Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
+					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+					TransactionReceipt tr = contract.createSale(myInvest.getInvestaddress(), BigInteger.valueOf(myInvest.getSaleprice()), myInvest.getPicture()).send();
+					System.out.println("캠페인 생성 완료!");
+					BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),Invest1.get().getAddress(),Invest1.get().getPjtname(),tr.getFrom(),m.getProfileImg(),Double.valueOf("0"),TransactType.SALEOPEN,2);
+					blockTransactionRepository.save(transact);
+					return "success";
+				}else {
+					return "noInvest";
+				}
+			}else {
+				return "noWallet";
+			}
+		}else if(result.getClass() == String.class){
+			return (String)result;
+		}else {
+			return String.valueOf(result);
+		}
+	}
+	@Override
+	public String getPepleNum(String campaignId) throws Exception {
+		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+		Credentials credentials = Credentials.create(property.getAdminPK());
+		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+		String val = String.valueOf(contract.getPeopleNum(campaignId).send());
+		System.out.println(val);
+		return val;
+	}
+	@Override
+	public String getNowRaised(String campaignId) throws Exception {
+		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+		Credentials credentials = Credentials.create(property.getAdminPK());
+		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+		String val = String.valueOf(contract.getCampaign(campaignId, property.getAdminAddr()).send().component4());
+		System.out.println(val);
+		return val;
+	}
+	@Override
+	public Map<String, String> getMyProject(String oauthId) throws Exception{
+		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+		Credentials credentials = Credentials.create(property.getAdminPK());
+		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+		Map<String, String> result = new HashMap<String, String>();
+		Optional<Wallet> mywallet = walletRepository.findById(oauthId);
+		if(mywallet.isPresent()) {
+			String address = mywallet.get().getAddress();
+			BigInteger createNum = contract.getInfo(address).send().component1();
+			BigInteger partInNum = contract.getInfo(address).send().component2();
+			BigInteger saleNum = contract.getInfo(address).send().component3();
+			BigInteger partInsaleNum = contract.getInfo(address).send().component4();
+			result.put("createNum", String.valueOf(createNum));
+			result.put("partInNum", String.valueOf(partInNum));
+			result.put("saleNum", String.valueOf(saleNum));
+			result.put("partInSaleNum", String.valueOf(partInsaleNum));
+		}
+		return result;
+	}
+	public void makeAllTask() throws Exception {
+		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+		Credentials credentials = Credentials.create(property.getAdminPK());
+		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+
+		ExecutorService service = Executors.newFixedThreadPool(1);
+		List<InvestmentDto> list = investmentRepository.findByIsfinishOrderByDeadlineAsc(false);
+		for(int i=0; i<list.size(); i++) {
+			BigInteger val = contract.getCampaign(list.get(i).getAddress(), property.getAdminAddr()).send().component6();
+			if(val.equals(new BigInteger("1"))) {
+				service.submit(makeTask(list.get(i)));
+			}
+		}
+	}
+	public ScheduleTask makeTask(InvestmentDto invest) {
+		String dead = invest.getDeadline();
+		String year = dead.split("/")[0];
+		String month = dead.split("/")[1];
+		String day = dead.split("/")[2];
+		month = month.charAt(0)=='0'?month.substring(1,2):month;
+		day = day.charAt(0)=='0'?day.substring(1,2):day;
+		ScheduleTask task = new ScheduleTask(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day), invest.getAddress());
+		//task.start();
+		System.out.println("task 생성완료!");
+		return task;
 	}
 }

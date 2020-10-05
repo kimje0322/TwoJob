@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -295,7 +296,6 @@ public class InvestController {
 				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
 					BoardCategoryMapping nextiter = iter.next();
 					String investaddress = nextiter.getInvestaddress();
-					System.out.println("investaddress=====>" + investaddress);
 					Optional<InvestmentDto> investmentDto = investmentService.getInvestment(investaddress);
 					if (investmentDto.isPresent()) {
 						InvestmentResponse investmentResponse = new InvestmentResponse();
@@ -466,6 +466,48 @@ public class InvestController {
 			result.object = null;
 			result.data = "fail";
 			result.status = true;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+
+	@DeleteMapping("/deletecomment")
+	@ApiOperation(value = "댓글 삭제")
+	public void deleteComment(@RequestParam int num) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			int data = commentBoardService.deleteComment(num);
+			System.out.println("data====>" + data);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("댓글 삭제 도중 error발생");
+		}
+	}
+
+	@GetMapping("/curation")
+	@ApiOperation(value = "마감임박과 인기순 3개씩 보내주는 함수")
+	public Object curation() {
+		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
+		try {
+			List<InvestmentDto> popular = investmentService.getThreeInvestmentListOrderbyLikecount();
+			List<Integer> likecount = new ArrayList<>();
+			map.put("closedeadlines", investmentService.getThreeInvestmentListOrderbyDeadline());
+			map.put("popular", popular);
+			for (Iterator<InvestmentDto> iter = popular.iterator(); iter.hasNext();) {
+				InvestmentDto investmentDto = iter.next();
+				likecount.add(likeBoardService.likeCount(investmentDto.getAddress()));
+			}
+			map.put("likecount", likecount);
+			result.object = map;
+			result.data = "success";
+			result.status = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("curation error");
+			result.object = null;
+			result.data = "fail";
+			result.status = false;
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}

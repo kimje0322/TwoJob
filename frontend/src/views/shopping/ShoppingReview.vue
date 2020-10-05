@@ -77,7 +77,7 @@ import axios from "axios";
 import "../../../public/css/ShoppingHome.scss";
 import { componentsPlugin } from 'bootstrap-vue';
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   data() {

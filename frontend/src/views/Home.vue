@@ -173,9 +173,9 @@ import HomeNav from "../components/HomeNav.vue";
 import Web3 from "web3";
 import { registerWallet } from "@/api/wallet.js";
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
-const redirect_uri = "http://j3b102.p.ssafy.io:8080";
+const redirect_uri = "https://www.twojob.ga/api";
 
 export default {
   mounted() {

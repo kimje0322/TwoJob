@@ -30,8 +30,10 @@ import com.blocker.dto.BoardTagDto;
 import com.blocker.dto.CommentBoardDto;
 import com.blocker.dto.EditorSaleDto;
 import com.blocker.dto.InvestmentDto;
+import com.blocker.dto.LikeBoardDto;
 import com.blocker.dto.ReviewDto;
 import com.blocker.dto.SaleBoardDto;
+import com.blocker.repository.BoardCategoryMapping;
 import com.blocker.repository.BoardCategoryRepository;
 import com.blocker.repository.BoardTagRepository;
 import com.blocker.repository.EditorSaleRepository;
@@ -40,14 +42,17 @@ import com.blocker.repository.ReviewRepository;
 import com.blocker.repository.SaleBoardRepository;
 import com.blocker.repository.TagRepository;
 import com.blocker.request.CreateCommentRequest;
+import com.blocker.request.CreateLikeRequest;
 import com.blocker.request.ReviewsResponse;
 import com.blocker.request.SaleBoardRequest;
 import com.blocker.request.SaleBoardResponse;
 import com.blocker.request.SaleBoardReviewRequest;
 import com.blocker.request.SaleDetailResponse;
+import com.blocker.service.BoardCategoryService;
 import com.blocker.service.CommentBoardService;
 import com.blocker.service.EditorSaleService;
 import com.blocker.service.InvestmentService;
+import com.blocker.service.LikeBoardService;
 import com.blocker.service.ReviewService;
 import com.blocker.service.SaleService;
 import com.blocker.util.BasicResponse;
@@ -78,6 +83,10 @@ public class SaleController {
 	BoardCategoryRepository boardCategoryRepository;
 	@Autowired
 	BoardTagRepository boardTagRepository;
+	@Autowired
+	BoardCategoryService boardCategoryService;
+	@Autowired
+	LikeBoardService likeBoardService;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "판매 게시글 생성")
@@ -148,38 +157,79 @@ public class SaleController {
 	}
 
 	@GetMapping("/getAllSaleList/{page}")
-	@ApiOperation(value = "모든 판매 게시글 리스트 가져오기")
-	public Object getAllSaleList(@PathVariable int page) {
+	@ApiOperation(value = "저장되어있는 모든사람의 판매 게시글을보여줌 orderOption = 0전체 1최신 2 인기")
+	public Object getAllSaleList(@PathVariable int page, @RequestParam List<String> categoryfilter,
+			@RequestParam int orderOption) {
 		final BasicResponse result = new BasicResponse();
 		List<SaleBoardResponse> resultDatalist = new ArrayList<>();
-		List<SaleBoardDto> list = saleService.getAllSaleList(page);
 
 		try {
-			for (Iterator<SaleBoardDto> iter = list.iterator(); iter.hasNext();) {
-				SaleBoardDto saleBoardDto = iter.next();
-				EditorSaleDto editorSaleDto = editorSaleRepository
-						.findEditorSaleDtoByAddress(saleBoardDto.getAddress());
-				InvestmentDto investmentDto = investmentService.getInvestment(saleBoardDto.getInvestaddress()).get();
-				SaleBoardResponse data = new SaleBoardResponse();
-				if (!editorSaleDto.getEditorhtml().isEmpty()) {
-					data.setEditorhtml(editorSaleDto.getEditorhtml());
+			if (categoryfilter.isEmpty()) {
+				Page<SaleBoardDto> list = null;
+				if (orderOption == 0) {
+					list = saleService.getAllSaleList(page);
+				} else {
+					list = saleService.getAllSaleList(page, orderOption);
 				}
-				data.setAddress(saleBoardDto.getAddress());
-				data.setInvestaddress(saleBoardDto.getInvestaddress());
-				data.setPicture(saleBoardDto.getPicture());
-				data.setPjtname(saleBoardDto.getPjtname());
-				data.setSaleprice(saleBoardDto.getSaleprice());
-				data.setStartdate(saleBoardDto.getStartdate());
-				data.setUrl(saleBoardDto.getUrl());
-				data.setUserid(saleBoardDto.getUserid());
-				data.setIsfinish(saleBoardDto.isIsfinish());
-				data.setCompname(investmentDto.getCompname());
-				data.setOnelineintro(investmentDto.getOnelineintro());
-				resultDatalist.add(data);
+				for (Iterator<SaleBoardDto> iter = list.getContent().iterator(); iter.hasNext();) {
+					SaleBoardDto saleBoardDto = iter.next();
+					EditorSaleDto editorSaleDto = editorSaleRepository
+							.findEditorSaleDtoByAddress(saleBoardDto.getAddress());
+					InvestmentDto investmentDto = investmentService.getInvestment(saleBoardDto.getInvestaddress())
+							.get();
+					SaleBoardResponse data = new SaleBoardResponse();
+					if (!editorSaleDto.getEditorhtml().isEmpty()) {
+						data.setEditorhtml(editorSaleDto.getEditorhtml());
+					}
+					data.setAddress(saleBoardDto.getAddress());
+					data.setInvestaddress(saleBoardDto.getInvestaddress());
+					data.setPicture(saleBoardDto.getPicture());
+					data.setPjtname(saleBoardDto.getPjtname());
+					data.setSaleprice(saleBoardDto.getSaleprice());
+					data.setStartdate(saleBoardDto.getStartdate());
+					data.setUrl(saleBoardDto.getUrl());
+					data.setUserid(saleBoardDto.getUserid());
+					data.setIsfinish(saleBoardDto.isIsfinish());
+					data.setCompname(investmentDto.getCompname());
+					data.setOnelineintro(investmentDto.getOnelineintro());
+					data.setTotalpage(list.getTotalPages());
+					resultDatalist.add(data);
+				}
+			} else {
+				Page<BoardCategoryMapping> list = boardCategoryService.getAllInvestmentListWithCategory(page,
+						categoryfilter, orderOption);
+				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
+					BoardCategoryMapping nextiter = iter.next();
+					String investaddress = nextiter.getInvestaddress();
+					Optional<SaleBoardDto> saleBoardDto = saleBoardRepository
+							.findSaleBoardDtoByInvestaddress(investaddress);
+
+					if (saleBoardDto.isPresent()) {
+						InvestmentDto investmentDto = investmentService.getInvestment(investaddress).get();
+						SaleBoardResponse data = new SaleBoardResponse();
+						EditorSaleDto editorSaleDto = editorSaleRepository
+								.findEditorSaleDtoByAddress(saleBoardDto.get().getAddress());
+						if (!editorSaleDto.getEditorhtml().isEmpty()) {
+							data.setEditorhtml(editorSaleDto.getEditorhtml());
+						}
+						data.setAddress(saleBoardDto.get().getAddress());
+						data.setInvestaddress(saleBoardDto.get().getInvestaddress());
+						data.setPicture(saleBoardDto.get().getPicture());
+						data.setPjtname(saleBoardDto.get().getPjtname());
+						data.setSaleprice(saleBoardDto.get().getSaleprice());
+						data.setStartdate(saleBoardDto.get().getStartdate());
+						data.setUrl(saleBoardDto.get().getUrl());
+						data.setUserid(saleBoardDto.get().getUserid());
+						data.setIsfinish(saleBoardDto.get().isIsfinish());
+						data.setCompname(investmentDto.getCompname());
+						data.setOnelineintro(investmentDto.getOnelineintro());
+						data.setTotalpage(list.getTotalPages());
+						resultDatalist.add(data);
+					}
+				}
 			}
 			result.data = "success";
 			result.object = resultDatalist;
-			result.status = true;
 			result.status = true;
 		} catch (Exception e) {
 			result.data = "fail";
@@ -219,10 +269,11 @@ public class SaleController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@GetMapping("/getDetail")
+	@PostMapping("/getDetail")
 	@ApiOperation(value = "판매 디테일페이지 가져오기")
-	public Object getDetail(@RequestParam String address) {
+	public Object getDetail(@RequestParam String address, @RequestParam String userid) {
 		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
 		try {
 			Optional<SaleBoardDto> opSaleBoardDto = saleService.getSaleBoard(address);
 			if (opSaleBoardDto.isPresent()) {
@@ -252,9 +303,22 @@ public class SaleController {
 
 				saleDetailResponse.setUrl(tempInvestmentDto.getUrl());
 				saleDetailResponse.setIntroduce(tempInvestmentDto.getIntroduce());
+				map.put("object", saleDetailResponse);
+
+				// like
+				CreateLikeRequest createLikeRequest = new CreateLikeRequest();
+				createLikeRequest.setAddress(address);
+				createLikeRequest.setUserid(userid);
+				Optional<LikeBoardDto> like = likeBoardService.findLike(createLikeRequest);
+				if (like.isPresent()) {
+					map.put("like", like.get().isIschecked());
+				} else {
+					map.put("like", false);
+				}
+				map.put("likecount", likeBoardService.likeCount(address));
 
 				result.data = "success";
-				result.object = saleDetailResponse;
+				result.object = map;
 				result.status = true;
 			} else {
 				result.data = "success";
@@ -304,6 +368,7 @@ public class SaleController {
 			List<ReviewDto> reviews = reviewService.getReviews(address);
 			Map<String, Double> data = new HashMap<>();
 			totalCount = reviews.size();
+			data.put("reviewtotalcount", totalCount);
 			for (Iterator<ReviewDto> iter = reviews.iterator(); iter.hasNext();) {
 				ReviewDto reviewDto = iter.next();
 
@@ -326,6 +391,35 @@ public class SaleController {
 			result.object = null;
 			result.data = "fail";
 			result.status = true;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+
+	@GetMapping("/curation")
+	@ApiOperation(value = "오픈예정과 인기순 3개씩 보내주는 함수")
+	public Object curation() {
+		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
+		try {
+			List<SaleBoardDto> popular = saleService.getThreeSaleListOrderbyLikecount();
+			List<Integer> likecount = new ArrayList<>();
+			map.put("closeopen", saleService.getThreeSaleListOrderbyStartdate());
+			map.put("popular", popular);
+			for (Iterator<SaleBoardDto> iter = popular.iterator(); iter.hasNext();) {
+				SaleBoardDto saleBoardDto = iter.next();
+				likecount.add(likeBoardService.likeCount(saleBoardDto.getAddress()));
+			}
+			map.put("likecount", likecount);
+			result.object = map;
+			result.data = "success";
+			result.status = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("curation error");
+			result.object = null;
+			result.data = "fail";
+			result.status = false;
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}

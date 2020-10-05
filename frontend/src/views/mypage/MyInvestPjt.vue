@@ -225,7 +225,7 @@ import Web3 from "web3";
 import Swal from "sweetalert2";
 import "../../../public/css/MyInvestPjt.scss";
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   data() {

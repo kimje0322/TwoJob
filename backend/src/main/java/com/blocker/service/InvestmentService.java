@@ -36,12 +36,18 @@ public class InvestmentService {
 		PageRequest pagerequest = PageRequest.of(page, 9);
 		// 최신순
 		if (orderOption == 1) {
-			System.out.println(1);
 			return investmentRepository.findAllInvestmentDtoOrderbyCreatedat(pagerequest);
 		} else {//인기순
-			System.out.println(2);
 			return investmentRepository.findAllInvestmentDtoOrderbyLikecount(pagerequest);
 		}
+	}
+	
+	public List<InvestmentDto> getThreeInvestmentListOrderbyDeadline(){
+		return investmentRepository.findThreeInvestmentboardOrderbyDeadline();
+	}
+	
+	public List<InvestmentDto> getThreeInvestmentListOrderbyLikecount(){
+		return investmentRepository.findThreeInvestmentboardOrderbyLikecount();
 	}
 
 }

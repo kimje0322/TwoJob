@@ -138,7 +138,7 @@
 import Navbar from "../../components/Navbar.vue";
 import "../../../public/css/InvestProject.scss";
 import axios from "axios";
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
