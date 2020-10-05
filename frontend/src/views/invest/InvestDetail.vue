@@ -362,9 +362,19 @@ export default {
     // 투자 프로젝트 정보 가져오기
     const frm = new FormData();
     frm.append("address",this.nowAddress)
+    frm.append("userid", store.state.userInfo.id)
     axios.post(`${SERVER_URL}/investment/getDetail`, frm)
       .then(response => {
-        this.investPjt = response.data.object
+        console.log(response)
+        // 좋아요
+        this.likeCount = response.data.object.likecount
+        this.isliked = response.data.object.like
+        if(this.isliked){
+          $('.like').css('color', 'red')
+        }else{
+          $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
+        }
+        this.investPjt = response.data.object.object
         // 마감일 기준 남은날짜 계산
         const day = this.investPjt.deadLine.substring(8, 10);
         let today = new Date();
