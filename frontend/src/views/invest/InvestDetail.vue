@@ -405,7 +405,9 @@ export default {
                 this.$set(item.investmentDto, "chip", '진행중');
               }
               // pjtname
-              item.investmentDto.pjtname = item.investmentDto.pjtname.substring(0, 8) + '...'
+              if(item.investmentDto.pjtname.length > 8) {
+                item.investmentDto.pjtname = item.investmentDto.pjtname.substring(0, 8) + '...'
+              }
               // 쇼핑 프로젝트 chip 
               if(item.saleBoardDto) {
                 if (item.saleBoardDto.isfinish) {
@@ -421,21 +423,7 @@ export default {
               }
             })
           })
-      })
-    axios.post(`${SERVER_URL}/util/createlike`, {
-        address: this.$route.params.address,
-        userid: store.state.userInfo.id
-      })
-        .then(response => {
-          this.likeCount = response.data.object.likecount
-          if(response.data.object.likestate) {
-            $('.like').css('color', 'red')
-          }
-          else{
-            $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
-          }
-        })
-    
+      })    
   },
   methods: {
     likebtn() {

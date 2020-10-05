@@ -26,4 +26,5 @@ public interface LikeBoardRepository extends JpaRepository<LikeBoardDto, String>
 
 	@Query(value = "select count(*) from likeboard where address =:address and ischecked = true", nativeQuery = true)
 	int countLikeBoard(String address);
+
 }
