@@ -217,9 +217,9 @@ export default {
       })
     },
     move(title) {
-      if (title == '투자 프로젝트') {
+      if (title == '투자하기') {
         this.$router.push('/investhome');
-      } else if (title == '쇼핑 프로젝트') {
+      } else if (title == '쇼핑하기') {
         this.$router.push('/shoppinghome');
       } else if (title == '마이페이지') {
         this.$router.push('/mypage');

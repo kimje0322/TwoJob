@@ -45,31 +45,6 @@
       </v-dialog>    
     </div>
 
-    <!-- 인기순 -->
-    <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">
-        인기순<v-icon style="font-size: 36px; color: black"
-          >mdi-chevron-right</v-icon
-        >
-      </h4>
-    </div>
-    <div style="display: flex; padding: 1% 0">
-      <div v-for="(item, i) in likeItems" :key="i" style="display: inline-block; flex:1">
-        <v-card class="my-12" max-width="320" style="margin: auto">
-          <v-img height="250" :src="item.picture"></v-img>
-          <v-card-title style="font-weight: 600; margin: auto">{{item.pjtname}}
-            <div style="margin-left: auto;"><v-chip class="likeBadge">{{item.likenum}}명 좋아요</v-chip></div>
-          </v-card-title>
-          <v-card-text>
-            <div style="margin-bottom: 15px">{{ item.content }}</div>
-            <!-- <div style="color: black; display: inline-block; float: right;">
-              <v-icon size="20" class="mr-1">mdi-heart</v-icon>128
-            </div> -->
-          </v-card-text>
-        </v-card>
-      </div>
-    </div>
-
     <!-- 오픈예정 -->
     <div style="margin-left: 5%; margin-top: 3%">
       <h4 style="font-weight: 600">
@@ -78,9 +53,44 @@
         >
       </h4>
     </div>
+
+    <div style="display: flex; padding: 1% 0">
+      <div v-for="(item, i) in openItems" :key="i" style="display: inline-block; flex:1">
+        <v-card class="my-12" max-width="320" style="margin: auto">
+          <router-link :to="{ name: 'ShoppingDetail', params: { address: item.address } }">
+          <v-img height="250" :src="item.picture"></v-img>
+          <v-card-title style="font-weight: 600; margin: auto">{{item.pjtname}}
+            <v-icon style= "margin-left: auto; color: rgb(22, 150, 245); margin-right: 3px"
+                >mdi-clock-outline</v-icon
+              ><span class="openBadge">D-{{ item.afterday }}</span>
+            <!-- <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.afterday}}일 남음</v-chip></div> -->
+          </v-card-title>
+          <v-card-text>
+            <div style="margin-bottom: 15px;">{{item.onelineintro}}</div>
+            <div style="color: black;">
+              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.saleprice}} 원</h5>
+              <div style="display: inline-block; float: right;">
+                <!-- <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.rate}}</h3>
+                <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5> -->
+              </div>
+            </div>
+          </v-card-text>
+          </router-link>
+        </v-card>
+      </div>
+    </div>
+
+    <!-- 인기순 -->
+    <div style="margin-left: 5%; margin-top: 3%">
+      <h4 style="font-weight: 600">
+        인기순<v-icon style="font-size: 36px; color: black"
+          >mdi-chevron-right</v-icon
+        >
+      </h4>
+    </div>
     <div style="padding: 1% 0">
       <v-card
-        v-for="(item, i) in openItems"
+        v-for="(item, i) in likeItems"
         :key="i"
         style="
           width: 38%;
@@ -92,16 +102,13 @@
         <v-img
           style="width: 33%; float: left"
           height="180"
-          src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+          :src="item.picture"
         ></v-img>
         <div style="width: 67%; float: right">
           <v-card-title style="font-weight: 600"
-            >{{ item.title }}
-            <div style="margin-left: auto">
-              <v-icon style="color: rgb(22, 150, 245); margin-right: 10px"
-                >mdi-clock-outline</v-icon
-              ><span class="openBadge">{{ item.opendate }}일 뒤 오픈</span>
-            </div>
+            >{{ item.pjtname }}
+            <!-- 좋아요 자리 -->
+            
           </v-card-title>
           <v-card-text>
             <div style="margin-bottom: 15px">{{ item.content }}</div>
@@ -114,7 +121,7 @@
                     line-height: 41.6px;
                   "
                 >
-                  판매가 {{ item.price }} 원
+                  판매가 {{ item.saleprice }} 원
                 </p></strong>
             </div>
           </v-card-text>
@@ -183,7 +190,17 @@ export default {
         console.log(res.data.object);
         this.openItems = res.data.object.closeopen;
         this.likeItems = res.data.object.popular;
-        // console.log(this.likeItems);
+        this.openItems.forEach(item => {
+            // 마감일
+            const day = item.startdate.substring(8, 10);
+            let today = new Date();
+            today.setDate(day - today.getDate());
+            this.$set(item, "afterday", today.getDate());
+            // 제목
+            if (item.pjtname.length > 8) {
+              item.pjtname = item.pjtname.substring(0, 10) + "...";
+            }
+        })
       }) 
   },
   methods: {
@@ -239,5 +256,12 @@ export default {
 }
 .v-application--wrap {
   min-height: 0;
+}
+.v-card__title {
+  color: black;
+  text-decoration: none;
+}
+a {
+  text-decoration: none;
 }
 </style>
