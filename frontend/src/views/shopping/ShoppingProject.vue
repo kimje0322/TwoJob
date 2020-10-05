@@ -14,11 +14,6 @@
             <h5 style="color: rgb(22, 150, 245)">프로젝트</h5>
           </router-link>
         </div>
-        <div>
-          <router-link to="/shoppinghome">
-            <h5>오픈예정</h5>
-          </router-link>
-        </div>
       </div>
     </div>
     <hr>

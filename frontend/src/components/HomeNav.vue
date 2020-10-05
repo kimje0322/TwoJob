@@ -18,7 +18,7 @@
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-      expand-on-hover
+      expand-on-hover 
     >
       <div v-if="!login">
         <v-list-item class="px-2">
@@ -40,9 +40,10 @@
             <v-img :src="userInfo.img"></v-img>
           </v-list-item-avatar>
           <!-- <div style="display:flex"> -->
-          <v-list-item-title class="ml-3">{{ userInfo.name }}님</v-list-item-title>
+          <v-list-item-title class="ml-1">{{ userInfo.name }}님</v-list-item-title>
+            <!-- 지갑 있는 경우 -->
             <v-btn
-              v-if="!this.wallet"
+              v-if="this.wallet"
               class="chargeBtn ma-2 px-1 py-1 mr-2 mt-2"
               outlined
             >
@@ -50,7 +51,18 @@
             <v-icon class="mr-1" @click="chargeDialog = true">mdi-plus-circle-outline</v-icon>
              충전
             </v-btn>
-
+            
+            <!-- 지갑 없는 경우 -->
+            <v-btn
+              v-if="!this.wallet"
+              @click="onWallet"
+              class="WalletBtn ma-2 px-1 py-1 mr-2 mt-2"
+              outlined
+            >
+            <v-icon>mdi-wallet-outline</v-icon>
+             지갑생성 
+            </v-btn>
+            
         <!-- 충전하기 모달 -->
           <v-dialog
             v-model="chargeDialog"
@@ -104,40 +116,42 @@
 import axios from "axios";
 import store from "../store/index.js";
 import "../../public/css/HomeNav.scss";
+import Web3 from "web3";
+import Swal from "sweetalert2";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
 const redirect_uri = "https://www.twojob.ga/api";
 
 export default {
-    data () {
-      return {
-        drawer: true,
-        wallet: false,
-        items: [
-          { title: '투자 프로젝트', icon: 'mdi-lightbulb-on-outline' },
-          { title: '쇼핑 프로젝트', icon: 'mdi-basket' },
-        ],
-        mini: true,
-        // 로그인
-        userInfo: {
-          id: "",
-          name: "",
-          img: "",
-          login: false,
-        },
-        index: "",
-        pg_token: "",
+  data () {
+    return {
+      drawer: true,
+      wallet: false,
+      items: [
+        { title: '투자하기', icon: 'mdi-lightbulb-on-outline' },
+        { title: '쇼핑하기', icon: 'mdi-basket' },
+      ],
+      mini: true,
+      // 로그인
+      userInfo: {
+        id: "",
+        name: "",
+        img: "",
         login: false,
-        openbox: false,
-        money: "",
-        asset: "0",
-        next: false,
-        nexturl: "",
-        // 충전모달
-        chargeDialog: false,
-      }
-    },
+      },
+      index: "",
+      pg_token: "",
+      login: false,
+      openbox: false,
+      money: "",
+      asset: "0",
+      next: false,
+      nexturl: "",
+      // 충전모달
+      chargeDialog: false,
+    }
+  },
   watch: {
     money(val) {
       return (this.money = this.money.replace(/[^0-9]/g, ""));
@@ -146,7 +160,7 @@ export default {
   mounted() {
     // 지갑 생성 여부 확인 
     if (location.href.includes("pg_token")) {
-      //     window.opener.closed = true;
+      // window.opener.closed = true;
       this.index = location.href.indexOf("pg_token");
       this.pg_token = location.href.slice(this.index + 9);
       axios
@@ -173,6 +187,35 @@ export default {
     }
   },
   methods: {
+    onWallet() {
+      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
+      var Accounts = require("web3-eth-accounts");
+      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
+      var result = web3.eth.accounts.create();
+      store.commit("setAddress", result.address);
+      const fd = new FormData();
+      fd.append("accessToken", store.state.accessToken);
+      fd.append("address", store.state.address);
+      fd.append("privatekey", result.privateKey);
+      axios.post(`${SERVER_URL}/wallet/regist`, fd)
+      .then((res) => {
+        // console.log(res);
+        // console.log(fd);
+        if (res.data == 401) {
+          store.state.isSigned = false;
+        } else if (res.data == "success") {
+          this.wallet = store.state.userInfo.walletAddress;
+          console.log('지갑주소야'+this.wallet)
+          Swal.fire({
+            icon: "success",
+            title: "지갑 생성 성공",
+            text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
+            confirmButtonText: "확인",
+            // cancelButtonText: "취소하기",
+          });
+        }
+      })
+    },
     move(title) {
       if (title == '투자 프로젝트') {
         this.$router.push('/investhome');
@@ -188,7 +231,6 @@ export default {
       window.Kakao.Auth.loginForm({
       success: this.GetMe,
       });
-      console.log('유저인포아이디')
     },
     GetMe(authObj) {
       //토큰값 받아오는 부분
@@ -199,12 +241,27 @@ export default {
       const fd = new FormData();
       fd.append("accessToken", authObj.access_token);
 
-      axios.post(`${SERVER_URL}/login/kakaologin`, fd).then((res) => {
+      axios.post(`${SERVER_URL}/login/kakaologin`, fd)
+      .then((res) => {
         this.login = true;
         // store.state.isSigned = true;
         this.userInfo.login = true;
         this.userInfo.id = res.data.oauthId;
         this.userInfo.name = res.data.name;
+        // 지갑 정보 조회
+        axios.get(
+        `${SERVER_URL}/wallet/toid?oauthid=${this.userInfo.id}`)
+        .then((res) => {
+          console.log(res.data)
+          if (res.data == "novalid") {
+            this.wallet == false;
+          } else {
+            this.wallet == true;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
         if (res.data.profileImg == null) {
           this.userInfo.img =
             "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
@@ -212,9 +269,6 @@ export default {
           this.userInfo.img = res.data.profileImg;
         }
         store.commit("setUserInfo", this.userInfo);
-        // this.userInfo.email = res.data.email;
-        // console.log(this.userInfo);
-        // this.$router.push("/");
      });
     },
     onLogout() {
@@ -283,8 +337,12 @@ export default {
 .divider {
   margin-top: 10px;
 }
-.loginBtn:hover {
+.loginBtn:hover{
   cursor: pointer;
+  /* background-color: rgba(123, 197, 254, 0.8) */
+}
+.chargeBtn:hover, .WalletBtn:hover {
+  background-color: rgba(123, 197, 254, 0.1) !important;
 }
 
 </style>
