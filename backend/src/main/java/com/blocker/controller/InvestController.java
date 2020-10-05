@@ -263,6 +263,7 @@ public class InvestController {
 					list = investmentService.getAllInvestmentList(page);
 				} else {
 					list = investmentService.getAllInvestmentList(page, orderOption);
+					System.out.println("============================================================="+list.toString());
 				}
 
 				for (Iterator<InvestmentDto> iter = list.getContent().iterator(); iter.hasNext();) {
@@ -294,6 +295,7 @@ public class InvestController {
 			} else {
 				Page<BoardCategoryMapping> list = boardCategoryService.getAllInvestmentListWithCategory(page,
 						categoryfilter, orderOption);
+				
 				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
 					BoardCategoryMapping nextiter = iter.next();
 					String investaddress = nextiter.getInvestaddress();
@@ -325,9 +327,7 @@ public class InvestController {
 					}
 				}
 			}
-			System.out.println("before" + resultDatas.toString());
-//			Collections.reverse(resultDatas);
-			System.out.println("after" + resultDatas.toString());
+			Collections.reverse(resultDatas);
 			result.data = "success";
 			result.object = resultDatas;
 			result.status = true;

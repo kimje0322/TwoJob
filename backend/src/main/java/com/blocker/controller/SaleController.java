@@ -157,7 +157,7 @@ public class SaleController {
 		}
 	}
 
-	@GetMapping("/getAllSaleList/{page}")
+	@PostMapping("/getAllSaleList/{page}")
 	@ApiOperation(value = "저장되어있는 모든사람의 판매 게시글을보여줌 orderOption = 0전체 1최신 2 인기")
 	public Object getAllSaleList(@PathVariable int page, @RequestParam List<String> categoryfilter,
 			@RequestParam int orderOption) {
@@ -427,6 +427,8 @@ public class SaleController {
 				closeopenonelineintro
 						.add(investmentService.getInvestment(saleBoardDto.getInvestaddress()).get().getOnelineintro());
 			}
+			map.put("likeonelineintro", likeonelineintro);
+			map.put("closeopenonelineintro", closeopenonelineintro);
 			map.put("closeopenlikecount", closeopenlikecount);
 			map.put("popularlikecount", likecount);
 			result.object = map;
