@@ -11,14 +11,14 @@
           </div><hr>
         </div>
       </div>
-    
+    <!-- expand-on-hover -->
   <!-- drawer -->
   <v-card>
     <v-navigation-drawer
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-      expand-on-hover
+      
     >
       <div v-if="!login">
         <v-list-item class="px-2">
@@ -46,13 +46,11 @@
               outlined
             >
             <!-- <i class="fas fa-coins"></i>   -->
-            <v-icon class="mr-1" @click.stop="chargeDialog = true">mdi-plus-circle-outline</v-icon>
+            <v-icon class="mr-1" @click="chargeDialog = true">mdi-plus-circle-outline</v-icon>
              충전
             </v-btn>
 
         <!-- 충전하기 모달 -->
-        <v-menu bottom min-width="200px" rounded offset-y>
-
           <v-dialog
             v-model="chargeDialog"
             scrollable
@@ -75,7 +73,6 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-menu>
         </v-list-item>
       </div>
 
@@ -169,8 +166,8 @@ export default {
   },
   updated() {
     if (this.login && this.items.length == 2) {
-        this.items.push({ title: '마이페이지', icon: 'mdi-logout-variant' },)
-        this.items.push({ title: '로그아웃', icon: 'mdi-account' },)
+        this.items.push({ title: '마이페이지', icon: 'mdi-account'},)
+        this.items.push({ title: '로그아웃', icon: 'mdi-logout-variant' },)
     }
   },
   methods: {
