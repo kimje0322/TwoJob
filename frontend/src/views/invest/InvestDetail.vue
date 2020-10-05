@@ -47,7 +47,7 @@
               <strong>
                 <p class="listTitle" style="margin-bottom: 1%">모인금액</p>
               </strong>
-              <h3 class="totalPrice">없음</h3>
+              <h3 class="totalPrice">{{investPjt.investprice}}</h3>
               <strong>
                 <span>원 달성</span>
               </strong>
@@ -110,7 +110,7 @@
                   <v-icon size="20" class="mr-2 like">mdi-heart</v-icon>{{likeCount}}
                 </div>
               </button>
-              <button style="flex: 1" @click="onChat()">
+              <button :disabled="islogin==false||this.writer.oauthId==userid" style="flex: 1" @click="onChat()">
                 <div class="btns">
                   <v-app class="chatbtn"></v-app>
                   <div>
@@ -171,33 +171,6 @@
           <v-tab-item v-for="tabItem in tabItems" :key="tabItem" :value="'tab-' + tabItem">
             <!-- 프로젝트 이력 -->
             <div v-if="tabItem=='projects'" class="mt-2">
-              <!-- <div style="overflow: hidden; margin-bottom: 50px">
-                <div style="float:left; width: 33%">
-                  <div style="text-align: center">
-                    <h5 style="margin-bottom: 1.25rem">프로젝트 성공률</h5>
-                    <v-progress-circular
-                      :rotate="360"
-                      :size="100"
-                      :width="15"
-                      :value="successRate"
-                      color="rgb(22, 150, 245)"
-                    >{{ successRate }}%</v-progress-circular>
-                  </div>
-                </div>
-                <div style="float:left; width: 33%">
-                  <div style="text-align: center">
-                    <h5>성공 프로젝트</h5>
-                    <p class="projectsNum mt-4" style="font-size: 60px">8</p>
-                  </div>
-                </div>
-                <div style="float:left; width: 33%">
-                  <div style="text-align: center">
-                    <h5>만든 프로젝트</h5>
-                    <p class="projectsNum mt-4" style="font-size: 60px">10</p>
-                  </div>
-                </div>
-              </div>
-              <hr> -->
               <!-- 프로젝트 이력 -->
               <div style="display: flex; text-align: center; margin: 20px 0">
                 <h4 style="flex: 1">투자 프로젝트</h4>
@@ -236,11 +209,11 @@
                           <div style="color: black; height: 50px;">
                             <h5
                               style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                            >없음 원</h5>
+                            >{{item.investmentDto.investprice}}원</h5>
                             <div style="display: inline-block; float: right;">
                               <h3
                                 style="display: inline-block; color:rgb(22, 150, 245)"
-                              >없음%</h3>
+                              >{{item.investmentDto.rate}}%</h3>
                               <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
                             </div>
                           </div>
@@ -435,6 +408,11 @@ export default {
           .then(response => {
             this.$set(this.investPjt, "investnum", response.data)
           })
+        // 투자금액 axios 보내기
+        axios.get(`${SERVER_URL}/funding/nowfund?campaignId=${this.investPjt.address}`)
+          .then(response => {
+            this.$set(this.investPjt, "investprice", response.data);
+          })
         // 달성률 axios 보내기
         const fr = new FormData();
         fr.append("campaignId", this.investPjt.address)
@@ -466,7 +444,7 @@ export default {
         fd.append("userid", this.investPjt.userid)
         axios.post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
           .then(response => {
-            // console.log(response)
+            console.log(response)
             this.projectList = response.data.object
             this.totalPage = response.data.object[0].totalpages
             this.projectList.forEach(item => {
@@ -481,6 +459,18 @@ export default {
               if(item.investmentDto.pjtname.length > 8) {
                 item.investmentDto.pjtname = item.investmentDto.pjtname.substring(0, 8) + '...'
               }
+              // 투자 금액 axios 가져오기
+              axios.get(`${SERVER_URL}/funding/nowfund?campaignId=${item.investmentDto.address}`)
+                .then(response => {
+                  this.$set(item.investmentDto, "investprice", response.data);
+                })
+              // 달성률 axios 보내기
+              const fr = new FormData();
+              fr.append("campaignId", item.investmentDto.address)
+              axios.post(`${SERVER_URL}/funding/fundingrate`, fr)
+                .then(response => {
+                  this.$set(item.investmentDto, "rate", response.data);
+                })
               // 쇼핑 프로젝트 chip 
               if(item.saleBoardDto) {
                 if (item.saleBoardDto.isfinish) {
@@ -519,36 +509,16 @@ export default {
         userid: store.state.userInfo.id
       })
         .then(response => {
-          // console.log(response)
           this.likeCount = response.data.object.likecount
           if(response.data.object.likestate) {
             $('.like').css('color', 'red')
           }
           else{
             $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
-          }
-          // if(response.data.object == 1) {
-          //   this.islike = false
-          //   this.likeCount -= 1
-          //   $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
-          // }
-          // else {
-          //   this.isliked = response.data.object.ischecked
-          //   this.likeCount += 1
-          //   $('.like').css('color', 'red')
-          // }
-          
+          }          
         })
     },
     oncomment() {
-      const today = new Date();
-      let year = today.getFullYear(); // 년도
-      let month = today.getMonth() + 1;  // 월
-      let date = today.getDate();  // 날짜
-      const day = `${year}.${month}.${date}`
-      this.commentList.push({
-        
-      })
       axios.post(`${SERVER_URL}/investment/createcomment`, {
         address: this.$route.params.address,
         comment: this.comment,
@@ -556,23 +526,29 @@ export default {
       })
         .then(response => {
           console.log(response)
+          const today = new Date();
+          let year = today.getFullYear(); // 년도
+          let month = today.getMonth() + 1;  // 월
+          let date = today.getDate();  // 날짜
+          const day = `${year}.${month}.${date}`
           this.commentList.push({
             content: this.comment,
             createat: day,
             name: store.state.userInfo.name,
             profileImg: store.state.userInfo.img,
             userid: store.state.userInfo.id,
-            num: response.data
+            num: response.data.object.num
           })
+          this.comment = ""
         })
-      this.comment = ""
     },
     delcomment(comment) {
       const idx = this.commentList.indexOf(comment);
       this.commentList.splice(idx, 1);
-      const fcd = new FormData();
-      fcd.append("num", comment.num)
-      // axios.delete(`${SERVER_URL}/investment/deletecomment`, )
+      axios.delete(`${SERVER_URL}/investment/deletecomment?num=${comment.num}`)
+        .then(response =>{
+          console.log(response)
+        })
     },
     oninvestbtn() {
       this.investbtn = !this.investbtn
