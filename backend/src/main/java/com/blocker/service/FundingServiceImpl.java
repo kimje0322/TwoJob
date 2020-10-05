@@ -194,25 +194,25 @@ public class FundingServiceImpl implements FundingService{
 					Double value = Math.round((val) * 100) / 100.0;
 					BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),mywallet.getAddress(),m.getProfileImg(),value,TransactType.SALE,2);
 					blockTransactionRepository.save(transact);
-//					List<BlockTransaction> list = blockTransactionRepository.findAddress(myInvest.getAddress(),TransactType.FUND);
-//					for(int i=0; i<list.size(); i++) {
-//						String address = list.get(i).getFromaddress();
-//						Optional<Wallet> wallet2 = walletRepository.findByAddress(address);
-//						Optional<Member> m2 =memberRepository.findById(wallet2.get().getOauthId());
-//						BigInteger fundraise = contract.getCampaign(address, property.getAdminAddr()).send().component4();
-//						BigInteger investraise = contract.getCampaign(address, property.getAdminAddr()).send().component5();
-//						BigDecimal dfundraise = new BigDecimal(fundraise);
-//						BigDecimal dinvestraise = new BigDecimal(investraise);
-//						BigDecimal resultval = new BigDecimal("0");
-//						if(dfundraise.equals(new BigDecimal("0"))) {
-//							resultval = new BigDecimal("0");
-//						}else {
-//							resultval = dinvestraise.divide(dfundraise,3, BigDecimal.ROUND_HALF_UP);
-//						}
-//						BigDecimal myval = BigDecimal.valueOf(value).multiply(resultval);
-//						BlockTransaction transact2 = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),m2.get().getProfileImg(),wallet2.get().getAddress(),myval.doubleValue(),TransactType.SALEPARTIN,2);
-//						blockTransactionRepository.save(transact2);
-//					}
+					List<BlockTransaction> list = blockTransactionRepository.findDistinctFromAddressByToaddressAndType(myInvest.getAddress(),TransactType.FUND);
+					for(int i=0; i<list.size(); i++) {
+						String address = list.get(i).getFromaddress();
+						Optional<Wallet> wallet2 = walletRepository.findByAddress(address);
+						Optional<Member> m2 =memberRepository.findById(wallet2.get().getOauthId());
+						BigInteger fundraise = contract.getCampaign(address, property.getAdminAddr()).send().component4();
+						BigInteger investraise = contract.getCampaign(address, property.getAdminAddr()).send().component5();
+						BigDecimal dfundraise = new BigDecimal(fundraise);
+						BigDecimal dinvestraise = new BigDecimal(investraise);
+						BigDecimal resultval = new BigDecimal("0");
+						if(dfundraise.equals(new BigDecimal("0"))) {
+							resultval = new BigDecimal("0");
+						}else {
+							resultval = dinvestraise.divide(dfundraise,3, BigDecimal.ROUND_HALF_UP);
+						}
+						BigDecimal myval = BigDecimal.valueOf(value).multiply(resultval);
+						BlockTransaction transact2 = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),m2.get().getProfileImg(),wallet2.get().getAddress(),myval.doubleValue(),TransactType.SALEPARTIN,2);
+						blockTransactionRepository.save(transact2);
+					}
 					System.out.println("판매완료!");
 					return "scucess";
 				}else {
