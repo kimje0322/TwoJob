@@ -25,7 +25,7 @@
           <v-list-item-avatar>
             <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
           </v-list-item-avatar>
-          <v-list-item-title @click="onLogin" class="ml-3">로그인</v-list-item-title>
+          <v-list-item-title @click="onLogin" class="loginBtn ml-3">로그인</v-list-item-title>
           <v-btn
             icon
             @click.stop="mini = !mini"
@@ -40,7 +40,7 @@
             <v-img :src="userInfo.img"></v-img>
           </v-list-item-avatar>
           <!-- <div style="display:flex"> -->
-          <v-list-item-title @click="onLogin" class="ml-3">{{ userInfo.name }}님</v-list-item-title>
+          <v-list-item-title class="ml-3">{{ userInfo.name }}님</v-list-item-title>
             <v-btn
               class="chargeBtn ma-2 px-1 py-1 mr-2 mt-2"
               outlined
@@ -294,6 +294,9 @@ export default {
 }
 .divider {
   margin-top: 10px;
+}
+.loginBtn:hover {
+  cursor: pointer;
 }
 
 </style>
