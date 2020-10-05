@@ -11,14 +11,14 @@
           </div><hr>
         </div>
       </div>
-  
+  <!-- expand-on-hover  -->
   <!-- drawer -->
   <v-card>
     <v-navigation-drawer
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-      expand-on-hover 
+      
     >
       <div v-if="!login">
         <v-list-item class="px-2">
@@ -43,18 +43,19 @@
           <v-list-item-title class="ml-1">{{ userInfo.name }}님</v-list-item-title>
             <!-- 지갑 있는 경우 -->
             <v-btn
-              v-if="this.wallet"
+              @click="chargeDialog = true"
+              v-if="walletExist"
               class="chargeBtn ma-2 px-1 py-1 mr-2 mt-2"
               outlined
             >
             <!-- <i class="fas fa-coins"></i>   -->
-            <v-icon class="mr-1" @click="chargeDialog = true">mdi-plus-circle-outline</v-icon>
+            <v-icon class="mr-1">mdi-plus-circle-outline</v-icon>
              충전
             </v-btn>
             
             <!-- 지갑 없는 경우 -->
             <v-btn
-              v-if="!this.wallet"
+              v-if="!walletExist"
               @click="onWallet"
               class="WalletBtn ma-2 px-1 py-1 mr-2 mt-2"
               outlined
@@ -72,7 +73,7 @@
           >
             <v-card>
               <v-card-title class="headline lighten-2" style="padding-bottom: 0 !important">
-                <h4 style="margin-left: 30px">충전하기</h4>
+                <h4 class="mb-0 mt-1" style="margin-left: 20px">충전하기</h4>
               </v-card-title>
               <v-divider></v-divider>
               <v-card-text style="padding: 50px 50px 30px 50px">
@@ -128,9 +129,10 @@ export default {
     return {
       drawer: true,
       wallet: false,
+      walletExist: false,
       items: [
-        { title: '투자하기', icon: 'mdi-lightbulb-on-outline' },
-        { title: '쇼핑하기', icon: 'mdi-basket' },
+        { title: '투자 프로젝트', icon: 'mdi-lightbulb-on-outline' },
+        { title: '쇼핑 프로젝트', icon: 'mdi-basket' },
       ],
       mini: true,
       // 로그인
@@ -158,7 +160,18 @@ export default {
     }
   },
   mounted() {
-    // 지갑 생성 여부 확인 
+    // 지갑 생성 여부 확인
+    axios.get(
+        `${SERVER_URL}/wallet/toid?oauthid=${this.userInfo.id}`)
+        .then((res) => {
+          console.log(res.data)
+          if (res.data == "novalid") {
+            this.walletExist = false;
+          } else {
+            this.walletExist = true;
+
+          }
+        })
     if (location.href.includes("pg_token")) {
       // window.opener.closed = true;
       this.index = location.href.indexOf("pg_token");
@@ -199,13 +212,13 @@ export default {
       fd.append("privatekey", result.privateKey);
       axios.post(`${SERVER_URL}/wallet/regist`, fd)
       .then((res) => {
-        // console.log(res);
         // console.log(fd);
         if (res.data == 401) {
           store.state.isSigned = false;
         } else if (res.data == "success") {
-          this.wallet = store.state.userInfo.walletAddress;
-          console.log('지갑주소야'+this.wallet)
+          this.wallet = store.state.us
+          erInfo.walletAddress;
+          this.walletExist = true;
           Swal.fire({
             icon: "success",
             title: "지갑 생성 성공",
@@ -217,9 +230,9 @@ export default {
       })
     },
     move(title) {
-      if (title == '투자하기') {
+      if (title == '투자 프로젝트') {
         this.$router.push('/investhome');
-      } else if (title == '쇼핑하기') {
+      } else if (title == '쇼핑 프로젝트') {
         this.$router.push('/shoppinghome');
       } else if (title == '마이페이지') {
         this.$router.push('/mypage');
@@ -234,8 +247,7 @@ export default {
     },
     GetMe(authObj) {
       //토큰값 받아오는 부분
-      console.log('authObj입니다');
-      console.log(authObj);
+      // console.log(authObj);
       console.log(authObj.access_token);
       store.commit("setAccessToken", authObj.access_token);
       const fd = new FormData();
@@ -254,9 +266,9 @@ export default {
         .then((res) => {
           console.log(res.data)
           if (res.data == "novalid") {
-            this.wallet == false;
+            this.walletExist = false;
           } else {
-            this.wallet == true;
+            this.walletExist = true;
           }
         })
         .catch((err) => {
