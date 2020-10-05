@@ -94,10 +94,15 @@ public class FundingController {
 	public ResponseEntity<BigDecimal> fundingrate( @RequestParam("campaignId") String campaignId) throws Exception {
 		return new ResponseEntity<BigDecimal>(fundingService.getfundingrate(campaignId),HttpStatus.OK);
 	}
-	
+	@ApiOperation(value = "[BC][해당 투자 진행 상태] 투자 아이디를 주면, 현재 해당 투자 진행 상태를 리턴합니다. param : [campaignId], return : 해당 투자 진행 상태 ")
+	@GetMapping(value = "/status")
+	public ResponseEntity<String> projectStatus(String campaignId) throws Exception {
+		return new ResponseEntity<String>(fundingService.getProjectState(campaignId),HttpStatus.OK);
+	}
 	@ApiOperation(value = "testg ")
 	@GetMapping(value = "/testd")
 	public void test() throws Exception {
+		//fundingService.getProjectState("08b12b48-7478-4e08-88d3-0f07ecf2cead");
 		//fundingService.makeAllTask();
 		//blockTransactionRepository.findAddress("123", TransactType.BUY);
 //		Date now = new Date();
