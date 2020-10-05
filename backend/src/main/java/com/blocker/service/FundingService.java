@@ -15,4 +15,6 @@ public interface FundingService {
 	public BigDecimal getfundingrate(String campaignId) throws Exception;
 	public void makeAllTask() throws Exception;
 	public Map<String, String> getMyProject(String oauthId) throws Exception;
+	public String getNowRaised(String campaignId) throws Exception;
+	public String createSale(String accessToken, String id) throws Exception;
 }
