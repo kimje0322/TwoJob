@@ -49,7 +49,7 @@
                             <a href="/myinvestpjt" class="pjt_a">
                               <span class="pjt_span">생성한 프로젝트</span>
                               <h2 style="margin-top: 20px">
-                                XX
+                                {{ investnum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
                             </a>
@@ -61,7 +61,7 @@
                             <a href="#" class="pjt_a">
                               <span class="pjt_span">참여한 프로젝트</span>
                               <h2 style="margin-top: 20px">
-                                XX
+                                {{ shoppingnum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
                             </a>
@@ -146,7 +146,7 @@
                               >채팅 목록</span
                             >
                             <!-- </router-link -->
-                          >
+                          
                         </div>
                       </div>
                     </div>
@@ -304,22 +304,13 @@ export default {
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
+    console.log("이건 유저 발란스 값" + this.userbalance)
 
+    // 거래내역
     // axios
-    //   .get(
-    //     `http://j3b102.p.ssafy.io:8080/wallet/toid?oauthid=${store.state.userInfo.id}`
-    //   )
-    //   .then((res) => {
-    //     console.log(res);
-    //     this.mywallet = res.data.address;
-    //     console.log("여기여기``");
-    //     console.log(this.mywallet);
-    //     this.iswallet = true;
-    //     // store.state.iswallet = true;
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    // .get(`http://j3b102.p.ssafy.io:8080/mypage/tojalist`)
+
+
 
     axios
       .get(
@@ -329,10 +320,14 @@ export default {
         console.log(store.state.userInfo.id);
         console.log(res);
         console.log("성공");
+        this.investnum = res.data.createNum
+        this.shoppingnum = res.data.saleNum
       });
   },
   data() {
     return {
+      investnum: "",
+      shoppingnum: "",
       iswallet: true,
       chatroom: false,
       userimg: "",
