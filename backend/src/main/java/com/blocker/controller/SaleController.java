@@ -197,8 +197,8 @@ public class SaleController {
 					String investaddress = nextiter.getInvestaddress();
 					Optional<SaleBoardDto> saleBoardDto = saleBoardRepository
 							.findSaleBoardDtoByInvestaddress(investaddress);
-					
-					if(saleBoardDto.isPresent()) {
+
+					if (saleBoardDto.isPresent()) {
 						InvestmentDto investmentDto = investmentService.getInvestment(investaddress).get();
 						SaleBoardResponse data = new SaleBoardResponse();
 						EditorSaleDto editorSaleDto = editorSaleRepository
@@ -369,6 +369,30 @@ public class SaleController {
 			result.object = null;
 			result.data = "fail";
 			result.status = true;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+
+	@GetMapping("/curation")
+	@ApiOperation(value = "오픈예정과 인기순 3개씩 보내주는 함수")
+	public Object curation() {
+		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
+		try {
+			System.out.println(1);
+			map.put("closeopen", saleService.getThreeSaleListOrderbyStartdate());
+			map.put("popular", saleService.getThreeSaleListOrderbyLikecount());
+			System.out.println(2);
+			result.object = map;
+			result.data = "success";
+			result.status = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("curation error");
+			result.object = null;
+			result.data = "fail";
+			result.status = false;
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}

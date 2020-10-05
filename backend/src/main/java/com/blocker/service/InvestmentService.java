@@ -41,5 +41,13 @@ public class InvestmentService {
 			return investmentRepository.findAllInvestmentDtoOrderbyLikecount(pagerequest);
 		}
 	}
+	
+	public List<InvestmentDto> getThreeInvestmentListOrderbyDeadline(){
+		return investmentRepository.findThreeInvestmentboardOrderbyDeadline();
+	}
+	
+	public List<InvestmentDto> getThreeInvestmentListOrderbyLikecount(){
+		return investmentRepository.findThreeInvestmentboardOrderbyLikecount();
+	}
 
 }

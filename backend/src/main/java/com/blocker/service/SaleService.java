@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.SaleBoardDto;
 import com.blocker.repository.SaleBoardRepository;
 
@@ -44,5 +45,13 @@ public class SaleService {
 
 	public Optional<SaleBoardDto> getSaleBoardByInvestAddress(String investaddress) {
 		return saleBoardRepository.findSaleBoardDtoByInvestaddress(investaddress);
+	}
+	
+	public List<SaleBoardDto> getThreeSaleListOrderbyStartdate(){
+		return saleBoardRepository.findThreeSaleboardOrderbyStartdate();
+	}
+	
+	public List<SaleBoardDto> getThreeSaleListOrderbyLikecount(){
+		return saleBoardRepository.findThreeSaleboardOrderbyLikecount();
 	}
 }

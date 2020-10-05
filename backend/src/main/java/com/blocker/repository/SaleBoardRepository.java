@@ -22,11 +22,17 @@ public interface SaleBoardRepository extends JpaRepository<SaleBoardDto, String>
 
 	@Query(value = "select * from saleboard where investaddress =:investaddress", nativeQuery = true)
 	Optional<SaleBoardDto> findSaleBoardDtoByInvestaddress(String investaddress);
-	
+
 	@Query(value = "select * from saleboard order by createat", countQuery = "select count(*) from saleboard order by createat", nativeQuery = true)
 	Page<SaleBoardDto> findAllSaleBoardDtoOrderbyCreatedat(Pageable page);
 
-	@Query(value = "select * from saleboard i order by (select count(*) from likeboard where address = i.address) desc",countQuery = "select count(*) from saleboard i order by (select count(*) from likeboard where address = i.address) desc", nativeQuery = true)
+	@Query(value = "select * from saleboard i order by (select count(*) from likeboard where address = i.address) desc", countQuery = "select count(*) from saleboard i order by (select count(*) from likeboard where address = i.address) desc", nativeQuery = true)
 	Page<SaleBoardDto> findAllSaleBoardDtoOrderbyLikecount(Pageable page);
+
+	@Query(value = "select * from saleboard order by startdate limit 3", nativeQuery = true)
+	List<SaleBoardDto> findThreeSaleboardOrderbyStartdate();
+
+	@Query(value = "select * from saleboard i order by (select count(*) from likeboard where address = i.address) desc limit 3", nativeQuery = true)
+	List<SaleBoardDto> findThreeSaleboardOrderbyLikecount();
 
 }
