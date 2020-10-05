@@ -109,6 +109,7 @@ import Swal from "sweetalert2";
 import "../../../public/css/MyInvestPjt.scss";
 
 const SERVER_URL = "https://www.twojob.ga/api";
+// const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 // let today = new Date();
 
@@ -136,28 +137,7 @@ export default {
     };
   },
   methods: {
-    onChangeImages(event) {
-      this.uploadimg = true;
-      console.log(event);
-      this.file = event.target.files[0];
-      var formData = new FormData();
-      formData.append("img", this.file);
-      axios
-        .post(`${SERVER_URL}/investment/changePath`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((response) => {
-          const cutUrl = response.data.substr(18, response.data.length - 17);
-          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
-          this.imgPath = imgUrl;
-        });
-    },
-    onClickImageUpload() {
-      this.$refs.imageInput.$el.click();
-    },
-    onDeleteImg() {
-      this.uploadimg = false;
-    },
+
   },
   components: {
     Navbar,
@@ -177,7 +157,7 @@ export default {
     const fd = new FormData();
     fd.append("userid", store.state.userInfo.id);
     axios
-      .post(`http://j3b102.p.ssafy.io:8080/mypage/likelist`, fd)
+      .post(`${SERVER_URL}/mypage/likelist`, fd)
       .then((response) => {
         console.log("여기요!");
         console.log(response);
