@@ -40,7 +40,7 @@
                         >
                       </router-link>
                       <br />
-                      <v-btn @click="onWallet" style="margin-top: 20px"
+                      <v-btn v-if="!iswallet" @click="onWallet" style="margin-top: 20px"
                         >지갑생성</v-btn
                       >
                     </div>
@@ -100,7 +100,9 @@
                           <span style="margin-right: 5px">
                             <i class="far fa-heart fa-lg"></i>
                           </span>
-                          <strong style="font-size: 17px">찜 한 목록</strong>
+                          <router-link to="/likelist" style="color: black;">
+                            <strong style="font-size: 17px">찜 한 목록</strong>
+                          </router-link>
                         </div>
                         <div
                           style="
@@ -174,7 +176,7 @@
                     />
                     <div style="text-align: center; margin-top: 20px">
                       <h5>{{ username }} 님</h5>
-                      <p>총 {{ userbalance }}.0 원</p>
+                      <p v-if="iswallet">총 {{ userbalance }} 원</p>
                       <router-link to="/">
                         <v-btn
                           @click="onLogout"
@@ -244,7 +246,7 @@
                           </span>
                           <strong style="font-size: 17px">찜 한 목록</strong>
                         </div>
-                        <v-app ></v-app>
+                        <v-app class="vapp"></v-app>
                         <div>
                           <v-dialog
                             max-width="800"
@@ -269,8 +271,8 @@
                           </span>
 
                           <strong style="font-size: 17px" @click="onChat()">
-                          <!-- <v-btn @click="onChat()"> 1 : 1 문의 </v-btn> -->
-                          1 : 1 문의
+                            <!-- <v-btn @click="onChat()"> 1 : 1 문의 </v-btn> -->
+                            1 : 1 문의
                           </strong>
 
                           <!-- <v-dialog
@@ -443,9 +445,25 @@ export default {
   },
   mounted() {
     // if ()
+    // console.log("유저정보")
+    // console.log(store.state.userInfo)
+
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
+    console.log(store.state.userInfo.id)
+    axios
+      .get(`http://j3b102.p.ssafy.io:8080/wallet/toid?oauthid=${store.state.userInfo.id}`)
+      .then((res) => {
+        console.log(res)
+        this.mywallet = res.data.address;
+        console.log("여기여기``")
+        console.log(this.mywallet)
+        this.iswallet = true;
+      })
+      .catch((error) => {
+        console.log(error)
+      });
   },
   data() {
     return {
@@ -482,6 +500,9 @@ export default {
       openMenutab: false,
       individual: false,
       business: false,
+
+      mywallet: null,
+      iswallet: false,
     };
   },
   computed: {},
@@ -696,5 +717,8 @@ input:hover {
 }
 .v-tabs-bar__content {
   background-color: white !important;
+}
+.vapp {
+  display: none;
 }
 </style>
