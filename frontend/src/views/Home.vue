@@ -5,10 +5,9 @@
     <div class="mt-5 words" style="text-align:center;">
       <h1 class="my-element my-5" style="font-size:3vw;">Get funding with <span class="twojob">TwoJob</span></h1>
     </div>
-
-    <!-- 투자홈 광고사진 -->
     <img style="width:100%; margin-bottom: 8%" class="mx-0 py-0" src="../assets/images/배경12.png" alt="">
-    <div class="homeDiv mx-auto mt-5" style="display:flex"> 
+    <!-- 투자홈 사진 -->
+    <div class="homeDiv homDiv1 mx-auto mt-5" style="display:flex"> 
       <img class="homeImg1" src="../assets/images/home8.jpg" alt="">
       <div class="mt-4 ml-5 pt-3 pl-4">
         <h1 class="engTitle mt-5" style="font-size:5vw">Reliable</h1>
@@ -155,7 +154,7 @@
           />
         </div>
       </div> -->
-    </div>
+    <!-- </div> -->
     <div class="home_info"></div>
   </div>
 </template>
@@ -310,5 +309,9 @@ export default {
 }
 .words {
   background-color:white !important;
+}
+.homDiv1 {
+  animation: slideInLeft;
+  animation-duration: 1.7s;
 }
 </style>
