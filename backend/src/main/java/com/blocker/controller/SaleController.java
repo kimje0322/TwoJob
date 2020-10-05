@@ -32,6 +32,7 @@ import com.blocker.dto.EditorSaleDto;
 import com.blocker.dto.InvestmentDto;
 import com.blocker.dto.ReviewDto;
 import com.blocker.dto.SaleBoardDto;
+import com.blocker.repository.BoardCategoryMapping;
 import com.blocker.repository.BoardCategoryRepository;
 import com.blocker.repository.BoardTagRepository;
 import com.blocker.repository.EditorSaleRepository;
@@ -45,6 +46,7 @@ import com.blocker.request.SaleBoardRequest;
 import com.blocker.request.SaleBoardResponse;
 import com.blocker.request.SaleBoardReviewRequest;
 import com.blocker.request.SaleDetailResponse;
+import com.blocker.service.BoardCategoryService;
 import com.blocker.service.CommentBoardService;
 import com.blocker.service.EditorSaleService;
 import com.blocker.service.InvestmentService;
@@ -78,6 +80,8 @@ public class SaleController {
 	BoardCategoryRepository boardCategoryRepository;
 	@Autowired
 	BoardTagRepository boardTagRepository;
+	@Autowired
+	BoardCategoryService boardCategoryService;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "판매 게시글 생성")
@@ -149,37 +153,76 @@ public class SaleController {
 
 	@GetMapping("/getAllSaleList/{page}")
 	@ApiOperation(value = "모든 판매 게시글 리스트 가져오기")
-	public Object getAllSaleList(@PathVariable int page) {
+	public Object getAllSaleList(@PathVariable int page, @RequestParam List<String> categoryfilter,
+			@RequestParam int orderOption) {
 		final BasicResponse result = new BasicResponse();
 		List<SaleBoardResponse> resultDatalist = new ArrayList<>();
-		List<SaleBoardDto> list = saleService.getAllSaleList(page);
 
 		try {
-			for (Iterator<SaleBoardDto> iter = list.iterator(); iter.hasNext();) {
-				SaleBoardDto saleBoardDto = iter.next();
-				EditorSaleDto editorSaleDto = editorSaleRepository
-						.findEditorSaleDtoByAddress(saleBoardDto.getAddress());
-				InvestmentDto investmentDto = investmentService.getInvestment(saleBoardDto.getInvestaddress()).get();
-				SaleBoardResponse data = new SaleBoardResponse();
-				if (!editorSaleDto.getEditorhtml().isEmpty()) {
-					data.setEditorhtml(editorSaleDto.getEditorhtml());
+			if (categoryfilter.isEmpty()) {
+				Page<SaleBoardDto> list = null;
+				if (orderOption == 0) {
+					list = saleService.getAllSaleList(page);
+				} else {
+					list = saleService.getAllSaleList(page, orderOption);
 				}
-				data.setAddress(saleBoardDto.getAddress());
-				data.setInvestaddress(saleBoardDto.getInvestaddress());
-				data.setPicture(saleBoardDto.getPicture());
-				data.setPjtname(saleBoardDto.getPjtname());
-				data.setSaleprice(saleBoardDto.getSaleprice());
-				data.setStartdate(saleBoardDto.getStartdate());
-				data.setUrl(saleBoardDto.getUrl());
-				data.setUserid(saleBoardDto.getUserid());
-				data.setIsfinish(saleBoardDto.isIsfinish());
-				data.setCompname(investmentDto.getCompname());
-				data.setOnelineintro(investmentDto.getOnelineintro());
-				resultDatalist.add(data);
+				for (Iterator<SaleBoardDto> iter = list.getContent().iterator(); iter.hasNext();) {
+					SaleBoardDto saleBoardDto = iter.next();
+					EditorSaleDto editorSaleDto = editorSaleRepository
+							.findEditorSaleDtoByAddress(saleBoardDto.getAddress());
+					InvestmentDto investmentDto = investmentService.getInvestment(saleBoardDto.getInvestaddress())
+							.get();
+					SaleBoardResponse data = new SaleBoardResponse();
+					if (!editorSaleDto.getEditorhtml().isEmpty()) {
+						data.setEditorhtml(editorSaleDto.getEditorhtml());
+					}
+					data.setAddress(saleBoardDto.getAddress());
+					data.setInvestaddress(saleBoardDto.getInvestaddress());
+					data.setPicture(saleBoardDto.getPicture());
+					data.setPjtname(saleBoardDto.getPjtname());
+					data.setSaleprice(saleBoardDto.getSaleprice());
+					data.setStartdate(saleBoardDto.getStartdate());
+					data.setUrl(saleBoardDto.getUrl());
+					data.setUserid(saleBoardDto.getUserid());
+					data.setIsfinish(saleBoardDto.isIsfinish());
+					data.setCompname(investmentDto.getCompname());
+					data.setOnelineintro(investmentDto.getOnelineintro());
+					resultDatalist.add(data);
+				}
+			} else {
+				Page<BoardCategoryMapping> list = boardCategoryService.getAllInvestmentListWithCategory(page,
+						categoryfilter, orderOption);
+				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
+					BoardCategoryMapping nextiter = iter.next();
+					String investaddress = nextiter.getInvestaddress();
+					Optional<SaleBoardDto> saleBoardDto = saleBoardRepository
+							.findSaleBoardDtoByInvestaddress(investaddress);
+					
+					if(saleBoardDto.isPresent()) {
+						InvestmentDto investmentDto = investmentService.getInvestment(investaddress).get();
+						SaleBoardResponse data = new SaleBoardResponse();
+						EditorSaleDto editorSaleDto = editorSaleRepository
+								.findEditorSaleDtoByAddress(saleBoardDto.get().getAddress());
+						if (!editorSaleDto.getEditorhtml().isEmpty()) {
+							data.setEditorhtml(editorSaleDto.getEditorhtml());
+						}
+						data.setAddress(saleBoardDto.get().getAddress());
+						data.setInvestaddress(saleBoardDto.get().getInvestaddress());
+						data.setPicture(saleBoardDto.get().getPicture());
+						data.setPjtname(saleBoardDto.get().getPjtname());
+						data.setSaleprice(saleBoardDto.get().getSaleprice());
+						data.setStartdate(saleBoardDto.get().getStartdate());
+						data.setUrl(saleBoardDto.get().getUrl());
+						data.setUserid(saleBoardDto.get().getUserid());
+						data.setIsfinish(saleBoardDto.get().isIsfinish());
+						data.setCompname(investmentDto.getCompname());
+						data.setOnelineintro(investmentDto.getOnelineintro());
+						resultDatalist.add(data);
+					}
+				}
 			}
 			result.data = "success";
 			result.object = resultDatalist;
-			result.status = true;
 			result.status = true;
 		} catch (Exception e) {
 			result.data = "fail";

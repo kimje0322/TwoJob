@@ -21,10 +21,21 @@ public class SaleService {
 		return saleBoardRepository.findAllByUserid(pageRequest, userid);
 	}
 
-	public List<SaleBoardDto> getAllSaleList(int page) {
+	public Page<SaleBoardDto> getAllSaleList(int page) {
 		PageRequest pageRequest = PageRequest.of(page, 9);
 
-		return saleBoardRepository.findAll(pageRequest).getContent();
+		return saleBoardRepository.findAll(pageRequest);
+	}
+	
+	public Page<SaleBoardDto> getAllSaleList(int page, int orderOption){
+		PageRequest pageRequest = PageRequest.of(page, 9);
+		
+		//최신순
+		if(orderOption ==1) {
+			return saleBoardRepository.findAllSaleBoardDtoOrderbyCreatedat(pageRequest);
+		}else { //인기순
+			return saleBoardRepository.findAllSaleBoardDtoOrderbyLikecount(pageRequest);
+		}
 	}
 
 	public Optional<SaleBoardDto> getSaleBoard(String address) {

@@ -53,7 +53,7 @@ public class LoginServiceImpl implements LoginService{
 				JsonElement nprofile_image = properties.getAsJsonObject().get("profile_image");
 				JsonElement nemail = kakao_account.getAsJsonObject().get("email");
 				String email = nemail==null?null:nemail.getAsString();
-				String profile_image = nprofile_image==null?null:nprofile_image.getAsString();
+				String profile_image = nprofile_image==null?"https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg":nprofile_image.getAsString();
 				Optional<Member> m = memberRepository.findById(id);
 				Member m1 = null;
 				if(m.isPresent()) {

@@ -296,7 +296,6 @@ public class InvestController {
 				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
 					BoardCategoryMapping nextiter = iter.next();
 					String investaddress = nextiter.getInvestaddress();
-					System.out.println("investaddress=====>" + investaddress);
 					Optional<InvestmentDto> investmentDto = investmentService.getInvestment(investaddress);
 					if (investmentDto.isPresent()) {
 						InvestmentResponse investmentResponse = new InvestmentResponse();
