@@ -109,7 +109,7 @@ import store from "@/store/index.js";
 
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
-var sock = new SockJS("http://j3b102.p.ssafy:8080/notice");
+var sock = new SockJS("https://j3b102.p.ssafy:8080/notice");
 var ws = Stomp.over(sock);
 var reconnect = 0;
 
@@ -150,7 +150,7 @@ export default {
           if (reconnect++ <= 5) {
             setTimeout(function () {
               console.log("connection reconnect");
-              sock = new SockJS("http://j3b102.p.ssafy.io:8080/notice");
+              sock = new SockJS("https://j3b102.p.ssafy.io:8080/notice");
               ws = Stomp.over(sock);
               connect();
             }, 10 * 1000);
