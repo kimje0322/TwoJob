@@ -11,6 +11,7 @@ public class SaleBoardResponse {
 	String pjtname;
 	String startdate;
 	int saleprice;
+	int totalpage;
 	String picture;
 	String editorhtml;
 	String compname;

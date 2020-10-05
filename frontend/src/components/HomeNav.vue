@@ -11,14 +11,14 @@
           </div><hr>
         </div>
       </div>
-    <!-- expand-on-hover -->
+  
   <!-- drawer -->
   <v-card>
     <v-navigation-drawer
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-      
+      expand-on-hover
     >
       <div v-if="!login">
         <v-list-item class="px-2">
@@ -42,6 +42,7 @@
           <!-- <div style="display:flex"> -->
           <v-list-item-title class="ml-3">{{ userInfo.name }}님</v-list-item-title>
             <v-btn
+              v-if="!this.wallet"
               class="chargeBtn ma-2 px-1 py-1 mr-2 mt-2"
               outlined
             >
@@ -112,6 +113,7 @@ export default {
     data () {
       return {
         drawer: true,
+        wallet: false,
         items: [
           { title: '투자 프로젝트', icon: 'mdi-lightbulb-on-outline' },
           { title: '쇼핑 프로젝트', icon: 'mdi-basket' },
@@ -142,6 +144,14 @@ export default {
     }
   },
   mounted() {
+    // 지갑 생성 여부 확인
+    if (this.login) {
+      axios.get(
+        `${SERVER_URL}/0/wallet/toid?oauthid=${this.userInfo.id}`
+        ).then((res) => {
+          console.log('지갑 있나 봅니다');
+          console.log(res);
+        }) 
     if (location.href.includes("pg_token")) {
       //     window.opener.closed = true;
       this.index = location.href.indexOf("pg_token");
@@ -153,7 +163,7 @@ export default {
         .then((res) => {
           console.log(res);
         });
-      //}
+      }
     }
     this.asset = store.state.balance;
     if (store.state.isSigned) {
@@ -166,7 +176,7 @@ export default {
   },
   updated() {
     if (this.login && this.items.length == 2) {
-        this.items.push({ title: '마이페이지', icon: 'mdi-account'},)
+        this.items.unshift({ title: '마이페이지', icon: 'mdi-account'},)
         this.items.push({ title: '로그아웃', icon: 'mdi-logout-variant' },)
     }
   },
@@ -231,11 +241,7 @@ export default {
       // console.log("store.state.isSigned " + store.state.isSigned);
     },
     onChargeDialog() {
-      console.log("충전모달");
-      console.log(this.chargeDialog);
       this.chargeDialog = true;
-      console.log(this.chargeDialog);
-      // this.chargeDialog = true;
      },
     //  충전
     onchargebox() {
@@ -245,8 +251,6 @@ export default {
       // this.kakopay = true;
       this.money = this.money * 1;
       store.commit("setCharge", this.money);
-      console.log("vuex에 저장된 충전할 금액은");
-      console.log(store.state.charge);
       const fd = new FormData();
       fd.append("count", this.money);
       fd.append("userid", this.userInfo.id);
@@ -256,8 +260,6 @@ export default {
           console.log(response);
           // router.push(response.data)
           this.next = true;
-          console.log("이건 넥스트");
-          console.log(this.next);
           this.nexturl = response.data;
           window.location.href = this.nexturl;
         })

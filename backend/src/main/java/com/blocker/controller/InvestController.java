@@ -2,6 +2,7 @@ package com.blocker.controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -296,7 +297,6 @@ public class InvestController {
 				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
 					BoardCategoryMapping nextiter = iter.next();
 					String investaddress = nextiter.getInvestaddress();
-					System.out.println("investaddress=====>" + investaddress);
 					Optional<InvestmentDto> investmentDto = investmentService.getInvestment(investaddress);
 					if (investmentDto.isPresent()) {
 						InvestmentResponse investmentResponse = new InvestmentResponse();
@@ -325,6 +325,9 @@ public class InvestController {
 					}
 				}
 			}
+			System.out.println("before" + resultDatas.toString());
+//			Collections.reverse(resultDatas);
+			System.out.println("after" + resultDatas.toString());
 			result.data = "success";
 			result.object = resultDatas;
 			result.status = true;
@@ -365,7 +368,7 @@ public class InvestController {
 
 				// comments
 				List<CommentBoardDto> comments = commentBoardService.getAllComment(address);
-
+				map.put("commentsCount", comments.size());
 				InvestmentRequest data = new InvestmentRequest(categorys, tags, comments);
 				data.setCompName(investmentDto.getCompname());
 				data.setDeadLine(investmentDto.getDeadline());
@@ -478,11 +481,47 @@ public class InvestController {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			int data = commentBoardService.deleteComment(num);
-			System.out.println("data====>"+data);
+			System.out.println("data====>" + data);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("댓글 삭제 도중 error발생");
-		} 
+		}
+	}
+
+	@GetMapping("/curation")
+	@ApiOperation(value = "마감임박과 인기순 3개씩 보내주는 함수")
+	public Object curation() {
+		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
+		try {
+			List<InvestmentDto> popular = investmentService.getThreeInvestmentListOrderbyLikecount();
+			List<InvestmentDto> closedeadlines = investmentService.getThreeInvestmentListOrderbyDeadline();
+			List<Integer> likecount = new ArrayList<>();
+			List<Integer> closedeadlineLikecount = new ArrayList<>();
+			map.put("closedeadlines", closedeadlines);
+			map.put("popular", popular);
+			for (Iterator<InvestmentDto> iter = popular.iterator(); iter.hasNext();) {
+				InvestmentDto investmentDto = iter.next();
+				likecount.add(likeBoardService.likeCount(investmentDto.getAddress()));
+			}
+			for (Iterator<InvestmentDto> iter = closedeadlines.iterator(); iter.hasNext();) {
+				InvestmentDto investmentDto = iter.next();
+				closedeadlineLikecount.add(likeBoardService.likeCount(investmentDto.getAddress()));
+			}
+			map.put("closedeadlinelikecount", closedeadlineLikecount);
+			map.put("popularlikecount", likecount);
+			result.object = map;
+			result.data = "success";
+			result.status = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("curation error");
+			result.object = null;
+			result.data = "fail";
+			result.status = false;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
 	}
 
 	@ExceptionHandler(Exception.class)

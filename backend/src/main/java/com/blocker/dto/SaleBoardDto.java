@@ -31,6 +31,8 @@ public class SaleBoardDto {
 	String picture;
 	@Column
 	boolean isfinish;
+	@Column(name = "createat", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	String createat;
 
 	public SaleBoardDto() {
 	}
