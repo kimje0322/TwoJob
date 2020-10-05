@@ -19,6 +19,8 @@ public class InvestmentResponse {
 	int expectedSalePrice;// 판매 예정금액
 	String picture;// 대표사진이름
 	boolean isfinish;//종료됐는지 체크하는 변수
+	boolean like;//좋아요 눌렀는지 안눌렀는지 확인하는 변수 안누르면 false 누르면 true 
+	int likecount;//현재까지 눌린 좋아요 갯수
 	List<String> categorys;// 카테고리
 	List<String> tags;// 테그
 	String editorhtml;
