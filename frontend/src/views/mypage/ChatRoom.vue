@@ -255,7 +255,7 @@ import router from "@/router";
 
 // import Navbar from "../../components/Navbar.vue";
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
 var sock = new SockJS("https://www.twojob.ga/api/notice");
 var ws = Stomp.over(sock);

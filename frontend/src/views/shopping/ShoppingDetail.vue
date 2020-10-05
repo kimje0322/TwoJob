@@ -213,7 +213,7 @@ import Navbar from "../../components/Navbar.vue";
 import axios from 'axios';
 import store from "../../store/index.js";
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
