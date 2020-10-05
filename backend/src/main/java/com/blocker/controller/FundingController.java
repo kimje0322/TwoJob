@@ -83,7 +83,7 @@ public class FundingController {
 	
 	@ApiOperation(value = "testg ")
 	@GetMapping(value = "/testd")
-	public void test() {
+	public void test() throws Exception {
 		fundingService.makeAllTask();
 //		Date now = new Date();
 //		Calendar calUntil = Calendar.getInstance();
