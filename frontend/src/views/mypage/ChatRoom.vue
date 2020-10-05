@@ -206,10 +206,10 @@
                       </div>
                     </div>
                   </div>
-                  <div v-for="(message, j) in messages" :key="j">
+                  <!-- <div v-for="(message, j) in messages" :key="j">
                     {{ message }}
                     dd
-                  </div>
+                  </div> -->
                 </div>
                 <!-- 메세지 입력창 -->
                 <div v-if="click == true" style="height: 40px">
@@ -253,7 +253,7 @@ import store from "@/store/index.js";
 import "@/../public/css/ChatRoom.scss";
 import router from "@/router";
 
-import Chat from "../../components/Chat.vue";
+// import Chat from "../../components/Chat.vue";
 
 // import Navbar from "../../components/Navbar.vue";
 
@@ -262,6 +262,64 @@ const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 var sock = new SockJS("http://j3b102.p.ssafy:8080/notice");
 var ws = Stomp.over(sock);
 var reconnect = 0;
+
+// 소켓 연결
+    function connect() {
+      ws.connect(
+        {},
+        function (frame) {
+          ws.subscribe("/sub/notice", function (message) {
+            console.log("!!!!!!!!!!!!event>>", message);
+          });
+          ws.send("/pub/notice", {}, "msg: Haha~~~");
+        },
+        function (error) {
+          console.log("에러다에러!!!!!");
+          if (reconnect++ <= 5) {
+            setTimeout(function () {
+              console.log("connection reconnect");
+              sock = new SockJS("http://j3b102.p.ssafy.io:8080/notice");
+              ws = Stomp.over(sock);
+              connect();
+            }, 10 * 1000);
+          }
+        }
+      );
+    }
+    connect();
+
+    function connection() {
+      ws.connection(
+        {},
+        function (frame) {
+          ws.subscribe("/sub/chat/room" + this.chatroomid, function (message) {
+            var recv = JSON.parse(message.body);
+            vm.recvMessage(recv);
+          });
+          ws.send(
+            "/pub/chat/message",
+            {},
+            JSON.stringify({
+              type: "ENTER",
+              roomid: this.chatroomid,
+              sender: store.state.userInfo.name,
+            })
+          );
+        },
+        // this.openChat(this.chatroomid, this.chatusername, this.chatroomid),
+        function (error) {
+          if (reconnect++ <= 5) {
+            setTimeout(function () {
+              console.log("connection reconnect");
+              sock = new SockJS("http://j3b102.p.ssafy.io:8080/ws-stomp");
+              ws = Stomp.over(sock);
+              connection();
+            }, 10 * 1000);
+          }
+        }
+      );
+    }
+
 
 export default {
   data() {
@@ -306,63 +364,7 @@ export default {
         }
       });
 
-    // 소켓 연결
-    function connect() {
-      // pub/sub event
-      ws.connect(
-        {},
-        function (frame) {
-          ws.subscribe("/sub/notice", function (message) {
-            console.log("!!!!!!!!!!!!event>>", message);
-          });
-          ws.send("/pub/notice", {}, "msg: Haha~~~");
-        },
-        function (error) {
-          console.log("에러다에러!!!!!");
-          if (reconnect++ <= 5) {
-            setTimeout(function () {
-              console.log("connection reconnect");
-              sock = new SockJS("http://j3b102.p.ssafy.io:8080/notice");
-              ws = Stomp.over(sock);
-              connect();
-            }, 10 * 1000);
-          }
-        }
-      );
-    }
-    connect();
-
-    function connection() {
-      // pub/sub event
-      ws.connection(
-        {},
-        function (frame) {
-          ws.subscribe("/sub/chat/room" + this.chatroomid, function (message) {
-            var recv = JSON.parse(message.body);
-            vm.recvMessage(recv);
-          });
-          ws.send(
-            "/pub/chat/message",
-            {},
-            JSON.stringify({
-              type: "ENTER",
-              roomid: this.chatroomid,
-              sender: store.state.userInfo.name,
-            })
-          );
-        },
-        function (error) {
-          if (reconnect++ <= 5) {
-            setTimeout(function () {
-              console.log("connection reconnect");
-              sock = new SockJS("http://j3b102.p.ssafy.io:8080/ws-stomp");
-              ws = Stomp.over(sock);
-              connection();
-            }, 10 * 1000);
-          }
-        }
-      );
-    }
+    
   },
   methods: {
     openChat(roomid, name, img) {
@@ -374,12 +376,6 @@ export default {
 
       this.chatmessage = [];
       this.totalmessage = "";
-
-      // function connect(){
-      //   ws.connect({}, function(frame) {
-      //     ws.subscribe("/sub/chat/room/" + vm.$data.roomid, )
-      //   })
-      // }
 
       axios
         .get(
@@ -417,22 +413,23 @@ export default {
           message: this.message,
         })
       );
+      const today = new Date()
+      let year = today.getFullYear(); // 년도
+      let month = today.getMonth() + 1;  // 월
+      let date = today.getDate();
+      let hours = today.getHours(); // 시
+      let minutes = today.getMinutes();  // 분
+      let seconds = today.getSeconds(); 
+      const d = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`
+      const messageBox = {
+        message: this.message,
+        time: d,
+        sender: this.username
+      }
+      this.chatmessage.push(messageBox)
       this.message = "";
+      // this.openChat(this.chatroomid, this.chatusername, this.chatroomid)
 
-      // this.openChat(this.chatroomid, this.chatusername, this.chatuserimg);
-      
-      // axios
-      //   .get(
-      //     `${SERVER_URL}/chat/getMessage?direction=ASC&page=0&roomId=${
-      //       this.chatroomid
-      //     }&size=${this.totalmessage + 1}`
-      //   )
-      //   .then((res) => {
-      //     this.chatmessage = res.data.content;
-      //     console.log(this.chatmessage);
-      //   });
-      // this.openChat();
-      // document.getElementById("inputxt").value = null;
     },
 
     // 채팅 수신
