@@ -1,8 +1,10 @@
 package com.blocker.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.blocker.dto.LikeBoardDto;
@@ -29,6 +31,10 @@ public class LikeBoardService {
 	
 	public int likeCount(String address) {
 		return likeBoardRepository.countLikeBoard(address);
+	}
+	
+	public List<LikeBoardDto> getAllProjectILike(String userid){
+		return likeBoardRepository.getAllProjectILike(userid);
 	}
 	
 }

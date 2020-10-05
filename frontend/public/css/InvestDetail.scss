@@ -6,24 +6,26 @@
         background-color: #f8f9fa !important;
     }
     .v-window__prev {
-      background: unset !important;
+        background: unset !important;
     }
     .v-window__next {
-      right: 5px !important;
-      background: unset !important;
+        right: 5px !important;
+        background: unset !important;
     }
     .v-carousel__controls {
-      background: unset !important;
+        background: unset !important;
     }
     .v-window__prev .mdi-chevron-left {
-      font-size: 100px !important;
+        font-size: 100px !important;
     }
     .v-window__next .mdi-chevron-right {
-      font-size: 100px !important;
+        font-size: 100px !important;
     }
-    .editorContent > p > img {
-      width: 70%;
-      height: 70%;
+    .editorContent>p>img {
+        width: 70%;
+        height: 70%;
     }
-  }
-  
+    .v-application--wrap {
+        display: none;
+    }
+}
