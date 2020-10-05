@@ -208,6 +208,7 @@ export default {
   },
   data() {
     return {
+      campaignId: '',
       userid: '',
       // 추가된 상품
       showCategory: [],
@@ -412,7 +413,7 @@ export default {
         if (result.value) {
           axios.post(`${SERVER_URL}/sale/create`, {
             userid: this.userid,
-            investaddress: "28d999c6-7a39-4dae-a651-bb46512b549c",
+            investaddress: "dd7dcf00-0162-432a-9cbb-f584d949a5c1",
             pjtname: this.title,
             picture: this.picture,
             startdate: this.dateFormatted1,
@@ -423,7 +424,22 @@ export default {
             editorhtml: this.editortext,
           })
             .then(response => {
-              if(response.data.data == 'success'){
+              if(response.data.status == true){
+                  // 블록체인
+                  const fd = new FormData();
+                  fd.append("accessToken", store.state.accessToken);
+                  fd.append("campaignId", response.data.data);
+                  axios
+                    .post(`${SERVER_URL}/funding/sellopen`, fd)
+                    .then((res) => {
+                      console.log(res)
+                      console.log('성공')
+                    })
+                    .catch((err) => {
+                      console.log(err)
+                      console.log('에러 ')
+                    })
+
                   Swal.fire({
                   // position: 'top-end',
                   icon: 'success',

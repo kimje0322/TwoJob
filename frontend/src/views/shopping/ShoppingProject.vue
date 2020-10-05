@@ -14,11 +14,6 @@
             <h5 style="color: rgb(22, 150, 245)">프로젝트</h5>
           </router-link>
         </div>
-        <div>
-          <router-link to="/shoppinghome">
-            <h5>오픈예정</h5>
-          </router-link>
-        </div>
       </div>
     </div>
     <hr>
@@ -66,8 +61,8 @@
     <div class="projectList" style="padding: 10px 3%;">
       <div style="height: 45px;">
         <div style="display: inline-block;">
-          <span style="color: rgb(22, 150, 245);">16</span>
-          <span>개의 프로젝트가 있습니다.</span>
+          <!-- <span style="color: rgb(22, 150, 245);">16</span>
+          <span>개의 프로젝트가 있습니다.</span> -->
         </div>
         <div style="width: 100px; display: inline-block; float: right;">
         </div>
@@ -156,17 +151,7 @@ export default {
   mounted() {
     // 카테고리
     $('.all').addClass('active')
-    this.initAxios()
-  },
-  created() {
-    axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}?categoryfilter={}&orderOption={}`)
-      .then(response => {
-        this.shoppingList = response.data.object
-        // console.log(this.shoppingList)
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    this.initAxios();
   },
   methods: {
     initAxios() {
@@ -174,21 +159,18 @@ export default {
     fd.append("orderOption", 0);
     fd.append("categoryfilter", "");
     axios
-      .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}rOption=${this.nowfilter}`)
+      .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
       .then((response) => {
         console.log(response);
         if (response.data.data == "success") {
-          this.investProjects = response.data.object;
+          this.shoppingList = response.data.object;
+          console.log('이건 쇼핑리스트')
+          console.log(this.shoppingList)
           this.totalpage = this.investProjects[0].totalpage;
-          this.investProjects.forEach((investPjt) => {
-            // 마감일
-            const day = investPjt.deadLine.substring(8, 10);
-            let today = new Date();
-            today.setDate(day - today.getDate());
-            this.$set(investPjt, "lastday", today.getDate());
+          this.shoppingList.forEach((shoppingPjt) => {
             // 제목
-            if (investPjt.pjtName.length > 8) {
-              investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
+            if (Pjt.pjtname.length > 8) {
+              Pjt.pjtname = Pjt.pjtame.substring(0, 10) + "...";
             }
           });
         }
@@ -213,17 +195,12 @@ export default {
         .then((response) => {
           console.log(response);
           if (response.data.data == "success") {
-            this.investProjects = response.data.object;
+            this.shoppingList = response.data.object;
             this.totalpage = this.investProjects[0].totalpage;
-            this.investProjects.forEach((investPjt) => {
-              // 마감일
-              const day = investPjt.deadLine.substring(8, 10);
-              let today = new Date();
-              today.setDate(day - today.getDate());
-              this.$set(investPjt, "lastday", today.getDate());
+            this.shoppingList.forEach((shoppingPjt) => {
               // 제목
-              if (investPjt.pjtName.length > 8) {
-                investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
+              if (shoppingPjt.pjtname.length > 8) {
+                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
               }
             });
           }
@@ -243,7 +220,6 @@ export default {
       (this.clickfilter = ""), (this.nowfilter = 0);
       this.initAxios()
     },
-  },
     onCategory(key) {
       // 카테고리
       if (key == "all") {
@@ -277,6 +253,7 @@ export default {
       }
       this.filterAxios()
     },
+  },
 };
 </script>
 

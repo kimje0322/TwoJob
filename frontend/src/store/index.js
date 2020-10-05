@@ -31,8 +31,7 @@ export default new Vuex.Store({
         iswallet: false,
 
         accessToken: null,
-        address: null,
-        balance: "",
+        balance: null,
         charge: null,
 
         askusername: null,
@@ -51,7 +50,7 @@ export default new Vuex.Store({
             state.balance = balance;
         },
         setAddress(state, address) {
-            state.address = address;
+            state.userInfo.walletAddress = address;
         },
         setAccessToken(state, token) {
             state.accessToken = token;
@@ -83,6 +82,7 @@ export default new Vuex.Store({
             state.userInfo.name = null;
             state.userInfo.img = null;
             state.isSigned = false;
+            state.userInfo.walletAddress = null;
         },
     },
     actions: {},
