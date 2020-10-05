@@ -155,7 +155,7 @@
           />
         </div>
       </div> -->
-    </div>
+    <!-- </div> -->
     <div class="home_info"></div>
   </div>
 </template>
