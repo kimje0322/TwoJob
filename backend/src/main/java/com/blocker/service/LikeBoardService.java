@@ -30,4 +30,5 @@ public class LikeBoardService {
 	public int likeCount(String address) {
 		return likeBoardRepository.countLikeBoard(address);
 	}
+	
 }

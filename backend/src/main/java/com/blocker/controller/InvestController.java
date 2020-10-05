@@ -31,6 +31,7 @@ import com.blocker.dto.CategoryDto;
 import com.blocker.dto.CommentBoardDto;
 import com.blocker.dto.EditorInvestmentDto;
 import com.blocker.dto.InvestmentDto;
+import com.blocker.dto.LikeBoardDto;
 import com.blocker.dto.SaleBoardDto;
 import com.blocker.dto.TagDto;
 import com.blocker.repository.BoardCategoryMapping;
@@ -42,11 +43,13 @@ import com.blocker.repository.InvestmentRepository;
 import com.blocker.repository.TagRepository;
 import com.blocker.repository.getAllMyPjtResponse;
 import com.blocker.request.CreateCommentRequest;
+import com.blocker.request.CreateLikeRequest;
 import com.blocker.request.InvestmentRequest;
 import com.blocker.request.InvestmentResponse;
 import com.blocker.service.BoardCategoryService;
 import com.blocker.service.CommentBoardService;
 import com.blocker.service.InvestmentService;
+import com.blocker.service.LikeBoardService;
 import com.blocker.service.SaleService;
 import com.blocker.util.BasicResponse;
 import com.blocker.util.webhook;
@@ -79,6 +82,9 @@ public class InvestController {
 	private SaleService saleService;
 	@Autowired
 	CommentBoardService commentBoardService;
+
+	@Autowired
+	LikeBoardService likeBoardService;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "투자 게시글 생성")
@@ -241,8 +247,8 @@ public class InvestController {
 	@PostMapping("/getAllInvestBoard/{page}")
 	@ApiOperation(value = "저장되어있는 모든사람의 투자 게시글을보여줌 orderOption = 0전체 1최신 2 인기")
 	@ResponseBody
-	public Object getAllInvestBoard(@PathVariable int page,@RequestParam List<String> categoryfilter,
-			@RequestParam int orderOption) {
+	public Object getAllInvestBoard(@PathVariable int page, @RequestParam List<String> categoryfilter,
+			@RequestParam int orderOption, @RequestParam String userid) {
 		final BasicResponse result = new BasicResponse();
 		List<InvestmentResponse> resultDatas = new ArrayList<>();
 
@@ -250,9 +256,10 @@ public class InvestController {
 			System.out.println(categoryfilter.isEmpty());
 			if (categoryfilter.isEmpty()) {
 				Page<InvestmentDto> list = null;
-				if (orderOption == 0) {System.out.println(0);
+				if (orderOption == 0) {
+					System.out.println(0);
 					list = investmentService.getAllInvestmentList(page);
-				}else {
+				} else {
 					list = investmentService.getAllInvestmentList(page, orderOption);
 				}
 
@@ -273,7 +280,17 @@ public class InvestController {
 					investmentResponse.setUserid(investmentDto.getUserid());
 					investmentResponse.setIsfinish(investmentDto.isIsfinish());
 					investmentResponse.setTotalpage(list.getTotalPages());
-
+					//like
+					CreateLikeRequest createLikeRequest = new CreateLikeRequest();
+					createLikeRequest.setAddress(investmentDto.getAddress());
+					createLikeRequest.setUserid(userid);
+					Optional<LikeBoardDto> like = likeBoardService.findLike(createLikeRequest);
+					if (like.isPresent()) {
+						investmentResponse.setLike(like.get().isIschecked());
+					}else {
+						investmentResponse.setLike(false);
+					}
+					investmentResponse.setLikecount(likeBoardService.likeCount(investmentDto.getAddress()));
 					// editor
 					Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
 							.getEditorInvestmentDtoByInvestaddress(investmentDto.getAddress());
@@ -284,7 +301,7 @@ public class InvestController {
 				}
 			} else {
 				Page<BoardCategoryMapping> list = boardCategoryService.getAllInvestmentListWithCategory(page,
-						categoryfilter,orderOption);
+						categoryfilter, orderOption);
 				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
 					BoardCategoryMapping nextiter = iter.next();
 					String investaddress = nextiter.getInvestaddress();
@@ -306,6 +323,17 @@ public class InvestController {
 						investmentResponse.setUserid(investmentDto.get().getUserid());
 						investmentResponse.setIsfinish(investmentDto.get().isIsfinish());
 						investmentResponse.setTotalpage(list.getTotalPages());
+						//like
+						CreateLikeRequest createLikeRequest = new CreateLikeRequest();
+						createLikeRequest.setAddress(investaddress);
+						createLikeRequest.setUserid(userid);
+						Optional<LikeBoardDto> like = likeBoardService.findLike(createLikeRequest);
+						if (like.isPresent()) {
+							investmentResponse.setLike(like.get().isIschecked());
+						}else {
+							investmentResponse.setLike(false);
+						}
+						investmentResponse.setLikecount(likeBoardService.likeCount(investaddress));
 						// editor
 						Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
 								.getEditorInvestmentDtoByInvestaddress(investmentDto.get().getAddress());
