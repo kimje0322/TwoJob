@@ -11,14 +11,14 @@
           </div><hr>
         </div>
       </div>
-    <!-- expand-on-hover -->
+  
   <!-- drawer -->
   <v-card>
     <v-navigation-drawer
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-      
+      expand-on-hover
     >
       <div v-if="!login">
         <v-list-item class="px-2">
@@ -166,7 +166,7 @@ export default {
   },
   updated() {
     if (this.login && this.items.length == 2) {
-        this.items.push({ title: '마이페이지', icon: 'mdi-account'},)
+        this.items.unshift({ title: '마이페이지', icon: 'mdi-account'},)
         this.items.push({ title: '로그아웃', icon: 'mdi-logout-variant' },)
     }
   },

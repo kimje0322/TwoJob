@@ -34,9 +34,7 @@
         <p class="mt-5 ml-2" style="font-size:1vw">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
       </div>
     </div>
-
-
-    <div class="homeImg">
+    <!-- <div class="homeImg">
       <v-carousel>
         <v-carousel-item          
           v-for="(item, i) in items" :key="i"
@@ -45,8 +43,8 @@
           transition="fade-transition"
         ></v-carousel-item>
       </v-carousel>
-      <!-- <img style="width: 100%" src="../assets/images/home.gif" alt="home-main"> -->
-    </div>
+      <img style="width: 100%" src="../assets/images/home.gif" alt="home-main">
+    </div> -->
     <!-- <button @click="onWallet" style="margin-left: 200px;">
       눌러봐
     </button> -->
@@ -118,7 +116,7 @@
           </div>
         </div>
       </div>
-      <div class="home_div">
+      <!-- <div class="home_div">
         <div style="display: inline-block; flex: 1">
           <i class="fas fa-desktop fa-4x"></i>
         </div>
@@ -127,7 +125,7 @@
             언제 어디서든
             <br />쉽고 간편하게!
           </h3>
-          <!-- <h3 class="info_text">기대 이상의 수익률!</h3> -->
+          <h3 class="info_text">기대 이상의 수익률!</h3>
         </div>
 
         <div class="info_right" style="flex: 5">
@@ -137,8 +135,8 @@
             alt
           />
         </div>
-      </div>
-      <div class="home_div">
+      </div> -->
+      <!-- <div class="home_div">
         <div style="display: inline-block; flex: 1">
           <i class="far fa-thumbs-up fa-5x"></i>
         </div>
@@ -147,7 +145,7 @@
             다양한 카테고리를
             <br />즐길 수 있는 유일한 곳!
           </h3>
-          <!-- <h3 class="info_text">기대 이상의 수익률!</h3> -->
+          <h3 class="info_text">기대 이상의 수익률!</h3>
         </div>
         <div class="info_right" style="flex: 4.5">
           <img
@@ -156,7 +154,7 @@
             alt
           />
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="home_info"></div>
   </div>
