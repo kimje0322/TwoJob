@@ -1,6 +1,6 @@
 <template>
   <div class="shoppingHome">
-    <navbar/>
+    <navbar />
     <!-- 쇼핑 메뉴바 -->
     <div class="shoppingNav">
       <div class="items">
@@ -12,7 +12,6 @@
         <div>
           <router-link to="/shoppingproject">
             <h5>프로젝트</h5>
-            
           </router-link>
         </div>
         <div>
@@ -26,7 +25,7 @@
     <div class="homeImg">
       <v-carousel>
         <v-carousel-item
-          v-for="(item,i) in items"
+          v-for="(item, i) in items"
           :key="i"
           :src="item.src"
           reverse-transition="fade-transition"
@@ -35,20 +34,22 @@
       </v-carousel>
     </div>
     <!-- 카테고리 -->
-    <v-app id="inspire" style="text-align:center">
+    <v-app id="inspire" style="text-align: center">
       <v-container class="cateContainer">
         <v-row no-gutters>
           <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
           <v-col cols="12" sm="1"></v-col>
           <!-- 카테고리 for문 -->
-          <v-col v-for="(category, i) in categoryList" :key="i" cols="12" sm="1">
-            <v-card
-              class="pa-2"
-              outlined
-              tile
-            >
-              <v-icon size="30">mdi-{{category.icon}}</v-icon><br>
-              <p class="categoryTag">{{category.name}}</p>
+          <v-col
+            v-for="(category, i) in categoryList"
+            :key="i"
+            cols="12"
+            sm="1"
+          >
+            <v-card class="pa-2" outlined tile>
+              <v-icon size="30">mdi-{{ category.icon }}</v-icon
+              ><br />
+              <p class="categoryTag">{{ category.name }}</p>
             </v-card>
           </v-col>
         </v-row>
@@ -57,12 +58,8 @@
 
     <div>
       <!-- 임시 리뷰작성 버튼 activator -->
-      <div style="text-align: end; margin-right: 70px;">
-        <v-btn 
-          @click="openReviewDialog(-1)"
-          outlined>
-          리뷰 작성
-        </v-btn>
+      <div style="text-align: end; margin-right: 70px">
+        <v-btn @click="openReviewDialog(-1)" outlined> 리뷰 작성 </v-btn>
       </div>
       
       <!-- 리뷰 모달 -->
@@ -79,7 +76,11 @@
 
     <!-- 인기순 -->
     <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">인기순<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
+      <h4 style="font-weight: 600">
+        인기순<v-icon style="font-size: 36px; color: black"
+          >mdi-chevron-right</v-icon
+        >
+      </h4>
     </div>
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in likeItems" :key="i" style="display: inline-block; flex:1">
@@ -89,7 +90,7 @@
             <div style="margin-left: auto;"><v-chip class="likeBadge">{{item.likenum}}명 좋아요</v-chip></div>
           </v-card-title>
           <v-card-text>
-            <div style="margin-bottom: 15px;">{{item.content}}</div>
+            <div style="margin-bottom: 15px">{{ item.content }}</div>
             <!-- <div style="color: black; display: inline-block; float: right;">
               <v-icon size="20" class="mr-1">mdi-heart</v-icon>128
             </div> -->
@@ -99,21 +100,51 @@
     </div>
     <!-- 오픈예정 -->
     <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">오픈예정<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
+      <h4 style="font-weight: 600">
+        오픈예정<v-icon style="font-size: 36px; color: black"
+          >mdi-chevron-right</v-icon
+        >
+      </h4>
     </div>
     <div style="padding: 1% 0">
-      <v-card v-for="(item, i) in openItems" :key="i" style="width: 38%; height: 180px; display: inline-block; margin: 0 6% 4% 6%;">
-        <v-img style="width:33%; float:left;" height="180" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
-        <div style="width: 67%; float:right;">
-          <v-card-title style="font-weight: 600;">{{item.title}}
-            <div style="margin-left: auto;">
-              <v-icon style="color:rgb(22, 150, 245); margin-right: 10px">mdi-clock-outline</v-icon><span class="openBadge">{{item.opendate}}일 뒤 오픈</span>
+      <v-card
+        v-for="(item, i) in openItems"
+        :key="i"
+        style="
+          width: 38%;
+          height: 180px;
+          display: inline-block;
+          margin: 0 6% 4% 6%;
+        "
+      >
+        <v-img
+          style="width: 33%; float: left"
+          height="180"
+          src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+        ></v-img>
+        <div style="width: 67%; float: right">
+          <v-card-title style="font-weight: 600"
+            >{{ item.title }}
+            <div style="margin-left: auto">
+              <v-icon style="color: rgb(22, 150, 245); margin-right: 10px"
+                >mdi-clock-outline</v-icon
+              ><span class="openBadge">{{ item.opendate }}일 뒤 오픈</span>
             </div>
           </v-card-title>
           <v-card-text>
-            <div style="margin-bottom: 15px;">{{item.content}}</div>
-            <div style="color: black;">
-              <strong><p style="display: inline-block; height: 41.6px; line-height: 41.6px">판매 예정금액 {{item.price}} 원</p></strong>
+            <div style="margin-bottom: 15px">{{ item.content }}</div>
+            <div style="color: black">
+              <strong
+                ><p
+                  style="
+                    display: inline-block;
+                    height: 41.6px;
+                    line-height: 41.6px;
+                  "
+                >
+                  판매 예정금액 {{ item.price }} 원
+                </p></strong
+              >
             </div>
           </v-card-text>
         </div>
@@ -131,12 +162,12 @@ import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
 
 export default {
   components: {
-    Navbar, 
+    Navbar,
     ShoppingReview,
   },
   data() {
     return {
-      reviewDialog: '',
+      reviewDialog: "",
       categoryList: [
         { icon: "book-multiple-outline", name: "전체", key: "all" },
         { icon: "laptop-windows", name: "테크, 가전", key: "tech" },
@@ -169,21 +200,24 @@ export default {
         {
           title: "Ostay 다이슨 드라이어",
           deadline: "2",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,500,500",
           percent: "98",
         },
         {
           title: "특별한 숟가락",
           deadline: "3",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,300,500",
           percent: "95",
         },
         {
           title: "달라진 안경",
           deadline: "7",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,000,500",
           percent: "88",
         },
@@ -192,21 +226,24 @@ export default {
         {
           title: "특별한 자전거",
           likenum: "10000",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,500,500",
           percent: "92",
         },
         {
           title: "특별한 숟가락",
           likenum: "5000",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,300,500",
           percent: "85",
         },
         {
           title: "달라진 안경",
           likenum: "3500",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,000,500",
           percent: "79",
         },
@@ -215,28 +252,32 @@ export default {
         {
           title: "특별한 자전거",
           opendate: "2",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "39,000",
         },
         {
           title: "특별한 숟가락",
           opendate: "5",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "75,000",
         },
         {
           title: "달라진 안경",
           opendate: "10",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "1,000,000",
         },
         {
           title: "날이 없는 선풍기",
           opendate: "12",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
+          content:
+            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
           price: "50,000",
         },
-      ]
+      ],
     };
   },
   methods: {
@@ -266,8 +307,7 @@ export default {
   text-decoration: none;
 }
 .items div a:hover {
-  color:
-   rgb(22, 150, 245);
+  color: rgb(22, 150, 245);
 }
 .items h5 {
   font-weight: 600;

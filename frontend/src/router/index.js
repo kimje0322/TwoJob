@@ -75,7 +75,7 @@ const routes = [{
         component: ShoppingProject,
     },
     {
-        path: "/mypage",
+        path: "/mypage/:userid?",
         name: "Mypage",
         component: Mypage,
     },
