@@ -331,6 +331,45 @@ public class FundingServiceImpl implements FundingService{
 		}
 		return result;
 	}
+	@Override
+	public String getProjectState(String campaignId) throws Exception {
+		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+		Credentials credentials = Credentials.create(property.getAdminPK());
+		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+		String val = String.valueOf(contract.getCampaign(campaignId, property.getAdminAddr()).send().component6());
+		switch(val) {
+		case "0":
+			val = "Ready";
+			break;
+		case "1":
+			val = "Open";
+			break;
+		case "2":
+			val = "Close";
+			break;
+		case "3":
+			val = "Sell";
+			break;
+		case "4":
+			val = "SellClose";
+			break;
+		}
+		System.out.println(val);
+		return val;
+	}
+	@Override
+	public void getReceipt(String campaignId) throws Exception {
+		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+		Credentials credentials = Credentials.create(property.getAdminPK());
+		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+		List<String> list = contract.getReceiptImg(campaignId).send();
+		for(int i=0; i<list.size(); i++) {
+			System.out.println(list.get(i));
+		}
+	}
+	public void useFund(String campaignId,String imgname) {
+		
+	}
 	public void makeAllTask() throws Exception {
 		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
 		Credentials credentials = Credentials.create(property.getAdminPK());

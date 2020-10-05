@@ -17,4 +17,6 @@ public interface FundingService {
 	public Map<String, String> getMyProject(String oauthId) throws Exception;
 	public String getNowRaised(String campaignId) throws Exception;
 	public String createSale(String accessToken, String id) throws Exception;
+	public void getReceipt(String campaignId) throws Exception;
+	public String getProjectState(String campaignId) throws Exception;
 }
