@@ -85,7 +85,7 @@
                         <!-- 영수증 등록, 상품 판매 글쓰기 -->
                         <div style="margin-bottom: 10px">
                           <v-btn
-                            @click.stop="receiptDialog = true"
+                            @click.stop="item.modal.isopen = true"
                             style="
                               background-color: rgb(22, 150, 245);
                               color: white;
@@ -94,11 +94,11 @@
                             "
                             >사용내역 등록</v-btn
                           >
-                          <!-- 충전하기 모달 -->
+                          <!-- 사용내역 모달 -->
                           <v-dialog
-                            v-model="receiptDialog"
+                            v-model="item.modal.isopen"
                             scrollable
-                            max-width="40%"
+                            max-width="30%"
                             style="height: 400px"
                           >
                             <v-card>
@@ -106,68 +106,127 @@
                                 class="headline lighten-2"
                                 style="padding-bottom: 0 !important"
                               >
-                                <h4 style="margin-left: 30px">
-                                  투자금 사용내역 등록하기
+                                <h4 style="margin-bottom: 0">
+                                  {{ item.pjtName }}
                                 </h4>
                               </v-card-title>
                               <v-divider></v-divider>
-                              <v-card-text style="padding: 50px 50px 30px 50px">
-                                <!-- 이미지 업로드 버튼 -->
-                                <input
-                                  ref="imageInput"
-                                  type="file"
-                                  @change="onChangeImages"
-                                  hidden
-                                />
-                                <div
-                                  v-if="!uploadimg"
-                                  @click="$refs.imageInput.$el.click()"
-                                  class="reviewImg mx-auto mt-5"
-                                >
-                                  <v-icon>mdi-camera-plus-outline</v-icon>
-                                  <span
+                              <v-card-text >
+                                <p style="font-size: 18px;">투자금 사용내역 등록하기</p>
+                                <div style="padding: 50px 30px 30px">
+                                  <!-- 이미지 총 금액 -->
+                                  <div
                                     style="
-                                      display: inline-block;
-                                      margin-top: 10px;
+                                      height: 50px;
+                                      display: flex;
+                                      justify-content: center;
                                     "
-                                    >사진 첨부하기</span
                                   >
-                                </div>
-                                <!-- 이미지 첨부된 경우 -->
-                                <!-- 이미지 삭제 버튼 -->
-                                <div v-show="imgPath">
-                                  <v-btn
-                                    x-small
-                                    dark
-                                    fab
-                                    absolute
-                                    top
-                                    right
-                                    color="black"
+                                    <input
+                                      v-model="receiptPrice"
+                                      type="text"
+                                      placeholder="사용 금액을 입력해주세요."
+                                      style="margin-bottom: 0"
+                                    />
+                                    <p
+                                      style="
+                                        font-size: 28px;
+                                        display: inline-block;
+                                        margin-bottom: 0;
+                                        margin-left: 10px;
+                                        padding-top: 13px;
+                                      "
+                                    >
+                                      원
+                                    </p>
+                                  </div>
+                                  <p
+                                    v-if="inputmessage"
                                     style="
-                                      top: 293px;
-                                      right: 47px;
-                                      opacity: 0.6;
+                                      text-align: left;
+                                      margin-left: 30px;
+                                      color: red;
                                     "
-                                    @click="onDeleteImg"
                                   >
-                                    <v-icon dark>mdi-close</v-icon>
-                                  </v-btn>
-                                  <img
-                                    class="mx-auto mt-3"
-                                    ref="img"
-                                    style="width: 87%; border-radius: 10px"
-                                    :src="imgPath"
-                                    alt="reviewImg"
+                                    * 필수 항목입니다.
+                                  </p>
+                                  <!-- 이미지 업로드 버튼 -->
+                                  <input
+                                    :class="item.modal.name"
+                                    type="file"
+                                    @change="onChangeImages"
+                                    hidden
                                   />
+                                  <div
+                                    @click="onClickImageUpload(item.modal.name)"
+                                    class="reviewImg mx-auto mt-5"
+                                  >
+                                    <v-icon>mdi-camera-plus-outline</v-icon>
+                                    <span
+                                      style="
+                                        display: inline-block;
+                                        margin-top: 10px;
+                                      "
+                                      >사진 첨부하기</span
+                                    >
+                                  </div>
+                                  
+                                  <!-- 이미지 첨부된 경우 -->
+                                  <!-- 이미지 삭제 버튼 -->
+                                  <div
+                                    v-show="imgList.length > 0"
+                                    v-for="(item, i) in imgList"
+                                    :key="i"
+                                    style="position: relative"
+                                  >
+                                  <hr />
+                                    <v-btn
+                                      x-small
+                                      dark
+                                      fab
+                                      absolute
+                                      top
+                                      right
+                                      color="black"
+                                      style="
+                                        top: 10px;
+                                        right: 0px;
+                                        opacity: 0.6;
+                                        background-color: #272727 !important;
+                                        color: white;
+                                        position: absolute;
+                                      "
+                                      @click="onDeleteImg(item)"
+                                    >
+                                      <v-icon dark>mdi-close</v-icon>
+                                    </v-btn>
+                                    <img
+                                      class="mx-auto mt-3"
+                                      ref="img"
+                                      style="
+                                        width: 87%;
+                                        border-radius: 10px;
+                                        margin-bottom: 30px;
+                                      "
+                                      :src="item.img"
+                                      alt="reviewImg"
+                                    />
+                                    <p
+                                      style="font-size: 25px; text-align: right"
+                                    >
+                                      총 : {{ item.price }}원
+                                    </p>
+                                    <hr />
+                                  </div>
                                 </div>
                               </v-card-text>
-                              <!-- <v-divider></v-divider> -->
+                              <v-divider></v-divider>
                               <v-card-actions style="background-color: white">
                                 <v-spacer></v-spacer>
-                                <v-btn text @click="receiptDialog = false"
+                                <v-btn text @click="item.modal.isopen = false"
                                   >닫기</v-btn
                                 >
+                                <v-btn text color="rgb(22, 150, 245)">등록하기</v-btn>
                               </v-card-actions>
                             </v-card>
                           </v-dialog>
@@ -233,9 +292,12 @@ export default {
       userid: "",
       page: 0,
       // 투자금 사용내역 모달
+      receiptPrice: "",
+      inputmessage: false,
       receiptDialog: false,
-      uploadimg: false,
-      imgPath: '',
+      imgPath: "",
+      imgList: [],
+      nowref: "",
       // 투자리스트
       investList: [],
       userimg: "",
@@ -292,25 +354,40 @@ export default {
       // alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
     },
     onChangeImages(event) {
-      this.uploadimg = true;
-      console.log(event)
+      console.log(event);
       this.file = event.target.files[0];
       var formData = new FormData();
       formData.append("img", this.file);
-      axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
-                headers: { 'Content-Type': 'multipart/form-data' } 
-        }).then(response => {
-            const cutUrl = response.data.substr(18, response.data.length-17)
-            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
-            this.imgPath = imgUrl;
+      axios
+        .post(`${SERVER_URL}/investment/changePath`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((response) => {
+          const cutUrl = response.data.substr(18, response.data.length - 17);
+          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+          this.imgPath = imgUrl;
+          this.imgList.push({ img: imgUrl, price: this.receiptPrice });
+          this.receiptPrice = "";
         });
     },
-    onClickImageUpload() {
-      this.$refs.imageInput.$el.click();
+    onClickImageUpload(item) {
+      if (this.receiptPrice) {
+        this.inputmessage = false;
+        $(`.${item}`).click();
+      } else {
+        this.inputmessage = true;
+      }
     },
-    onDeleteImg() {
-      this.uploadimg = false;
-    }
+    onDeleteImg(item) {
+      const idx = this.imgList.indexOf(item);
+      this.imgList.splice(idx, 1);
+    },
+    // ondialog(item, i) {
+    //   console.log(item)
+    //   console.log(i)
+    //   // console.log(item.)
+    //   // item.i = !item.i
+    // }
   },
   components: {
     Navbar,
@@ -325,51 +402,24 @@ export default {
         `${SERVER_URL}/investment/investList/${this.page}?userid=${this.userid}`
       )
       .then((response) => {
-        console.log("나의 투자프로젝트 페이지")
+        console.log("나의 투자프로젝트 페이지");
         console.log(response);
         this.investList = response.data.object;
-      });
-  },
-  
-  computed: {},
-  method: {
-    init() {
-      // 나의 프로젝트 내역 가져오기
-      axios
-        .get(
-          `${SERVER_URL}/investment/investList?userid=${store.state.userInfo.id}`
-        )
-        .then((res) => {
-          console.log(res);
-          this.investlst = res.data.object;
+        this.investList.forEach((item) => {
+          const idx = this.investList.indexOf(item);
+          this.$set(item, "modal", { name: `input${idx}`, isopen: false });
         });
-    },
-  },
-  watch: {
-    date1(val) {
-      this.dateFormatted1 = this.formatDate(this.date1);
-    },
-    date2(val) {
-      this.dateFormatted2 = this.formatDate(this.date2);
-    },
-    model(val, prev) {
-      if (val.length === prev.length) return;
-      this.model = val.map((v) => {
-        if (typeof v === "string") {
-          v = { text: `#${v}` };
-          this.items.push(v);
-          this.nonce++;
-        }
-        return v;
       });
-    },
-    select(val) {
-      if (val == "개인") {
-        this.individual = true;
-        this.business = false;
+  },
+  computed: {},
+  watch: {
+    receiptPrice(val) {
+      if (this.receiptPrice) {
+        this.inputmessage = false;
+        // 숫자만 입력가능
+        return (this.receiptPrice = this.receiptPrice.replace(/[^0-9]/g, ""));
       } else {
-        this.business = true;
-        this.individual = false;
+        this.inputmessage = true;
       }
     },
   },
@@ -566,7 +616,7 @@ input:hover {
   background-color: unset;
 }
 .reviewImg {
-  background-color: #E1F5FE;
+  background-color: #e1f5fe;
   width: 60%;
   padding: 5px 0px 12px 0px;
   border-radius: 15px;
