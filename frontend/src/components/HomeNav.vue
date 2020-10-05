@@ -196,9 +196,18 @@ export default {
       window.Kakao.Auth.loginForm({
       success: this.GetMe,
       });
+      console.log('아이템s길이'+this.items.length)
+      // if ({ title: '쇼핑 프로젝트', icon: 'mdi-basket' } in this.items) {
+      //   console.log('이미있어요')
+      // } else {
+      //   console.log('없어요')
+      // }
     },
     GetMe(authObj) {
       //토큰값 받아오는 부분
+      console.log('authObj입니다');
+      console.log(authObj);
+      console.log(authObj.access_token);
       store.commit("setAccessToken", authObj.access_token);
       const fd = new FormData();
       fd.append("accessToken", authObj.access_token);
@@ -217,7 +226,7 @@ export default {
         }
         store.commit("setUserInfo", this.userInfo);
         // this.userInfo.email = res.data.email;
-        // console.log(this.userInfo);
+        console.log(this.userInfo);
         // this.$router.push("/");
      });
     },
