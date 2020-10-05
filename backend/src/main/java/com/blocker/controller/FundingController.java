@@ -74,7 +74,17 @@ public class FundingController {
 	public ResponseEntity<String> FunderNum(String campaignId) throws Exception {
 		return new ResponseEntity<String>(fundingService.getPepleNum(campaignId),HttpStatus.OK);
 	}
-	@ApiOperation(value = "[BC][해당 투자에 펀딩한 사람의 수] 투자 아이디를 주면, 현재 해당 투자에 펀딩한 사람의 수를 return해줍니다. param : [campaignId], return : 펀딩한 사람의 수 ")
+	@ApiOperation(value = "[BC][해당 투자에 모인 금액확인] 투자 아이디를 주면, 현재 해당 투자에 모인 금액을 리턴합니다.. param : [campaignId], return : 해당 투자 모금 금액 ")
+	@GetMapping(value = "/nowfund")
+	public ResponseEntity<String> nowRaised(String campaignId) throws Exception {
+		return new ResponseEntity<String>(fundingService.getNowRaised(campaignId),HttpStatus.OK);
+	}
+	@ApiOperation(value = "[BC][판매 프로젝트 오픈] ")
+	@PostMapping(value = "/sellopen")
+	public ResponseEntity<String> SellOpen(@RequestParam("accessToken") String accessToken, @RequestParam("campaignId") String campaignId) throws Exception {
+		return new ResponseEntity<String>(fundingService.createSale(accessToken, campaignId),HttpStatus.OK);
+	}
+	@ApiOperation(value = "[BC][판매용] ")
 	@PostMapping(value = "/sellitem")
 	public ResponseEntity<String> SellItems(@RequestParam("accessToken") String accessToken, @RequestParam("campaignId") String campaignId, @RequestParam("count") Integer cnt, @RequestParam("money") Integer money) throws Exception {
 		return new ResponseEntity<String>(fundingService.sellItem(accessToken, campaignId, cnt, money),HttpStatus.OK);
