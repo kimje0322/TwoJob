@@ -29,7 +29,7 @@
             class="navbarItem"
             v-if="login"
             justify="center"
-            style="display: inline-block;"
+            style="display: inline-block"
           >
             <v-menu bottom min-width="200px" rounded offset-y>
               <template v-slot:activator="{ on }">
@@ -37,7 +37,7 @@
                   <v-avatar style="width: 35px; height: 35px; margin: 0">
                     <img :src="userInfo.img" alt="John" />
                   </v-avatar>
-                  <div>
+                  <div style="margin-right: 55px;">
                     <h5
                       style="
                         display: inline-block;
@@ -61,7 +61,7 @@
                       <img :src="userInfo.img" alt="John" />
                     </v-avatar>
                     <h5 style="margin-bottom: 10px">{{ userInfo.name }}</h5>
-                    <p class="caption mt-1" style="font-size: 15px !important">
+                    <p v-if="iswallet" class="caption mt-1" style="font-size: 15px !important">
                       {{ asset }}원
                     </p>
                     <v-divider class="my-2"></v-divider>
@@ -69,7 +69,12 @@
                       로그아웃
                     </v-btn>
                     <v-divider class="my-2"></v-divider>
-                    <v-btn depressed rounded text @click.stop="chargeDialog = true">
+                    <v-btn
+                      depressed
+                      rounded
+                      text
+                      @click.stop="chargeDialog = true"
+                    >
                       충전하기
                     </v-btn>
                     <!-- 충전하기 모달 -->
@@ -80,18 +85,28 @@
                       style="height: 400px"
                     >
                       <v-card>
-                        <v-card-title class="headline lighten-2" style="padding-bottom: 0 !important">
+                        <v-card-title
+                          class="headline lighten-2"
+                          style="padding-bottom: 0 !important"
+                        >
                           <h4 style="margin-left: 30px">충전하기</h4>
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-card-text style="padding: 50px 50px 30px 50px">
-                          <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
+                          <v-text-field
+                            class="moneyinput"
+                            v-model="money"
+                            label="충전금액"
+                            required
+                          ></v-text-field>
                         </v-card-text>
                         <!-- <v-divider></v-divider> -->
                         <v-card-actions style="background-color: white">
                           <v-spacer></v-spacer>
                           <v-btn text @click="chargeDialog = false">닫기</v-btn>
-                          <v-btn text color="blue" @click="onKakao">충전하기</v-btn>
+                          <v-btn text color="blue" @click="onKakao"
+                            >충전하기</v-btn
+                          >
                         </v-card-actions>
                       </v-card>
                     </v-dialog>
@@ -104,13 +119,13 @@
               </v-card>
             </v-menu>
           </v-row>
-          <div class="navbarItem">
+          <!-- <div class="navbarItem">
             <router-link to="/search">
               <v-btn icon style="flex-right: 0">
                 <i style="color: black" class="fas fa-search"></i>
               </v-btn>
             </router-link>
-          </div>
+          </div> -->
         </div>
       </div>
     </v-app>
@@ -147,14 +162,30 @@ export default {
       },
       // 충전 모달
       chargeDialog: false,
+      iswallet: false,
     };
   },
   watch: {
     money(val) {
       return (this.money = this.money.replace(/[^0-9]/g, ""));
-    }
+    },
   },
   mounted() {
+    axios
+      .get(
+        `http://j3b102.p.ssafy.io:8080/wallet/toid?oauthid=${store.state.userInfo.id}`
+      )
+      .then((res) => {
+        console.log(res);
+        // this.mywallet = res.data.address;
+        console.log("여기여기``");
+        // console.log(this.mywallet);
+        this.iswallet = true;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     // console.log(location.href);
     // console.log("이거봐라라ㅏㅏㅏ???");
     // console.log(location.href.includes("pg_token"));

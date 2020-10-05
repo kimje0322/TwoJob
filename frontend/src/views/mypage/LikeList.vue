@@ -1,0 +1,432 @@
+<template>
+  <div class="myinvestpjt">
+    <!-- 상단 Navbar -->
+    <navbar style="border-bottom: 1px solid lightgray" />
+    <div style="padding: 1% 10%">
+      <h3 style="font-weight: 800">찜한 프로젝트</h3>
+    </div>
+    <!-- 프로젝트 메뉴바 -->
+    <div style="padding: 0 10%">
+      <!-- 프로젝트 메뉴 -->
+      <div class="writeMenuBar">
+        <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
+          <v-tab
+            style="color: black"
+            v-for="(item, i) in tabs"
+            :key="i"
+            :href="`#tab-${i}`"
+            class="writeMenu"
+            >{{ item }}</v-tab
+          >
+          <!-- 투자 프로젝트 창 -->
+          <v-tab-item :value="'tab-0'">
+            <v-card flat tile>
+              <v-card-text>
+                <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
+                <div style="padding: 1% 0">
+                  <div
+                    v-for="(item, i) in investlikelst"
+                    :key="i"
+                    style="
+                      display: inline-block;
+                      width: 33%;
+                      margin-bottom: 20px;
+                    "
+                  >
+                    <v-card
+                      class="my-12"
+                      max-width="90%"
+                      max-height="600px"
+                      style="margin: auto"
+                    >
+                      <v-img height="250" :src="item.picture"></v-img>
+                      <v-card-title style="font-weight: 300; margin: auto">
+                        <p v-if="item.pjtname.length > 6">
+                            {{ item.pjtname.substring(0, 8) }} ...
+                        </p>
+                        <p v-else>
+                        {{ item.pjtname }}
+
+                        </p>
+                        <div style="margin-left: auto">
+                          <!-- <v-chip class="projectBadge"
+                            > {{today}} {{ item.deadline.substring(8, 10) - today }}일 남음</v-chip
+                          > -->
+                          <v-chip class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요</v-chip
+                          >
+                        </div>
+                        <!-- <div style="margin-left: auto">
+                          <v-chip class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요</v-chip
+                          >
+                        </div> -->
+                      </v-card-title>
+                      <!-- max-height: 120px -->
+                      <v-card-text style="">
+                        <div style="margin-bottom: 15px">
+                          {{ item.onelineintro }}
+                        </div>
+                        <!-- <div style="color: black">
+                        </div>                         -->
+                      </v-card-text>
+                    </v-card>
+                  </div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+          <!-- 큰손 프로젝트 창 -->
+          <v-tab-item :value="'tab-1'">
+            <v-card flat tile>
+              <v-card-text></v-card-text>
+            </v-card>
+          </v-tab-item>
+          <!-- 판매 프로젝트 창 -->
+          <v-tab-item :value="'tab-2'">
+            <v-card flat tile>
+              <v-card-text></v-card-text>
+            </v-card>
+          </v-tab-item>
+          <!-- 구매 프로젝트 창 -->
+          <v-tab-item :value="'tab-3'">
+            <v-card flat tile>
+              <v-card-text></v-card-text>
+            </v-card>
+          </v-tab-item>
+        </v-tabs>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+import store from "../../store/index.js";
+import Navbar from "../../components/Navbar.vue";
+import Web3 from "web3";
+import Swal from "sweetalert2";
+import "../../../public/css/MyInvestPjt.scss";
+
+const SERVER_URL = "https://www.twojob.ga/api";
+
+// let today = new Date();
+
+export default {
+  data() {
+    return {
+      userid: "",
+      page: 0,
+      // 투자금 사용내역 모달
+      receiptDialog: false,
+      uploadimg: false,
+      imgPath: "",
+      // 투자리스트
+      investList: [],
+      userimg: "",
+      username: "",
+      userbalance: "",
+      tab: null,
+      text: ["1", "2", "3"],
+      tabs: ["투자", "쇼핑"],
+      today: null,
+
+      investlikelst: [],
+      shopplinglikelst: [],
+    };
+  },
+  methods: {
+    onChangeImages(event) {
+      this.uploadimg = true;
+      console.log(event);
+      this.file = event.target.files[0];
+      var formData = new FormData();
+      formData.append("img", this.file);
+      axios
+        .post(`${SERVER_URL}/investment/changePath`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((response) => {
+          const cutUrl = response.data.substr(18, response.data.length - 17);
+          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+          this.imgPath = imgUrl;
+        });
+    },
+    onClickImageUpload() {
+      this.$refs.imageInput.$el.click();
+    },
+    onDeleteImg() {
+      this.uploadimg = false;
+    },
+  },
+  components: {
+    Navbar,
+  },
+  mounted() {
+    //  남은 기간
+    // this.today = new Date();
+    // this.today.setDate()
+    // this.today = 
+
+    
+    this.userimg = store.state.userInfo.img;
+    this.username = store.state.userInfo.name;
+    this.userbalance = store.state.balance;
+    this.userid = store.state.userInfo.id;
+
+    const fd = new FormData();
+    fd.append("userid", store.state.userInfo.id);
+    axios
+      .post(`http://j3b102.p.ssafy.io:8080/mypage/likelist`, fd)
+      .then((response) => {
+        console.log("여기요!");
+        console.log(response);
+
+        this.investlikelst = response.data.object.investmentList;
+        this.shopplinglikelst = response.data.object.saleboardList;
+        console.log("investlikelst");
+        console.log(this.investlikelst);
+        console.log(this.shopplinglikelst);
+      });
+  },
+
+  computed: {},
+  method: {
+
+  },
+  watch: {
+    date1(val) {
+      this.dateFormatted1 = this.formatDate(this.date1);
+    },
+    date2(val) {
+      this.dateFormatted2 = this.formatDate(this.date2);
+    },
+    model(val, prev) {
+      if (val.length === prev.length) return;
+      this.model = val.map((v) => {
+        if (typeof v === "string") {
+          v = { text: `#${v}` };
+          this.items.push(v);
+          this.nonce++;
+        }
+        return v;
+      });
+    },
+    select(val) {
+      if (val == "개인") {
+        this.individual = true;
+        this.business = false;
+      } else {
+        this.business = true;
+        this.individual = false;
+      }
+    },
+  },
+};
+</script>
+
+
+<style scoped>
+.investNav {
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  border-bottom: 1px solid gray;
+  margin-bottom: 15px;
+}
+.items div {
+  display: inline-block;
+  margin: 0 10% 0 0;
+}
+.items div a {
+  color: black;
+  text-decoration: none;
+}
+.items div a:hover {
+  color: rgb(22, 150, 245);
+}
+.items h5 {
+  font-weight: 600;
+}
+.writeMenu {
+  margin-left: 3%;
+  letter-spacing: unset !important;
+  font-size: 1.25rem;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+.writeMenu:hover {
+  background-color: rgba(173, 220, 254, 0.4);
+}
+.v-tab--active {
+  background-color: rgba(173, 220, 254, 0.4);
+}
+.v-tab:before {
+  background-color: unset;
+}
+.openbtn {
+  line-height: 45px;
+  position: absolute;
+  right: 1%;
+}
+.v-card__text {
+  padding: 0 16px 5px 16px;
+  color: black !important;
+}
+h5 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+input {
+  background-color: white;
+  width: 90%;
+  height: 40px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  margin-left: 10px;
+  margin-bottom: 30px;
+  padding: 10px;
+}
+input:hover {
+  border: 2px solid rgb(22, 150, 245);
+}
+.v-input__slot fieldset {
+  display: none;
+}
+.pjtinfo .v-menu {
+  display: unset;
+}
+.startDayBox {
+  display: inline-block;
+  width: 35%;
+}
+.tilddIcon {
+  display: inline-block;
+  margin: 0 9%;
+}
+.categoryDiv {
+  margin-bottom: 28px;
+}
+.categoryDiv .v-btn {
+  width: 105px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.categorybtn:hover {
+  border: 2px solid rgb(22, 150, 245);
+}
+.searchBarBtn {
+  border: 1px solid lightgray;
+}
+#introduce {
+  background-color: white;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  resize: none;
+  padding: 8px;
+  margin: 0 0 20px 10px;
+}
+#introduce:hover {
+  border: 2px solid rgb(22, 150, 245);
+}
+.v-card__text {
+  /* height: 600px; */
+}
+.v-card--flat {
+  background-color: rgba(173, 220, 254, 0.4);
+}
+.project_info {
+  margin-left: 50px;
+  float: left;
+}
+.mypage_title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+.info_box {
+  box-sizing: border-box;
+}
+.info_frame {
+  background-color: #fff;
+  border: 1px solid #cdd3d8;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px 0 rgba(33, 37, 41, 0.11);
+}
+.info_ul {
+  list-style: none;
+  width: 600px;
+  height: 120px;
+  margin-top: 15px;
+}
+.info_li {
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+}
+.pjt_a {
+  display: block;
+  padding: 20px 0;
+  text-decoration: none;
+  color: #495057;
+}
+.pjt_span {
+  line-height: 25px;
+  font-size: 18px;
+  font-weight: 600;
+  font-style: normal;
+  text-align: center;
+}
+.open_pjt {
+  width: 600px;
+  height: 80px;
+  display: block;
+  margin: 0;
+  list-style: none;
+  background-color: #f2f4f6;
+  border-radius: 0 0 12px 12px;
+}
+.opjt_li {
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+  padding: 29px 6px;
+}
+.opjt_a {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-style: normal;
+  color: #495057;
+}
+.v-slide-group__content {
+  background-color: white !important;
+}
+.v-tabs-bar__content {
+  background-color: white !important;
+}
+.likeBadge {
+  background-color: red !important;
+  color: white !important;
+  text-align: right;
+}
+.theme--dark.v-tabs > .v-tabs-bar {
+  background-color: unset;
+}
+.reviewImg {
+  background-color: #e1f5fe;
+  width: 60%;
+  padding: 5px 0px 12px 0px;
+  border-radius: 15px;
+  margin: auto;
+}
+.reviewImg:hover {
+  cursor: pointer;
+}
+.projectBadge {
+  background-color: rgb(22, 150, 245) !important;
+  color: white !important;
+  text-align: right;
+}
+</style>
