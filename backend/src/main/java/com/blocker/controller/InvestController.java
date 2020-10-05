@@ -327,7 +327,6 @@ public class InvestController {
 					}
 				}
 			}
-			Collections.reverse(resultDatas);
 			result.data = "success";
 			result.object = resultDatas;
 			result.status = true;

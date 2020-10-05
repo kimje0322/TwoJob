@@ -230,7 +230,6 @@ public class SaleController {
 					}
 				}
 			}
-			Collections.reverse(resultDatalist);
 			result.data = "success";
 			result.object = resultDatalist;
 			result.status = true;
