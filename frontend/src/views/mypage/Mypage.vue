@@ -76,16 +76,6 @@
                             </a>
                           </li>
                         </ul>
-                        <!-- <ul class="open_pjt">
-                          <li class="opjt_li">
-                            <a href="/writeinvest" class="opjt_a"
-                              >투자 프로젝트 생성</a
-                            >
-                          </li>
-                          <li class="opjt_li">
-                            <a href="#" class="opjt_a">판매 프로젝트 생성</a>
-                          </li>
-                        </ul> -->
                       </div>
                       <div style="margin-top: 15px">
                         <div

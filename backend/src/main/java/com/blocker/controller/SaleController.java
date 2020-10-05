@@ -269,7 +269,7 @@ public class SaleController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@GetMapping("/getDetail")
+	@PostMapping("/getDetail")
 	@ApiOperation(value = "판매 디테일페이지 가져오기")
 	public Object getDetail(@RequestParam String address, @RequestParam String userid) {
 		final BasicResponse result = new BasicResponse();
