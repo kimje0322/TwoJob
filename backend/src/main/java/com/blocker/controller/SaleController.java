@@ -30,6 +30,7 @@ import com.blocker.dto.BoardTagDto;
 import com.blocker.dto.CommentBoardDto;
 import com.blocker.dto.EditorSaleDto;
 import com.blocker.dto.InvestmentDto;
+import com.blocker.dto.LikeBoardDto;
 import com.blocker.dto.ReviewDto;
 import com.blocker.dto.SaleBoardDto;
 import com.blocker.repository.BoardCategoryMapping;
@@ -41,6 +42,7 @@ import com.blocker.repository.ReviewRepository;
 import com.blocker.repository.SaleBoardRepository;
 import com.blocker.repository.TagRepository;
 import com.blocker.request.CreateCommentRequest;
+import com.blocker.request.CreateLikeRequest;
 import com.blocker.request.ReviewsResponse;
 import com.blocker.request.SaleBoardRequest;
 import com.blocker.request.SaleBoardResponse;
@@ -50,6 +52,7 @@ import com.blocker.service.BoardCategoryService;
 import com.blocker.service.CommentBoardService;
 import com.blocker.service.EditorSaleService;
 import com.blocker.service.InvestmentService;
+import com.blocker.service.LikeBoardService;
 import com.blocker.service.ReviewService;
 import com.blocker.service.SaleService;
 import com.blocker.util.BasicResponse;
@@ -82,6 +85,8 @@ public class SaleController {
 	BoardTagRepository boardTagRepository;
 	@Autowired
 	BoardCategoryService boardCategoryService;
+	@Autowired
+	LikeBoardService likeBoardService;
 
 	@PostMapping("/create")
 	@ApiOperation(value = "판매 게시글 생성")
@@ -187,6 +192,7 @@ public class SaleController {
 					data.setIsfinish(saleBoardDto.isIsfinish());
 					data.setCompname(investmentDto.getCompname());
 					data.setOnelineintro(investmentDto.getOnelineintro());
+					data.setTotalpage(list.getTotalPages());
 					resultDatalist.add(data);
 				}
 			} else {
@@ -217,6 +223,7 @@ public class SaleController {
 						data.setIsfinish(saleBoardDto.get().isIsfinish());
 						data.setCompname(investmentDto.getCompname());
 						data.setOnelineintro(investmentDto.getOnelineintro());
+						data.setTotalpage(list.getTotalPages());
 						resultDatalist.add(data);
 					}
 				}
@@ -264,8 +271,9 @@ public class SaleController {
 
 	@GetMapping("/getDetail")
 	@ApiOperation(value = "판매 디테일페이지 가져오기")
-	public Object getDetail(@RequestParam String address) {
+	public Object getDetail(@RequestParam String address, @RequestParam String userid) {
 		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
 		try {
 			Optional<SaleBoardDto> opSaleBoardDto = saleService.getSaleBoard(address);
 			if (opSaleBoardDto.isPresent()) {
@@ -295,9 +303,22 @@ public class SaleController {
 
 				saleDetailResponse.setUrl(tempInvestmentDto.getUrl());
 				saleDetailResponse.setIntroduce(tempInvestmentDto.getIntroduce());
-
+				map.put("object", saleDetailResponse);
+				
+				// like
+				CreateLikeRequest createLikeRequest = new CreateLikeRequest();
+				createLikeRequest.setAddress(address);
+				createLikeRequest.setUserid(userid);
+				Optional<LikeBoardDto> like = likeBoardService.findLike(createLikeRequest);
+				if (like.isPresent()) {
+					map.put("like", like.get().isIschecked());
+				} else {
+					map.put("like", false);
+				}
+				map.put("likecount", likeBoardService.likeCount(address));
+				
 				result.data = "success";
-				result.object = saleDetailResponse;
+				result.object = map;
 				result.status = true;
 			} else {
 				result.data = "success";
@@ -347,6 +368,7 @@ public class SaleController {
 			List<ReviewDto> reviews = reviewService.getReviews(address);
 			Map<String, Double> data = new HashMap<>();
 			totalCount = reviews.size();
+			data.put("reviewtotalcount", totalCount);
 			for (Iterator<ReviewDto> iter = reviews.iterator(); iter.hasNext();) {
 				ReviewDto reviewDto = iter.next();
 
