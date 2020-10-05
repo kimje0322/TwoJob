@@ -135,7 +135,6 @@ export default {
   /* float: left; */
   margin-left: 20px !important;
   height: 50px;
-  /* font-weight: 600; */
 }
 .serviceName h3 {
   font-family: "Lobster", cursive;
