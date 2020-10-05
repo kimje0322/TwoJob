@@ -18,14 +18,14 @@
             class="writeMenu"
             >{{ item }}</v-tab
           >
-          <!-- 금손 프로젝트 창 -->
+          <!-- 투자 프로젝트 창 -->
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
               <v-card-text>
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
                 <div style="padding: 1% 0">
                   <div
-                    v-for="(item, i) in investList"
+                    v-for="(item, i) in investlikelst"
                     :key="i"
                     style="
                       display: inline-block;
@@ -35,157 +35,40 @@
                   >
                     <v-card
                       class="my-12"
-                      max-width="75%"
+                      max-width="90%"
                       max-height="600px"
                       style="margin: auto"
                     >
                       <v-img height="250" :src="item.picture"></v-img>
-                      <v-card-title style="font-weight: 600; margin: auto">
-                        {{ item.pjtName }}
+                      <v-card-title style="font-weight: 300; margin: auto">
+                        <p v-if="item.pjtname.length > 6">
+                            {{ item.pjtname.substring(0, 8) }} ...
+                        </p>
+                        <p v-else>
+                        {{ item.pjtname }}
+
+                        </p>
                         <div style="margin-left: auto">
+                          <!-- <v-chip class="projectBadge"
+                            > {{today}} {{ item.deadline.substring(8, 10) - today }}일 남음</v-chip
+                          > -->
                           <v-chip class="likeBadge" style="font-size: 12px"
                             >100명 좋아요</v-chip
                           >
                         </div>
+                        <!-- <div style="margin-left: auto">
+                          <v-chip class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요</v-chip
+                          >
+                        </div> -->
                       </v-card-title>
                       <!-- max-height: 120px -->
                       <v-card-text style="">
                         <div style="margin-bottom: 15px">
-                          {{ item.oneLineIntro }}
+                          {{ item.onelineintro }}
                         </div>
-                        <div style="color: black">
-                          <h5
-                            style="
-                              display: inline-block;
-                              height: 41.6px;
-                              line-height: 41.6px;
-                            "
-                          >
-                            {{ item.goalPrice }} 원
-                          </h5>
-                          <div style="display: inline-block; float: right">
-                            <h3
-                              style="
-                                display: inline-block;
-                                color: rgb(22, 150, 245);
-                              "
-                            >
-                              {{ item.percent }}%
-                            </h3>
-                            <h5
-                              style="
-                                display: inline-block;
-                                color: rgb(123, 197, 254);
-                              "
-                            >
-                              달성
-                            </h5>
-                          </div>
-                        </div>
-                        <!-- 영수증 등록, 상품 판매 글쓰기 -->
-                        <div style="margin-bottom: 10px">
-                          <v-btn
-                            @click.stop="receiptDialog = true"
-                            style="
-                              background-color: rgb(22, 150, 245);
-                              color: white;
-                              width: 50%;
-                              margin-right: 10%;
-                            "
-                            >사용내역 등록</v-btn
-                          >
-                          <!-- 충전하기 모달 -->
-                          <v-dialog
-                            v-model="receiptDialog"
-                            scrollable
-                            max-width="40%"
-                            style="height: 400px"
-                          >
-                            <v-card>
-                              <v-card-title
-                                class="headline lighten-2"
-                                style="padding-bottom: 0 !important"
-                              >
-                                <h4 style="margin-left: 30px">
-                                  투자금 사용내역 등록하기
-                                </h4>
-                              </v-card-title>
-                              <v-divider></v-divider>
-                              <v-card-text style="padding: 50px 50px 30px 50px">
-                                <!-- 이미지 업로드 버튼 -->
-                                <input
-                                  ref="imageInput"
-                                  type="file"
-                                  @change="onChangeImages"
-                                  hidden
-                                />
-                                <div
-                                  v-if="!uploadimg"
-                                  @click="$refs.imageInput.$el.click()"
-                                  class="reviewImg mx-auto mt-5"
-                                >
-                                  <v-icon>mdi-camera-plus-outline</v-icon>
-                                  <span
-                                    style="
-                                      display: inline-block;
-                                      margin-top: 10px;
-                                    "
-                                    >사진 첨부하기</span
-                                  >
-                                </div>
-                                <!-- 이미지 첨부된 경우 -->
-                                <!-- 이미지 삭제 버튼 -->
-                                <div v-show="imgPath">
-                                  <v-btn
-                                    x-small
-                                    dark
-                                    fab
-                                    absolute
-                                    top
-                                    right
-                                    color="black"
-                                    style="
-                                      top: 293px;
-                                      right: 47px;
-                                      opacity: 0.6;
-                                    "
-                                    @click="onDeleteImg"
-                                  >
-                                    <v-icon dark>mdi-close</v-icon>
-                                  </v-btn>
-                                  <img
-                                    class="mx-auto mt-3"
-                                    ref="img"
-                                    style="width: 87%; border-radius: 10px"
-                                    :src="imgPath"
-                                    alt="reviewImg"
-                                  />
-                                </div>
-                              </v-card-text>
-                              <!-- <v-divider></v-divider> -->
-                              <v-card-actions style="background-color: white">
-                                <v-spacer></v-spacer>
-                                <v-btn text @click="receiptDialog = false"
-                                  >닫기</v-btn
-                                >
-                              </v-card-actions>
-                            </v-card>
-                          </v-dialog>
-                          <router-link
-                            :to="{
-                              name: 'WriteShopping',
-                              params: { address: item.address },
-                            }"
-                            ><v-btn
-                              style="
-                                background-color: #a9a9a9;
-                                color: white;
-                                width: 40%;
-                              "
-                              >쇼핑 오픈</v-btn
-                            ></router-link
-                          >
-                        </div>
+                        <!-- <div style="color: black">
+                        </div>                         -->
                       </v-card-text>
                     </v-card>
                   </div>
@@ -227,6 +110,8 @@ import "../../../public/css/MyInvestPjt.scss";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
+// let today = new Date();
+
 export default {
   data() {
     return {
@@ -235,7 +120,7 @@ export default {
       // 투자금 사용내역 모달
       receiptDialog: false,
       uploadimg: false,
-      imgPath: '',
+      imgPath: "",
       // 투자리스트
       investList: [],
       userimg: "",
@@ -244,65 +129,27 @@ export default {
       tab: null,
       text: ["1", "2", "3"],
       tabs: ["투자", "쇼핑"],
+      today: null,
+
+      investlikelst: [],
+      shopplinglikelst: [],
     };
   },
   methods: {
-    onLogout() {
-      store.state.isSigned = false;
-      console.log("로그아웃됨");
-      console.log("store.state.isSigned " + store.state.isSigned);
-      // this.$router.push("/");
-    },
-    onWallet() {
-      // var Web3 = require('web3');
-      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
-
-      var Accounts = require("web3-eth-accounts");
-      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
-      var result = web3.eth.accounts.create();
-      console.log(accounts);
-      console.log(result);
-
-      store.commit("setAddress", result.address);
-
-      const fd = new FormData();
-      fd.append("accessToken", store.state.accessToken);
-      fd.append("address", store.state.address);
-      fd.append("privatekey", result.privateKey);
-      axios.post(`${SERVER_URL}/wallet/regist`, fd).then((res) => {
-        console.log("wow!!success!!");
-        console.log(res);
-        console.log(fd);
-        if (res.data == 401) {
-          store.state.isSigned = false;
-        } else if (res.data == "success") {
-          Swal.fire({
-            icon: "success",
-            title: "지갑 생성 성공",
-            text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
-            // showCancelButton: true,
-            // cancelButtonColor: "#d33",
-            // confirmButtonColor: "#3085d6",
-            confirmButtonText: "확인",
-            // cancelButtonText: "취소하기",
-          });
-        }
-      });
-
-      // alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
-    },
     onChangeImages(event) {
       this.uploadimg = true;
-      console.log(event)
+      console.log(event);
       this.file = event.target.files[0];
       var formData = new FormData();
       formData.append("img", this.file);
-      axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
-                headers: { 'Content-Type': 'multipart/form-data' } 
-        }).then(response => {
-            const cutUrl = response.data.substr(18, response.data.length-17)
-            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
-            this.imgPath = imgUrl;
+      axios
+        .post(`${SERVER_URL}/investment/changePath`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((response) => {
+          const cutUrl = response.data.substr(18, response.data.length - 17);
+          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+          this.imgPath = imgUrl;
         });
     },
     onClickImageUpload() {
@@ -310,39 +157,42 @@ export default {
     },
     onDeleteImg() {
       this.uploadimg = false;
-    }
+    },
   },
   components: {
     Navbar,
   },
   mounted() {
+    //  남은 기간
+    // this.today = new Date();
+    // this.today.setDate()
+    // this.today = 
+
+    
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
     this.userid = store.state.userInfo.id;
+
+    const fd = new FormData();
+    fd.append("userid", store.state.userInfo.id);
     axios
-      .get(
-        `${SERVER_URL}/investment/investList/${this.page}?userid=${this.userid}`
-      )
+      .post(`http://j3b102.p.ssafy.io:8080/mypage/likelist`, fd)
       .then((response) => {
+        console.log("여기요!");
         console.log(response);
-        this.investList = response.data.object;
+
+        this.investlikelst = response.data.object.investmentList;
+        this.shopplinglikelst = response.data.object.saleboardList;
+        console.log("investlikelst");
+        console.log(this.investlikelst);
+        console.log(this.shopplinglikelst);
       });
   },
-  
+
   computed: {},
   method: {
-    init() {
-      // 나의 프로젝트 내역 가져오기
-      axios
-        .get(
-          `${SERVER_URL}/investment/investList?userid=${store.state.userInfo.id}`
-        )
-        .then((res) => {
-          console.log(res);
-          this.investlst = res.data.object;
-        });
-    },
+
   },
   watch: {
     date1(val) {
@@ -565,7 +415,7 @@ input:hover {
   background-color: unset;
 }
 .reviewImg {
-  background-color: #E1F5FE;
+  background-color: #e1f5fe;
   width: 60%;
   padding: 5px 0px 12px 0px;
   border-radius: 15px;
@@ -573,5 +423,10 @@ input:hover {
 }
 .reviewImg:hover {
   cursor: pointer;
+}
+.projectBadge {
+  background-color: rgb(22, 150, 245) !important;
+  color: white !important;
+  text-align: right;
 }
 </style>

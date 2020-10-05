@@ -325,6 +325,7 @@ export default {
         `${SERVER_URL}/investment/investList/${this.page}?userid=${this.userid}`
       )
       .then((response) => {
+        console.log("나의 투자프로젝트 페이지")
         console.log(response);
         this.investList = response.data.object;
       });
