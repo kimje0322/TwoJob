@@ -503,7 +503,7 @@ export default {
         $(`.${key}`).css("color", "black");
       } else {
         this.checkCategory.push(category);
-        $(`.${key}`).css("background-color", "rgb(22, 150, 245)");
+        $(`.${key}`).attr('style', 'background-color: rgb(22, 150, 245) !important');
         $(`.${key}`).css("color", "white");
       }
     },
