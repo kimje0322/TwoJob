@@ -308,8 +308,9 @@ public class FundingServiceImpl implements FundingService{
 		Credentials credentials = Credentials.create(property.getAdminPK());
 		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
 		String val = String.valueOf(contract.getCampaign(campaignId, property.getAdminAddr()).send().component4());
-		System.out.println(val);
-		return val;
+		String real = String.valueOf(Convert.fromWei(val, Convert.Unit.ETHER));
+		System.out.println(real);
+		return real;
 	}
 	@Override
 	public Map<String, String> getMyProject(String oauthId) throws Exception{
