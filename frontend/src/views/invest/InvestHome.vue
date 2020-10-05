@@ -35,21 +35,22 @@
     </div>
     <!-- 마감임박 -->
     <div style="margin-left: 5%;">
-      <h4 style="font-weight: 600">마감임박<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
+      <!-- <v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon> -->
+      <h4 style="font-weight: 600">마감임박</h4>
     </div>
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in deadlineItems" :key="i" style="display: inline-block; flex:1">
         <v-card class="my-12" max-width="320" style="margin: auto">
-          <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
-          <v-card-title style="font-weight: 600; margin: auto">{{item.title}}
-            <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.deadline}}일 남음</v-chip></div>
+          <v-img height="250" :src="item.picture"></v-img>
+          <v-card-title style="font-weight: 600; margin: auto">{{item.pjtname}}
+            <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.lastday}}일 남음</v-chip></div>
           </v-card-title>
           <v-card-text>
-            <div style="margin-bottom: 15px;">{{item.content}}</div>
+            <div style="margin-bottom: 15px;">{{item.onelineintro}}</div>
             <div style="color: black;">
-              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.price}} 원</h5>
+              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">없음 원</h5>
               <div style="display: inline-block; float: right;">
-                <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
+                <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.rate}}%</h3>
                 <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
               </div>
             </div>
@@ -59,21 +60,22 @@
     </div>
     <!-- 인기순 -->
     <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">인기순<v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon></h4>
+      <!-- <v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon> -->
+      <h4 style="font-weight: 600">인기순</h4>
     </div>
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in likeItems" :key="i" style="display: inline-block; flex:1">
         <v-card class="my-12" max-width="320" style="margin: auto">
-          <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
-          <v-card-title style="font-weight: 600; margin: auto">{{item.title}}
-            <div style="margin-left: auto;"><v-chip class="likeBadge">{{item.likenum}}명 좋아요</v-chip></div>
+          <v-img height="250" :src="item.picture"></v-img>
+          <v-card-title style="font-weight: 600; margin: auto">{{item.pjtname}}
+            <div style="margin-left: auto;"><v-chip class="likeBadge">없음명 좋아요</v-chip></div>
           </v-card-title>
           <v-card-text>
-            <div style="margin-bottom: 15px;">{{item.content}}</div>
+            <div style="margin-bottom: 15px;">{{item.onelineintro}}</div>
             <div style="color: black;">
-              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.price}} 원</h5>
+              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">없음 원</h5>
               <div style="display: inline-block; float: right;">
-                <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
+                <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.rate}}%</h3>
                 <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
               </div>
             </div>
@@ -86,7 +88,10 @@
 
 <script>
 import "../../../public/css/InvestHome.scss";
-import Navbar from "../../components/Navbar.vue"
+import Navbar from "../../components/Navbar.vue";
+import axios from "axios";
+
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
@@ -110,79 +115,53 @@ export default {
           src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
         },
       ],
-      deadlineItems: [
-        {
-          title: "특별한 자전거",
-          deadline: "1",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,500,500",
-          percent: "98",
-        },
-        {
-          title: "특별한 숟가락",
-          deadline: "3",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,300,500",
-          percent: "95",
-        },
-        {
-          title: "달라진 안경",
-          deadline: "7",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,500",
-          percent: "88",
-        },
-      ],
-      likeItems: [
-        {
-          title: "특별한 자전거",
-          likenum: "10000",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,500,500",
-          percent: "92",
-        },
-        {
-          title: "특별한 숟가락",
-          likenum: "5000",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,300,500",
-          percent: "85",
-        },
-        {
-          title: "달라진 안경",
-          likenum: "3500",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,500",
-          percent: "79",
-        },
-      ],
-      openItems: [
-        {
-          title: "특별한 자전거",
-          opendate: "2",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,500,500",
-        },
-        {
-          title: "특별한 숟가락",
-          opendate: "5",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,300,500",
-        },
-        {
-          title: "달라진 안경",
-          opendate: "10",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,500",
-        },
-        {
-          title: "날이 없는 선풍기",
-          opendate: "12",
-          content: "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,000",
-        },
-      ]
+      deadlineItems: [],
+      likeItems: [],
     };
+  },
+  mounted() {
+    axios.get(`${SERVER_URL}/investment/curation`)
+      .then(response => {
+        console.log(response)
+        this.deadlineItems = response.data.object.closedeadlines
+        this.likeItems = response.data.object.popular
+        this.deadlineItems.forEach(item => {
+            // 마감일
+            const day = item.deadline.substring(8, 10);
+            let today = new Date();
+            today.setDate(day - today.getDate());
+            this.$set(item, "lastday", today.getDate());
+            // 제목
+            if (item.pjtname.length > 8) {
+              item.pjtname = item.pjtname.substring(0, 10) + "...";
+            }
+            // 투자금액 axios 보내기
+            
+            // 달성률 axios 보내기
+            const fd = new FormData();
+            fd.append("campaignId", item.address)
+            axios.post(`${SERVER_URL}/funding/fundingrate`, fd)
+              .then(response => {
+                this.$set(item, "rate", response.data);
+              })
+          })
+        this.likeItems.forEach(item=>{
+          // 제목
+          if (item.pjtname.length > 8) {
+            item.pjtname = item.pjtname.substring(0, 10) + "...";
+          }
+          // 투자금액 axios 보내기
+          
+          // 달성률 axios 보내기
+          const fd = new FormData();
+          fd.append("campaignId", item.address)
+          axios.post(`${SERVER_URL}/funding/fundingrate`, fd)
+            .then(response => {
+              this.$set(item, "rate", response.data);
+            })
+        })
+        
+      })
   },
   methods: {
 

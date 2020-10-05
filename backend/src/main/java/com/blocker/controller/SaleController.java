@@ -1,6 +1,7 @@
 package com.blocker.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -103,7 +104,8 @@ public class SaleController {
 			editorSaleDto.setEditorhtml(saleBoardRequest.getEditorhtml());
 			editorSaleDto.setAddress(saleBoardDto.getAddress());
 			editorSaleRepository.save(editorSaleDto);
-			result.data = "success";
+			result.data = saleBoardDto.getAddress();
+			
 			result.status = true;
 		} catch (Exception e) {
 			result.data = "fail";
@@ -228,6 +230,7 @@ public class SaleController {
 					}
 				}
 			}
+			Collections.reverse(resultDatalist);
 			result.data = "success";
 			result.object = resultDatalist;
 			result.status = true;
@@ -340,11 +343,14 @@ public class SaleController {
 	@ApiOperation(value = "판매게시글의 리뷰를 보여줌")
 	public Object getReviews(@RequestParam String address, @PathVariable int page) {
 		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
 		try {
 			Page<ReviewDto> reviewList = reviewService.getReviews(address, page);
 			ReviewsResponse reviewsResponse = new ReviewsResponse(reviewList.getContent(), reviewList.getTotalPages());
-
-			result.object = reviewsResponse;
+			map.put("reviews", reviewList.getContent());
+			map.put("totalpage", reviewList.getTotalPages());
+			map.put("totalreviewcount", reviewService.getReviewsCount(address));
+			result.object = map;
 			result.data = "success";
 			result.status = true;
 		} catch (Exception e) {
@@ -403,14 +409,27 @@ public class SaleController {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			List<SaleBoardDto> popular = saleService.getThreeSaleListOrderbyLikecount();
+			List<SaleBoardDto> closeopen = saleService.getThreeSaleListOrderbyStartdate();
 			List<Integer> likecount = new ArrayList<>();
-			map.put("closeopen", saleService.getThreeSaleListOrderbyStartdate());
+			List<Integer> closeopenlikecount = new ArrayList<>();
+			List<String> likeonelineintro = new ArrayList<>();
+			List<String> closeopenonelineintro = new ArrayList<>();
+			map.put("closeopen", closeopen);
 			map.put("popular", popular);
 			for (Iterator<SaleBoardDto> iter = popular.iterator(); iter.hasNext();) {
 				SaleBoardDto saleBoardDto = iter.next();
 				likecount.add(likeBoardService.likeCount(saleBoardDto.getAddress()));
+				likeonelineintro
+						.add(investmentService.getInvestment(saleBoardDto.getInvestaddress()).get().getOnelineintro());
 			}
-			map.put("likecount", likecount);
+			for (Iterator<SaleBoardDto> iter = closeopen.iterator(); iter.hasNext();) {
+				SaleBoardDto saleBoardDto = iter.next();
+				closeopenlikecount.add(likeBoardService.likeCount(saleBoardDto.getAddress()));
+				closeopenonelineintro
+						.add(investmentService.getInvestment(saleBoardDto.getInvestaddress()).get().getOnelineintro());
+			}
+			map.put("closeopenlikecount", closeopenlikecount);
+			map.put("popularlikecount", likecount);
 			result.object = map;
 			result.data = "success";
 			result.status = true;

@@ -24,6 +24,7 @@ export default new Vuex.Store({
             img: null,
             walletAddress: null
         },
+
         accessToken: null,
         balance: null,
         charge: null,

@@ -1,9 +1,11 @@
 package com.blocker.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,5 +28,8 @@ public interface LikeBoardRepository extends JpaRepository<LikeBoardDto, String>
 
 	@Query(value = "select count(*) from likeboard where address =:address and ischecked = true", nativeQuery = true)
 	int countLikeBoard(String address);
+
+	@Query(value = "select * from likeboard where userid =:userid and ischecked = true", nativeQuery = true)
+	List<LikeBoardDto> getAllProjectILike(String userid);
 
 }
