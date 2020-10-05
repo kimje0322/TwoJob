@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.dto.Chatroom;
 import com.blocker.service.FundingService;
+import com.blocker.service.ScheduleTask;
 import com.blocker.util.webhook;
 
 import io.swagger.annotations.ApiOperation;
@@ -45,10 +48,10 @@ public class FundingController {
 		return new ResponseEntity<String>(fundingService.fundingCampaign(accessToken, campaignId, value),HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "[BC][펀딩 금액 받기] 펀딩이 목표에 도달 했을 경우, 펀딩된 금액을 받습니다. param : [accessToken, campaignId], return : 성공시 success, 지갑이 없을경우 noWallet, 캠페인이 없을 경우 noInvest")
+	@ApiOperation(value = "[BC][펀딩 금액 받기] 펀딩이 목표에 도달 했을 경우, 펀딩된 금액을 받습니다. param : [campaignId], return : 성공시 success, 캠페인이 없을 경우 noInvest")
 	@PostMapping(value = "/receivefund")
-	public ResponseEntity<String> receiveFund(@RequestParam("accessToken") String accessToken, @RequestParam("campaignId") String campaignId) throws Exception {
-		return new ResponseEntity<String>(fundingService.receiveFund(accessToken,campaignId),HttpStatus.OK);
+	public ResponseEntity<String> receiveFund(@RequestParam("campaignId") String campaignId) throws Exception {
+		return new ResponseEntity<String>(fundingService.receiveFund(campaignId),HttpStatus.OK);
 	}
 	@ApiOperation(value = "[BC][펀딩 금액 환불] 펀딩이 목표에 도달 못 했을 경우, 투자자들에게 투자했던 금액을 돌려줍니다. param : [campaignId], return : ")
 	@GetMapping(value = "/refund")
@@ -81,8 +84,22 @@ public class FundingController {
 	@ApiOperation(value = "testg ")
 	@GetMapping(value = "/testd")
 	public void test() {
+		fundingService.makeAllTask();
+//		Date now = new Date();
+//		Calendar calUntil = Calendar.getInstance();
+//		calUntil.set( Calendar.YEAR, 2020);
+//		calUntil.set( Calendar.MONTH, 9);
+//		calUntil.set( Calendar.DAY_OF_MONTH, 4);
+//		calUntil.set( Calendar.HOUR_OF_DAY, 2);
+//		calUntil.set( Calendar.MINUTE, 56);
+//		calUntil.set( Calendar.SECOND, 0);
+//		Date until = calUntil.getTime();
+//		long sleep = until.getTime() - now.getTime();
+//		System.out.println(sleep);
 		//int test = Integer.parseInt("dddd");
-		System.out.println("dd? " + BigInteger.valueOf(4_300_000));
+		//System.out.println("dd? " + BigInteger.valueOf(4_300_000));
+//		ScheduleTask st = new ScheduleTask(2020,10,3,9,51);
+//		st.start();
 	}
 //	@ExceptionHandler(Exception.class)
 //	public void nullex(Exception e) {

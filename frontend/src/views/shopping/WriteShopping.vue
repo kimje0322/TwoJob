@@ -5,13 +5,13 @@
     <!-- 쇼핑 글쓰기 메뉴바 -->
     <div>
       <!-- 쇼핑 글쓰기 메뉴 -->
-      <div class="writeMenuBar">
+      <div class="writeMenuBar mt-5">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab v-for="(item, i) in tabs" :key="i" :href="`#tab-${i}`" class="writeMenu">{{ item }}</v-tab>
           <!-- 쇼핑 오픈버튼 -->
           <div class="openbtn" @click="checkForm">
             <!-- v-bind:disabled="addedItems.length < 1" -->
-            <v-btn :class="{deactive: isActive}" color="rgb(22, 150, 245)" style="font-weight: 600">쇼핑 프로젝트 오픈</v-btn>
+            <v-btn class="openbtn" color="#808080">쇼핑 프로젝트 오픈</v-btn>
           </div>
 
           <!-- 상품 정보 창 -->
@@ -200,7 +200,7 @@ import axios from "axios";
 import store from '../../store/index.js'
 
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 export default {
   components: {
     Navbar,
@@ -310,6 +310,15 @@ export default {
       this.login = false;
     }
   },
+  updated() {
+    if (this.title && this.thumbnail.name && this.openDate && this.price && this.editortext) {
+     $(".openbtn").css("background-color", "rgb(22, 150, 245)");
+      $(".openbtn").css("color", "white");
+    } else {
+      $(".openbtn").css('background-color','#808080')
+      $(".openbtn").css("color", "white");
+    }
+  },
   methods: {
     onThumbnail(e) {
        var formData = new FormData();
@@ -352,12 +361,10 @@ export default {
         this.checkCategory.splice(idx, 1);
         $(`.${category}`).css("background-color", "white");
         $(`.${category}`).css("color", "black");
-        // console.log(this.checkCategory)
       } else {
         this.checkCategory.push(category);
         $(`.${category}`).css("background-color", "rgb(22, 150, 245)");
         $(`.${category}`).css("color", "white");
-        // console.log(this.checkCategory)
       }
     },
     change() {
@@ -371,8 +378,22 @@ export default {
       if (this.title && this.thumbnail.name && this.openDate && this.price && this.editortext) {
         this.completed = true;
         this.openShoppingBtn();
+      } else if (this.title && this.thumbnail.name && this.openDate && this.price && !this.editortext) {
+        Swal.fire({
+                icon: "warning",
+                title: "",
+                text: "　　　　　쇼핑 프로젝트를 오픈하기 전,　　　　　저장하기 버튼을 클릭해 주세요.",
+                confirmButtonText: "닫기",
+                confirmButtonColor: "#d33",
+              })
       } else {
-      alert('모든 항목을 입력해주세요.');  
+         Swal.fire({
+                icon: "warning",
+                title: "",
+                text: "모든 항목을 입력해주세요.",
+                confirmButtonText: "닫기",
+                confirmButtonColor: "#d33",
+              })
       } 
     },
     openShoppingBtn() {
@@ -403,18 +424,18 @@ export default {
           })
             .then(response => {
               if(response.data.data == 'success'){
-
+                  Swal.fire({
+                  // position: 'top-end',
+                  icon: 'success',
+                  title: '',
+                  text: '프로젝트가 성공적으로 오픈되었습니다.',
+                  showConfirmButton: false,
+                  // timer: 1500
+              })
               }else{
                 alert(실패)
               }
-              Swal.fire({
-                // position: 'top-end',
-                icon: 'success',
-                title: '',
-                text: '프로젝트가 성공적으로 오픈되었습니다.',
-                showConfirmButton: false,
-                // timer: 1500
-              })
+
             })
             .catch(error => {
               console.log(error)

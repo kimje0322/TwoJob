@@ -1,10 +1,39 @@
 <template>
   <div class="home">
     <!-- 상단 Navbar -->
-    <navbar />
-    <!-- 투자홈 광고사진 -->
+    <HomeNav />
+    <div class="mt-5 words" style="text-align:center;">
+      <h1 class="my-element my-5" style="font-size:3vw;">Get funding with <span class="twojob">TwoJob</span></h1>
+    </div>
+    <img style="width:100%; margin-bottom: 8%" class="mx-0 py-0" src="../assets/images/배경12.png" alt="">
+    <!-- 투자홈 사진 -->
+    <div class="homeDiv homDiv1 mx-auto mt-5" style="display:flex"> 
+      <img class="homeImg1" src="../assets/images/home8.jpg" alt="">
+      <div class="mt-4 ml-5 pt-3 pl-4">
+        <h1 class="engTitle mt-5" style="font-size:5vw">Reliable</h1>
+        <h3 class="korTitle">신뢰가능한</h3>
+        <p class="mt-5 ml-2" style="font-size:1vw">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
+      </div>
+    </div>
 
-    <div class="homeImg">
+    <div class="homeDiv mx-auto" style="display:flex"> 
+      <div class="mt-4 ml-5 mr-5 pt-3 pl-4 pr-4">
+        <h1 class="engTitle mt-5" style="font-size:4.7vw">Reasonable</h1>
+        <h3 class="korTitle mr-2" style="text-align: end">합리적인</h3>
+        <p class="mt-5 mr-2" style="font-size:1vw; text-align: end">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
+      </div>
+      <img class="homeImg2 ml-2" src="../assets/images/home5.jpg" alt="">
+    </div>
+
+    <div class="homeDiv mx-auto" style="display:flex"> 
+      <img class="homeImg3 mr-1" src="../assets/images/하늘filter.jpg" alt="">
+      <div class="mt-4 ml-4 pt-3 pl-3">
+        <h1 class="engTitle mt-5" style="font-size:4.6vw">Transparent</h1>
+        <h3 class="korTitle ml-2">투명한</h3>
+        <p class="mt-5 ml-2" style="font-size:1vw">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
+      </div>
+    </div>
+    <!-- <div class="homeImg">
       <v-carousel>
         <v-carousel-item          
           v-for="(item, i) in items" :key="i"
@@ -13,13 +42,13 @@
           transition="fade-transition"
         ></v-carousel-item>
       </v-carousel>
-      <!-- <img style="width: 100%" src="../assets/images/home.gif" alt="home-main"> -->
-    </div>
+      <img style="width: 100%" src="../assets/images/home.gif" alt="home-main">
+    </div> -->
     <!-- <button @click="onWallet" style="margin-left: 200px;">
       눌러봐
     </button> -->
     <!-- 홈페이지 설명 -->
-    <div class="home_info">
+    <!-- <div class="home_info">
       <div class="home_div">
         <div style="display: inline-block; flex: 1">
           <i class="fab fa-medapps fa-7x"></i>
@@ -29,7 +58,7 @@
             투잡러들의 투잡현황!
             <br />기대 이상의 수익률!
           </h3>
-          <!-- <h3 class="info_text">기대 이상의 수익률!</h3> -->
+          <h3 class="info_text">기대 이상의 수익률!</h3>
         </div>
         <div class="info_right" style="flex: 4">
           <div style="text-align: center">
@@ -54,7 +83,7 @@
       </div>
       <div class="home_div">
         <div style="display: inline-block; flex: 1">
-          <!-- <i class="fab fa-medapps fa-7x"></i> -->
+          <i class="fab fa-medapps fa-7x"></i>
           <i class="fas fa-lock fa-5x"></i>
         </div>
         <div style="flex: 7; margin-left: 10px">
@@ -62,7 +91,7 @@
             소중한 자산 보안은
             <br />블록체인 기술로!
           </h3>
-          <!-- <h3 class="info_text">기대 이상의 수익률!</h3> -->
+          <h3 class="info_text">기대 이상의 수익률!</h3>
         </div>
 
         <div class="info_right" style="flex: 4">
@@ -85,8 +114,8 @@
             <h1>1000</h1>
           </div>
         </div>
-      </div>
-      <div class="home_div">
+      </div> -->
+      <!-- <div class="home_div">
         <div style="display: inline-block; flex: 1">
           <i class="fas fa-desktop fa-4x"></i>
         </div>
@@ -95,7 +124,7 @@
             언제 어디서든
             <br />쉽고 간편하게!
           </h3>
-          <!-- <h3 class="info_text">기대 이상의 수익률!</h3> -->
+          <h3 class="info_text">기대 이상의 수익률!</h3>
         </div>
 
         <div class="info_right" style="flex: 5">
@@ -105,8 +134,8 @@
             alt
           />
         </div>
-      </div>
-      <div class="home_div">
+      </div> -->
+      <!-- <div class="home_div">
         <div style="display: inline-block; flex: 1">
           <i class="far fa-thumbs-up fa-5x"></i>
         </div>
@@ -115,7 +144,7 @@
             다양한 카테고리를
             <br />즐길 수 있는 유일한 곳!
           </h3>
-          <!-- <h3 class="info_text">기대 이상의 수익률!</h3> -->
+          <h3 class="info_text">기대 이상의 수익률!</h3>
         </div>
         <div class="info_right" style="flex: 4.5">
           <img
@@ -124,8 +153,8 @@
             alt
           />
         </div>
-      </div>
-    </div>
+      </div> -->
+    <!-- </div> -->
     <div class="home_info"></div>
   </div>
 </template>
@@ -140,13 +169,13 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 // import 'bootstrap-vue/dist/bootstrap-vue.css'
 import "../../public/css/Home.scss";
 import store from "../store/index.js";
-import Navbar from "../components/Navbar.vue";
+import HomeNav from "../components/HomeNav.vue";
 import Web3 from "web3";
 import { registerWallet } from "@/api/wallet.js";
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
-const redirect_uri = "http://j3b102.p.ssafy.io:8080";
+const redirect_uri = "https://www.twojob.ga/api";
 
 export default {
   mounted() {
@@ -167,7 +196,7 @@ export default {
   methods: {
   },
   components: {
-    Navbar,
+    HomeNav,
   },
   data() {
     return {
@@ -215,7 +244,7 @@ export default {
   margin-bottom: 3%;
 }
 .home_info {
-  padding: 200px 0;
+  padding: 50px 0;
   margin: 0 150px;
 }
 .info_left {
@@ -232,5 +261,57 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+/* .ImgHomediv {
+  display: inline-block;
+  padding: 120px 120px 120px 120px;
+  margin-right: 40%;
+  background-color:#E1F5FE;
+} */
+.homeDiv {
+  margin: 3% 3% 12% 3%;
+  width: 80%;
+  /* background-color: #212121; */
+  background-color: rgb(250, 247, 243) ;
+  /* border: 1px solid #cdd3d8; */
+  border-radius: 12px;
+  box-shadow: 0 10px 20px 0 rgba(31, 34, 36, 0.4);;
+
+}
+.homeImg1 {
+  border-radius: 12px 0 0 12px;
+  width: 55%; 
+}
+.homeImg2 {
+  border-radius: 0 12px 12px 0;
+  width: 53%; 
+}
+.homeImg3 {
+  border-radius: 12px 0 0 12px;
+  width: 54%; 
+}
+.engTitle {
+  /* font-family: 'Black Han Sans', sans-serif; */
+  font-family: 'Libre Baskerville', serif;
+}
+.korTitle {
+  font-family: 'Noto Serif KR', serif;
+}
+.twojob {
+  font-family: 'Lobster', cursive;
+}
+.my-element {
+  display: inline-block;
+  margin: 0 0.5rem;
+  font-family: 'Libre Baskerville', serif;
+  animation: slideInLeft; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 1.7s; /* don't forget to set a duration! */
+}
+.words {
+  background-color:white !important;
+}
+.homDiv1 {
+  animation: slideInLeft;
+  animation-duration: 1.7s;
 }
 </style>

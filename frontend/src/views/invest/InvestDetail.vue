@@ -24,8 +24,6 @@
           </div>
           <!-- 우측: 상품 디테일 -->
           <div style="float: left; width:36%;">
-            <!-- 기업명
-            <p>다이슨</p>-->
             <!-- 상품 제목 -->
             <h3>{{ investPjt.pjtName }}</h3>
             <hr />
@@ -104,13 +102,13 @@
             <p class="mb-3">금손님 정보</p>
           </strong>
           <div class="maker" style="float:left">
-            <img class="makerImg" src="../../assets/금손.jpg" alt />
+            <img class="makerImg" :src="writer.profileImg" :alt="writer.name" />
           </div>
           <div style="float:left; margin: 3px 0 0 15px;">
-            <span style="font-size: 0.9rem; margin-bottom:5px;">
+            <span v-if="investPjt.compName" style="font-size: 0.9rem; margin-bottom:5px;">
               (주){{investPjt.compName}}
             </span>
-            <span><strong>글쓴이 이름</strong></span>
+            <span><strong>{{writer.name}}</strong></span>
             <p style="font-size: 0.9rem;" v-html="investPjt.introduce">{{investPjt.introduce}}</p>
           </div>
         </div>
@@ -139,11 +137,10 @@
           <v-tab-item v-for="tabItem in tabItems" :key="tabItem" :value="'tab-' + tabItem">
             <!-- 프로젝트 이력 -->
             <div v-if="tabItem=='projects'" class="mt-2">
-              <div style="overflow: hidden; margin-bottom: 50px">
+              <!-- <div style="overflow: hidden; margin-bottom: 50px">
                 <div style="float:left; width: 33%">
                   <div style="text-align: center">
                     <h5 style="margin-bottom: 1.25rem">프로젝트 성공률</h5>
-                    <!-- <img style="width: 50%;" src="../../assets/80.png" alt=""> -->
                     <v-progress-circular
                       :rotate="360"
                       :size="100"
@@ -166,42 +163,50 @@
                   </div>
                 </div>
               </div>
-              <hr>
+              <hr> -->
               <!-- 프로젝트 이력 -->
               <div style="display: flex; text-align: center; margin: 20px 0">
                 <h4 style="flex: 1">투자 프로젝트</h4>
                 <h4 style="flex: 1">쇼핑 프로젝트</h4>
               </div>
               <div v-for="(item, i) in projectList" :key="i" style="padding: 2%">
-                <div style="display: flex;">
+                <div>
                   <!-- 투자 프로젝트 -->
-                  <div style="padding: 0 1% 0 5%">
+                  <div style="padding: 0 1% 0 5%; width: 50%; display: inline-block">
                     <v-card style="width: 100%; height: 180px; display: inline-block;">
                       <v-img
                         style="width:36%; float:left;"
                         height="180"
-                        src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+                        :src="item.investmentDto.picture"
                       ></v-img>
                       <div style="width: 64%; float:right;">
                         <v-card-title style="font-weight: 600;">
-                          {{item.investPjt.title}}
+                          {{item.investmentDto.pjtname}}
                           <div style="margin-left: 5%;">
+                            <!-- 진행중 -->
                             <v-chip
+                              v-if="!item.investmentDto.isfinish"
+                              class="investPjtBadge"
+                              style="background-color:  rgb(123, 197, 254); color: white; "
+                            >{{item.investmentDto.chip}}</v-chip>
+                            <!-- 종료 -->
+                            <v-chip
+                              v-else
                               class="investPjtBadge"
                               style="background-color: gray; color: white; "
-                            >{{item.investPjt.isfinished}}</v-chip>
+                            >{{item.investmentDto.chip}}</v-chip>
                           </div>
                         </v-card-title>
-                        <v-card-text>
-                          <div style="margin-bottom: 15px;">{{item.investPjt.content}}</div>
-                          <div style="color: black;">
+                        <v-card-text style="height: 115px;">
+                          <div style="margin-bottom: 15px; height: 50px;">{{item.investmentDto.onelineintro}}</div>
+                          <div style="color: black; height: 50px;">
                             <h5
                               style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                            >{{item.investPjt.totalPrice}}원</h5>
+                            >없음 원</h5>
                             <div style="display: inline-block; float: right;">
                               <h3
                                 style="display: inline-block; color:rgb(22, 150, 245)"
-                              >{{item.investPjt.percent}}%</h3>
+                              >없음%</h3>
                               <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
                             </div>
                           </div>
@@ -210,33 +215,41 @@
                     </v-card>
                   </div>
                   <!-- 쇼핑 프로젝트 -->
-                  <div style="padding: 0 5% 0 1%">
+                  <div v-if="item.saleBoardDto" style="padding: 0 5% 0 1%; width: 50%; display: inline-block">
                     <v-card style="width: 100%; height: 180px; display: inline-block;">
                       <v-img
                         style="width:36%; float:left;"
                         height="180"
-                        src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+                        :src="item.saleBoardDto.picture"
                       ></v-img>
                       <div style="width: 64%; float:right;">
                         <v-card-title style="font-weight: 600;">
-                          {{item.shoppingPjt.title}}
+                          {{item.saleBoardDto.pjtname}}
                           <div style="margin-left: 5%;">
+                            <!-- 진행중 -->
                             <v-chip
-                              class="shoppingPjtBadge"
-                              style="background-color: rgb(22, 150, 245); color: white"
-                            >{{item.shoppingPjt.isfinished}}</v-chip>
+                              v-if="!item.saleBoardDto.isfinish"
+                              class="investPjtBadge"
+                              style="background-color:  rgb(123, 197, 254); color: white; "
+                            >{{item.saleBoardDto.chip}}</v-chip>
+                            <!-- 종료 -->
+                            <v-chip
+                              v-else
+                              class="investPjtBadge"
+                              style="background-color: gray; color: white; "
+                            >{{item.saleBoardDto.chip}}</v-chip>
                           </div>
                         </v-card-title>
-                        <v-card-text>
-                          <div style="margin-bottom: 15px;">{{item.shoppingPjt.content}}</div>
-                          <div style="color: black;">
+                        <v-card-text style="height: 115px;">
+                          <div style="margin-bottom: 15px; height: 50px;"></div>
+                          <div style="color: black; height: 50px;">
                             <h5
                               style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                            >개당 {{item.shoppingPjt.price}}원</h5>
+                            >개당 {{item.saleBoardDto.saleprice}}원</h5>
                             <div style="display: inline-block; float: right;">
                               <h3
                                 style="display: inline-block; color:rgb(22, 150, 245)"
-                              >{{item.shoppingPjt.sellNum}}개</h3>
+                              >{{item.saleBoardDto.sellNum}}개</h3>
                               <h5 style="display: inline-block; color:rgb(123, 197, 254)">판매</h5>
                             </div>
                           </div>
@@ -290,6 +303,7 @@
                     <p style="display:inline; margin: 2px 0px 0px 3px;">솜사탕강쥐</p>
                   </strong>
                   <span class="ml-2" style="color: grey">2020.09.15</span>
+                  <v-btn icon><v-icon>mdi-trash-can-outline</v-icon></v-btn>
                   <p
                   >저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요. 강아지랑 같이 쓰려고 샀어요. 잘 쓸게요. 많이 파세요..</p>
                 </div>
@@ -308,8 +322,9 @@ import "../../../public/css/InvestDetail.scss";
 import { VueperSlides, VueperSlide } from "vueperslides";
 import "vueperslides/dist/vueperslides.css";
 import axios from "axios";
+import store from "../../store/index.js";
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
@@ -323,38 +338,20 @@ export default {
       nowAddress: "",
       // 프로젝트 정보
       investPjt: {},
+      // 금손 정보
+      writer: {},
+      // 탭
+      currentItem: "tab-Web",
+      tabItems: ["projects", "pjtInfo", "comments"],
       // 프로젝트 이력
+      successRate: "80",
+      projectList: [],
+      // 무한 스크롤
       page: 0,
+      totalPage: 0,
       // 좋아요
       isliked: false,
       likeCount: 0,
-      currentItem: "tab-Web",
-      tabItems: ["projects", "pjtInfo", "comments"],
-      successRate: "80",
-      // 프로젝트 이력
-      projectList: [
-        {
-          investPjt: {
-            picture: "",
-            title: "특별한 드라이기",
-            content:
-              "한줄 소개 글 저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요.",
-            totalPrice: "2,000,000",
-            percent: "100",
-            isfinished: "성공",
-          },
-          shoppingPjt: {
-            picture: "",
-            title: "드라이기",
-            content:
-              "한줄 소개 글 저희 집 강아지가 좋아하는 드라이기를 드디어 찾았네요.",
-            price: "80,000",
-            sellNum: "1,500",
-            isfinished: "진행중",
-          },
-        },
-      ],
-      model: null,
       // 댓글
       commentList: [],
       comment: "",
@@ -365,48 +362,117 @@ export default {
     // 투자 프로젝트 정보 가져오기
     const frm = new FormData();
     frm.append("address",this.nowAddress)
+    frm.append("userid", store.state.userInfo.id)
     axios.post(`${SERVER_URL}/investment/getDetail`, frm)
       .then(response => {
-        this.investPjt = response.data.object
+        console.log(response)
+        // 좋아요
+        this.likeCount = response.data.object.likecount
+        this.isliked = response.data.object.like
+        if(this.isliked){
+          $('.like').css('color', 'red')
+        }else{
+          $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
+        }
+        this.investPjt = response.data.object.object
         // 마감일 기준 남은날짜 계산
         const day = this.investPjt.deadLine.substring(8, 10);
         let today = new Date();
         today.setDate(day - today.getDate());
         this.$set(this.investPjt, "lastday", today.getDate());
         // 사진 url 처리
-        const cutUrl = this.investPjt.picture.substr(18, this.investPjt.picture.length - 17);
-        const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
-        this.investPjt.picture = imgUrl
+        // const cutUrl = this.investPjt.picture.substr(18, this.investPjt.picture.length - 17);
+        // const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+        // this.investPjt.picture = imgUrl
         // 배경 이미지
         $('.investImg').css('background-image', `url(${this.investPjt.picture})`)
         // 글쓴이 소개글 엔터 변환
         this.investPjt.introduce = this.investPjt.introduce.split('\n').join('<br />');
         // 투자 설명서 엔터 변환
         this.investPjt.editorhtml = this.investPjt.editorhtml.split('\n').join('<br />');
-      })
-    // 금손 프로젝트 이력 가져오기
-    const fd = new FormData();
-    fd.append("userid",this.investPjt.userid)
-    axios.post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
-      .then(response => {
-        console.log(response)
-        console.dir(response)
-      })
+        // 금손 정보 가져오기
+        const fu = new FormData();
+        fu.append("userid", this.investPjt.userid)
+        axios.post(`${SERVER_URL}/util/userinfo`, fu)
+          .then(response =>{
+            console.log(response)
+            this.writer = response.data.object
+          })
+        // 금손 프로젝트 이력 가져오기
+        const fd = new FormData();
+        fd.append("userid", this.investPjt.userid)
+        axios.post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
+          .then(response => {
+            console.log(response)
+            this.projectList = response.data.object
+            this.totalPage = response.data.object[0].totalpages
+            this.projectList.forEach(item => {
+              // 투자 프로젝트 chip 
+              if (item.investmentDto.isfinish) {
+                this.$set(item.investmentDto, "chip", '종료');
+              }
+              else{
+                this.$set(item.investmentDto, "chip", '진행중');
+              }
+              // pjtname
+              if(item.investmentDto.pjtname.length > 8) {
+                item.investmentDto.pjtname = item.investmentDto.pjtname.substring(0, 8) + '...'
+              }
+              // 쇼핑 프로젝트 chip 
+              if(item.saleBoardDto) {
+                if (item.saleBoardDto.isfinish) {
+                  this.$set(item.saleBoardDto, "chip", '종료');
+                }
+                else{
+                  this.$set(item.saleBoardDto, "chip", '진행중');
+                }
+                // pjtname
+                if(item.saleBoardDto.pjtname.length > 8) {
+                  item.saleBoardDto.pjtname = item.saleBoardDto.pjtname.substring(0, 8) + '...'
+                }
+              }
+            })
+          })
+      })    
   },
   methods: {
     likebtn() {
-      this.isliked = !this.isliked
-      if(this.isliked) {
-        $('.like').css('color', 'red')
-        this.likeCount += 1
-      }
-      else{
-        $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
-        this.likeCount -= 1
-      }
+      axios.post(`${SERVER_URL}/util/createlike`, {
+        address: this.$route.params.address,
+        userid: store.state.userInfo.id
+      })
+        .then(response => {
+          console.log(response)
+          this.likeCount = response.data.object.likecount
+          if(response.data.object.likestate) {
+            $('.like').css('color', 'red')
+          }
+          else{
+            $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
+          }
+          // if(response.data.object == 1) {
+          //   this.islike = false
+          //   this.likeCount -= 1
+          //   $('.like').css('color', 'rgba(0, 0, 0, 0.54)')
+          // }
+          // else {
+          //   this.isliked = response.data.object.ischecked
+          //   this.likeCount += 1
+          //   $('.like').css('color', 'red')
+          // }
+          
+        })
     },
     oncomment() {
       this.commentList.push(this.comment)
+      axios.post(`${SERVER_URL}/investment/createcomment`, {
+        address: this.$route.params.address,
+        comment: this.comment,
+        userid: store.state.userInfo.id
+      })
+        .then(response => {
+          console.log(response)
+        })
       this.comment = ""
     }
   }

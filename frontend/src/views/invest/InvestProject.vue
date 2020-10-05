@@ -16,7 +16,7 @@
         </div>
         <div>
           <router-link to="/writeinvest">
-            <h5 style="margin: 0;">투자오픈</h5>
+            <h5 style="margin: 0">투자오픈</h5>
           </router-link>
         </div>
       </div>
@@ -27,15 +27,26 @@
     <!-- 카테고리 -->
     <div style="margin-bottom: 1rem">
       <!-- <v-app id="inspire" style="text-align:center"> -->
-      <v-container class="cateContainer" style="text-align:center">
+      <v-container class="cateContainer" style="text-align: center">
         <v-row no-gutters>
           <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
           <v-col cols="12" sm="1"></v-col>
           <!-- 카테고리 for문 -->
-          <v-col v-for="(category, i) in categoryList" :key="i" cols="12" sm="1">
-            <v-card class="pa-2 categoryCard" outlined tile>
-              <v-icon size="30">mdi-{{category.icon}}</v-icon>
-              <p class="categoryTag">{{category.name}}</p>
+          <v-col
+            v-for="(category, i) in categoryList"
+            :key="i"
+            cols="12"
+            sm="1"
+          >
+            <v-card
+              @click="onCategory(category.key)"
+              :class="category.key"
+              class="pa-2 categoryCard"
+              outlined
+              tile
+            >
+              <v-icon size="30">mdi-{{ category.icon }}</v-icon>
+              <p class="categoryTag">{{ category.name }}</p>
             </v-card>
           </v-col>
         </v-row>
@@ -44,82 +55,75 @@
     </div>
     <!-- 필터 -->
     <div class="filterBox">
-      <!-- 상태 -->
-      <div style="display: inline-block; margin-right: 2%">
-        <v-select
-          :items="state"
-          label="상태"
-          outlined
-          hide-details
-          v-model="nowstate"
-          @click="openState"
-          :class="{checkstate: checkstate}"
-          class="origin"
-        ></v-select>
-      </div>
       <div style="display: inline-block">
         <v-select
-          :items="successRate"
-          label="달성률"
+          :items="filter"
+          label="정렬"
           outlined
           hide-details
-          v-model="nowrate"
-          @click="openRate"
-          :class="{checkrate: checkrate, longrate: longrate}"
           class="origin"
+          v-model="clickfilter"
+          @change="onfilter()"
         ></v-select>
       </div>
       <div style="width: 150px; display: inline-block; float: right">
         <v-btn class="reloadbtn" @click="filterInit">
-          <v-icon color="rgba(0, 0, 0, 0.38)" style="margin-right: 10px">mdi-reload</v-icon>필터 초기화
+          <v-icon color="rgba(0, 0, 0, 0.38)" style="margin-right: 10px"
+            >mdi-reload</v-icon
+          >필터 초기화
         </v-btn>
       </div>
     </div>
     <!-- 프로젝트 -->
-    <div class="projectList" style="padding: 10px 3%;">
-      <div style="height: 45px;">
-        <div style="display: inline-block;">
-          <span style="color: rgb(22, 150, 245);">25,540</span>
+    <div class="projectList" style="padding: 10px 3%">
+      <div style="height: 45px">
+        <div style="display: inline-block">
+          <span style="color: rgb(22, 150, 245)">25,540</span>
           <span>개의 프로젝트가 있습니다.</span>
-        </div>
-        <div style="width: 100px; display: inline-block; float: right;">
-          <v-select
-            :items="filter"
-            hide-details
-            label="최신순"
-            single-line
-            @click="openFilter"
-            v-model="nowfilter"
-            append-icon="mdi-arrow-down-drop-circle-outline"
-            class="filter"
-          ></v-select>
         </div>
       </div>
       <div style="padding: 1% 0">
         <div
           v-for="(item, i) in investProjects"
           :key="i"
-          style="display: inline-block; width: 30%; margin-bottom: 30px;"
+          style="display: inline-block; width: 30%; margin-bottom: 30px"
         >
           <v-card class="my-12" max-width="320" style="margin: auto">
-            <router-link :to="{ name: 'InvestDetail', params: { address : item.address }}" >
-              <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
+            <router-link
+              :to="{ name: 'InvestDetail', params: { address: item.address } }"
+            >
+              <v-img
+                height="250"
+                src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+              ></v-img>
             </router-link>
             <v-card-title style="font-weight: 600; margin: auto">
-              {{item.pjtName}}
-              <div style="margin-left: auto;">
-                <v-chip class="projectBadge">{{item.lastday}}일 남음</v-chip>
+              {{ item.pjtName }}
+              <div style="margin-left: auto">
+                <v-chip class="projectBadge">{{ item.lastday }}일 남음</v-chip>
               </div>
             </v-card-title>
-            <v-card-text>
-              <div style="margin-bottom: 15px;">{{item.oneLineIntro}}</div>
-              <div style="color: black;">
+            <v-card-text style="height: 130px">
+              <div style="margin-bottom: 15px; height: 60px">
+                {{ item.oneLineIntro }}
+              </div>
+              <div style="color: black">
                 <h5
-                  style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                >{{item.goalPrice}} 원</h5>
-                <div style="display: inline-block; float: right;">
-                  <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.percent}}%</h3>
-                  <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5>
+                  style="
+                    display: inline-block;
+                    height: 41.6px;
+                    line-height: 41.6px;
+                  "
+                >
+                  {{ item.goalPrice }} 원
+                </h5>
+                <div style="display: inline-block; float: right">
+                  <h3 style="display: inline-block; color: rgb(22, 150, 245)">
+                    {{ item.percent }}%
+                  </h3>
+                  <h5 style="display: inline-block; color: rgb(123, 197, 254)">
+                    달성
+                  </h5>
                 </div>
               </div>
             </v-card-text>
@@ -134,7 +138,7 @@
 import Navbar from "../../components/Navbar.vue";
 import "../../../public/css/InvestProject.scss";
 import axios from "axios";
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
@@ -154,30 +158,16 @@ export default {
         { icon: "book-open-variant", name: "책", key: "book" },
         { icon: "violin", name: "악기", key: "instrument" },
       ],
-      // 상태
-      nowstate: "",
-      checkstate: false,
-      openstate: false,
-      state: [
-        "전체 프로젝트",
-        "진행중인 프로젝트",
-        "성공한 프로젝트",
-        "종료된 프로젝트",
-      ],
-      // 달성률
-      nowrate: "",
-      checkrate: false,
-      longrate: false,
-      openrate: false,
-      successRate: ["전체 프로젝트", "50% 이하", "50% ~ 75%", "75% ~ 100%"],
+      nowcategory: [],
       // 필터
-      nowfilter: "",
-      openfilter: false,
+      nowfilter: 0,
+      clickfilter: "",
       filter: ["최신순", "인기순"],
       // 프로젝트
       investProjects: [],
       // page
-      page: 1,
+      page: 0,
+      totalpage: 0,
     };
   },
   watch: {
@@ -188,35 +178,11 @@ export default {
         this.checkstate = false;
       }
     },
-    nowrate(val) {
-      if (this.nowrate == "전체 프로젝트") {
-        this.longrate = true;
-        this.checkrate = false;
-      } else if (this.nowrate) {
-        this.checkrate = true;
-        this.longrate = false;
-      }
-    },
   },
   mounted() {
-    axios
-      .get(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`)
-      .then((response) => {
-        console.log(response)
-        if (response.data.data == "success") {
-          this.investProjects = response.data.object;
-          this.investProjects.forEach((investPjt) => {
-            const day = investPjt.deadLine.substring(8, 10);
-            let today = new Date();
-            today.setDate(day - today.getDate());
-            // console.log(today.getDate())
-            this.$set(investPjt, "lastday", today.getDate());
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // 카테고리
+    $('.all').addClass('active')
+    this.initAxios()
     // console.log(this.investProjects)
 
     // for(var i=0; i<this.investProjects.length; i++) {
@@ -224,41 +190,114 @@ export default {
     // }
   },
   methods: {
-    openState() {
-      this.openstate = !this.openstate;
-      if (this.openstate) {
-        this.nowstate = "";
-        $(".v-menu").css("display", "block");
-      } else {
-        $(".v-menu").css("display", "none");
-      }
+    initAxios() {
+      const fd = new FormData();
+    fd.append("orderOption", 0);
+    fd.append("categoryfilter", "");
+    axios
+      .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
+      .then((response) => {
+        console.log(response);
+        if (response.data.data == "success") {
+          this.investProjects = response.data.object;
+          this.totalpage = this.investProjects[0].totalpage;
+          this.investProjects.forEach((investPjt) => {
+            // 마감일
+            const day = investPjt.deadLine.substring(8, 10);
+            let today = new Date();
+            today.setDate(day - today.getDate());
+            this.$set(investPjt, "lastday", today.getDate());
+            // 제목
+            if (investPjt.pjtName.length > 8) {
+              investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     },
-    openRate() {
-      this.openrate = !this.openrate;
-      if (this.openrate) {
-        this.nowrate = "";
-        $(".v-menu").css("display", "block");
+    filterAxios() {
+      const fd = new FormData();
+      fd.append("orderOption", this.nowfilter);
+      if (this.nowcategory) {
+        this.nowcategory.forEach((category) => {
+          console.log(category);
+          fd.append("categoryfilter", category);
+        });
       } else {
-        $(".v-menu").css("display", "none");
+        fd.append("categoryfilter", "");
       }
+      axios
+        .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
+        .then((response) => {
+          console.log(response);
+          if (response.data.data == "success") {
+            this.investProjects = response.data.object;
+            this.totalpage = this.investProjects[0].totalpage;
+            this.investProjects.forEach((investPjt) => {
+              // 마감일
+              const day = investPjt.deadLine.substring(8, 10);
+              let today = new Date();
+              today.setDate(day - today.getDate());
+              this.$set(investPjt, "lastday", today.getDate());
+              // 제목
+              if (investPjt.pjtName.length > 8) {
+                investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
+              }
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     filterInit() {
-      this.nowstate = "";
-      this.checkstate = false;
-      this.opensate = false;
-      this.nowrate = "";
-      this.checkrate = false;
-      this.longrate = false;
-      this.openrate = false;
+      // 카테고리 초기화
+      this.nowcategory.forEach((key) => {
+        $(`.${key}`).removeClass("active");
+      });
+      this.nowcategory = [];
+      $(".all").addClass("active");
+      // 필터 초기화
+      (this.clickfilter = ""), (this.nowfilter = 0);
+      this.openfilter = false;
+      this.initAxios()
     },
-    openFilter() {
-      this.openfilter = !this.openfilter;
-      if (this.openfilter) {
-        this.nowfilter = "";
-        $(".v-menu").css("display", "block");
+    onCategory(key) {
+      // 카테고리
+      if (key == "all") {
+        this.nowcategory.forEach((key) => {
+          $(`.${key}`).removeClass("active");
+        });
+        this.nowcategory = [];
+        $(".all").addClass("active");
       } else {
-        $(".v-menu").css("display", "none");
+        // 제거
+        if (this.nowcategory.indexOf(key) >= 0) {
+          const idx = this.nowcategory.indexOf(key);
+          this.nowcategory.splice(idx, 1);
+          $(`.${key}`).removeClass("active");
+        } else {
+          this.nowcategory.push(key);
+          $(`.${key}`).addClass("active");
+          $(".all").removeClass("active");
+        }
       }
+      this.filterAxios()
+      
+    },
+    onfilter() {
+      // 필터
+      if (this.clickfilter == "") {
+        this.nowfilter = 0;
+      } else if (this.clickfilter == "최신순") {
+        this.nowfilter = 1;
+      } else if (this.clickfilter == "인기순") {
+        this.nowfilter = 2;
+      }
+      this.filterAxios()
     },
   },
 };
@@ -349,5 +388,8 @@ export default {
   background-color: rgb(22, 150, 245) !important;
   color: white !important;
   text-align: right;
+}
+.active {
+  border: 2px solid rgb(22, 150, 245);
 }
 </style>
