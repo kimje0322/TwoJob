@@ -110,9 +110,9 @@
                   <v-icon size="20" class="mr-2 like">mdi-heart</v-icon>{{likeCount}}
                 </div>
               </button>
-              <button style="flex: 1">
+              <button style="flex: 1" @click="onChat()">
                 <div class="btns">
-                  <v-app></v-app>
+                  <v-app class="chatbtn"></v-app>
                   <div>
                     <v-dialog
                       max-width="800"
@@ -122,7 +122,7 @@
                       <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
                     </v-dialog>
                   </div>
-                  <v-icon size="20" class="mr-1" @click="onChat()"
+                  <v-icon size="20" class="mr-1" 
                     >mdi-message-bulleted</v-icon
                   >문의
                 </div>
