@@ -477,11 +477,11 @@ public class InvestController {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			int data = commentBoardService.deleteComment(num);
-			System.out.println("data====>"+data);
+			System.out.println("data====>" + data);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("댓글 삭제 도중 error발생");
-		} 
+		}
 	}
 
 	@GetMapping("/curation")
@@ -490,8 +490,15 @@ public class InvestController {
 		final BasicResponse result = new BasicResponse();
 		Map<String, Object> map = new HashMap<>();
 		try {
+			List<InvestmentDto> popular = investmentService.getThreeInvestmentListOrderbyLikecount();
+			List<Integer> likecount = new ArrayList<>();
 			map.put("closedeadlines", investmentService.getThreeInvestmentListOrderbyDeadline());
-			map.put("popular", investmentService.getThreeInvestmentListOrderbyLikecount());
+			map.put("popular", popular);
+			for (Iterator<InvestmentDto> iter = popular.iterator(); iter.hasNext();) {
+				InvestmentDto investmentDto = iter.next();
+				likecount.add(likeBoardService.likeCount(investmentDto.getAddress()));
+			}
+			map.put("likecount", likecount);
 			result.object = map;
 			result.data = "success";
 			result.status = true;
@@ -505,7 +512,7 @@ public class InvestController {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
-	
+
 	@ExceptionHandler(Exception.class)
 	public void nullex(Exception e) {
 		System.err.println("invest 부분에서 " + e.getClass());

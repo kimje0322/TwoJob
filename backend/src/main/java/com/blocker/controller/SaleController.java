@@ -157,7 +157,7 @@ public class SaleController {
 	}
 
 	@GetMapping("/getAllSaleList/{page}")
-	@ApiOperation(value = "모든 판매 게시글 리스트 가져오기")
+	@ApiOperation(value = "저장되어있는 모든사람의 판매 게시글을보여줌 orderOption = 0전체 1최신 2 인기")
 	public Object getAllSaleList(@PathVariable int page, @RequestParam List<String> categoryfilter,
 			@RequestParam int orderOption) {
 		final BasicResponse result = new BasicResponse();
@@ -304,7 +304,7 @@ public class SaleController {
 				saleDetailResponse.setUrl(tempInvestmentDto.getUrl());
 				saleDetailResponse.setIntroduce(tempInvestmentDto.getIntroduce());
 				map.put("object", saleDetailResponse);
-				
+
 				// like
 				CreateLikeRequest createLikeRequest = new CreateLikeRequest();
 				createLikeRequest.setAddress(address);
@@ -316,7 +316,7 @@ public class SaleController {
 					map.put("like", false);
 				}
 				map.put("likecount", likeBoardService.likeCount(address));
-				
+
 				result.data = "success";
 				result.object = map;
 				result.status = true;
@@ -402,10 +402,15 @@ public class SaleController {
 		final BasicResponse result = new BasicResponse();
 		Map<String, Object> map = new HashMap<>();
 		try {
-			System.out.println(1);
+			List<SaleBoardDto> popular = saleService.getThreeSaleListOrderbyLikecount();
+			List<Integer> likecount = new ArrayList<>();
 			map.put("closeopen", saleService.getThreeSaleListOrderbyStartdate());
-			map.put("popular", saleService.getThreeSaleListOrderbyLikecount());
-			System.out.println(2);
+			map.put("popular", popular);
+			for (Iterator<SaleBoardDto> iter = popular.iterator(); iter.hasNext();) {
+				SaleBoardDto saleBoardDto = iter.next();
+				likecount.add(likeBoardService.likeCount(saleBoardDto.getAddress()));
+			}
+			map.put("likecount", likecount);
 			result.object = map;
 			result.data = "success";
 			result.status = true;
