@@ -1,0 +1,9 @@
+.chatroom {
+    .v-application--wrap {
+        display: none;
+    }
+    .v-dialog--active {
+        overflow-y: hidden;
+        overflow-x: hidden;
+    }
+}
