@@ -272,7 +272,10 @@ export default {
                   investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
                 }
                 // 투자금액 axios 보내기
-                
+                axios.get(`${SERVER_URL}/funding/nowfund?campaignId=${investPjt.address}`)
+                  .then(response => {
+                    this.$set(investPjt, "investprice", response.data);
+                  })
                 // 달성률 axios 보내기
                 const fd = new FormData();
                 fd.append("campaignId", investPjt.address)
