@@ -144,14 +144,7 @@ export default {
     }
   },
   mounted() {
-    // 지갑 생성 여부 확인
-    if (this.login) {
-      axios.get(
-        `${SERVER_URL}/0/wallet/toid?oauthid=${this.userInfo.id}`
-        ).then((res) => {
-          console.log('지갑 있나 봅니다');
-          console.log(res);
-        }) 
+    // 지갑 생성 여부 확인 
     if (location.href.includes("pg_token")) {
       //     window.opener.closed = true;
       this.index = location.href.indexOf("pg_token");
@@ -161,10 +154,9 @@ export default {
           `${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${store.state.userInfo.id}`
         )
         .then((res) => {
-          console.log(res);
+          // console.log(res);
         });
       }
-    }
     this.asset = store.state.balance;
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
@@ -196,12 +188,7 @@ export default {
       window.Kakao.Auth.loginForm({
       success: this.GetMe,
       });
-      console.log('아이템s길이'+this.items.length)
-      // if ({ title: '쇼핑 프로젝트', icon: 'mdi-basket' } in this.items) {
-      //   console.log('이미있어요')
-      // } else {
-      //   console.log('없어요')
-      // }
+      console.log('유저인포아이디')
     },
     GetMe(authObj) {
       //토큰값 받아오는 부분
@@ -226,14 +213,13 @@ export default {
         }
         store.commit("setUserInfo", this.userInfo);
         // this.userInfo.email = res.data.email;
-        console.log(this.userInfo);
+        // console.log(this.userInfo);
         // this.$router.push("/");
      });
     },
     onLogout() {
       store.commit("deluserInfo");
       this.login = false;
-      console.log("로그아웃됨");
       this.items = [
           { title: '투자 프로젝트', icon: 'mdi-lightbulb-on-outline' },
           { title: '쇼핑 프로젝트', icon: 'mdi-basket' },
@@ -257,14 +243,14 @@ export default {
       axios
         .post(`${SERVER_URL}/kakaopay/kakaoPay`, fd)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           // router.push(response.data)
           this.next = true;
           this.nexturl = response.data;
           window.location.href = this.nexturl;
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
       },
     },
