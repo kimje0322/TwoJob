@@ -37,7 +37,7 @@
                   <v-avatar style="width: 35px; height: 35px; margin: 0">
                     <img :src="userInfo.img" alt="John" />
                   </v-avatar>
-                  <div style="margin-right: 55px;">
+                  <div style="margin-right: 55px">
                     <h5
                       style="
                         display: inline-block;
@@ -61,21 +61,32 @@
                       <img :src="userInfo.img" alt="John" />
                     </v-avatar>
                     <h5 style="margin-bottom: 10px">{{ userInfo.name }}</h5>
-                    <p v-if="iswallet" class="caption mt-1" style="font-size: 15px !important">
+                    <p
+                      v-if="iswallet"
+                      class="caption mt-1"
+                      style="font-size: 15px !important"
+                    >
                       {{ asset }}원
                     </p>
                     <v-divider class="my-2"></v-divider>
-                    <v-btn depressed rounded text @click="onLogout">
-                      로그아웃
-                    </v-btn>
+                    <router-link to="/">
+                      <v-btn depressed rounded text @click="onLogout">
+                        로그아웃
+                      </v-btn>
+                    </router-link>
                     <v-divider class="my-2"></v-divider>
                     <v-btn
+                      v-if="iswallet"
                       depressed
                       rounded
                       text
                       @click.stop="chargeDialog = true"
                     >
                       충전하기
+                    </v-btn>
+
+                    <v-btn v-else depressed rounded text @click="onWallet">
+                      지갑생성
                     </v-btn>
                     <!-- 충전하기 모달 -->
                     <v-dialog
@@ -137,6 +148,8 @@
 import axios from "axios";
 import store from "../store/index.js";
 import "../../public/css/Navbar.scss";
+import Web3 from "web3";
+import Swal from "sweetalert2";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
@@ -176,40 +189,22 @@ export default {
         `http://j3b102.p.ssafy.io:8080/wallet/toid?oauthid=${store.state.userInfo.id}`
       )
       .then((res) => {
-        console.log(res);
+        console.log(res.data.balance);
         // this.mywallet = res.data.address;
         console.log("여기여기``");
         // console.log(this.mywallet);
         this.iswallet = true;
+        store.commit("setBalance", res.data.balance); 
+        // store.state.balance = res.data.balance;
+        // console.log(store.state.balance + 123123);
       })
       .catch((error) => {
         console.log(error);
       });
 
-    // console.log(location.href);
-    // console.log("이거봐라라ㅏㅏㅏ???");
-    // console.log(location.href.includes("pg_token"));
-    if (location.href.includes("pg_token")) {
-      //     window.opener.closed = true;
-      this.index = location.href.indexOf("pg_token");
-      this.pg_token = location.href.slice(this.index + 9);
-      console.log("pg_token 이다ㅏㅏ");
-      console.log(this.pg_token);
-      //아래와 같은 코드가 필요
-      //if(this.index!=-1){
-      console.log("충전할 금액은");
-      console.log(store.state.charge);
-      console.log(store.state.userInfo.id);
-      axios
-        .get(
-          `${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${store.state.userInfo.id}`
-        )
-        .then((res) => {
-          console.log(res);
-        });
-      //}
-    }
+    // console.log("네브바 콘솔" + store.state.balance);
     this.asset = store.state.balance;
+    console.log(this.asset);
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.login = store.state.isSigned;
@@ -219,6 +214,38 @@ export default {
     }
   },
   methods: {
+    onWallet() {
+      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
+
+      var Accounts = require("web3-eth-accounts");
+      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
+      var result = web3.eth.accounts.create();
+      console.log(accounts);
+      console.log(result);
+
+      store.commit("setAddress", result.address);
+
+      const fd = new FormData();
+      fd.append("accessToken", store.state.accessToken);
+      fd.append("address", store.state.address);
+      fd.append("privatekey", result.privateKey);
+      axios.post(`${SERVER_URL}/wallet/regist`, fd).then((res) => {
+        console.log("wow!!success!!");
+        console.log(res);
+        console.log(fd);
+        if (res.data == 401) {
+          store.state.isSigned = false;
+        } else if (res.data == "success") {
+          Swal.fire({
+            icon: "success",
+            title: "지갑 생성 성공",
+            text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
+            confirmButtonText: "확인",
+          });
+        }
+      });
+    },
+
     onchargebox() {
       this.openbox = trueenbox = !this.openbox;
     },
@@ -234,11 +261,7 @@ export default {
       axios
         .post(`${SERVER_URL}/kakaopay/kakaoPay`, fd)
         .then((response) => {
-          console.log(response);
-          // router.push(response.data)
           this.next = true;
-          console.log("이건 넥스트");
-          console.log(this.next);
           this.nexturl = response.data;
           window.location.href = this.nexturl;
         })
@@ -275,7 +298,7 @@ export default {
         }
         store.commit("setUserInfo", this.userInfo);
         // this.userInfo.email = res.data.email;
-        console.log("이게뭐냐면");
+        console.log("이건 userinfo내용");
         console.log(this.userInfo);
         // this.$router.push("/");
       });
