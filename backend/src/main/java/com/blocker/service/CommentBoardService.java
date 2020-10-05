@@ -21,4 +21,12 @@ public class CommentBoardService {
 	public List<CommentBoardDto> getAllComment(String address) {
 		return commentBoardRepository.findAllCommentsByAddress(address);
 	}
+	
+	public CommentBoardDto getcomment(String address, String userid) {
+		return commentBoardRepository.getCommentByAddressAndUserid(address, userid);
+	}
+	
+	public int deleteComment(int num) {
+		return commentBoardRepository.deleteCommentByNum(num);
+	}
 }
