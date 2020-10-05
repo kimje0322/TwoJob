@@ -49,7 +49,7 @@
                             <a href="/myinvestpjt" class="pjt_a">
                               <span class="pjt_span">생성한 프로젝트</span>
                               <h2 style="margin-top: 20px">
-                                XX
+                                {{ investnum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
                             </a>
@@ -61,7 +61,7 @@
                             <a href="#" class="pjt_a">
                               <span class="pjt_span">참여한 프로젝트</span>
                               <h2 style="margin-top: 20px">
-                                XX
+                                {{ shoppingnum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
                             </a>
@@ -138,13 +138,14 @@
                           >
                             <i class="fas fa-comments"></i>
                           </span>
-                          <router-link
+                          <!-- <router-link
                             to="/chat"
                             style="text-decoration: none; color: black"
-                            ><span style="font-size: 18px" @click="onChat()"
-                              >채팅 목록</span
-                            ></router-link
+                            > -->
+                          <span style="font-size: 18px" @click="onChat()"
+                            >채팅 목록</span
                           >
+                          <!-- </router-link -->
                         </div>
                       </div>
                     </div>
@@ -232,7 +233,9 @@ import Navbar from "../../components/Navbar.vue";
 import "@/../public/css/Mypage.scss";
 import Web3 from "web3";
 import Swal from "sweetalert2";
+import ChatRoom from "@/views/mypage/ChatRoom.vue";
 
+// const SERVER_URL = "https://www.twojob.ga/api";
 const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
@@ -294,40 +297,49 @@ export default {
   },
   components: {
     Navbar,
+    ChatRoom,
   },
   mounted() {
+    var idx = window.location.href.indexOf("mypage");
+    console.log(idx);
+    var pageid = window.location.href.substring(
+      idx + 7,
+      window.location.href.length - 1
+    );
+    console.log(pageid);
+    console.log(pageid + "asdfadsddd");
+
+    const fd = new FormData();
+    fd.append("userid", pageid);
+    console.log("pageid" + pageid)
+    axios.post(`${SERVER_URL}/util/userinfo`, fd).then((res) => {
+      console.log("성공인가??");
+      console.log(res)
+    });
+
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
+    console.log("이건 유저 발란스 값" + this.userbalance);
 
+    // 거래내역
     // axios
-    //   .get(
-    //     `http://j3b102.p.ssafy.io:8080/wallet/toid?oauthid=${store.state.userInfo.id}`
-    //   )
-    //   .then((res) => {
-    //     console.log(res);
-    //     this.mywallet = res.data.address;
-    //     console.log("여기여기``");
-    //     console.log(this.mywallet);
-    //     this.iswallet = true;
-    //     // store.state.iswallet = true;
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    // .get(`http://j3b102.p.ssafy.io:8080/mypage/tojalist`)
 
     axios
-      .get(
-        `http://j3b102.p.ssafy.io:8080/mypage/myproject?oauthId=${store.state.userInfo.id}`
-      )
+      .get(`${SERVER_URL}/mypage/myproject?oauthId=${store.state.userInfo.id}`)
       .then((res) => {
         console.log(store.state.userInfo.id);
         console.log(res);
         console.log("성공");
+        this.investnum = res.data.createNum;
+        this.shoppingnum = res.data.saleNum;
       });
   },
   data() {
     return {
+      investnum: "",
+      shoppingnum: "",
       iswallet: true,
       chatroom: false,
       userimg: "",

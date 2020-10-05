@@ -39,14 +39,27 @@
                       max-height="600px"
                       style="margin: auto"
                     >
-                      <v-img height="250" :src="item.picture"></v-img>
-                      <v-card-title style="font-weight: 300; margin: auto">
+                      <router-link
+                        :to="{
+                          name: 'InvestDetail',
+                          params: { address: item.address },
+                        }"
+                      >
+                        <v-img height="250" :src="item.picture"></v-img>
+                      </router-link>
+                      <v-card-title
+                        style="
+                          font-weight: 600;
+                          margin: auto;
+                          color: rgba(0, 0, 0, 0.87);
+                          font-family: BPreplayExtended;
+                        "
+                      >
                         <p v-if="item.pjtname.length > 6">
-                            {{ item.pjtname.substring(0, 8) }} ...
+                          {{ item.pjtname.substring(0, 4) }} ...
                         </p>
                         <p v-else>
-                        {{ item.pjtname }}
-
+                          {{ item.pjtname }}
                         </p>
                         <div style="margin-left: auto">
                           <!-- <v-chip class="projectBadge"
@@ -63,8 +76,17 @@
                         </div> -->
                       </v-card-title>
                       <!-- max-height: 120px -->
-                      <v-card-text style="">
-                        <div style="margin-bottom: 15px">
+                      <v-card-text style="height: 70px">
+                        <div
+                          style="
+                            margin-bottom: 10px;
+                            font-size: 0.875rem;
+                            font-weight: 400;
+                            line-height: 1.375rem;
+                            letter-spacing: 0.0071428571em;
+                            color: rgb(0, 0, 0, 0.6);
+                          "
+                        >
                           {{ item.onelineintro }}
                         </div>
                         <!-- <div style="color: black">
@@ -109,6 +131,7 @@ import Swal from "sweetalert2";
 import "../../../public/css/MyInvestPjt.scss";
 
 const SERVER_URL = "https://www.twojob.ga/api";
+// const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 // let today = new Date();
 
@@ -135,30 +158,7 @@ export default {
       shopplinglikelst: [],
     };
   },
-  methods: {
-    onChangeImages(event) {
-      this.uploadimg = true;
-      console.log(event);
-      this.file = event.target.files[0];
-      var formData = new FormData();
-      formData.append("img", this.file);
-      axios
-        .post(`${SERVER_URL}/investment/changePath`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((response) => {
-          const cutUrl = response.data.substr(18, response.data.length - 17);
-          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
-          this.imgPath = imgUrl;
-        });
-    },
-    onClickImageUpload() {
-      this.$refs.imageInput.$el.click();
-    },
-    onDeleteImg() {
-      this.uploadimg = false;
-    },
-  },
+  methods: {},
   components: {
     Navbar,
   },
@@ -166,9 +166,8 @@ export default {
     //  남은 기간
     // this.today = new Date();
     // this.today.setDate()
-    // this.today = 
+    // this.today =
 
-    
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
@@ -176,24 +175,20 @@ export default {
 
     const fd = new FormData();
     fd.append("userid", store.state.userInfo.id);
-    axios
-      .post(`http://j3b102.p.ssafy.io:8080/mypage/likelist`, fd)
-      .then((response) => {
-        console.log("여기요!");
-        console.log(response);
+    axios.post(`${SERVER_URL}/mypage/likelist`, fd).then((response) => {
+      console.log("여기요!");
+      console.log(response);
 
-        this.investlikelst = response.data.object.investmentList;
-        this.shopplinglikelst = response.data.object.saleboardList;
-        console.log("investlikelst");
-        console.log(this.investlikelst);
-        console.log(this.shopplinglikelst);
-      });
+      this.investlikelst = response.data.object.investmentList;
+      this.shopplinglikelst = response.data.object.saleboardList;
+      console.log("investlikelst");
+      console.log(this.investlikelst);
+      console.log(this.shopplinglikelst);
+    });
   },
 
   computed: {},
-  method: {
-
-  },
+  method: {},
   watch: {
     date1(val) {
       this.dateFormatted1 = this.formatDate(this.date1);
