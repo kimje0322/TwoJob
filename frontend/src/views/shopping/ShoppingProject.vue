@@ -31,7 +31,8 @@
           <!-- 카테고리 for문 -->
           <v-col v-for="(category, i) in categoryList" :key="i" cols="12" sm="1">
             <v-card
-              class="pa-2"
+              @click="onCategory(category.key)"
+              class="pa-2 categoryCard"
               outlined
               tile
             >
@@ -44,18 +45,15 @@
     </div>
     <!-- 필터 -->
     <div class="filterBox">
-      <!-- 상태 -->
       <div style="display: inline-block; margin-right: 2%">
-        <!-- 1 -->
         <v-select
-          :items="state"
-          label="상태"
+          :items="filter"
+          label="정렬"
           outlined
           hide-details
-          v-model="nowstate"
-          @click="openState"
-          :class="{checkstate: checkstate}"
           class="origin"
+          v-model="clickfilter"
+          @change="onfilter()"
         ></v-select>
       </div>
       <div style="width: 150px; display: inline-block; float: right">
@@ -72,17 +70,6 @@
           <span>개의 프로젝트가 있습니다.</span>
         </div>
         <div style="width: 100px; display: inline-block; float: right;">
-          <!-- 2 -->
-          <v-select
-            :items="filter"
-            hide-details
-            label="최신순"
-            single-line
-            @click="openFilter"
-            v-model="nowfilter"
-            append-icon="mdi-arrow-down-drop-circle-outline"
-            class="filter"
-          ></v-select>
         </div>
       </div>
       <div style="padding: 1% 0">
@@ -132,7 +119,10 @@ export default {
   },
   data() {
     return {
+      // page
       page: 0,
+      totalpage: 0,
+      // 프로젝트
       shoppingList: [],
       categoryList: [
         { icon: "book-multiple-outline", name: "전체", key: "all" },
@@ -146,35 +136,11 @@ export default {
         { icon: "book-open-variant", name: "책", key: "book" },
         { icon: "violin", name: "악기", key: "instrument" },
       ],
-      items: [
-        {
-          src: "https://image.freepik.com/free-photo/_93675-87338.jpg",
-        },
-        {
-          src:
-            "https://lh3.googleusercontent.com/proxy/eEAKz6kNc0gXbYyQR5AM2PFZQYoKepaO4JbqZAjJWtbGtTPvBVfh_2sTRVlj6Woh-UIHNphyKm9bIdkz5va1p2KKywJyl7Ed4872B5o9yQ",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green002/2019/0430/20190430185646591_32703.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
-        },
-      ],
-      // 상태
-      nowstate: "",
-      checkstate: false,
-      openstate: false,
-      state: [
-        "전체 프로젝트",
-        "진행중인 프로젝트",
-        "종료된 프로젝트",
-      ],
+      nowcategory: [],
       // 필터
       nowfilter: "",
-      openfilter: false,
-      filter: ["최신순", "인기순","낮은 가격순, 높은 가격순"],
+      clickfilter: "",
+      filter: ["최신순", "인기순"],
     };
   },
   watch: {
@@ -187,8 +153,13 @@ export default {
       }
     },
   },
+  mounted() {
+    // 카테고리
+    $('.all').addClass('active')
+    this.initAxios()
+  },
   created() {
-    axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}`)
+    axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}?categoryfilter={}&orderOption={}`)
       .then(response => {
         this.shoppingList = response.data.object
         // console.log(this.shoppingList)
@@ -198,34 +169,114 @@ export default {
       })
   },
   methods: {
-    openState() {
-      this.openstate = !this.openstate;
-      if (this.openstate) {
-        this.nowstate = "";
-        $(".v-menu").css("display", "block");
+    initAxios() {
+    const fd = new FormData();
+    fd.append("orderOption", 0);
+    fd.append("categoryfilter", "");
+    axios
+      .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}rOption=${this.nowfilter}`)
+      .then((response) => {
+        console.log(response);
+        if (response.data.data == "success") {
+          this.investProjects = response.data.object;
+          this.totalpage = this.investProjects[0].totalpage;
+          this.investProjects.forEach((investPjt) => {
+            // 마감일
+            const day = investPjt.deadLine.substring(8, 10);
+            let today = new Date();
+            today.setDate(day - today.getDate());
+            this.$set(investPjt, "lastday", today.getDate());
+            // 제목
+            if (investPjt.pjtName.length > 8) {
+              investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    filterAxios() {
+      const fd = new FormData();
+      fd.append("orderOption", this.nowfilter);
+      if (this.nowcategory) {
+        this.nowcategory.forEach((category) => {
+          console.log(category);
+          fd.append("categoryfilter", category);
+        });
       } else {
-        $(".v-menu").css("display", "none");
+        fd.append("categoryfilter", "");
       }
+      axios
+        .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
+        .then((response) => {
+          console.log(response);
+          if (response.data.data == "success") {
+            this.investProjects = response.data.object;
+            this.totalpage = this.investProjects[0].totalpage;
+            this.investProjects.forEach((investPjt) => {
+              // 마감일
+              const day = investPjt.deadLine.substring(8, 10);
+              let today = new Date();
+              today.setDate(day - today.getDate());
+              this.$set(investPjt, "lastday", today.getDate());
+              // 제목
+              if (investPjt.pjtName.length > 8) {
+                investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
+              }
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     filterInit() {
-      this.nowstate = ''
-      this.checkstate = false
-      this.opensate = false
-      this.nowrate = ""
-      this.checkrate = false
-      this.longrate = false
-      this.openrate = false
-    },
-    openFilter() {
-      this.openfilter = !this.openfilter;
-      if (this.openfilter) {
-        this.nowfilter = "";
-        $(".v-menu").css("display", "block");
-      } else {
-        $(".v-menu").css("display", "none");
-      }
+      // 카테고리 초기화
+      this.nowcategory.forEach((key) => {
+        $(`.${key}`).removeClass("active");
+      });
+      this.nowcategory = [];
+      $(".all").addClass("active");
+      // 필터 초기화
+      (this.clickfilter = ""), (this.nowfilter = 0);
+      this.initAxios()
     },
   },
+    onCategory(key) {
+      // 카테고리
+      if (key == "all") {
+        this.nowcategory.forEach((key) => {
+          $(`.${key}`).removeClass("active");
+        });
+        this.nowcategory = [];
+        $(".all").addClass("active");
+      } else {
+        // 제거
+        if (this.nowcategory.indexOf(key) >= 0) {
+          const idx = this.nowcategory.indexOf(key);
+          this.nowcategory.splice(idx, 1);
+          $(`.${key}`).removeClass("active");
+        } else {
+          this.nowcategory.push(key);
+          $(`.${key}`).addClass("active");
+          $(".all").removeClass("active");
+        }
+      }
+      this.filterAxios()
+    },
+    onfilter() {
+      // 필터
+      if (this.clickfilter == "") {
+        this.nowfilter = 0;
+      } else if (this.clickfilter == "최신순") {
+        this.nowfilter = 1;
+      } else if (this.clickfilter == "인기순") {
+        this.nowfilter = 2;
+      }
+      this.filterAxios()
+    },
 };
 </script>
 
