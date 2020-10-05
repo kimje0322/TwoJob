@@ -21,7 +21,7 @@ public interface InvestmentRepository extends JpaRepository<InvestmentDto, Strin
 //	List<InvestmentDto> findAllByuseridWithoutPageNav(String userid);
 
 	Optional<InvestmentDto> findInvestmentDtoByAddress(String address);
-	@Query(value = "select * from investmentboard order by createat desc", countQuery = "select count(*) from investmentboard order by createat", nativeQuery = true)
+	@Query(value = "select * from investmentboard order by createat", countQuery = "select count(*) from investmentboard order by createat", nativeQuery = true)
 	Page<InvestmentDto> findAllInvestmentDtoOrderbyCreatedat(Pageable page);
 
 	@Query(value = "select * from investmentboard i order by (select count(*) from likeboard where address = i.address)", nativeQuery = true)
