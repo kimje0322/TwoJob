@@ -11,21 +11,21 @@
           </div><hr>
         </div>
       </div>
-    
+    <!-- expand-on-hover -->
   <!-- drawer -->
   <v-card>
     <v-navigation-drawer
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-      expand-on-hover
+      
     >
       <div v-if="!login">
         <v-list-item class="px-2">
           <v-list-item-avatar>
             <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
           </v-list-item-avatar>
-          <v-list-item-title @click="onLogin" class="ml-3">로그인</v-list-item-title>
+          <v-list-item-title @click="onLogin" class="loginBtn ml-3">로그인</v-list-item-title>
           <v-btn
             icon
             @click.stop="mini = !mini"
@@ -40,19 +40,17 @@
             <v-img :src="userInfo.img"></v-img>
           </v-list-item-avatar>
           <!-- <div style="display:flex"> -->
-          <v-list-item-title @click="onLogin" class="ml-3">{{ userInfo.name }}님</v-list-item-title>
+          <v-list-item-title class="ml-3">{{ userInfo.name }}님</v-list-item-title>
             <v-btn
               class="chargeBtn ma-2 px-1 py-1 mr-2 mt-2"
               outlined
             >
             <!-- <i class="fas fa-coins"></i>   -->
-            <v-icon class="mr-1" @click.stop="chargeDialog = true">mdi-plus-circle-outline</v-icon>
+            <v-icon class="mr-1" @click="chargeDialog = true">mdi-plus-circle-outline</v-icon>
              충전
             </v-btn>
 
         <!-- 충전하기 모달 -->
-        <v-menu bottom min-width="200px" rounded offset-y>
-
           <v-dialog
             v-model="chargeDialog"
             scrollable
@@ -75,7 +73,6 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-menu>
         </v-list-item>
       </div>
 
@@ -169,8 +166,8 @@ export default {
   },
   updated() {
     if (this.login && this.items.length == 2) {
-        this.items.push({ title: '마이페이지', icon: 'mdi-logout-variant' },)
-        this.items.push({ title: '로그아웃', icon: 'mdi-account' },)
+        this.items.push({ title: '마이페이지', icon: 'mdi-account'},)
+        this.items.push({ title: '로그아웃', icon: 'mdi-logout-variant' },)
     }
   },
   methods: {
@@ -297,6 +294,9 @@ export default {
 }
 .divider {
   margin-top: 10px;
+}
+.loginBtn:hover {
+  cursor: pointer;
 }
 
 </style>
