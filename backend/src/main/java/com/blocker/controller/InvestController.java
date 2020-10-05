@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -469,6 +470,19 @@ public class InvestController {
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
+	}
+
+	@DeleteMapping("/deletecomment")
+	@ApiOperation(value = "댓글 삭제")
+	public void deleteComment(@RequestParam int num) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			int data = commentBoardService.deleteComment(num);
+			System.out.println("data====>"+data);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("댓글 삭제 도중 error발생");
+		} 
 	}
 
 	@ExceptionHandler(Exception.class)
