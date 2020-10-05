@@ -26,7 +26,8 @@
           <!-- 카테고리 for문 -->
           <v-col v-for="(category, i) in categoryList" :key="i" cols="12" sm="1">
             <v-card
-              @click="onCategory(category.key)"
+              @click="onCategory(category.name,)"
+              :class="category.name"
               class="pa-2 categoryCard"
               outlined
               tile
@@ -67,13 +68,13 @@
         <div style="width: 100px; display: inline-block; float: right;">
         </div>
       </div>
-      <div style="padding: 1% 0">
+      <div v-if="ispjt" style="padding: 1% 0">
         <div v-for="(item, i) in shoppingList" :key="i" 
           style="display: inline-block; width: 30%; margin-bottom: 30px;"
         > 
           <router-link :to="{name: 'ShoppingDetail', params: { address : item.address }}">
             <v-card class="my-12 pjtCard" height="436px" max-width="320" style="margin: auto">
-              <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>   
+              <v-img height="250" :src="item.picture"></v-img>   
               <p class="mt-2 mb-1 ml-3">{{item.compname}}</p>
               <v-card-title style="font-weight: 600; margin: auto">
                 {{item.pjtname}}
@@ -96,6 +97,10 @@
           </router-link>
         </div>
       </div>
+      <div v-else>
+        <h5>쇼핑 프로젝트 검색 결과가 없습니다.</h5>
+      </div>
+
     </div>
   </div>
 </template>
@@ -118,6 +123,7 @@ export default {
       page: 0,
       totalpage: 0,
       // 프로젝트
+      ispjt: false,
       shoppingList: [],
       categoryList: [
         { icon: "book-multiple-outline", name: "전체", key: "all" },
@@ -150,31 +156,34 @@ export default {
   },
   mounted() {
     // 카테고리
-    $('.all').addClass('active')
+    $('.전체').addClass('active')
     this.initAxios();
   },
   methods: {
     initAxios() {
-    const fd = new FormData();
-    fd.append("orderOption", 0);
-    fd.append("categoryfilter", "");
-    axios
+      const fd = new FormData();
+      fd.append("orderOption", 0);
+      fd.append("categoryfilter", "");
+      axios
       .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
       .then((response) => {
-        console.log(response);
         if (response.data.data == "success") {
-          this.shoppingList = response.data.object;
-          console.log('이건 쇼핑리스트')
-          console.log(this.shoppingList)
-          this.totalpage = this.investProjects[0].totalpage;
-          this.shoppingList.forEach((shoppingPjt) => {
-            // 제목
-            if (Pjt.pjtname.length > 8) {
-              Pjt.pjtname = Pjt.pjtame.substring(0, 10) + "...";
+            this.shoppingList = response.data.object;
+            if(this.shoppingList.length > 0) {
+              this.isPjt = true
+              this.shoppingList = response.data.object;
+              this.totalpage = this.shoppingList[0].totalpage;
+              this.shoppingList.forEach((shoppingPjt) => {
+              // 제목
+              if (shoppingPjt.pjtname.length > 8) {
+                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
+              }
+            });
+            } else {
+              this.ispjt = false
             }
-          });
-        }
-      })
+          }
+        })
       .catch((error) => {
         console.log(error);
       });
@@ -182,27 +191,32 @@ export default {
     filterAxios() {
       const fd = new FormData();
       fd.append("orderOption", this.nowfilter);
-      if (this.nowcategory) {
+      if (this.nowcategory.length > 0 ) {
         this.nowcategory.forEach((category) => {
-          console.log(category);
+          // console.log(Boolean(this.nowcategory))
           fd.append("categoryfilter", category);
         });
       } else {
         fd.append("categoryfilter", "");
       }
       axios
-        .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
+        .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
         .then((response) => {
-          console.log(response);
           if (response.data.data == "success") {
             this.shoppingList = response.data.object;
-            this.totalpage = this.investProjects[0].totalpage;
-            this.shoppingList.forEach((shoppingPjt) => {
+            if(this.shoppingList.length > 0) {
+              this.ispjt = true
+              this.shoppingList = response.data.object;
+              this.totalpage = this.shoppingList[0].totalpage;
+              this.shoppingList.forEach((shoppingPjt) => {
               // 제목
               if (shoppingPjt.pjtname.length > 8) {
                 shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
               }
             });
+            } else {
+              this.ispjt = false
+          }
           }
         })
         .catch((error) => {
@@ -215,29 +229,30 @@ export default {
         $(`.${key}`).removeClass("active");
       });
       this.nowcategory = [];
-      $(".all").addClass("active");
+      $(".전체").addClass("active");
       // 필터 초기화
       (this.clickfilter = ""), (this.nowfilter = 0);
+      this.openfilter = false;
       this.initAxios()
     },
-    onCategory(key) {
+    onCategory(name) {
       // 카테고리
-      if (key == "all") {
-        this.nowcategory.forEach((key) => {
-          $(`.${key}`).removeClass("active");
+      if (name == "전체") {
+        this.nowcategory.forEach((name) => {
+          $(`.${name}`).removeClass("active");
         });
         this.nowcategory = [];
-        $(".all").addClass("active");
+        $(".전체").addClass("active");
       } else {
         // 제거
-        if (this.nowcategory.indexOf(key) >= 0) {
-          const idx = this.nowcategory.indexOf(key);
+        if (this.nowcategory.indexOf(name) >= 0) {
+          const idx = this.nowcategory.indexOf(name);
           this.nowcategory.splice(idx, 1);
-          $(`.${key}`).removeClass("active");
+          $(`.${name}`).removeClass("active");
         } else {
-          this.nowcategory.push(key);
-          $(`.${key}`).addClass("active");
-          $(".all").removeClass("active");
+          this.nowcategory.push(name);
+          $(`.${name}`).addClass("active");
+          $(".전체").removeClass("active");
         }
       }
       this.filterAxios()
@@ -246,10 +261,15 @@ export default {
       // 필터
       if (this.clickfilter == "") {
         this.nowfilter = 0;
+        console.log('nowfilter0')
       } else if (this.clickfilter == "최신순") {
         this.nowfilter = 1;
+        console.log('nowfilter1')
+
       } else if (this.clickfilter == "인기순") {
         this.nowfilter = 2;
+        console.log('nowfilter2')
+
       }
       this.filterAxios()
     },

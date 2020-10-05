@@ -164,7 +164,7 @@
                   <div class="row">
                     <div class="col-md-4">
                       <i
-                        class="fas fa-comment-dots fa-6x my-3"
+                        class="fas fa-comment-dots fa-5x my-3"
                         style="color: grey"
                       ></i
                       ><br />
@@ -190,7 +190,7 @@
                     </div>
                     <div class="col-md-4 px-3">
                       <i
-                        class="fas fa-star fa-6x my-3"
+                        class="fas fa-star fa-5x my-3"
                         style="color: #26c6da"
                       ></i
                       ><br />
@@ -217,7 +217,7 @@
                     </div>
                     <div class="col-md-4 px-3">
                       <i
-                        class="fas fa-file-signature fa-6x my-3 ml-2"
+                        class="fas fa-file-signature fa-5x my-3 ml-2"
                         style="color: #29b6f6"
                       ></i
                       ><br />
