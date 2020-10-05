@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.blocker.dto.InvestmentDto;
+import java.lang.String;
 
 @Repository
 public interface InvestmentRepository extends JpaRepository<InvestmentDto, String> {
@@ -20,4 +21,5 @@ public interface InvestmentRepository extends JpaRepository<InvestmentDto, Strin
 //	List<InvestmentDto> findAllByuseridWithoutPageNav(String userid);
 
 	Optional<InvestmentDto> findInvestmentDtoByAddress(String address);
+	List<InvestmentDto> findByIsfinishOrderByDeadlineAsc(Boolean flag);
 }
