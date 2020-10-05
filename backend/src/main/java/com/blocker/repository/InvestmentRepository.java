@@ -24,7 +24,7 @@ public interface InvestmentRepository extends JpaRepository<InvestmentDto, Strin
 	@Query(value = "select * from investmentboard order by createat", countQuery = "select count(*) from investmentboard order by createat", nativeQuery = true)
 	Page<InvestmentDto> findAllInvestmentDtoOrderbyCreatedat(Pageable page);
 
-	@Query(value = "select * from investmentboard i order by (select count(*) from likeboard where address = i.address)", nativeQuery = true)
+	@Query(value = "select * from investmentboard i order by (select count(*) from likeboard where address = i.address) desc", nativeQuery = true)
 	Page<InvestmentDto> findAllInvestmentDtoOrderbyLikecount(Pageable page);
 
 	@Query(value = "select * from investmentboard order by deadline limit 3", nativeQuery = true)
