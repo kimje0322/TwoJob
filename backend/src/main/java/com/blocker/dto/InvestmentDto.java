@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "investmentboard")
-public class InvestmentDto {
+public class InvestmentDto{
 	@Id
 	String address;
 

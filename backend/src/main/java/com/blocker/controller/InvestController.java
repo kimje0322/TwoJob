@@ -296,7 +296,6 @@ public class InvestController {
 				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
 					BoardCategoryMapping nextiter = iter.next();
 					String investaddress = nextiter.getInvestaddress();
-					System.out.println("investaddress=====>" + investaddress);
 					Optional<InvestmentDto> investmentDto = investmentService.getInvestment(investaddress);
 					if (investmentDto.isPresent()) {
 						InvestmentResponse investmentResponse = new InvestmentResponse();
@@ -485,6 +484,28 @@ public class InvestController {
 		} 
 	}
 
+	@GetMapping("/curation")
+	@ApiOperation(value = "마감임박과 인기순 3개씩 보내주는 함수")
+	public Object curation() {
+		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
+		try {
+			map.put("closedeadlines", investmentService.getThreeInvestmentListOrderbyDeadline());
+			map.put("popular", investmentService.getThreeInvestmentListOrderbyLikecount());
+			result.object = map;
+			result.data = "success";
+			result.status = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("curation error");
+			result.object = null;
+			result.data = "fail";
+			result.status = false;
+		} finally {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
+	
 	@ExceptionHandler(Exception.class)
 	public void nullex(Exception e) {
 		System.err.println("invest 부분에서 " + e.getClass());

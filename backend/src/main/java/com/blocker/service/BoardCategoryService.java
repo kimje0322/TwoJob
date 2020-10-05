@@ -28,4 +28,16 @@ public class BoardCategoryService {
 			return boardCategoryRepository.findAllInvestmentDtoWithCategoryOrderbyLikeCount(category, category.size(), pageRequest);
 		}
 	}
+	
+//	public Page<BoardCategoryMapping> getAllSaleBoardListWithCategory(int page, List<String> category,int orderOption){
+//		PageRequest pageRequest = PageRequest.of(page, 9);
+//		
+//		if(orderOption ==0) {
+//			return 
+//		}else if(orderOption==1) {
+//			return
+//		}else {
+//			return
+//		}
+//	}
 }
