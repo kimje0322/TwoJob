@@ -49,7 +49,7 @@
       눌러봐
     </button> -->
     <!-- 홈페이지 설명 -->
-    <div class="home_info">
+    <!-- <div class="home_info">
       <div class="home_div">
         <div style="display: inline-block; flex: 1">
           <i class="fab fa-medapps fa-7x"></i>
@@ -59,7 +59,7 @@
             투잡러들의 투잡현황!
             <br />기대 이상의 수익률!
           </h3>
-          <!-- <h3 class="info_text">기대 이상의 수익률!</h3> -->
+          <h3 class="info_text">기대 이상의 수익률!</h3>
         </div>
         <div class="info_right" style="flex: 4">
           <div style="text-align: center">
@@ -84,7 +84,7 @@
       </div>
       <div class="home_div">
         <div style="display: inline-block; flex: 1">
-          <!-- <i class="fab fa-medapps fa-7x"></i> -->
+          <i class="fab fa-medapps fa-7x"></i>
           <i class="fas fa-lock fa-5x"></i>
         </div>
         <div style="flex: 7; margin-left: 10px">
@@ -92,7 +92,7 @@
             소중한 자산 보안은
             <br />블록체인 기술로!
           </h3>
-          <!-- <h3 class="info_text">기대 이상의 수익률!</h3> -->
+          <h3 class="info_text">기대 이상의 수익률!</h3>
         </div>
 
         <div class="info_right" style="flex: 4">
@@ -115,7 +115,7 @@
             <h1>1000</h1>
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- <div class="home_div">
         <div style="display: inline-block; flex: 1">
           <i class="fas fa-desktop fa-4x"></i>
