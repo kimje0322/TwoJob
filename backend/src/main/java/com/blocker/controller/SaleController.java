@@ -1,6 +1,7 @@
 package com.blocker.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -228,6 +229,7 @@ public class SaleController {
 					}
 				}
 			}
+			Collections.reverse(resultDatalist);
 			result.data = "success";
 			result.object = resultDatalist;
 			result.status = true;
