@@ -76,7 +76,7 @@
                             </a>
                           </li>
                         </ul>
-                        <ul class="open_pjt">
+                        <!-- <ul class="open_pjt">
                           <li class="opjt_li">
                             <a href="/writeinvest" class="opjt_a"
                               >투자 프로젝트 생성</a
@@ -85,7 +85,7 @@
                           <li class="opjt_li">
                             <a href="#" class="opjt_a">판매 프로젝트 생성</a>
                           </li>
-                        </ul>
+                        </ul> -->
                       </div>
                       <div style="margin-top: 15px">
                         <div
@@ -218,7 +218,7 @@
                             </a>
                           </li>
                         </ul>
-                        <ul class="open_pjt">
+                        <!-- <ul class="open_pjt">
                           <li class="opjt_li">
                             <a href="/writeinvest" class="opjt_a"
                               >투자 프로젝트 생성</a
@@ -227,7 +227,7 @@
                           <li class="opjt_li">
                             <a href="#" class="opjt_a">판매 프로젝트 생성</a>
                           </li>
-                        </ul>
+                        </ul> -->
                       </div>
                       <div style="margin-top: 15px">
                         <div
@@ -378,7 +378,7 @@ import Swal from "sweetalert2";
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
 // import ChatRoom from '../../components/ChatRoom.vue'
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   methods: {

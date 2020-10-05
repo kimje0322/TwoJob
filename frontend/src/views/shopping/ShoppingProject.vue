@@ -124,7 +124,7 @@ import "../../../public/css/ShoppingHome.scss";
 import Navbar from "../../components/Navbar.vue";
 import axios from "axios";
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
@@ -191,7 +191,7 @@ export default {
     axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}`)
       .then(response => {
         this.shoppingList = response.data.object
-        console.log(this.shoppingList)
+        // console.log(this.shoppingList)
       })
       .catch(error => {
         console.log(error)

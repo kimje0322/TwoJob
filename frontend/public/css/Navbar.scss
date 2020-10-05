@@ -1,10 +1,10 @@
 .Navbar {
   .v-dialog--active {
-    top: 3%;
-    position: absolute;
-    left: 68%;
-    width: 25% !important;
-    max-width: unset !important;
+    // top: 3%;
+    // position: absolute;
+    // left: 68%;
+    // width: 25% !important;
+    // max-width: unset !important;
   }
   .v-btn--contained {
     background-color: unset !important;
@@ -12,5 +12,8 @@
   }
   .v-menu {
     display: unset;
+  }
+  .v-application--wrap {
+    min-height: unset;
   }
 }

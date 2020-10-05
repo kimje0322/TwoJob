@@ -26,10 +26,18 @@
       <!-- 투자 글쓰기 메뉴 -->
       <div class="writeMenuBar">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
-          <v-tab v-for="(item, i) in tabs" :key="i" :href="`#tab-${i}`" class="writeMenu">{{ item }}</v-tab>
+          <v-tab
+            v-for="(item, i) in tabs"
+            :key="i"
+            :href="`#tab-${i}`"
+            class="writeMenu"
+            >{{ item }}</v-tab
+          >
           <!-- 투자오픈버튼 -->
           <div class="openbtnBox" @click="openInvestBtn">
-            <v-btn class="openBtn" color="#808080" style>투자 프로젝트 오픈</v-btn>
+            <v-btn class="openBtn" color="#808080" style
+              >투자 프로젝트 오픈</v-btn
+            >
           </div>
           <!-- 프로젝트 정보 창 -->
           <v-tab-item :value="'tab-0'">
@@ -38,7 +46,11 @@
                 <div class="pjtinfo">
                   <p>프로젝트에대한 정보를 정확하게 입력해주세요.</p>
                   <h5>프로젝트명</h5>
-                  <input v-model="title" type="text" placeholder="프로젝트명을 입력해주세요." />
+                  <input
+                    v-model="title"
+                    type="text"
+                    placeholder="프로젝트명을 입력해주세요."
+                  />
                   <h5>프로젝트 한줄 소개</h5>
                   <input
                     v-model="content"
@@ -84,23 +96,29 @@
                     </div>
                   </div>
                   <h5>달성 목표 금액</h5>
-                  <p style="margin: 0 0 5px 10px">마감일 자정까지 목표 금액을 100%달성하셔야만 물품을 판매하실 수 있습니다.</p>
+                  <p style="margin: 0 0 5px 10px">
+                    마감일 자정까지 목표 금액을 100%달성하셔야만 물품을 판매하실
+                    수 있습니다.
+                  </p>
                   <input
                     v-model="targetPrice"
                     @click="removeTargetPrice"
                     type="text"
                     style="width: 35%; text-align: right; font-size: 18px"
                   />
-                  <h5 style="display: inline-block; margin-left: 5px;">원</h5>
+                  <h5 style="display: inline-block; margin-left: 5px">원</h5>
                   <h5>상품 판매 예정 금액</h5>
-                  <p style="margin: 0 0 5px 10px">상품 판매할 예정 금액을 입력해주세요(상품이 여러개이면 대표상품으로 입력해주세요).</p>
+                  <p style="margin: 0 0 5px 10px">
+                    상품 판매할 예정 금액을 입력해주세요(상품이 여러개이면
+                    대표상품으로 입력해주세요).
+                  </p>
                   <input
                     v-model="sellPrice"
                     @click="removeSellPrice"
                     type="text"
                     style="width: 35%; text-align: right; font-size: 18px"
                   />
-                  <h5 style="display: inline-block; margin-left: 5px;">원</h5>
+                  <h5 style="display: inline-block; margin-left: 5px">원</h5>
                   <h5>대표 사진</h5>
                   <!-- v-model="thumbnail" -->
                   <v-file-input
@@ -121,7 +139,8 @@
                       v-for="(value, key) in categoryList"
                       :key="key"
                       @click="checkcategory(value, key)"
-                    >{{value}}</v-btn>
+                      >{{ value }}</v-btn
+                    >
                   </div>
                   <h5>검색용 태그</h5>
                   <div>
@@ -137,7 +156,7 @@
                       deletable-chips
                       @keyup.enter="change"
                       class="searchBarBtn"
-                      style="overflow-y:hidden;"
+                      style="overflow-y: hidden"
                     ></v-combobox>
                   </div>
                 </div>
@@ -171,12 +190,20 @@
                       placeholder="금손님을 소개하는 글을 써주세요."
                     ></textarea>
                     <h5>금손님 소개 사이트</h5>
-                    <input v-model="siteUrl" type="text" placeholder="ex)홈페이지, SNS" />
+                    <input
+                      v-model="siteUrl"
+                      type="text"
+                      placeholder="ex)홈페이지, SNS"
+                    />
                   </div>
                   <!-- 개인사업자/기업 -->
                   <div v-if="business">
                     <h5>회사명</h5>
-                    <input v-model="companyName" type="text" placeholder="회사명을 입력해주세요." />
+                    <input
+                      v-model="companyName"
+                      type="text"
+                      placeholder="회사명을 입력해주세요."
+                    />
                     <h5>금손님 소개</h5>
                     <textarea
                       v-model="introduce"
@@ -187,7 +214,11 @@
                       placeholder="금손님을 소개하는 글을 써주세요."
                     ></textarea>
                     <h5>금손님 소개 사이트</h5>
-                    <input v-model="siteUrl" type="text" placeholder="ex)홈페이지, SNS" />
+                    <input
+                      v-model="siteUrl"
+                      type="text"
+                      placeholder="ex)홈페이지, SNS"
+                    />
                   </div>
                 </div>
               </v-card-text>
@@ -201,12 +232,25 @@
                   <p>프로젝트 내용에 대해 자세히 설명해주세요.</p>
                   <div style="margin-bottom: 1rem">
                     <h5
-                      style="display: inline-block; height: 36px; line-height: 36px; Smargin: 0;"
-                    >투자설명</h5>
+                      style="
+                        display: inline-block;
+                        height: 36px;
+                        line-height: 36px;
+                        smargin: 0;
+                      "
+                    >
+                      투자설명
+                    </h5>
                     <v-btn
                       @click="onSave"
-                      style="float: right; background-color: white; color: rgb(22, 150,245); font-weight: 600"
-                    >저장하기</v-btn>
+                      style="
+                        float: right;
+                        background-color: white;
+                        color: rgb(22, 150, 245);
+                        font-weight: 600;
+                      "
+                      >저장하기</v-btn
+                    >
                   </div>
                   <!-- <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea> -->
                   <editor
@@ -238,7 +282,7 @@ import { Editor } from "@toast-ui/vue-editor";
 import axios from "axios";
 import store from "../../store/index.js";
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 export default {
   components: {
     Navbar,
@@ -318,6 +362,15 @@ export default {
                 );
                 const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
                 callback(imgUrl);
+              })
+              .catch((error) => {
+                Swal.fire({
+                  icon: "warning",
+                  title: "",
+                  text: "사진의 용량이 너무 큽니다.",
+                  confirmButtonText: "닫기",
+                  confirmButtonColor: "#d33",
+                });
               });
           },
         },
@@ -348,30 +401,40 @@ export default {
         this.business = true;
         this.individual = false;
       }
+      this.colorBtn();
     },
-    editortext(val) {
-      if (
-        this.userid &&
-        this.title &&
-        this.content &&
-        this.dateFormatted &&
-        this.targetPrice &&
-        this.sellPrice &&
-        this.picture &&
-        this.checkCategory &&
-        this.tags &&
-        this.select &&
-        this.introduce &&
-        this.editortext
-      ) {
-        $(".openBtn").css("background-color", "rgb(22, 150, 245)");
-        $(".openBtn").css("color", "white");
-      }
-      else{
-        $(".openBtn").css("background-color", "#808080");
-        $(".openBtn").css("color", "white");
-      }
+    // 유효성 검사
+    title() {
+      this.colorBtn();
     },
+    content() {
+      this.colorBtn();
+    },
+    dateFormatted() {
+      this.colorBtn();
+    },
+    targetPrice() {
+      this.colorBtn();
+    },
+    sellPrice() {
+      this.colorBtn();
+    },
+    picture() {
+      this.colorBtn();
+    },
+    checkCategory() {
+      this.colorBtn();
+    },
+    tags() {
+      this.colorBtn();
+    },
+    introduce() {
+      this.colorBtn();
+    },
+    editortext() {
+      this.colorBtn();
+    },
+    // 숫자만 입력 가능
     targetPrice(val) {
       return (this.targetPrice = this.targetPrice.replace(/[^0-9]/g, ""));
     },
@@ -410,17 +473,26 @@ export default {
     onthumbnail(event) {
       var formData = new FormData();
       formData.append("img", event);
-
       axios
         .post(`${SERVER_URL}/investment/changePath`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((response) => {
-          this.picture = response.data;
-          console.log(typeof this.picture);
+          const cutUrl = response.data.substr(18, response.data.length - 17);
+          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+          this.picture = imgUrl;
+          $(".v-file-input__text").text(event.name);
         })
         .catch((error) => {
-          console.log(error);
+          Swal.fire({
+            icon: "warning",
+            title: "",
+            text: "사진의 용량이 너무 큽니다.",
+            confirmButtonText: "닫기",
+            confirmButtonColor: "#d33",
+          }).then((result) => {
+            $(".v-file-input__text").text("다시 입력해주세요.");
+          });
         });
     },
     checkcategory(category, key) {
@@ -440,7 +512,6 @@ export default {
       this.model.forEach((tag) => {
         tags.push(tag.text);
       });
-      // this.$refs.feeditem.searchTag(tags);
     },
     openMenu() {
       this.openMenutab = !this.openMenutab;
@@ -453,6 +524,28 @@ export default {
     onSave() {
       this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
       console.log(this.editortext);
+    },
+    colorBtn() {
+      if (
+        this.userid &&
+        this.title &&
+        this.content &&
+        this.dateFormatted &&
+        this.targetPrice &&
+        this.sellPrice &&
+        this.picture &&
+        this.checkCategory &&
+        this.tags &&
+        this.select &&
+        this.introduce &&
+        this.editortext
+      ) {
+        $(".openBtn").css("background-color", "rgb(22, 150, 245)");
+        $(".openBtn").css("color", "white");
+      } else {
+        $(".openBtn").css("background-color", "#808080");
+        $(".openBtn").css("color", "white");
+      }
     },
     openInvestBtn() {
       if (
@@ -481,6 +574,7 @@ export default {
           reverseButtons: true,
         }).then((result) => {
           if (result.value) {
+            // 백엔드에 저장
             axios
               .post(`${SERVER_URL}/investment/create`, {
                 userid: this.userid,
@@ -499,16 +593,46 @@ export default {
                 editorhtml: this.editortext,
               })
               .then((response) => {
-                console.log(response)
+                console.log(response);
                 if (response.data.data == "Success") {
-                  Swal.fire({
-                    // position: 'top-end',
-                    icon: "success",
-                    title: "",
-                    text: "프로젝트가 성공적으로 오픈되었습니다.",
-                    showConfirmButton: false,
-                    // timer: 1500
-                  });
+                  // 블록체인
+                  const fd = new FormData();
+                  fd.append("accessToken", store.state.accessToken);
+                  fd.append("canpaignId", response.data.object.address);
+                  axios
+                    .post(`${SERVER_URL}/funding/createfunding`, fd)
+                    let timerInterval;
+                    Swal.fire({
+                      title: "투자 프로젝트 오픈중",
+                      html: "<b></b> milliseconds 기다려주세요.",
+                      timer: 10000,
+                      timerProgressBar: true,
+                      onBeforeOpen: () => {
+                        Swal.showLoading();
+                        timerInterval = setInterval(() => {
+                          const content = Swal.getContent();
+                          if (content) {
+                            const b = content.querySelector("b");
+                            if (b) {
+                              b.textContent = Swal.getTimerLeft();
+                            }
+                          }
+                        }, 100);
+                      },
+                      onClose: () => {
+                        clearInterval(timerInterval);
+                      },
+                    })
+                    .then((response) => {
+                      console.log(response);
+                      this.$router.push("/investhome");
+                      Swal.fire({
+                        icon: "success",
+                        title: "",
+                        text: "프로젝트가 성공적으로 오픈되었습니다.",
+                        showConfirmButton: false,
+                      })
+                    });
                 } else {
                   alert("프로젝트 오픈에 실패했습니다.");
                 }

@@ -22,14 +22,26 @@ public class InvestmentService {
 		return investmentRepository.findAllByUserid(pageRequest, userid);
 	}
 
-	public List<InvestmentDto> getAllInvestmentList(int page) {
+	public Page<InvestmentDto> getAllInvestmentList(int page) {
 		PageRequest pageRequest = PageRequest.of(page, 9);
 
-		return investmentRepository.findAll(pageRequest).getContent();
+		return investmentRepository.findAll(pageRequest);
 	}
-	
+
 	public Optional<InvestmentDto> getInvestment(String address) {
 		return investmentRepository.findInvestmentDtoByAddress(address);
 	}
-	
+
+	public Page<InvestmentDto> getAllInvestmentList(int page, int orderOption) {
+		PageRequest pagerequest = PageRequest.of(page, 9);
+		// 최신순
+		if (orderOption == 1) {
+			System.out.println(1);
+			return investmentRepository.findAllInvestmentDtoOrderbyCreatedat(pagerequest);
+		} else {//인기순
+			System.out.println(2);
+			return investmentRepository.findAllInvestmentDtoOrderbyLikecount(pagerequest);
+		}
+	}
+
 }

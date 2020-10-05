@@ -257,9 +257,9 @@ import router from "@/router";
 
 // import Navbar from "../../components/Navbar.vue";
 
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
 
-var sock = new SockJS("http://j3b102.p.ssafy:8080/notice");
+var sock = new SockJS("https://www.twojob.ga/api/notice");
 var ws = Stomp.over(sock);
 var reconnect = 0;
 
@@ -278,7 +278,7 @@ var reconnect = 0;
           if (reconnect++ <= 5) {
             setTimeout(function () {
               console.log("connection reconnect");
-              sock = new SockJS("http://j3b102.p.ssafy.io:8080/notice");
+              sock = new SockJS("https://www.twojob.ga/api/notice");
               ws = Stomp.over(sock);
               connect();
             }, 10 * 1000);
@@ -306,12 +306,11 @@ var reconnect = 0;
             })
           );
         },
-        // this.openChat(this.chatroomid, this.chatusername, this.chatroomid),
         function (error) {
           if (reconnect++ <= 5) {
             setTimeout(function () {
               console.log("connection reconnect");
-              sock = new SockJS("http://j3b102.p.ssafy.io:8080/ws-stomp");
+              sock = new SockJS("https://www.twojob.ga/api/ws-stomp");
               ws = Stomp.over(sock);
               connection();
             }, 10 * 1000);
