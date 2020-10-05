@@ -25,6 +25,8 @@ export default new Vuex.Store({
             walletAddress: null
         },
 
+        pjtwriterid: null,
+
         // 지갑이 있는지 여부
         iswallet: false,
 

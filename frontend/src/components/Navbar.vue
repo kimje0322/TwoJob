@@ -122,7 +122,14 @@
                       </v-card>
                     </v-dialog>
                     <v-divider class="my-2"></v-divider>
-                    <router-link to="/mypage" style="text-decoration: none">
+                    <!-- :to="{
+                          name: 'InvestDetail',
+                          params: { address: item.address },
+                        }" -->
+                    <router-link
+                      :to="{ name: 'Mypage', params: { userid : userInfo.id } }"
+                      style="text-decoration: none"
+                    >
                       <v-btn depressed rounded text> 마이페이지 </v-btn>
                     </router-link>
                   </div>
@@ -186,16 +193,14 @@ export default {
   },
   mounted() {
     axios
-      .get(
-        `${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`
-      )
+      .get(`${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`)
       .then((res) => {
         console.log(res.data.balance);
         // this.mywallet = res.data.address;
         console.log("여기여기``");
         // console.log(this.mywallet);
         this.iswallet = true;
-        store.commit("setBalance", res.data.balance); 
+        store.commit("setBalance", res.data.balance);
         // store.state.balance = res.data.balance;
         // console.log(store.state.balance + 123123);
       })
