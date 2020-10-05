@@ -65,7 +65,7 @@ const routes = [{
         component: ShoppingHome,
     },
     {
-        path: "/shoppingdetail",
+        path: "/shoppingdetail/:address?",
         name: "ShoppingDetail",
         component: ShoppingDetail,
     },

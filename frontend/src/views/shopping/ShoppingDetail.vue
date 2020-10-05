@@ -342,15 +342,14 @@ export default {
     };
   },
   created() {
-    this.shoppingAddress = this.$route.params.address;
-    // 쇼핑 디테일 정보
+    this.shoppingAddress = this.$route.params.address
+    // 쇼핑 디테일 정보 
+   
     axios
-      .get(`${SERVER_URL}/sale/getDetail?address=${this.shoppingAddress}`)
+      .post(`${SERVER_URL}/sale/getDetail?address=${this.shoppingAddress}`)
       .then((res) => {
         this.items = res.data.object;
-        // console.log('쇼핑 아이템즈')
-        // console.log(this.items)
-        this.dto = res.data.object.saleBoardDto;
+        this.dto = res.data.object.saleBoardDto
         this.picture = this.items.saleBoardDto.picture;
         // 글쓴이 소개글 엔터 변환
         this.items.introduce = this.items.introduce.split("\n").join("<br />");
