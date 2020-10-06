@@ -25,13 +25,13 @@
           <!-- 카테고리 for문 -->
           <v-col v-for="(category, i) in categoryList" :key="i" cols="12" sm="1">
             <v-card
-              @click="onCategory(category.name,)"
+               @click="onCategory(category.name, category.key)"
               :class="category.name"
-              class="pa-2 categoryCard"
+              class="category.key"
               outlined
               tile
             >
-              <v-icon size="30">mdi-{{category.icon}}</v-icon><br>
+              <v-icon :class="`${category.key}icon`" size="30">mdi-{{ category.icon }}</v-icon>
               <p class="categoryTag">{{category.name}}</p>
             </v-card>
           </v-col>
@@ -74,7 +74,25 @@
                 :src="item.picture"
               ></v-img>
             </router-link>
-            <p class="mt-2 mb-1 ml-3">{{item.compname}}</p>
+            <p class="mt-2 mb-1 ml-3" style="font-size:13px;">(주){{item.compname}}
+              <!-- <v-chip
+              small
+              class="ma-2 ml-auto px-2"
+              label
+              outlined=""
+              style="background-color:#FF4081; color:black"
+            >
+              <span>
+                <v-icon left
+                  style="color:#FF1744"
+                  class="mr-0" size="19">
+                  mdi-heart
+                </v-icon>
+                {{item.likecount}}개
+              </span>
+              </v-chip> -->
+            </p>
+            
             <v-card-title style="font-weight: 600; margin: auto">
               {{ item.pjtname }}
               <div style="margin-left: auto">
@@ -88,61 +106,26 @@
               <div style="color: black">
                 <h5
                   style="
-                    display: inline-block;
+                    text-align:end;
+                    font-weight: bold;
                     height: 41.6px;
                     line-height: 41.6px;
                   "
                 >
-                  {{item.saleprice}}원
+                  판매가 {{item.saleprice}}원
                 </h5>
                 <div style="display: inline-block; float: right">
                   <h3 style="display: inline-block; color: rgb(22, 150, 245)">
                     <!-- {{ item.rate }}% -->
                   </h3>
-                  <h5 style="display: inline-block; color: rgb(123, 197, 254)">
-                    달성
-                  </h5>
                 </div>
               </div>
             </v-card-text>
           </v-card>
         </div>
       </div>
-
-
-      <!-- <div v-if="ispjt" style="display:flex; padding: 1% 0">
-        <div 
-          v-for="(item, i) in shoppingList" 
-          :key="i" 
-          style="display: inline-block; flex:1"
-        > 
-          <v-card class="my-12 pjtCard" height="436px" max-width="320" style="margin: auto">
-            <router-link :to="{name: 'ShoppingDetail', params: { address : item.address }}">
-              <v-img height="250" :src="item.picture"></v-img>   
-              <p class="mt-2 mb-1 ml-3">{{item.compname}}</p>
-              <v-card-title style="font-weight: 600; margin: auto">
-                {{item.pjtname}}
-              </v-card-title>
-              <v-card-text>
-                <div style="margin-bottom: 15px;">
-                  <p>{{item.onelineintro}}</p>
-                </div>
-                <div style="color: black;">
-                  <h5
-                    style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                  >{{item.saleprice}} 원</h5>
-                  <div style="display: inline-block; float: right;">
-                    <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.sold}}21개</h3>
-                    <h5 style="display: inline-block; color:rgb(123, 197, 254)">구매중</h5>
-                  </div>
-                </div>
-              </v-card-text>
-            </router-link>
-          </v-card>
-        </div>
-      </div> -->
       <!-- shoppingpjt 없는 경우 -->
-      <div v-if="!ispjt" style="text-align:center; margin-top:50px">
+      <div v-if="!ispjt" style="height: 300px; display: flex; justify-content: center; align-items: center;">
         <h5>쇼핑 프로젝트 검색 결과가 없습니다.</h5>
       </div>
     </div>
@@ -193,8 +176,8 @@ export default {
     nowcategory() {
       if(this.nowcategory==false){
         $(".all").addClass("active");
+         $('.allicon').addClass('activeIcon')
         this.initAxios()
-        console.log('비어있음')
       }
     }
   },
@@ -216,14 +199,14 @@ export default {
             this.shoppingList = response.data.object;
             if(this.shoppingList.length > 0) {
               this.ispjt = true
-              console.log('')
+              console.log('쇼핑리스트보자')
               console.log(this.shoppingList)
               this.shoppingList = response.data.object;
               this.totalpage = this.shoppingList[0].totalpage;
               this.shoppingList.forEach((shoppingPjt) => {
               // 제목
-              if (shoppingPjt.pjtname.length > 8) {
-                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
+              if (shoppingPjt.pjtname.length > 12) {
+                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 14) + "...";
               }
             });
             } else {
@@ -236,7 +219,6 @@ export default {
       });
     },
     filterAxios() {
-      console.log('이것도 되는거냐')
       const fd = new FormData();
       fd.append("orderOption", this.nowfilter);
       if (this.nowcategory.length > 0 ) {
@@ -272,45 +254,55 @@ export default {
         });
     },
     filterInit() {
-      console.log(this.nowcategory)
       // 카테고리 초기화
-      this.nowcategory.forEach((key) => {
-        $(`.${key}`).removeClass("active");
-      });
+      this.categoryList.forEach(item =>{
+        this.nowcategory.forEach((nn) => {
+          if(item.name == nn){
+            $(`.${item.key}`).removeClass("active");
+            $(`.${item.key}icon`).removeClass("activeIcon")
+          }
+        });
+      })
       this.nowcategory = [];
-      $(".전체").addClass("active");
+      $(".all").addClass("active");
+      $(".allicon").addClass("activeIcon")
       // 필터 초기화
       (this.clickfilter = ""), (this.nowfilter = 0);
       this.openfilter = false;
       this.initAxios()
     },
-    onCategory(name) {
+    onCategory(name, key) {
       // 카테고리
       if (name == "전체") {
-        this.nowcategory.forEach((name) => {
-          $(`.${name}`).removeClass("active");
-        });
+        this.categoryList.forEach(item =>{
+          this.nowcategory.forEach((nn) => {
+            if(item.name == nn){
+              $(`.${item.key}`).removeClass("active");
+              $(`.${item.key}icon`).removeClass("activeIcon")
+            }
+          });
+        })
         this.nowcategory = [];
-        $(".전체").addClass("active");
+        $(".all").addClass("active");
+        $(".allicon").addClass("activeIcon")
         this.initAxios()
-      } else {
+      }
+       else {
         // 제거
         if (this.nowcategory.indexOf(name) >= 0) {
           const idx = this.nowcategory.indexOf(name);
-          console.log('현재 카테고리')
-          console.log(this.nowcategory)
-
           this.nowcategory.splice(idx, 1);
-          $(`.${name}`).removeClass("active");
+          $(`.${key}`).removeClass("active");
+          $(`.${key}icon`).removeClass("activeIcon")
         } else {
           this.nowcategory.push(name);
-          $(`.${name}`).addClass("active");
-          $(".전체").removeClass("active");
-          console.log('현재 카테고리')
-          console.log(this.nowcategory)
+          $(`.${key}`).addClass("active");
+          $(`.${key}icon`).addClass("activeIcon")
+          $(".all").removeClass("active");
+          $(".allicon").removeClass("activeIcon");
         }
-      }
-      this.filterAxios()
+        this.filterAxios()
+      }    
     },
     onfilter() {
       // 필터

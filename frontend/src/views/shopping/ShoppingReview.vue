@@ -220,7 +220,7 @@ export default {
 
 <style scoped>
   .reviewImg {
-     background-color: #E1F5FE;
+    background-color: #E1F5FE;
     width: 60%;
     padding: 5px 0px 12px 0px;
     border-radius: 15px;

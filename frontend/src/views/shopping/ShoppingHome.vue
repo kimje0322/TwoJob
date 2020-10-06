@@ -104,7 +104,7 @@
           height="180"
           :src="item.picture"
         ></v-img>
-        <div style="width: 67%; float: right">
+        <div style="margin-top: 3px; width: 67%; float: right">
           <v-card-title style="font-weight: 600"
             >{{ item.pjtname }}
           <v-chip
@@ -125,7 +125,7 @@
           </v-chip>
           </v-card-title>
           <v-card-text>
-            <div style="margin-bottom: 15px; height:43px">{{ item.likeintro }}</div>
+            <div style="margin-bottom: 13px; height:48px">{{ item.likeintro }}</div>
             <div style="color: black">
               <h5 style="text-align: end; font-weight: bold; margin-right:8px; margin-bottom:0px;">판매가 {{item.saleprice}} 원</h5>
             </div>
@@ -207,7 +207,6 @@ export default {
           this.openItems[j].openintro = res.data.object.closeopenonelineintro[j] 
         }
 
-
         this.openItems.forEach(item => {
             // 마감일
             const day = item.startdate.substring(8, 10);
@@ -215,9 +214,15 @@ export default {
             today.setDate(day - today.getDate());
             this.$set(item, "afterday", today.getDate());
             // 제목
-            if (item.pjtname.length > 8) {
-              item.pjtname = item.pjtname.substring(0, 10) + "...";
+            if (item.pjtname.length > 10) {
+              item.pjtname = item.pjtname.substring(0, 13) + "...";
             }
+        })
+        this.likeItems.forEach(item => {
+          // 제목
+          if (item.pjtname.length > 10) {
+            item.pjtname = item.pjtname.substring(0, 12) + "...";
+          }
         })
       }) 
   },
