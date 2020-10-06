@@ -247,9 +247,11 @@ export default {
       var accounts = new Accounts("https://twojob.ga/eth/");
       var result = web3.eth.accounts.create();
       store.commit("setAddress", result.address);
+
+      store.state.userInfo.walletAddress = result.address
       const fd = new FormData();
       fd.append("accessToken", store.state.accessToken);
-      fd.append("address", store.state.address);
+      fd.append("address", store.state.userInfo.walletAddress);
       fd.append("privatekey", result.privateKey);
       axios.post(`${SERVER_URL}/wallet/regist`, fd)
       .then((res) => {
@@ -290,6 +292,7 @@ export default {
     GetMe(authObj) {
       //토큰값 받아오는 부분
       // console.log(authObj);
+      store.state.accessToken = authObj.access_token
       console.log(authObj.access_token);
       store.commit("setAccessToken", authObj.access_token);
       const fd = new FormData();
