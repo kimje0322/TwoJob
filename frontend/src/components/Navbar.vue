@@ -192,6 +192,15 @@ export default {
     },
   },
   mounted() {
+    // 총 balance
+    axios
+     .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
+     .then((res) => {
+       console.log("총 잔액보여줘제발")
+       console.log(res)
+       this.asset = res.data
+     })
+
     axios
       .get(`${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`)
       .then((res) => {
@@ -225,10 +234,10 @@ export default {
   },
   methods: {
     onWallet() {
-      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
+      var web3 = new Web3("https:www.twojob.ga:8545");
 
       var Accounts = require("web3-eth-accounts");
-      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
+      var accounts = new Accounts("https:www.twojob.ga:8545");
       var result = web3.eth.accounts.create();
       console.log(accounts);
       console.log(result);
