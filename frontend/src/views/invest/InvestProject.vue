@@ -58,7 +58,7 @@
       <div style="display: inline-block">
         <v-select
           :items="filter"
-          label="정렬"
+          label="　정렬"
           outlined
           hide-details
           class="origin"
@@ -132,7 +132,7 @@
       </div>
       <!-- investPjt 없을 때 -->
       <div v-else>
-        <h5>투자 프로젝트 검색 결과가 없습니다.</h5>
+        <h5 style="text-align:center; margin-top:50px">투자 프로젝트 검색 결과가 없습니다.</h5>
       </div>
     </div>
   </div>
@@ -247,11 +247,14 @@ export default {
       if (this.nowcategory.length > 0) {
         this.nowcategory.forEach((category) => {
           fd.append("categoryfilter", category);
+          console.log(fd)
         });
       } else {
         fd.append("categoryfilter", "");
         console.log("여기")
       }
+      console.log('폼데이터')
+      console.log(fd)
       axios
         .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
         .then((response) => {

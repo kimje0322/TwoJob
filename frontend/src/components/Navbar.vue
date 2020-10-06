@@ -197,7 +197,7 @@ export default {
       .then((res) => {
         console.log(res.data.balance);
         // this.mywallet = res.data.address;
-        console.log("여기여기``");
+        // console.log("여기여기``");
         // console.log(this.mywallet);
         this.iswallet = true;
         store.commit("setBalance", res.data.balance);
@@ -281,16 +281,16 @@ export default {
       });
     },
     GetMe(authObj) {
-      console.log(authObj);
-      //토큰값 받아오는 부분
-      console.log(authObj.access_token);
+      // console.log(authObj);
+      // //토큰값 받아오는 부분
+      // console.log(authObj.access_token);
       store.commit("setAccessToken", authObj.access_token);
       const fd = new FormData();
       fd.append("accessToken", authObj.access_token);
 
       axios.post(`${SERVER_URL}/login/kakaologin`, fd).then((res) => {
-        console.log("여기여기");
-        console.log(res);
+        // console.log("여기여기");
+        // console.log(res);
         this.login = true;
         // store.state.isSigned = true;
         this.userInfo.login = true;
@@ -304,24 +304,24 @@ export default {
         }
         store.commit("setUserInfo", this.userInfo);
         // this.userInfo.email = res.data.email;
-        console.log("이건 userinfo내용");
-        console.log(this.userInfo);
+        // console.log("이건 userinfo내용");
+        // console.log(this.userInfo);
         // this.$router.push("/");
       });
     },
     onLogout() {
       // this.$store.reset()
-      console.log("로그아웃됨");
+      // console.log("로그아웃됨");
       this.login = false;
       store.commit("deluserInfo");
-      console.log("store.state.isSigned " + store.state.isSigned);
+      // console.log("store.state.isSigned " + store.state.isSigned);
       // this.$router.push("/");
     },
     onChargeDialog() {
-      console.log("충전모달");
-      console.log(this.chargeDialog);
+      // console.log("충전모달");
+      // console.log(this.chargeDialog);
       this.chargeDialog = true;
-      console.log(this.chargeDialog);
+      // console.log(this.chargeDialog);
       // this.chargeDialog = true;
     },
   },
