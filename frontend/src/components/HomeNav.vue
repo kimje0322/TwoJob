@@ -50,6 +50,7 @@
             >
             <!-- <i class="fas fa-coins"></i>   -->
             <v-icon class="mr-1">mdi-plus-circle-outline</v-icon>
+      
              충전
             </v-btn>
             
@@ -61,6 +62,7 @@
               outlined
             >
             <v-icon>mdi-wallet-outline</v-icon>
+  
              지갑생성 
             </v-btn>
             
@@ -162,7 +164,7 @@ export default {
   mounted() {
     // 지갑 생성 여부 확인
     axios.get(
-        `${SERVER_URL}/wallet/toid?oauthid=${this.userInfo.id}`)
+        `${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`)
         .then((res) => {
           console.log(res.data)
           if (res.data == "novalid") {

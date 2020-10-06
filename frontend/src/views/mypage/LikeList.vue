@@ -18,7 +18,7 @@
             class="writeMenu"
             >{{ item }}</v-tab
           >
-          <!-- 투자 프로젝트 창 -->
+          <!-- 투자 좋아요 프로젝트 창 -->
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
               <v-card-text>
@@ -98,22 +98,84 @@
               </v-card-text>
             </v-card>
           </v-tab-item>
-          <!-- 큰손 프로젝트 창 -->
+          <!-- 쇼핑 좋아요 프로젝트 창 -->
           <v-tab-item :value="'tab-1'">
             <v-card flat tile>
-              <v-card-text></v-card-text>
-            </v-card>
-          </v-tab-item>
-          <!-- 판매 프로젝트 창 -->
-          <v-tab-item :value="'tab-2'">
-            <v-card flat tile>
-              <v-card-text></v-card-text>
-            </v-card>
-          </v-tab-item>
-          <!-- 구매 프로젝트 창 -->
-          <v-tab-item :value="'tab-3'">
-            <v-card flat tile>
-              <v-card-text></v-card-text>
+              <v-card-text>
+                <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
+                <div style="padding: 1% 0">
+                  <div
+                    v-for="(item, i) in shopplinglikelst"
+                    :key="i"
+                    style="
+                      display: inline-block;
+                      width: 33%;
+                      margin-bottom: 20px;
+                    "
+                  >
+                    <v-card
+                      class="my-12"
+                      max-width="90%"
+                      max-height="600px"
+                      style="margin: auto"
+                    >
+                      <router-link
+                        :to="{
+                          name: 'ShoppingDetail',
+                          params: { address: item.address },
+                        }"
+                      >
+                        <v-img height="250" :src="item.picture"></v-img>
+                      </router-link>
+                      <v-card-title
+                        style="
+                          font-weight: 600;
+                          margin: auto;
+                          color: rgba(0, 0, 0, 0.87);
+                          font-family: BPreplayExtended;
+                        "
+                      >
+                        <p v-if="item.pjtname.length > 6">
+                          {{ item.pjtname.substring(0, 4) }} ...
+                        </p>
+                        <p v-else>
+                          {{ item.pjtname }}
+                        </p>
+                        <div style="margin-left: auto">
+                          <!-- <v-chip class="projectBadge"
+                            > {{today}} {{ item.deadline.substring(8, 10) - today }}일 남음</v-chip
+                          > -->
+                          <v-chip class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요</v-chip
+                          >
+                        </div>
+                        <!-- <div style="margin-left: auto">
+                          <v-chip class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요</v-chip
+                          >
+                        </div> -->
+                      </v-card-title>
+                      <!-- max-height: 120px -->
+                      <v-card-text style="height: 70px">
+                        <div
+                          style="
+                            margin-bottom: 10px;
+                            font-size: 0.875rem;
+                            font-weight: 400;
+                            line-height: 1.375rem;
+                            letter-spacing: 0.0071428571em;
+                            color: rgb(0, 0, 0, 0.6);
+                          "
+                        >
+                          {{ item.onelineintro }}
+                        </div>
+                        <!-- <div style="color: black">
+                        </div>                         -->
+                      </v-card-text>
+                    </v-card>
+                  </div>
+                </div>
+              </v-card-text>
             </v-card>
           </v-tab-item>
         </v-tabs>

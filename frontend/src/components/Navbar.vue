@@ -252,6 +252,8 @@ export default {
             text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
             confirmButtonText: "확인",
           });
+          this.iswallet = true;
+
         }
       });
     },
