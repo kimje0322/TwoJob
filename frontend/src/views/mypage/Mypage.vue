@@ -263,6 +263,7 @@ export default {
     },
     onChat() {
       // window.open("");
+      
       this.chatroom = true; 
       console.log("모달 열어보자" + this.chatroom);
       // this.$router.push("/chat")
