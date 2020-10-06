@@ -205,6 +205,7 @@
                       </v-card>
                     </v-dialog>
                     <router-link
+                    style="text-decoration: none"
                       :to="{
                         name: 'WriteShopping',
                         params: { address: item.address },

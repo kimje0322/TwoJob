@@ -520,6 +520,7 @@ export default {
       // 프로젝트 이력
       successRate: "80",
       projectList: [],
+      items: [],
       // 무한 스크롤
       page: 0,
       totalPage: 0,
@@ -629,6 +630,17 @@ export default {
           this.projectList = response.data.object;
           this.totalPage = response.data.object[0].totalpages;
           this.projectList.forEach((item) => {
+            // 디테일 페이지와 동일한 프로젝트 삭제
+            if(item.investmentDto.address == this.nowAddress){
+              const idx = this.projectList.indexOf(item);
+              this.projectList.splice(idx, 1);
+            }
+            // 투자 프로젝트 사용내역 보여주기
+            axios.get(`${SERVER_URL}/funding/getreceipt?campaignId=${item.investmentDto.address}`)
+              .then(response => {
+                // console.log(response)
+                // this.items = response.data
+              })
             // 투자 프로젝트 chip
             if (item.investmentDto.isfinish) {
               this.$set(item.investmentDto, "chip", "종료");
