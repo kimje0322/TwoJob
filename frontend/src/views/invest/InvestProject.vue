@@ -39,13 +39,13 @@
             sm="1"
           >
             <v-card
-              @click="onCategory(category.name,)"
-              :class="category.name"
+              @click="onCategory(category.name, category.key)"
               class="pa-2 categoryCard"
+              :class="category.key"
               outlined
               tile
             >
-              <v-icon size="30">mdi-{{ category.icon }}</v-icon>
+              <v-icon :class="`${category.key}icon`" size="30">mdi-{{ category.icon }}</v-icon>
               <p class="categoryTag">{{ category.name }}</p>
             </v-card>
           </v-col>
@@ -75,7 +75,7 @@
       </div>
     </div>
     <!-- 프로젝트 -->
-    <div class="projectList" style="padding: 10px 3%">
+    <div class="projectList" style="padding: 10px 13%">
       <!-- <div style="height: 45px">
         <div style="display: inline-block">
           <span style="color: rgb(22, 150, 245)">25,540</span>
@@ -86,14 +86,14 @@
         <div
           v-for="(item, i) in investProjects"
           :key="i"
-          style="display: inline-block; width: 30%; margin-bottom: 30px"
+          style="display: inline-block; width: 33%; margin-top: 5%"
         >
           <v-card class="my-12" max-width="320" style="margin: auto">
             <router-link
               :to="{ name: 'InvestDetail', params: { address: item.address } }"
             >
               <v-img
-                height="250"
+                height="220"
                 :src="item.picture"
               ></v-img>
             </router-link>
@@ -103,8 +103,8 @@
                 <v-chip class="projectBadge">{{ item.lastday }}일 남음</v-chip>
               </div>
             </v-card-title>
-            <v-card-text style="height: 130px">
-              <div style="margin-bottom: 15px; height: 60px">
+            <v-card-text style="height: 120px">
+              <div style="margin-bottom: 15px; height: 50px">
                 {{ item.oneLineIntro }}
               </div>
               <div style="color: black">
@@ -131,7 +131,7 @@
         </div>
       </div>
       <!-- investPjt 없을 때 -->
-      <div v-else>
+      <div v-else style="height: 300px">
         <h5>투자 프로젝트 검색 결과가 없습니다.</h5>
       </div>
     </div>
@@ -179,6 +179,7 @@ export default {
     nowcategory() {
       if(this.nowcategory==false){
         $(".all").addClass("active");
+        $(".allicon").addClass("activeIcon");
         this.initAxios()
         console.log('비어있음')
       }
@@ -186,7 +187,8 @@ export default {
   },
   mounted() {
     // 카테고리
-    $('.전체').addClass('active')
+    $('.all').addClass('active')
+    $('.allicon').addClass('activeIcon')
     this.initAxios()
   },
   methods: {
@@ -295,24 +297,36 @@ export default {
     },
     filterInit() {
       // 카테고리 초기화
-      this.nowcategory.forEach((key) => {
-        $(`.${key}`).removeClass("active");
-      });
+      this.categoryList.forEach(item =>{
+        this.nowcategory.forEach((nn) => {
+          if(item.name == nn){
+            $(`.${item.key}`).removeClass("active");
+            $(`.${item.key}icon`).removeClass("activeIcon")
+          }
+        });
+      })
       this.nowcategory = [];
-      $(".전체").addClass("active");
+      $(".all").addClass("active");
+      $(".allicon").addClass("activeIcon")
       // 필터 초기화
       (this.clickfilter = ""), (this.nowfilter = 0);
       this.openfilter = false;
       this.initAxios()
     },
-    onCategory(name) {
+    onCategory(name, key) {
       // 카테고리
       if (name == "전체") {
-        this.nowcategory.forEach((name) => {
-          $(`.${name}`).removeClass("active");
-        });
+        this.categoryList.forEach(item =>{
+          this.nowcategory.forEach((nn) => {
+            if(item.name == nn){
+              $(`.${item.key}`).removeClass("active");
+              $(`.${item.key}icon`).removeClass("activeIcon")
+            }
+          });
+        })
         this.nowcategory = [];
-        $(".전체").addClass("active");
+        $(".all").addClass("active");
+        $(".allicon").addClass("activeIcon")
         this.initAxios()
       }
        else {
@@ -320,11 +334,14 @@ export default {
         if (this.nowcategory.indexOf(name) >= 0) {
           const idx = this.nowcategory.indexOf(name);
           this.nowcategory.splice(idx, 1);
-          $(`.${name}`).removeClass("active");
+          $(`.${key}`).removeClass("active");
+          $(`.${key}icon`).removeClass("activeIcon")
         } else {
           this.nowcategory.push(name);
-          $(`.${name}`).addClass("active");
-          $(".전체").removeClass("active");
+          $(`.${key}`).addClass("active");
+          $(`.${key}icon`).addClass("activeIcon")
+          $(".all").removeClass("active");
+          $(".allicon").removeClass("activeIcon");
         }
         this.filterAxios()
       }
@@ -369,11 +386,14 @@ export default {
 }
 .categoryCard {
   padding: 8px;
+  border: none;
+  border-radius: 100px !important;
 }
-.categoryCard:hover {
-  border: 2px solid rgb(22, 150, 245);
-  /* background-color: rgba(173, 220, 254, 0.4); */
-  cursor: pointer;
+.v-card--link:before{
+  background: none;
+}
+.categoryTag {
+  margin-top: 10px;
 }
 .filterBox {
   padding: 0 3%;
@@ -433,6 +453,10 @@ export default {
   text-align: right;
 }
 .active {
-  border: 2px solid rgb(22, 150, 245);
+  /* border: 2px solid rgb(22, 150, 245); */
+  background-color: rgba(22, 150, 245, 0.1) !important;
+}
+.activeIcon {
+  color: rgb(22, 150, 245);
 }
 </style>

@@ -34,11 +34,11 @@
       </v-carousel>
     </div>
     <!-- 마감임박 -->
-    <div style="margin-left: 5%;">
-      <!-- <v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon> -->
+    <div style="margin: 0 8%;">
       <h4 style="font-weight: 600">마감임박</h4>
+      <hr>
     </div>
-    <div style="display: flex; padding: 1% 0">
+    <div style="display: flex; padding: 1% 8%">
       <div v-for="(item, i) in deadlineItems" :key="i" style="display: inline-block; flex:1">
         <v-card class="my-12" max-width="320" style="margin: auto">
           <router-link
@@ -63,11 +63,11 @@
       </div>
     </div>
     <!-- 인기순 -->
-    <div style="margin-left: 5%; margin-top: 3%">
-      <!-- <v-icon style="font-size: 36px; color: black;">mdi-chevron-right</v-icon> -->
+    <div style="margin:5% 8% 0 8%;">
       <h4 style="font-weight: 600">인기순</h4>
+      <hr>
     </div>
-    <div style="display: flex; padding: 1% 0">
+    <div style="display: flex; padding: 1% 8%; padding-bottom: 5%">
       <div v-for="(item, i) in likeItems" :key="i" style="display: inline-block; flex:1">
         <v-card class="my-12" max-width="320" style="margin: auto">
           <router-link
@@ -109,18 +109,13 @@ export default {
     return {
       items: [
         {
-          src: "https://image.freepik.com/free-photo/_93675-87338.jpg",
+          src: "https://www.guerlain.com/sites/default/files/styles/desktop_homepage_slide/public/2720x1116_Avant_Premiere_desktop_homepage_V2_UK_0.jpg?itok=g-beqsFp",
         },
         {
-          src:
-            "https://lh3.googleusercontent.com/proxy/eEAKz6kNc0gXbYyQR5AM2PFZQYoKepaO4JbqZAjJWtbGtTPvBVfh_2sTRVlj6Woh-UIHNphyKm9bIdkz5va1p2KKywJyl7Ed4872B5o9yQ",
+          src: "https://www.gaguguide.com/img/news/4ca2bb540b179a0de888231e0603a21c.jpg",
         },
         {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green002/2019/0430/20190430185646591_32703.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
+          src: "https://www.yakup.com/data/editor/news/201504/JtVmeFiV86.jpg",
         },
       ],
       deadlineItems: [],
@@ -190,6 +185,7 @@ export default {
   text-align: center;
   line-height: 50px;
   border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 .items div {
   display: inline-block;
@@ -206,7 +202,7 @@ export default {
   margin: 0;
 }
 .homeImg {
-  margin-bottom: 3%;
+  margin-bottom: 5%;
 }
 .deadlineBadge {
   background-color: rgb(22, 150, 245) !important;
