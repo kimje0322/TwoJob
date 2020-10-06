@@ -13,7 +13,7 @@
         <div style="text-align: center; margin-top: 20px">
           <h5>{{ pageusername }} 님</h5>
           <div v-if="pageusername == username">
-            <p v-if="iswallet">총 {{ pageuserbalance }} 원</p>
+            <p v-if="!iswallet">총 {{ pageuserbalance }} 원</p>
           </div>
           <div style="margin-top: 50px">
             <router-link to="/" style="text-decoration: none">
@@ -57,10 +57,15 @@
                                 params: { userid: pageuserid },
                               }"
                             >
-                              <h2 style="margin-top: 20px">
+                              <h2 v-if="investnum.length > 0" style="margin-top: 20px">
                                 {{ investnum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
+                              <h2 v-else style="margin-top: 20px">
+                                0
+                                <h5 style="display: inline-block">회</h5>
+                              </h2>
+
                             </router-link>
                             <!-- </a> -->
                           </li>
@@ -389,8 +394,8 @@ export default {
       pageuseraccestoken: "",
       pageuserbalance: "",
 
-      investnum: "",
-      shoppingnum: "",
+      investnum: 0,
+      shoppingnum: 0,
       iswallet: true,
       chatroom: false,
       userimg: "",
@@ -398,7 +403,7 @@ export default {
       userbalance: "",
       tab: null,
       text: ["1", "2", "3"],
-      tabs: ["마이페이지"],
+      tabs: [""],
       // 거래내역
       accounts: [
         { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
@@ -534,17 +539,6 @@ input:hover {
 .searchBarBtn {
   border: 1px solid lightgray;
 }
-#introduce {
-  background-color: white;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  resize: none;
-  padding: 8px;
-  margin: 0 0 20px 10px;
-}
-#introduce:hover {
-  border: 2px solid rgb(22, 150, 245);
-}
 .v-card__text {
   /* height: 600px; */
   overflow: hidden;
@@ -612,6 +606,7 @@ input:hover {
   text-decoration: none;
 }
 .mypagebox {
+  background-color: white;
   display: flex;
   padding: 3% 10%;
   width: 100%;
