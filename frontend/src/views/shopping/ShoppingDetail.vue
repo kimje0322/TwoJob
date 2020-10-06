@@ -71,7 +71,11 @@
           <v-list-item>
          
           </v-list-item>
-          <v-btn @click="selectCount" class="perchaseBtn white--text">
+          <v-btn 
+            @click="selectCount" 
+            class="perchaseBtn white--text"
+            :disabled="islogin == false"
+          >
             <v-icon size="18" class="mr-1">mdi-cart-outline</v-icon>상품 구매
           </v-btn>
 
@@ -116,21 +120,26 @@
 
           <!-- 좋아요 & 문의 버튼 -->
           <div style="display: flex; margin-top: 15px">
-            <button @click="likeBtn" style="flex: 1">
+            <button 
+              :disabled="islogin == false"
+              @click="likeBtn" 
+              style="flex: 1">
               <div class="btns" style="margin-right: 5px">
                 <v-icon size="20" class="mr-2 like">mdi-heart</v-icon
                 >{{ likeCount }}
               </div>
             </button>
-            <button style="flex: 1">
-              <div class="btns">
+            <button 
+              disabled="islogin == false || this.maker.oauthId == userid"
+              style="flex: 1">
+              <div @click="onChat()" class="btns">
                 <v-app></v-app>
                 <div>
                   <v-dialog max-width="800" min-height="500" v-model="chatroom">
                     <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
                   </v-dialog>
                 </div>
-                <v-icon size="20" class="mr-1" @click="onChat()"
+                <v-icon size="20" class="mr-1" 
                   >mdi-message-bulleted</v-icon
                 >문의
               </div>
@@ -151,7 +160,11 @@
           <div style="float: left; margin: 3px 0 0 15px">
             <p style="font-size: 1rem; margin-bottom: 5px">
               (주){{ items.compname }}
+              <router-link style="color: black;"
+              :to="{ name: 'Mypage', params: { userid: maker.oauthId } }"
+              >
               <strong class="mr-2">{{ makerName }}</strong>
+              </router-link>
               <v-chip @click="visit(items.url)" label small class="visit px-1"
                 >사이트 방문</v-chip
               >
@@ -208,7 +221,7 @@
                   <div class="row">
                     <div class="col-md-4">
                       <i
-                        class="fas fa-comment-dots fa-5x my-3"
+                        class="fas fa-comment-dots fa-4x my-3"
                         style="color: grey"
                       ></i
                       ><br />
@@ -234,7 +247,7 @@
                     </div>
                     <div class="col-md-4 px-3">
                       <i
-                        class="fas fa-star fa-5x my-3"
+                        class="fas fa-star fa-4x my-3"
                         style="color: #26c6da"
                       ></i
                       ><br />
@@ -261,7 +274,7 @@
                     </div>
                     <div class="col-md-4 px-3">
                       <i
-                        class="fas fa-file-signature fa-5x my-3 ml-2"
+                        class="fas fa-file-signature fa-4x my-3 ml-2"
                         style="color: #29b6f6"
                       ></i
                       ><br />
@@ -360,6 +373,7 @@ import Navbar from "../../components/Navbar.vue";
 import axios from "axios";
 import store from "../../store/index.js";
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
+import Swal from "sweetalert2";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
@@ -370,6 +384,8 @@ export default {
   },
   data() {
     return {
+      // 로그인 
+      islogin: store.state.isSigned,
       currentItem: "tab-Web",
       tabItems: ["pjtInfo", "reviews"],
       items: [],
@@ -387,9 +403,10 @@ export default {
       isliked: false,
       likeCount: 0,
       likeState: 0,
-      // 금손님 이미지
+      // 금손님
       makerImg: '',
       makerName:'',
+      maker: '',
       chatroom: false,
       // 블록체인, 결제
       investaddress:'',
@@ -418,17 +435,18 @@ export default {
       .then((res) => {
         this.items = res.data.object.object;
         this.investaddress = this.items.saleBoardDto.investaddress
-        // 좋아요 확인
-        if (this.itemslike) {
-          this.likeState = true;
+        // 좋아요
+        this.likeCount = res.data.object.likecount;
+        this.isliked = res.data.object.like;
+        if (this.isliked) {
           $(".like").css("color", "red");
         } else {
-          this.likeState = false;
           $(".like").css("color", "rgba(0, 0, 0, 0.54)");
         }
         this.dto = this.items.saleBoardDto
         this.picture = this.items.saleBoardDto.picture;
         const userid= this.items.saleBoardDto.userid
+        // 금손 정보
         axios
           .post(`${SERVER_URL}/util/userinfo?userid=${userid}`)
           .then((res) => {
@@ -469,6 +487,7 @@ export default {
           .post(`${SERVER_URL}/util/userinfo?userid=${userId}`)
           .then((res) => {
             this.reviews[i].userid = res.data.object.name;
+            this.maker = response.data.object;
             // console.log(res.data.object)
             if (res.data.object.profileImg == null) {
             this.reviews[i].profile = "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
@@ -480,7 +499,6 @@ export default {
             // console.log(err)
           })
         }
-    
       }
       // console.dir(response)
     });
@@ -512,7 +530,8 @@ export default {
       axios
         .post(`${SERVER_URL}/funding/sellitem`, fd)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
+
         })
     },
     closeChatRoom() {
@@ -521,8 +540,12 @@ export default {
     },
     onChat() {
       // window.open("");
+      console.log('maker')
+      console.log(this.maker)
       this.chatroom = true;
-      store.commit("setAsk", "김지은")
+      console.log("oauthId " + this.maker.oauthId);
+      store.commit("setAsk", this.maker.name, this.maker.oauthId);
+      store.state.askuserid = this.maker.oauthId;
       // console.log("모달 열어보자" + this.chatroom);
       // this.$router.push("/chat")
     },
@@ -684,5 +707,8 @@ p {
 .visit {
   background-color: #4fc3f7 !important;
   color: white;
+}
+.a:hover {
+  text-decoration: none!important;
 }
 </style>
