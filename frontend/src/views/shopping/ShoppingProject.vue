@@ -43,7 +43,7 @@
       <div style="display: inline-block; margin-right: 2%">
         <v-select
           :items="filter"
-          label="정렬"
+          label="　정렬"
           outlined
           hide-details
           class="origin"
@@ -57,24 +57,67 @@
         </v-btn>
       </div>
     </div>
-    <!-- 프로젝트 -->
-    <div class="projectList" style="padding: 10px 3%;">
-      <!-- <div style="height: 45px;"> -->
-        <div style="display: inline-block;">
-          <!-- <span style="color: rgb(22, 150, 245);">16</span>
-          <span>개의 프로젝트가 있습니다.</span> -->
-        </div>
-        <div style="width: 100px; display: inline-block; float: right;">
-        <!-- </div> -->
-      </div>
+  <!-- 프로젝트 -->
+  <div style="margin: 15px 80px; padding-left: 105px">
       <div v-if="ispjt" style="padding: 1% 0">
+        <div
+          v-for="(item, i) in shoppingList"
+          :key="i"
+          style="display: inline-block; width: 30%; margin-bottom: 30px"
+        >
+          <v-card class="my-12" max-width="320" style="margin: auto">
+            <router-link
+              :to="{ name: 'ShoppingDetail', params: { address: item.address } }"
+            >
+              <v-img
+                height="250"
+                :src="item.picture"
+              ></v-img>
+            </router-link>
+            <p class="mt-2 mb-1 ml-3">{{item.compname}}</p>
+            <v-card-title style="font-weight: 600; margin: auto">
+              {{ item.pjtname }}
+              <div style="margin-left: auto">
+                <!-- <v-chip class="projectBadge">{{ item.lastday }}일 남음</v-chip> -->
+              </div>
+            </v-card-title>
+            <v-card-text style="height: 105px">
+              <div style="margin-bottom: 10px; height: 40px">
+                {{ item.onelineintro }}
+              </div>
+              <div style="color: black">
+                <h5
+                  style="
+                    display: inline-block;
+                    height: 41.6px;
+                    line-height: 41.6px;
+                  "
+                >
+                  {{item.saleprice}}원
+                </h5>
+                <div style="display: inline-block; float: right">
+                  <h3 style="display: inline-block; color: rgb(22, 150, 245)">
+                    <!-- {{ item.rate }}% -->
+                  </h3>
+                  <h5 style="display: inline-block; color: rgb(123, 197, 254)">
+                    달성
+                  </h5>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
+      </div>
+
+
+      <!-- <div v-if="ispjt" style="display:flex; padding: 1% 0">
         <div 
           v-for="(item, i) in shoppingList" 
           :key="i" 
-          style="display: inline-block; width: 30%; margin-bottom: 30px;"
+          style="display: inline-block; flex:1"
         > 
-          <router-link :to="{name: 'ShoppingDetail', params: { address : item.address }}">
-            <v-card class="my-12 pjtCard" height="436px" max-width="320" style="margin: auto">
+          <v-card class="my-12 pjtCard" height="436px" max-width="320" style="margin: auto">
+            <router-link :to="{name: 'ShoppingDetail', params: { address : item.address }}">
               <v-img height="250" :src="item.picture"></v-img>   
               <p class="mt-2 mb-1 ml-3">{{item.compname}}</p>
               <v-card-title style="font-weight: 600; margin: auto">
@@ -94,15 +137,14 @@
                   </div>
                 </div>
               </v-card-text>
-            </v-card>
-          </router-link>
+            </router-link>
+          </v-card>
         </div>
-      </div>
+      </div> -->
       <!-- shoppingpjt 없는 경우 -->
-      <div v-if="!ispjt">
+      <div v-if="!ispjt" style="text-align:center; margin-top:50px">
         <h5>쇼핑 프로젝트 검색 결과가 없습니다.</h5>
       </div>
-
     </div>
   </div>
 </template>
@@ -174,7 +216,8 @@ export default {
             this.shoppingList = response.data.object;
             if(this.shoppingList.length > 0) {
               this.ispjt = true
-              console.log('ispjt도 되지'+this.ispjt)
+              console.log('')
+              console.log(this.shoppingList)
               this.shoppingList = response.data.object;
               this.totalpage = this.shoppingList[0].totalpage;
               this.shoppingList.forEach((shoppingPjt) => {
@@ -204,15 +247,10 @@ export default {
       } else {
         fd.append("categoryfilter", "");
       }
-      console.log(fd)
-      console.log('fd 함 본다')
       axios
         .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
         .then((response) => {
           if (response.data.data == "success") {
-            console.log(response)
-            console.log('쇼핑리스트찾아사만리')
-
             this.shoppingList = response.data.object;
             if(this.shoppingList.length > 0) {
               this.ispjt = true
@@ -399,7 +437,8 @@ export default {
   padding-top: 0px;
 }
 a {
-  text-decoration: none;
+  text-decoration: none !important;
+  color: black;
 }
 .active {
   border: 2px solid rgb(22, 150, 245);

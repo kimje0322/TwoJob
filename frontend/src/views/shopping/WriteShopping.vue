@@ -208,6 +208,7 @@ export default {
   },
   data() {
     return {
+      investAddress: '',
       campaignId: '',
       userid: '',
       // 추가된 상품
@@ -303,6 +304,7 @@ export default {
     }
   },
   mounted() {
+    this.investAddress = this.$route.params.address
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.userid = store.state.userInfo.id;
@@ -413,7 +415,7 @@ export default {
         if (result.value) {
           axios.post(`${SERVER_URL}/sale/create`, {
             userid: this.userid,
-            investaddress: "dd7dcf00-0162-432a-9cbb-f584d949a5c1",
+            investaddress: this.investAddress,
             pjtname: this.title,
             picture: this.picture,
             startdate: this.dateFormatted1,

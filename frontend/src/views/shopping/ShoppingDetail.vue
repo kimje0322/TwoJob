@@ -109,7 +109,7 @@
             <p style="font-size: 1.1rem; margin-bottom: 5px">
               <strong class="mr-2">{{ items.compname }}</strong>
               <v-chip @click="visit(items.url)" label small class="visit px-1"
-                >바로가기</v-chip
+                >사이트 방문</v-chip
               >
             </p>
             <p style="font-size: 1rem">{{ items.introduce }}</p>
@@ -361,6 +361,8 @@ export default {
       .post(`${SERVER_URL}/sale/getDetail`, frm)
       .then((res) => {
         this.items = res.data.object.object;
+        console.log(this.items)
+        console.log('여기 ')
         // 좋아요 확인
         if (this.itemslike) {
           this.likeState = true;
@@ -412,7 +414,7 @@ export default {
           .post(`${SERVER_URL}/util/userinfo?userid=${userId}`)
           .then((res) => {
             this.reviews[i].userid = res.data.object.name;
-            console.log(res.data.object)
+            // console.log(res.data.object)
             if (res.data.object.profileImg == null) {
             this.reviews[i].profile = "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
             } else {
@@ -421,7 +423,7 @@ export default {
           })
           .catch((err) => {
             console.log(err)
-            console.log('아냐나나ㅏ')
+            // console.log('아냐나나ㅏ')
 
           })
         }

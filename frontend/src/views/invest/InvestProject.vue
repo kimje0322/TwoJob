@@ -58,7 +58,7 @@
       <div style="display: inline-block">
         <v-select
           :items="filter"
-          label="정렬"
+          label="　정렬"
           outlined
           hide-details
           class="origin"
@@ -249,11 +249,14 @@ export default {
       if (this.nowcategory.length > 0) {
         this.nowcategory.forEach((category) => {
           fd.append("categoryfilter", category);
+          console.log(fd)
         });
       } else {
         fd.append("categoryfilter", "");
         console.log("여기")
       }
+      console.log('폼데이터')
+      console.log(fd)
       axios
         .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
         .then((response) => {
