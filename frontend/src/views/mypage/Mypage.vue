@@ -49,6 +49,7 @@
                             <!-- <a href="/myinvestpjt" class="pjt_a"> -->
                             <span class="pjt_span">생성한 프로젝트</span>
                             <router-link
+                              style="color: black;"
                               :to="{
                                 name: 'MyInvestPjt',
                                 params: { userid: pageuserid },
