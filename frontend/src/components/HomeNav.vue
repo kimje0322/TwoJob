@@ -290,6 +290,7 @@ export default {
     GetMe(authObj) {
       //토큰값 받아오는 부분
       // console.log(authObj);
+      store.state.accessToken = authObj.access_token
       console.log(authObj.access_token);
       store.commit("setAccessToken", authObj.access_token);
       const fd = new FormData();
