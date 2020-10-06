@@ -3,16 +3,18 @@
     <!-- 상단 Navbar -->
     <navbar style="border: 1px solid lightgray" />
     <!-- 투자 글쓰기 메뉴바 -->
-    <div class="mypagebox">
+    <div class="mypagebox" style="background-color: white;">
       <!-- user 정보 -->
       <div style="margin-top: 45px; margin-right: 5%">
         <!-- <img :src="userimg" style="height: 100px; border-radius: 50%" /> -->
         <v-avatar style="width: 150px; height: 150px">
-          <img :src="userimg" alt="John" />
+          <img :src="pageuserimg" alt="John" />
         </v-avatar>
         <div style="text-align: center; margin-top: 20px">
-          <h5>{{ username }} 님</h5>
-          <p v-if="iswallet">총 {{ userbalance }} 원</p>
+          <h5>{{ pageusername }} 님</h5>
+          <div v-if="pageusername == username">
+            <p v-if="!iswallet">총 {{ pageuserbalance }} 원</p>
+          </div>
           <div style="margin-top: 50px">
             <router-link to="/" style="text-decoration: none">
               <v-btn class="logoutBtn" @click="onLogout">로그아웃</v-btn>
@@ -46,13 +48,26 @@
                       <div class="info_frame">
                         <ul class="info_ul">
                           <li class="info_li">
-                            <a href="/myinvestpjt" class="pjt_a">
-                              <span class="pjt_span">생성한 프로젝트</span>
-                              <h2 style="margin-top: 20px">
+                            <!-- <a href="/myinvestpjt" class="pjt_a"> -->
+                            <span class="pjt_span">생성한 프로젝트</span>
+                            <router-link
+                              style="color: black"
+                              :to="{
+                                name: 'MyInvestPjt',
+                                params: { userid: pageuserid },
+                              }"
+                            >
+                              <h2 v-if="investnum.length > 0" style="margin-top: 20px">
                                 {{ investnum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
-                            </a>
+                              <h2 v-else style="margin-top: 20px">
+                                0
+                                <h5 style="display: inline-block">회</h5>
+                              </h2>
+
+                            </router-link>
+                            <!-- </a> -->
                           </li>
                           <li
                             class="info_li"
@@ -79,7 +94,10 @@
                         </ul>
                       </div>
                     </div>
-                    <div style="margin: 30px 0; overflow: hidden">
+                    <div
+                      v-if="pageusername == username"
+                      style="margin: 30px 0; overflow: hidden"
+                    >
                       <h3 class="mypage_title">나의 활동</h3>
                       <div style="padding: 0 3%">
                         <div
@@ -235,8 +253,8 @@ import Web3 from "web3";
 import Swal from "sweetalert2";
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
 
-// const SERVER_URL = "https://www.twojob.ga/api";
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
+const SERVER_URL = "https://www.twojob.ga/api";
+// const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
   methods: {
@@ -245,7 +263,7 @@ export default {
     },
     onChat() {
       // window.open("");
-      this.chatroom = true;
+      this.chatroom = true; 
       console.log("모달 열어보자" + this.chatroom);
       // this.$router.push("/chat")
     },
@@ -258,10 +276,10 @@ export default {
     },
     onWallet() {
       // var Web3 = require('web3');
-      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
+      var web3 = new Web3("https://twojob.ga/eth/");
 
       var Accounts = require("web3-eth-accounts");
-      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
+      var accounts = new Accounts("https://twojob.ga/eth/");
       var result = web3.eth.accounts.create();
       console.log(accounts);
       console.log(result);
@@ -302,24 +320,56 @@ export default {
   mounted() {
     var idx = window.location.href.indexOf("mypage");
     console.log(idx);
-    var pageid = window.location.href.substring(
+    const pageid = window.location.href.substring(
       idx + 7,
-      window.location.href.length - 1
+      window.location.href.length
     );
     console.log(pageid);
-    console.log(pageid + "asdfadsddd");
-
+    // console.log(pageid + "asdfadsddd");
+    console.log(typeof pageid);
     const fd = new FormData();
     fd.append("userid", pageid);
-    console.log("pageid" + pageid)
+    console.log("pageid" + pageid);
+    this.pageuserid = pageid;
     axios.post(`${SERVER_URL}/util/userinfo`, fd).then((res) => {
       console.log("성공인가??");
-      console.log(res)
+      console.log(res);
+      this.pageuserimg = res.data.object.profileImg;
+      this.pageusername = res.data.object.name;
+      this.pageuseraccestoken = res.data.object.accessToken;
     });
+
+    axios
+      .get(`${SERVER_URL}/wallet/toid?oauthid=${this.pageuserid}`)
+      .then((res) => {
+        // this.pageuserbalance = res.data.balance;
+        console.log(res.data.balance);
+        // this.mywallet = res.data.address;
+        // console.log("여기여기``");
+        // console.log(this.mywallet);
+        if (res.data != "novalid") {
+          this.iswallet = true;
+        }
+        // store.commit("setBalance", res.data.balance);
+        // store.state.balance = res.data.balance;
+        // console.log(store.state.balance + 123123);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+    axios
+     .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
+     .then((res) => {
+       console.log("총 잔액보여줘제발")
+       console.log(res)
+       this.pageuserbalance = res.data
+     })
 
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
-    this.userbalance = store.state.balance;
+    this.userbalance = store.state.accessToken
     console.log("이건 유저 발란스 값" + this.userbalance);
 
     // 거래내역
@@ -338,8 +388,14 @@ export default {
   },
   data() {
     return {
-      investnum: "",
-      shoppingnum: "",
+      pageuserid: "",
+      pageuserimg: "",
+      pageusername: "",
+      pageuseraccestoken: "",
+      pageuserbalance: "",
+
+      investnum: 0,
+      shoppingnum: 0,
       iswallet: true,
       chatroom: false,
       userimg: "",
@@ -347,7 +403,7 @@ export default {
       userbalance: "",
       tab: null,
       text: ["1", "2", "3"],
-      tabs: ["마이페이지"],
+      tabs: [""],
       // 거래내역
       accounts: [
         { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
@@ -483,17 +539,6 @@ input:hover {
 .searchBarBtn {
   border: 1px solid lightgray;
 }
-#introduce {
-  background-color: white;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  resize: none;
-  padding: 8px;
-  margin: 0 0 20px 10px;
-}
-#introduce:hover {
-  border: 2px solid rgb(22, 150, 245);
-}
 .v-card__text {
   /* height: 600px; */
   overflow: hidden;
@@ -561,6 +606,7 @@ input:hover {
   text-decoration: none;
 }
 .mypagebox {
+  /* background-color: white; */
   display: flex;
   padding: 3% 10%;
   width: 100%;

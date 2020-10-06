@@ -1,5 +1,7 @@
 package com.blocker.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,13 +39,10 @@ public class WalletController {
 	}
 	@ApiOperation(value = "[지갑 조회] address를 이용해 지갑의 값을 조회. param : [address], result : 지갑이 존재하지 않으면 novalid, 지갑이 존재하면 해당 지갑의 balance를 return")
 	@GetMapping("/toaddress")
-	public ResponseEntity<?> get(@RequestParam("address") String address) {
+	public ResponseEntity<?> get(@RequestParam("address") String address) throws IOException {
 		Object result = walletService.getBalance(address);
-		if(result.equals("novalid")) {
-			return new ResponseEntity<String>((String) result, HttpStatus.OK);
-		}else {
-			return new ResponseEntity<Integer>((Integer) result, HttpStatus.OK);
-		}
+		return new ResponseEntity<String>((String) result, HttpStatus.OK);
+		
 	}
 	@ApiOperation(value = "[지갑 조회] 사용자 id를 이용해 지갑을 조회. param : [oauthid], result : 지갑이 존재하지 않으면 novalid, 지갑이 존재하면 해당 지갑을 return")
 	@GetMapping("/toid")

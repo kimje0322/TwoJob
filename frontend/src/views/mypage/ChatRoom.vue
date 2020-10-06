@@ -192,7 +192,7 @@
                     <div
                       v-else
                       style="
-                        float: right;
+
                         width: 250px;
                         height: 30px;
                         background-color: rgba(0, 0, 0, 0.15);
@@ -200,7 +200,7 @@
                         padding: 5px;
                         color: white;
                         margin-bottom: 40px;
-                        margin-left: 200px;
+                        margin-left: 300px;
                       "
                     >
                       {{ lst.message }}

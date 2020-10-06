@@ -83,7 +83,7 @@
                           </div>
                         </div>
                         <!-- 영수증 등록, 상품 판매 글쓰기 -->
-                        <div style="margin-bottom: 10px">
+                        <div v-if="userid == pageuserid" style="margin-bottom: 10px">
                           <v-btn
                             @click.stop="item.modal.isopen = true"
                             style="
@@ -111,8 +111,10 @@
                                 </h4>
                               </v-card-title>
                               <v-divider></v-divider>
-                              <v-card-text >
-                                <p style="font-size: 18px;">투자금 사용내역 등록하기</p>
+                              <v-card-text>
+                                <p style="font-size: 18px">
+                                  투자금 사용내역 등록하기
+                                </p>
                                 <div style="padding: 50px 30px 30px">
                                   <!-- 이미지 총 금액 -->
                                   <div
@@ -170,7 +172,7 @@
                                       >사진 첨부하기</span
                                     >
                                   </div>
-                                  
+
                                   <!-- 이미지 첨부된 경우 -->
                                   <!-- 이미지 삭제 버튼 -->
                                   <div
@@ -179,7 +181,7 @@
                                     :key="i"
                                     style="position: relative"
                                   >
-                                  <hr />
+                                    <hr />
                                     <v-btn
                                       x-small
                                       dark
@@ -226,7 +228,9 @@
                                 <v-btn text @click="item.modal.isopen = false"
                                   >닫기</v-btn
                                 >
-                                <v-btn text color="rgb(22, 150, 245)">등록하기</v-btn>
+                                <v-btn text color="rgb(22, 150, 245)"
+                                  >등록하기</v-btn
+                                >
                               </v-card-actions>
                             </v-card>
                           </v-dialog>
@@ -294,6 +298,7 @@ const SERVER_URL = "https://www.twojob.ga/api";
 export default {
   data() {
     return {
+      pageuserid: "",
       userid: "",
       page: 0,
       // 투자금 사용내역 모달
@@ -314,50 +319,6 @@ export default {
     };
   },
   methods: {
-    onLogout() {
-      store.state.isSigned = false;
-      console.log("로그아웃됨");
-      console.log("store.state.isSigned " + store.state.isSigned);
-      // this.$router.push("/");
-    },
-    onWallet() {
-      // var Web3 = require('web3');
-      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
-
-      var Accounts = require("web3-eth-accounts");
-      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
-      var result = web3.eth.accounts.create();
-      console.log(accounts);
-      console.log(result);
-
-      store.commit("setAddress", result.address);
-
-      const fd = new FormData();
-      fd.append("accessToken", store.state.accessToken);
-      fd.append("address", store.state.address);
-      fd.append("privatekey", result.privateKey);
-      axios.post(`${SERVER_URL}/wallet/regist`, fd).then((res) => {
-        console.log("wow!!success!!");
-        console.log(res);
-        console.log(fd);
-        if (res.data == 401) {
-          store.state.isSigned = false;
-        } else if (res.data == "success") {
-          Swal.fire({
-            icon: "success",
-            title: "지갑 생성 성공",
-            text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
-            // showCancelButton: true,
-            // cancelButtonColor: "#d33",
-            // confirmButtonColor: "#3085d6",
-            confirmButtonText: "확인",
-            // cancelButtonText: "취소하기",
-          });
-        }
-      });
-
-      // alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
-    },
     onChangeImages(event) {
       console.log(event);
       this.file = event.target.files[0];
@@ -402,12 +363,24 @@ export default {
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
     this.userid = store.state.userInfo.id;
+
+    var idx = window.location.href.indexOf("pjt");
+    console.log(idx);
+    const pageid = window.location.href.substring(
+      idx + 4,
+      window.location.href.length
+    );
+    console.log(pageid);
+    this.pageuserid = pageid;
+
+    // axios
+    // console.log(pageid + "asdfadsddd");
+    // console.log(typeof pageid);
+
     axios
-      .get(
-        `${SERVER_URL}/investment/investList/${this.page}?userid=${this.userid}`
-      )
+      .get(`${SERVER_URL}/investment/investList/${this.page}?userid=${pageid}`)
       .then((response) => {
-        console.log("나의 투자프로젝트 페이지");
+        console.log("페이지");
         console.log(response);
         this.investList = response.data.object;
         console.log('이거investList')

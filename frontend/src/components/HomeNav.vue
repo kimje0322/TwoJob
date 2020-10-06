@@ -50,6 +50,7 @@
             >
             <!-- <i class="fas fa-coins"></i>   -->
             <v-icon class="mr-1">mdi-plus-circle-outline</v-icon>
+      
              충전
             </v-btn>
             
@@ -61,6 +62,7 @@
               outlined
             >
             <v-icon>mdi-wallet-outline</v-icon>
+  
              지갑생성 
             </v-btn>
             
@@ -160,16 +162,26 @@ export default {
     }
   },
   mounted() {
+    if (store.state.isSigned) {
+      this.userInfo = store.state.userInfo;
+      this.login = store.state.isSigned;
+      console.log(this.userInfo);
+    } else {
+      this.login = false;
+    }
     // 지갑 생성 여부 확인
     axios.get(
-        `${SERVER_URL}/wallet/toid?oauthid=${this.userInfo.id}`)
+        `${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`)
         .then((res) => {
           console.log(res.data)
           if (res.data == "novalid") {
-            this.walletExist = false;
+            store.commit("setWalletExist", false);
+            store.commit("setAddress", res.data.address);
+            this.walletExist = store.state.userInfo.walletExist;
           } else {
-            this.walletExist = true;
-
+            store.commit("setWalletExist", true);
+            store.commit("setAddress", null);
+            this.walletExist = store.state.userInfo.walletExist;
           }
         })
     if (location.href.includes("pg_token")) {
@@ -185,13 +197,6 @@ export default {
         });
       }
     this.asset = store.state.balance;
-    if (store.state.isSigned) {
-      this.userInfo = store.state.userInfo;
-      this.login = store.state.isSigned;
-      console.log(this.userInfo);
-    } else {
-      this.login = false;
-    }
   },
   updated() {
     if (this.login && this.items.length == 2) {
@@ -201,9 +206,9 @@ export default {
   },
   methods: {
     onWallet() {
-      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
+      var web3 = new Web3("https://twojob.ga/eth/");
       var Accounts = require("web3-eth-accounts");
-      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
+      var accounts = new Accounts("https://twojob.ga/eth/");
       var result = web3.eth.accounts.create();
       store.commit("setAddress", result.address);
       const fd = new FormData();
@@ -216,9 +221,9 @@ export default {
         if (res.data == 401) {
           store.state.isSigned = false;
         } else if (res.data == "success") {
-          this.wallet = store.state.us
-          erInfo.walletAddress;
-          this.walletExist = true;
+          this.wallet = store.state.userInfo.walletAddress;
+          store.commit("setWalletExist", true)
+          this.walletExist = store.state.userInfo.walletExist;
           Swal.fire({
             icon: "success",
             title: "지갑 생성 성공",
@@ -235,7 +240,8 @@ export default {
       } else if (title == '쇼핑 프로젝트') {
         this.$router.push('/shoppinghome');
       } else if (title == '마이페이지') {
-        this.$router.push('/mypage');
+        // this.$router.push('/mypage');
+        this.$router.push({ name: 'Mypage', params: { userid: this.userInfo.id}})
       } else if (title == '로그아웃'){
         this.onLogout();
       }
@@ -266,9 +272,11 @@ export default {
         .then((res) => {
           console.log(res.data)
           if (res.data == "novalid") {
-            this.walletExist = false;
+            store.commit("setWalletExist", false);
+            this.walletExist = store.state.userInfo.walletExist;
           } else {
-            this.walletExist = true;
+            store.commit("setWalletExist", true);
+            this.walletExist = store.state.userInfo.walletExist;
           }
         })
         .catch((err) => {

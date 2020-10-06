@@ -11,12 +11,12 @@
         <div style="text-align: right">
           <div class="navbarItem">
             <router-link to="/investhome">
-              <h5 class="navbarmenu">투자하기</h5>
+              <h5 class="navbarmenu" :class="{ active: this.$route.path=='/investhome'||this.$route.path=='/investproject'||this.$route.path=='/writeinvest'}">투자하기</h5>
             </router-link>
           </div>
           <div class="navbarItem">
             <router-link to="/shoppinghome">
-              <h5 class="navbarmenu">쇼핑하기</h5>
+              <h5 class="navbarmenu" :class="{ active: this.$route.path=='/shoppinghome'||this.$route.path=='/shoppingproject'}">쇼핑하기</h5>
             </router-link>
           </div>
           <div class="navbarItem" v-if="!login">
@@ -127,7 +127,7 @@
                           params: { address: item.address },
                         }" -->
                     <router-link
-                      :to="{ name: 'Mypage', params: { userid : userInfo.id } }"
+                      :to="{ name: 'Mypage', params: { userid: userInfo.id } }"
                       style="text-decoration: none"
                     >
                       <v-btn depressed rounded text> 마이페이지 </v-btn>
@@ -183,6 +183,7 @@ export default {
       },
       // 충전 모달
       chargeDialog: false,
+      // 지갑
       iswallet: false,
     };
   },
@@ -192,17 +193,25 @@ export default {
     },
   },
   mounted() {
+    // 총 balance
+    axios
+     .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
+     .then((res) => {
+       console.log("총 잔액보여줘제발")
+       console.log(res)
+       this.asset = res.data
+     })
+
     axios
       .get(`${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`)
       .then((res) => {
-        console.log(res.data.balance);
-        // this.mywallet = res.data.address;
-        // console.log("여기여기``");
-        // console.log(this.mywallet);
-        this.iswallet = true;
-        store.commit("setBalance", res.data.balance);
-        // store.state.balance = res.data.balance;
-        // console.log(store.state.balance + 123123);
+        if (res.data == "novalid") {
+          store.commit("setWalletExist", false);
+          this.iswallet = store.state.userInfo.walletExist;
+        } else {
+          store.commit("setWalletExist", true);
+          this.iswallet = store.state.userInfo.walletExist;
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -221,10 +230,10 @@ export default {
   },
   methods: {
     onWallet() {
-      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
+      var web3 = new Web3("https://twojob.ga/eth/");
 
       var Accounts = require("web3-eth-accounts");
-      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
+      var accounts = new Accounts("https://twojob.ga/eth/");
       var result = web3.eth.accounts.create();
       console.log(accounts);
       console.log(result);
@@ -242,12 +251,16 @@ export default {
         if (res.data == 401) {
           store.state.isSigned = false;
         } else if (res.data == "success") {
+          store.commit("setWalletExist", true)
+          this.iswallet = store.state.userInfo.walletExist;
           Swal.fire({
             icon: "success",
             title: "지갑 생성 성공",
             text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
             confirmButtonText: "확인",
           });
+          this.iswallet = true;
+
         }
       });
     },
@@ -358,6 +371,7 @@ export default {
   height: 50px;
   line-height: 50px;
   margin: 0;
+  font-weight: 600;
 }
 .navbarmenu:hover {
   color: rgb(22, 150, 245);
@@ -412,5 +426,8 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.active {
+  color: rgb(22, 150, 245);
 }
 </style>

@@ -91,7 +91,7 @@ const routes = [{
         component: WriteShopping,
     },
     {
-        path: "/myinvestpjt",
+        path: "/myinvestpjt/:userid?",
         name: "MyInvestPjt",
         component: MyInvestPjt,
     },
