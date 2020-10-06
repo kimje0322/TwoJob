@@ -294,7 +294,7 @@ export default {
       });
     },
     addedItems(val) {
-      console.log('넣음')
+      // console.log('넣음')
       if(this.completed = true) {
         this.isActive = true
       }
@@ -433,27 +433,41 @@ export default {
                   fd.append("campaignId", response.data.data);
                   axios
                     .post(`${SERVER_URL}/funding/sellopen`, fd)
-                    .then((res) => {
-                      console.log(res)
-                      console.log('성공')
+                    let timerInterval;
+                    Swal.fire({
+                      title: "쇼핑 프로젝트 오픈중",
+                      html: "<b></b> milliseconds 기다려주세요.",
+                      timer: 10000,
+                      timerProgressBar: true,
+                      onBeforeOpen: () => {
+                        Swal.showLoading();
+                        timerInterval = setInterval(() => {
+                          const content = Swal.getContent();
+                          if (content) {
+                            const b = content.querySelector("b");
+                            if (b) {
+                              b.textContent = Swal.getTimerLeft();
+                            }
+                          }
+                        }, 100);
+                      },
+                      onClose: () => {
+                        clearInterval(timerInterval);
+                      },
                     })
-                    .catch((err) => {
-                      console.log(err)
-                      console.log('에러 ')
-                    })
-
-                  Swal.fire({
-                  // position: 'top-end',
-                  icon: 'success',
-                  title: '',
-                  text: '프로젝트가 성공적으로 오픈되었습니다.',
-                  showConfirmButton: false,
-                  // timer: 1500
-              })
-              }else{
-                alert(실패)
-              }
-
+                    .then((response) => {
+                      console.log(response);
+                      this.$router.push("/shoppinghome");
+                      Swal.fire({
+                        icon: "success",
+                        title: "",
+                        text: "프로젝트가 성공적으로 오픈되었습니다.",
+                        showConfirmButton: false,
+                      })
+                    });
+                   } else {
+                  alert("프로젝트 오픈에 실패했습니다.");             
+                  }
             })
             .catch(error => {
               console.log(error)

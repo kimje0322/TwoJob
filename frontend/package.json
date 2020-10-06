@@ -17,6 +17,7 @@
     "jquery": "^3.5.1",
     "roboto-fontface": "*",
     "vue": "^2.6.10",
+    "vue-infinite-loading": "^2.4.5",
     "vue-router": "^3.4.5",
     "vue-sweetalert2": "^3.0.8",
     "vueperslides": "^2.10.8",

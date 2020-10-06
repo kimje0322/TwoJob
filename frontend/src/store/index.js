@@ -25,8 +25,10 @@ export default new Vuex.Store({
             walletAddress: null,
             walletExist: false,
         },
-
+        // 투자
         pjtwriterid: null,
+        // 쇼핑
+        pjtmakerid: null,
 
         // 지갑이 있는지 여부
         iswallet: false,
