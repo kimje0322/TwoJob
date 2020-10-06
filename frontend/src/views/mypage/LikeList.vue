@@ -1,5 +1,5 @@
 <template>
-  <div class="myinvestpjt">
+  <div class="myinvestcreate">
     <!-- 상단 Navbar -->
     <navbar style="border-bottom: 1px solid lightgray" />
     <div style="padding: 1% 10%">
@@ -190,7 +190,7 @@ import store from "../../store/index.js";
 import Navbar from "../../components/Navbar.vue";
 import Web3 from "web3";
 import Swal from "sweetalert2";
-import "../../../public/css/MyInvestPjt.scss";
+import "../../../public/css/MyInvestCreate.scss";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 // const SERVER_URL = "http://j3b102.p.ssafy.io:8080";

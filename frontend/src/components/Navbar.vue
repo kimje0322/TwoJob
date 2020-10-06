@@ -37,7 +37,7 @@
                   <v-avatar style="width: 35px; height: 35px; margin: 0">
                     <img :src="userInfo.img" alt="John" />
                   </v-avatar>
-                  <div style="margin-right: 55px">
+                  <div>
                     <h5
                       style="
                         display: inline-block;

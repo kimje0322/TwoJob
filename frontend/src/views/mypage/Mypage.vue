@@ -1,11 +1,14 @@
 <template>
   <div class="mypage">
     <!-- 상단 Navbar -->
-    <navbar style="border: 1px solid lightgray" />
+    <navbar />
     <!-- 투자 글쓰기 메뉴바 -->
-    <div class="mypagebox" style="background-color: white;">
+    <div
+      class="mypagebox"
+      style="background-color: white; border-top: 1px solid lightgray"
+    >
       <!-- user 정보 -->
-      <div style="margin-top: 45px; margin-right: 5%">
+      <div style="margin-top: 48px; margin-right: 5%">
         <!-- <img :src="userimg" style="height: 100px; border-radius: 50%" /> -->
         <v-avatar style="width: 150px; height: 150px">
           <img :src="pageuserimg" alt="John" />
@@ -27,60 +30,119 @@
         </div>
       </div>
       <!-- 마이페이지 내용 -->
-      <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
-        <v-tab
-          style="color: black"
-          v-for="(item, i) in tabs"
-          :key="i"
-          :href="`#tab-${i}`"
-          class="writeMenu"
-          >{{ item }}</v-tab
-        >
-        <!-- 투자 마이페이지 -->
-        <v-tab-item :value="'tab-0'">
-          <v-card flat tile>
-            <v-card-text>
-              <div>
-                <div class="project_info">
-                  <!-- <h3 class="mypage_title">투자 페이지</h3> -->
-                  <div class="info_box">
-                    <div style="padding: 0 3%; margin-bottom: 30px">
+
+      <div
+        style="
+          width: 100%;
+          background: rgba(22, 150, 245, 0.1);
+          padding: 20px 5%;
+        "
+      >
+        <div class="project_info">
+          <!-- <h3 class="mypage_title">투자 페이지</h3> -->
+          <div class="info_box">
+            <v-tabs v-model="tab" class="elevation-2" dark hide-slider style="padding: 10px 30px">
+              <v-tab
+                style="color: black"
+                v-for="(item, i) in tabs"
+                :key="i"
+                :href="`#tab-${i}`"
+                class="writeMenu"
+                >{{ item }}</v-tab
+              >
+              <!-- 투자 마이페이지 -->
+              <v-tab-item :value="'tab-0'">
+                <v-card flat tile>
+                  <v-card-text>
+                    <div style="">
                       <div class="info_frame">
                         <ul class="info_ul">
-                          <li class="info_li">
-                            <!-- <a href="/myinvestpjt" class="pjt_a"> -->
-                            <span class="pjt_span">생성한 프로젝트</span>
-                            <router-link
-                              style="color: black"
-                              :to="{
-                                name: 'MyInvestPjt',
-                                params: { userid: pageuserid },
-                              }"
+                          <router-link
+                            style="color: black; text-decoration: none"
+                            :to="{
+                              name: 'MyInvestCreate',
+                              params: { userid: pageuserid },
+                            }"
+                          >
+                            <li class="info_li">
+                              <span class="pjt_span">생성한 프로젝트</span>
+                              <h2 style="margin-top: 20px">
+                                {{ investcreatenum }}
+                                <h5 style="display: inline-block">회</h5>
+                              </h2>
+                            </li>
+                          </router-link>
+                          <router-link
+                            style="color: black; text-decoration: none"
+                            :to="{
+                              name: 'MyInvestIn',
+                              params: { userid: pageuserid },
+                            }"
+                          >
+                            <li
+                              class="info_li"
+                              style="border-left: 2px solid #e9ecef"
                             >
-                              <h2 v-if="investnum.length > 0" style="margin-top: 20px">
-                                {{ investnum }}
+                              <span class="pjt_span">참여한 프로젝트</span>
+                              <h2 style="margin-top: 20px">
+                                {{ investinnum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
-                              <h2 v-else style="margin-top: 20px">
-                                0
+                            </li>
+                          </router-link>
+                        </ul>
+                        <ul class="open_pjt">
+                          <a href="/writeinvest" class="opjt_a">
+                            <li class="opjt_li" style="width: 100%">
+                              투자 프로젝트 생성
+                            </li>
+                          </a>
+                        </ul>
+                      </div>
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </v-tab-item>
+              <!-- 쇼핑 마이페이지 -->
+              <v-tab-item :value="'tab-1'">
+                <v-card flat tile>
+                  <v-card-text>
+                    <div style="">
+                      <div class="info_frame">
+                        <ul class="info_ul">
+                          <router-link
+                            style="color: black; text-decoration: none"
+                            :to="{
+                              name: 'MyShoppingCreate',
+                              params: { userid: pageuserid },
+                            }"
+                          >
+                          <li class="info_li">
+                            <span class="pjt_span">생성한 프로젝트</span>
+                              <h2 style="margin-top: 20px">
+                                {{ shoppingcreatenum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
-
-                            </router-link>
-                            <!-- </a> -->
                           </li>
+                          </router-link>
+                          <router-link
+                            style="color: black; text-decoration: none"
+                            :to="{
+                              name: 'MyShoppingIn',
+                              params: { userid: pageuserid },
+                            }"
+                          >
                           <li
                             class="info_li"
                             style="border-left: 2px solid #e9ecef"
                           >
-                            <a href="#" class="pjt_a">
                               <span class="pjt_span">참여한 프로젝트</span>
                               <h2 style="margin-top: 20px">
-                                {{ shoppingnum }}
+                                {{ shoppinginnum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
-                            </a>
                           </li>
+                          </router-link>
                         </ul>
                         <ul class="open_pjt">
                           <li class="opjt_li" style="width: 100%">
@@ -88,157 +150,140 @@
                               >투자 프로젝트 생성</a
                             >
                           </li>
-                          <!-- <li class="opjt_li">
-                            <a href="#" class="opjt_a">쇼핑 프로젝트 생성</a>
-                          </li> -->
                         </ul>
                       </div>
                     </div>
-                    <div
-                      v-if="pageusername == username"
-                      style="margin: 30px 0; overflow: hidden"
+                  </v-card-text>
+                </v-card>
+              </v-tab-item>
+            </v-tabs>
+            <div
+              v-if="pageusername == username"
+              style="margin: 30px 0; overflow: hidden"
+            >
+              <h3 class="mypage_title">나의 활동</h3>
+              <div style="padding: 0 3%">
+                <div
+                  style="
+                    padding: 18px 12px;
+                    float: left;
+                    width: 50%;
+                    border-top: 1px solid #f2f4f6;
+                    border-bottom: 1px solid #f2f4f6;
+                  "
+                >
+                  <span style="margin-right: 5px; color: red; font-size: 18px">
+                    <i class="fas fa-heart"></i>
+                  </span>
+                  <router-link
+                    to="/likelist"
+                    style="text-decoration: none; color: black"
+                    ><span style="font-size: 18px">찜한 목록</span></router-link
+                  >
+                </div>
+                <div
+                  style="
+                    padding: 18px 12px;
+                    float: left;
+                    width: 50%;
+                    border-top: 1px solid #f2f4f6;
+                    border-bottom: 1px solid #f2f4f6;
+                  "
+                >
+                  <v-app class="vapp"></v-app>
+                  <div>
+                    <v-dialog
+                      max-width="800"
+                      min-height="500"
+                      v-model="chatroom"
                     >
-                      <h3 class="mypage_title">나의 활동</h3>
-                      <div style="padding: 0 3%">
-                        <div
-                          style="
-                            padding: 18px 12px;
-                            float: left;
-                            width: 50%;
-                            border-top: 1px solid #f2f4f6;
-                            border-bottom: 1px solid #f2f4f6;
-                          "
-                        >
-                          <span
-                            style="
-                              margin-right: 5px;
-                              color: red;
-                              font-size: 18px;
-                            "
-                          >
-                            <i class="fas fa-heart"></i>
-                          </span>
-                          <router-link
-                            to="/likelist"
-                            style="text-decoration: none; color: black"
-                            ><span style="font-size: 18px"
-                              >찜한 목록</span
-                            ></router-link
-                          >
-                        </div>
-                        <div
-                          style="
-                            padding: 18px 12px;
-                            float: left;
-                            width: 50%;
-                            border-top: 1px solid #f2f4f6;
-                            border-bottom: 1px solid #f2f4f6;
-                          "
-                        >
-                          <v-app class="vapp"></v-app>
-                          <div>
-                            <v-dialog
-                              max-width="800"
-                              min-height="500"
-                              v-model="chatroom"
-                            >
-                              <ChatRoom
-                                @closeChatRoom="closeChatRoom"
-                              ></ChatRoom>
-                            </v-dialog>
-                          </div>
-                          <span
-                            style="
-                              margin-right: 5px;
-                              color: rgb(22, 150, 245);
-                              font-size: 18px;
-                            "
-                          >
-                            <i class="fas fa-comments"></i>
-                          </span>
-                          <!-- <router-link
+                      <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
+                    </v-dialog>
+                  </div>
+                  <span
+                    style="
+                      margin-right: 5px;
+                      color: rgb(22, 150, 245);
+                      font-size: 18px;
+                    "
+                  >
+                    <i class="fas fa-comments"></i>
+                  </span>
+                  <!-- <router-link
                             to="/chat"
                             style="text-decoration: none; color: black"
                             > -->
-                          <span style="font-size: 18px" @click="onChat()"
-                            >채팅 목록</span
-                          >
-                          <!-- </router-link -->
-                        </div>
-                      </div>
-                    </div>
-                    <div style="margin: 30px 0">
-                      <div style="overflow: hidden">
-                        <h3 class="mypage_title" style="float: left">
-                          거래내역
-                        </h3>
-                        <router-link
-                          to="/#"
-                          style="text-decoration: none; color: black"
-                          ><span style="float: right">더보기</span></router-link
-                        >
-                      </div>
-                      <div style="margin-top: 18px; padding: 0 3%">
-                        <div
-                          v-for="(item, i) in accounts"
-                          :key="i"
-                          style="margin-bottom: 15px"
-                        >
-                          <v-avatar style="width: 50px; height: 50px">
-                            <img :src="userimg" alt="John" />
-                          </v-avatar>
-                          <span
-                            style="
-                              margin-left: 5%;
-                              font-size: 18px;
-                              height: 50px;
-                              line-height: 50px;
-                            "
-                            >{{ item.pjtName }}</span
-                          >
-                          <div style="display: inline-block; float: right">
-                            <v-icon
-                              v-if="item.isAdded"
-                              style="
-                                float: left;
-                                font-size: 16px;
-                                height: 50px;
-                                line-height: 50px;
-                                padding-right: 10px;
-                              "
-                              >mdi-plus</v-icon
-                            >
-                            <v-icon
-                              v-else
-                              style="
-                                float: left;
-                                font-size: 18px;
-                                height: 50px;
-                                line-height: 50px;
-                                padding-right: 10px;
-                              "
-                              >mdi-minus</v-icon
-                            >
-                            <span
-                              style="
-                                float: right;
-                                font-size: 16px;
-                                height: 50px;
-                                line-height: 50px;
-                              "
-                              >{{ item.transitPrice }} ETH</span
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <span style="font-size: 18px" @click="onChat()"
+                    >채팅 목록</span
+                  >
+                  <!-- </router-link -->
+                </div>
+              </div>
+            </div>
+            <div style="margin: 30px 0">
+              <div style="overflow: hidden">
+                <h3 class="mypage_title" style="float: left">거래내역</h3>
+                <router-link to="/#" style="text-decoration: none; color: black"
+                  ><span style="float: right">더보기</span></router-link
+                >
+              </div>
+              <div style="margin-top: 18px; padding: 0 3%">
+                <div
+                  v-for="(item, i) in accounts"
+                  :key="i"
+                  style="margin-bottom: 15px"
+                >
+                  <v-avatar style="width: 50px; height: 50px">
+                    <img :src="userimg" alt="John" />
+                  </v-avatar>
+                  <span
+                    style="
+                      margin-left: 5%;
+                      font-size: 18px;
+                      height: 50px;
+                      line-height: 50px;
+                    "
+                    >{{ item.pjtName }}</span
+                  >
+                  <div style="display: inline-block; float: right">
+                    <v-icon
+                      v-if="item.isAdded"
+                      style="
+                        float: left;
+                        font-size: 16px;
+                        height: 50px;
+                        line-height: 50px;
+                        padding-right: 10px;
+                      "
+                      >mdi-plus</v-icon
+                    >
+                    <v-icon
+                      v-else
+                      style="
+                        float: left;
+                        font-size: 18px;
+                        height: 50px;
+                        line-height: 50px;
+                        padding-right: 10px;
+                      "
+                      >mdi-minus</v-icon
+                    >
+                    <span
+                      style="
+                        float: right;
+                        font-size: 16px;
+                        height: 50px;
+                        line-height: 50px;
+                      "
+                      >{{ item.transitPrice }} ETH</span
+                    >
                   </div>
                 </div>
               </div>
-            </v-card-text>
-          </v-card>
-        </v-tab-item>
-      </v-tabs>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -263,7 +308,7 @@ export default {
     },
     onChat() {
       // window.open("");
-      this.chatroom = true; 
+      this.chatroom = true;
       console.log("모달 열어보자" + this.chatroom);
       // this.$router.push("/chat")
     },
@@ -358,18 +403,17 @@ export default {
         console.log(error);
       });
 
-
     axios
-     .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
-     .then((res) => {
-       console.log("총 잔액보여줘제발")
-       console.log(res)
-       this.pageuserbalance = res.data
-     })
+      .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
+      .then((res) => {
+        console.log("총 잔액보여줘제발");
+        console.log(res);
+        this.pageuserbalance = res.data;
+      });
 
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
-    this.userbalance = store.state.accessToken
+    this.userbalance = store.state.accessToken;
     console.log("이건 유저 발란스 값" + this.userbalance);
 
     // 거래내역
@@ -379,11 +423,11 @@ export default {
     axios
       .get(`${SERVER_URL}/mypage/myproject?oauthId=${store.state.userInfo.id}`)
       .then((res) => {
-        console.log(store.state.userInfo.id);
         console.log(res);
-        console.log("성공");
-        this.investnum = res.data.createNum;
-        this.shoppingnum = res.data.saleNum;
+        this.investcreatenum = res.data.createNum;
+        this.investinnum = res.data.partInNum;
+        this.shoppingcreatenum = res.data.saleNum;
+        this.shoppinginnum = res.data.partInSaleNum;
       });
   },
   data() {
@@ -394,8 +438,10 @@ export default {
       pageuseraccestoken: "",
       pageuserbalance: "",
 
-      investnum: 0,
-      shoppingnum: 0,
+      investcreatenum: 0,
+      investinnum: 0,
+      shoppingcreatenum: 0,
+      shoppinginnum: 0,
       iswallet: true,
       chatroom: false,
       userimg: "",
@@ -403,7 +449,7 @@ export default {
       userbalance: "",
       tab: null,
       text: ["1", "2", "3"],
-      tabs: [""],
+      tabs: ["투자", "쇼핑"],
       // 거래내역
       accounts: [
         { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
@@ -474,15 +520,23 @@ export default {
   font-size: 1.25rem;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
+  text-decoration: none;
 }
 .writeMenu:hover {
-  background-color: rgba(173, 220, 254, 0.4);
+  background-color: white;
+  border: 1px solid lightgray;
+  border-bottom: none;
 }
 .v-tab--active {
-  background-color: rgba(173, 220, 254, 0.4);
+  background-color: white;
+  border: 1px solid lightgray;
+  border-bottom: none;
 }
 .v-tab:before {
   background-color: unset;
+}
+.v-tabs-items {
+  border-radius: 12px;
 }
 .openbtn {
   line-height: 45px;
@@ -490,7 +544,7 @@ export default {
   right: 1%;
 }
 .v-card__text {
-  padding: 16px 10%;
+  padding: 0;
   color: black !important;
 }
 h5 {
@@ -544,7 +598,7 @@ input:hover {
   overflow: hidden;
 }
 .v-card--flat {
-  background-color: rgba(173, 220, 254, 0.4);
+  background-color: transparent;
 }
 .mypage_title {
   font-size: 20px;
@@ -566,6 +620,7 @@ input:hover {
   margin-top: 15px;
 }
 .info_li {
+  margin-top: 20px;
   display: inline-block;
   width: 50%;
   text-align: center;
@@ -608,7 +663,7 @@ input:hover {
 .mypagebox {
   /* background-color: white; */
   display: flex;
-  padding: 3% 10%;
+  padding: 5% 13%;
   width: 100%;
 }
 .logoutBtn {

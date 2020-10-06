@@ -13,6 +13,9 @@
         overflow-x: hidden;
     }
     .v-tabs-bar__content {
-        display: none;
+        // display: none;
+    }
+    .theme--light.v-tabs-items {
+        border-radius: 12px !important;
     }
 }
