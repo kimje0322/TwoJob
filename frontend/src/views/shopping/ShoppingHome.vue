@@ -45,10 +45,11 @@
       </v-dialog>    
     </div>
 
+    <div style="margin: 0px 185px 0 185px">
     <!-- 오픈예정 -->
     <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">
-        오픈예정<v-icon style="font-size: 36px; color: black"
+      <h4 style="font-weight: 600; margin-left:1px">
+        오픈예정 프로젝트<v-icon style="font-size: 36px; color: black"
           >mdi-chevron-right</v-icon
         >
       </h4>
@@ -60,19 +61,17 @@
           <router-link :to="{ name: 'ShoppingDetail', params: { address: item.address } }">
           <v-img height="250" :src="item.picture"></v-img>
           <v-card-title style="font-weight: 600; margin: auto">{{item.pjtname}}
-            <v-icon style= "margin-left: auto; color: rgb(22, 150, 245); margin-right: 3px"
-                >mdi-clock-outline</v-icon
-              ><span class="openBadge">D-{{ item.afterday }}</span>
-            <!-- <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.afterday}}일 남음</v-chip></div> -->
+            <v-chip label small style="padding:7px; background-color: rgb(22, 150, 245); margin-left: auto;">
+            <!-- <v-icon style= "margin-right: 3px; color: white"
+                >mdi-clock-outline
+            </v-icon> -->
+                <span class="openBadge" style="color:white">오픈 D-{{ item.afterday }}</span>
+            </v-chip>
           </v-card-title>
           <v-card-text>
-            <div style="margin-bottom: 15px;">{{item.onelineintro}}</div>
+            <div style="margin-bottom: 15px;">{{item.openintro}}</div>
             <div style="color: black;">
-              <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.saleprice}} 원</h5>
-              <div style="display: inline-block; float: right;">
-                <!-- <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.rate}}</h3>
-                <h5 style="display: inline-block; color:rgb(123, 197, 254)">달성</h5> -->
-              </div>
+              <h5 style="text-align: end; font-weight: bold; margin-right:10px; margin-bottom:0px;">판매가 {{item.saleprice}} 원</h5>
             </div>
           </v-card-text>
           </router-link>
@@ -81,9 +80,9 @@
     </div>
 
     <!-- 인기순 -->
-    <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">
-        인기순<v-icon style="font-size: 36px; color: black"
+    <div style="margin-left: 5%; margin-top: 5%">
+      <h4 style="font-weight: 600; margin-left:8px;">
+        인기 프로젝트<v-icon style="font-size: 36px; color: black"
           >mdi-chevron-right</v-icon
         >
       </h4>
@@ -99,34 +98,42 @@
           margin: 0 6% 4% 6%;
         "
       >
+      <router-link :to="{ name: 'ShoppingDetail', params: { address: item.address } }">
         <v-img
           style="width: 33%; float: left"
           height="180"
           :src="item.picture"
         ></v-img>
-        <div style="width: 67%; float: right">
+        <div style="margin-top: 3px; width: 67%; float: right">
           <v-card-title style="font-weight: 600"
             >{{ item.pjtname }}
-            <!-- 좋아요 자리 -->
-            
+          <v-chip
+            small
+            class="ma-2 ml-auto px-2"
+            label
+            outlined=""
+            style="background-color:#FF4081; color:black"
+          >
+          <span>
+            <v-icon left
+              style="color:#FF1744"
+              class="mr-0" size="19">
+              mdi-heart
+            </v-icon>
+            {{item.likecount}}개
+          </span>
+          </v-chip>
           </v-card-title>
           <v-card-text>
-            <div style="margin-bottom: 15px">{{ item.content }}</div>
+            <div style="margin-bottom: 13px; height:48px">{{ item.likeintro }}</div>
             <div style="color: black">
-              <strong
-                ><p
-                  style="
-                    display: inline-block;
-                    height: 41.6px;
-                    line-height: 41.6px;
-                  "
-                >
-                  판매가 {{ item.saleprice }} 원
-                </p></strong>
+              <h5 style="text-align: end; font-weight: bold; margin-right:8px; margin-bottom:0px;">판매가 {{item.saleprice}} 원</h5>
             </div>
           </v-card-text>
         </div>
+        </router-link>
       </v-card>
+    </div>
     </div>
   </div>
 </template>
@@ -189,7 +196,17 @@ export default {
       .then((res) => {
         console.log(res.data.object);
         this.openItems = res.data.object.closeopen;
+        // likeopenonelineintro
         this.likeItems = res.data.object.popular;
+        
+        for (var i = 0; i < this.likeItems.length; i++) {
+          this.likeItems[i].likeintro = res.data.object.likeonelineintro[i]
+          this.likeItems[i].likecount = res.data.object.popularlikecount[i]
+        }
+        for (var j = 0; j < this.openItems.length; j++) {
+          this.openItems[j].openintro = res.data.object.closeopenonelineintro[j] 
+        }
+
         this.openItems.forEach(item => {
             // 마감일
             const day = item.startdate.substring(8, 10);
@@ -197,9 +214,15 @@ export default {
             today.setDate(day - today.getDate());
             this.$set(item, "afterday", today.getDate());
             // 제목
-            if (item.pjtname.length > 8) {
-              item.pjtname = item.pjtname.substring(0, 10) + "...";
+            if (item.pjtname.length > 10) {
+              item.pjtname = item.pjtname.substring(0, 13) + "...";
             }
+        })
+        this.likeItems.forEach(item => {
+          // 제목
+          if (item.pjtname.length > 10) {
+            item.pjtname = item.pjtname.substring(0, 12) + "...";
+          }
         })
       }) 
   },
@@ -261,6 +284,7 @@ export default {
   text-decoration: none;
 }
 a {
-  text-decoration: none;
+  text-decoration: none !important;
+  color: black;
 }
 </style>

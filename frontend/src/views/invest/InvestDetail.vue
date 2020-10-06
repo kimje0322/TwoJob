@@ -542,7 +542,6 @@ export default {
     frm.append("address", this.nowAddress);
     frm.append("userid", store.state.userInfo.id);
     axios.post(`${SERVER_URL}/investment/getDetail`, frm).then((response) => {
-      // console.log(response)
       // 좋아요
       this.likeCount = response.data.object.likecount;
       this.isliked = response.data.object.like;

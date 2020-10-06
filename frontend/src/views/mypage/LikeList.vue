@@ -62,12 +62,12 @@
                           {{ item.pjtname }}
                         </p>
                         <div style="margin-left: auto">
-                          <!-- <v-chip class="projectBadge"
-                            > {{today}} {{ item.deadline.substring(8, 10) - today }}일 남음</v-chip
-                          > -->
-                          <v-chip class="likeBadge" style="font-size: 12px"
-                            >100명 좋아요</v-chip
+                          <v-chip v-model="dtime" class="projectBadge"
+                            > {{ item.lastday }}일 남음</v-chip
                           >
+                          <!-- <v-chip class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요</v-chip
+                          > -->
                         </div>
                         <!-- <div style="margin-left: auto">
                           <v-chip class="likeBadge" style="font-size: 12px"
@@ -136,18 +136,18 @@
                         "
                       >
                         <p v-if="item.pjtname.length > 6">
-                          {{ item.pjtname.substring(0, 4) }} ...
+                          {{ item.pjtname.substring(0, 6) }} ...
                         </p>
                         <p v-else>
                           {{ item.pjtname }}
                         </p>
                         <div style="margin-left: auto">
-                          <!-- <v-chip class="projectBadge"
-                            > {{today}} {{ item.deadline.substring(8, 10) - today }}일 남음</v-chip
-                          > -->
-                          <v-chip class="likeBadge" style="font-size: 12px"
-                            >100명 좋아요</v-chip
+                          <v-chip class="projectBadge"
+                            > {{ item.lastday }}일 남음</v-chip
                           >
+                          <!-- <v-chip v-model="a" class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요 {{ b }}</v-chip
+                          > -->
                         </div>
                         <!-- <div style="margin-left: auto">
                           <v-chip class="likeBadge" style="font-size: 12px"
@@ -200,6 +200,7 @@ const SERVER_URL = "https://www.twojob.ga/api";
 export default {
   data() {
     return {
+      dtime: "",
       userid: "",
       page: 0,
       // 투자금 사용내역 모달
@@ -246,38 +247,25 @@ export default {
       console.log("investlikelst");
       console.log(this.investlikelst);
       console.log(this.shopplinglikelst);
+      this.investlikelst.forEach((invlst) => {
+        console.log("asdf")
+        const year = invlst.deadline.substring(0, 4)
+        const month = invlst.deadline.substring(5, 7)
+        const day = invlst.deadline.substring(8, 10)
+
+        var Dday = new Date(year, month - 1, day)
+        var now = new Date();
+        var gap = now.getTime() - Dday.getTime()
+        var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+        this.$set(invlst, "lastday", result)
+        console.log("남은날짜 " + invlst.lastday)
+      })
     });
   },
 
   computed: {},
   method: {},
   watch: {
-    date1(val) {
-      this.dateFormatted1 = this.formatDate(this.date1);
-    },
-    date2(val) {
-      this.dateFormatted2 = this.formatDate(this.date2);
-    },
-    model(val, prev) {
-      if (val.length === prev.length) return;
-      this.model = val.map((v) => {
-        if (typeof v === "string") {
-          v = { text: `#${v}` };
-          this.items.push(v);
-          this.nonce++;
-        }
-        return v;
-      });
-    },
-    select(val) {
-      if (val == "개인") {
-        this.individual = true;
-        this.business = false;
-      } else {
-        this.business = true;
-        this.individual = false;
-      }
-    },
   },
 };
 </script>

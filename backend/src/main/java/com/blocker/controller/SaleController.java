@@ -163,8 +163,9 @@ public class SaleController {
 	public Object getAllSaleList(@PathVariable int page, @RequestParam List<String> categoryfilter,
 			@RequestParam int orderOption) {
 		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
 		List<SaleBoardResponse> resultDatalist = new ArrayList<>();
-
+		List<Integer> likeCount = new ArrayList<>();
 		try {
 			if (categoryfilter.isEmpty()) {
 				Page<SaleBoardDto> list = null;
@@ -196,6 +197,9 @@ public class SaleController {
 					data.setOnelineintro(investmentDto.getOnelineintro());
 					data.setTotalpage(list.getTotalPages());
 					resultDatalist.add(data);
+					
+					//like
+					likeCount.add(likeBoardService.likeCount(data.getAddress()));
 				}
 			} else {
 				Page<BoardCategoryMapping> list = boardCategoryService.getAllInvestmentListWithCategory(page,
@@ -227,11 +231,17 @@ public class SaleController {
 						data.setOnelineintro(investmentDto.getOnelineintro());
 						data.setTotalpage(list.getTotalPages());
 						resultDatalist.add(data);
+						
+						//like
+						likeCount.add(likeBoardService.likeCount(data.getAddress()));
 					}
 				}
 			}
+			
+			map.put("object", resultDatalist);
+			map.put("likecount", likeCount);
 			result.data = "success";
-			result.object = resultDatalist;
+			result.object = map;
 			result.status = true;
 		} catch (Exception e) {
 			result.data = "fail";

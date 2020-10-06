@@ -3,10 +3,14 @@
     <!-- 상단 Navbar -->
     <navbar />
     <!-- 투자 글쓰기 메뉴바 -->
+<<<<<<< HEAD
     <div
       class="mypagebox"
       style="background-color: white; border-top: 1px solid lightgray"
     >
+=======
+    <div class="mypagebox" style="background-color: white">
+>>>>>>> cf00f2ded130798dbf97c2c322a9c535d9ab66b8
       <!-- user 정보 -->
       <div style="margin-top: 48px; margin-right: 5%">
         <!-- <img :src="userimg" style="height: 100px; border-radius: 50%" /> -->
@@ -83,9 +87,17 @@
                               class="info_li"
                               style="border-left: 2px solid #e9ecef"
                             >
+<<<<<<< HEAD
                               <span class="pjt_span">참여한 프로젝트</span>
                               <h2 style="margin-top: 20px">
                                 {{ investinnum }}
+=======
+                              <h2
+                                v-if="investnum.length > 0"
+                                style="margin-top: 20px"
+                              >
+                                {{ investnum }}
+>>>>>>> cf00f2ded130798dbf97c2c322a9c535d9ab66b8
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
                             </li>
@@ -123,6 +135,11 @@
                                 {{ shoppingcreatenum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
+<<<<<<< HEAD
+=======
+                            </router-link>
+                            <!-- </a> -->
+>>>>>>> cf00f2ded130798dbf97c2c322a9c535d9ab66b8
                           </li>
                           </router-link>
                           <router-link
@@ -307,7 +324,10 @@ export default {
       this.chatroom = false;
     },
     onChat() {
+<<<<<<< HEAD
       // window.open("");
+=======
+>>>>>>> cf00f2ded130798dbf97c2c322a9c535d9ab66b8
       this.chatroom = true;
       console.log("모달 열어보자" + this.chatroom);
       // this.$router.push("/chat")
@@ -365,6 +385,7 @@ export default {
   mounted() {
     var idx = window.location.href.indexOf("mypage");
     console.log(idx);
+    console.log("url주소 길이" + window.location.href.length);
     const pageid = window.location.href.substring(
       idx + 7,
       window.location.href.length
@@ -460,46 +481,11 @@ export default {
     };
   },
   computed: {},
-  watch: {
-    date1(val) {
-      this.dateFormatted1 = this.formatDate(this.date1);
-    },
-    date2(val) {
-      this.dateFormatted2 = this.formatDate(this.date2);
-    },
-    model(val, prev) {
-      if (val.length === prev.length) return;
-      this.model = val.map((v) => {
-        if (typeof v === "string") {
-          v = { text: `#${v}` };
-          this.items.push(v);
-          this.nonce++;
-        }
-        return v;
-      });
-    },
-    select(val) {
-      if (val == "개인") {
-        this.individual = true;
-        this.business = false;
-      } else {
-        this.business = true;
-        this.individual = false;
-      }
-    },
-  },
 };
 </script>
 
 
 <style scoped>
-.investNav {
-  height: 50px;
-  text-align: center;
-  line-height: 50px;
-  border-bottom: 1px solid gray;
-  margin-bottom: 15px;
-}
 .items div {
   display: inline-block;
   margin: 0 10% 0 0;
