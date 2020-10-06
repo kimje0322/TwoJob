@@ -260,6 +260,7 @@
                     "
                   >
                     <v-card
+                      @click="moveinvestdetail(item.investmentDto.address)"
                       style="width: 100%; height: 180px; display: inline-block"
                     >
                       <v-img
@@ -336,6 +337,9 @@
                       display: inline-block;
                     "
                   >
+                  <router-link
+                    :to="{ name: 'ShoppingDetail', params: { address: item.saleBoardDto.address } }"
+                  >
                     <v-card
                       style="width: 100%; height: 180px; display: inline-block"
                     >
@@ -386,7 +390,7 @@
                                   color: rgb(22, 150, 245);
                                 "
                               >
-                                {{ item.saleBoardDto.sellNum }}개
+                                {{ item.saleBoardDto.sellnum }}개
                               </h3>
                               <h5
                                 style="
@@ -401,6 +405,7 @@
                         </v-card-text>
                       </div>
                     </v-card>
+                    </router-link>
                   </div>
                 </div>
                 <!-- 투자금 사용 내역 -->
@@ -421,6 +426,10 @@
                   </vueper-slides> -->
                 </div>
               </div>
+              <!-- 무한 스크롤 -->
+              <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
+                <div slot="no-more" style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px;">목록의 끝입니다 :)</div>
+              </infinite-loading>
             </div>
             <!-- 투자 설명서 -->
             <div
@@ -492,6 +501,7 @@ import axios from "axios";
 import store from "../../store/index.js";
 import Swal from "sweetalert2";
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
+import InfiniteLoading from 'vue-infinite-loading';
 
 const SERVER_URL = "https://www.twojob.ga/api";
 // const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
@@ -502,6 +512,7 @@ export default {
     VueperSlides,
     VueperSlide,
     ChatRoom,
+    InfiniteLoading
   },
   data() {
     return {
@@ -621,6 +632,7 @@ export default {
         // console.log(this.writer)
       });
       // 금손 프로젝트 이력 가져오기
+      this.page = 0
       const fd = new FormData();
       fd.append("userid", this.investPjt.userid);
       axios
@@ -629,11 +641,20 @@ export default {
           console.log(response);
           this.projectList = response.data.object;
           this.totalPage = response.data.object[0].totalpages;
-          this.projectList.forEach((item) => {
-            // 디테일 페이지와 동일한 프로젝트 삭제
+          // 디테일 페이지와 동일한 프로젝트 삭제
+          this.projectList.forEach(item =>{
             if(item.investmentDto.address == this.nowAddress){
               const idx = this.projectList.indexOf(item);
               this.projectList.splice(idx, 1);
+            }
+          })
+          this.projectList.forEach((item) => {
+            // 투자 프로젝트 chip
+            if (item.investmentDto.isfinish) {
+              console.log(item)
+              this.$set(item.investmentDto, "chip", "종료");
+            } else {
+              this.$set(item.investmentDto, "chip", "진행중");
             }
             // 투자 프로젝트 사용내역 보여주기
             axios.get(`${SERVER_URL}/funding/getreceipt?campaignId=${item.investmentDto.address}`)
@@ -641,16 +662,10 @@ export default {
                 // console.log(response)
                 // this.items = response.data
               })
-            // 투자 프로젝트 chip
-            if (item.investmentDto.isfinish) {
-              this.$set(item.investmentDto, "chip", "종료");
-            } else {
-              this.$set(item.investmentDto, "chip", "진행중");
-            }
             // pjtname
             if (item.investmentDto.pjtname.length > 8) {
               item.investmentDto.pjtname =
-                item.investmentDto.pjtname.substring(0, 8) + "...";
+                item.investmentDto.pjtname.substring(0, 12) + "...";
             }
             // 투자 금액 axios 가져오기
             axios
@@ -680,6 +695,11 @@ export default {
                 item.saleBoardDto.pjtname =
                   item.saleBoardDto.pjtname.substring(0, 8) + "...";
               }
+              // 쇼핑 프로젝트 판매개수 axios
+              axios.get(`${SERVER_URL}/funding/gettotalsell?campaignId=${item.saleBoardDto.address}`)
+                .then(response =>{
+                  this.$set(item.saleBoardDto, "sellnum", response.data)
+                })
             }
           });
         });
@@ -786,6 +806,117 @@ export default {
         // console.log(response)
       });
     },
+    moveinvestdetail(item) {
+      this.$router.push({name: 'InvestDetail', params: {address : item}});
+      window.location.reload();
+    },
+    // 무한 스크롤
+    infiniteHandler($state) {
+      this.page += 1
+    //   const EACH_LEN = 30
+    //   fetch("/api/idol/uwasa/pages/" + (this.limit), {method: "get"}).then(resp => {
+    //     return resp.json()
+    //   }).then(data => {
+    //     setTimeout(() => {
+    //       if(data.length) {
+    //         this.topicData = this.topicData.concat(data)
+    //         $state.loaded()
+    //         this.limit += 1
+    //         console.log("after", this.topicData.length, this.limit)
+    //         // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면 
+    //         if(data.length / EACH_LEN < 1) {
+    //           $state.complete()
+    //         }
+    //       } else {
+    //         // 끝 지정(No more data)
+    //         $state.complete()
+    //       }
+    //     }, 1000)
+    //   }).catch(err => {
+    //     console.error(err);
+    //   })
+    // 금손 프로젝트 이력 가져오기
+      const fd = new FormData();
+      fd.append("userid", this.investPjt.userid);
+      axios
+        .post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
+        .then((response) => {
+          setTimeout(() => {
+          if(response.data.data == "success"){
+            this.projectList = this.projectList.concat(response.data.object);
+            // this.totalPage = response.data.object[0].totalpages;
+            // 디테일 페이지와 동일한 프로젝트 삭제
+            this.projectList.forEach(item =>{
+              if(item.investmentDto.address == this.nowAddress){
+                const idx = this.projectList.indexOf(item);
+                this.projectList.splice(idx, 1);
+              }
+            })
+            this.projectList.forEach((item) => {
+              // 투자 프로젝트 chip
+              if (item.investmentDto.isfinish) {
+                console.log(item)
+                this.$set(item.investmentDto, "chip", "종료");
+              } else {
+                this.$set(item.investmentDto, "chip", "진행중");
+              }
+              // 투자 프로젝트 사용내역 보여주기
+              axios.get(`${SERVER_URL}/funding/getreceipt?campaignId=${item.investmentDto.address}`)
+                .then(response => {
+                  // console.log(response)
+                  // this.items = response.data
+                })
+              // pjtname
+              if (item.investmentDto.pjtname.length > 8) {
+                item.investmentDto.pjtname =
+                  item.investmentDto.pjtname.substring(0, 12) + "...";
+              }
+              // 투자 금액 axios 가져오기
+              axios
+                .get(
+                  `${SERVER_URL}/funding/nowfund?campaignId=${item.investmentDto.address}`
+                )
+                .then((response) => {
+                  this.$set(item.investmentDto, "investprice", response.data);
+                });
+              // 달성률 axios 보내기
+              const fr = new FormData();
+              fr.append("campaignId", item.investmentDto.address);
+              axios
+                .post(`${SERVER_URL}/funding/fundingrate`, fr)
+                .then((response) => {
+                  this.$set(item.investmentDto, "rate", response.data);
+                });
+              // 쇼핑 프로젝트 chip
+              if (item.saleBoardDto) {
+                if (item.saleBoardDto.isfinish) {
+                  this.$set(item.saleBoardDto, "chip", "종료");
+                } else {
+                  this.$set(item.saleBoardDto, "chip", "진행중");
+                }
+                // pjtname
+                if (item.saleBoardDto.pjtname.length > 8) {
+                  item.saleBoardDto.pjtname =
+                    item.saleBoardDto.pjtname.substring(0, 8) + "...";
+                }
+                // 쇼핑 프로젝트 판매개수 axios
+                axios.get(`${SERVER_URL}/funding/gettotalsell?campaignId=${item.saleBoardDto.address}`)
+                  .then(response =>{
+                    this.$set(item.saleBoardDto, "sellnum", response.data)
+                  })
+              }
+            });
+            $state.loaded()
+            console.log("after", this.projectList, this.page)
+            if(this.page >= this.totalPage) {
+              $state.complete()
+            }
+          }else{
+            $state.complete()
+          }
+        }, 1000)
+      });
+    }
   },
 };
 </script>

@@ -2,9 +2,12 @@
   <div class="myinvestcreate">
     <!-- 상단 Navbar -->
     <navbar style="" />
-    <div style="border-top: 1px solid lightgray; height: 100vh;">
+    <div style="border-top: 1px solid lightgray; height: 100vh">
       <div style="padding: 3% 0 2% 10%">
-        <h4 style="font-weight: 800"><span style="color: rgb(22, 150, 245)">{{pageusername}}</span>님이 생성한 투자 프로젝트</h4>
+        <h4 style="font-weight: 800">
+          <span style="color: rgb(22, 150, 245)">{{ pageusername }}</span
+          >님이 생성한 투자 프로젝트
+        </h4>
       </div>
       <!-- 프로젝트 메뉴바 -->
       <div style="padding: 0 12%">
@@ -20,16 +23,36 @@
                 class="my-12"
                 max-width="78%"
                 max-height="600px"
-                style="margin: auto"
+                style="margin: auto; margin-bottom: 30px"
               >
-                <v-img height="250" :src="item.picture"></v-img>
+                <router-link
+                  style="text-decoration: none"
+                  :to="{
+                    name: 'InvestDetail',
+                    params: { address: item.address },
+                  }"
+                >
+                  <v-img height="250" :src="item.picture"></v-img>
+                </router-link>
                 <v-card-title style="font-weight: 600; margin: auto">
-                  {{ item.pjtName }}
-                  <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.lastday}}일 남음</v-chip></div>
+                  <router-link
+                    style="color: black"
+                    :to="{
+                      name: 'InvestDetail',
+                      params: { address: item.address },
+                    }"
+                  >
+                    <span>{{ item.pjtName }}</span></router-link
+                  >
+                  <div style="margin-left: auto">
+                    <v-chip class="deadlineBadge"
+                      >{{ item.lastday }}일 남음</v-chip
+                    >
+                  </div>
                 </v-card-title>
                 <!-- max-height: 120px -->
                 <v-card-text style="">
-                  <div style="margin-bottom: 15px">
+                  <div style="margin-bottom: 15px; height: 50px">
                     {{ item.oneLineIntro }}
                   </div>
                   <div style="color: black">
@@ -205,7 +228,7 @@
                       </v-card>
                     </v-dialog>
                     <router-link
-                    style="text-decoration: none"
+                      style="text-decoration: none"
                       :to="{
                         name: 'WriteShopping',
                         params: { address: item.address },
@@ -247,7 +270,7 @@ export default {
       userimg: "",
       username: "",
       userbalance: "",
-       userid: "",
+      userid: "",
       // 페이지 사용자
       pageusername: "",
       pageuserid: "",
@@ -313,7 +336,7 @@ export default {
     this.userid = store.state.userInfo.id;
 
     var idx = window.location.href.indexOf("pjt");
-    const pageid = this.$route.params.userid
+    const pageid = this.$route.params.userid;
     this.pageuserid = pageid;
 
     // axios
@@ -332,29 +355,33 @@ export default {
           // 사용내역 모달
           const idx = this.investList.indexOf(item);
           this.$set(item, "modal", { name: `input${idx}`, isopen: false });
-          // 제목 
+          // 제목
           if (item.pjtName.length > 8) {
             item.pjtName = item.pjtName.substring(0, 10) + "...";
           }
+          // 한줄소개
+          if (item.oneLineIntro.length > 40) {
+            item.oneLineIntro = item.oneLineIntro.substring(0, 40) + "...";
+          }
           // 투자금액 axios 보내기
           axios
-            .get(
-              `${SERVER_URL}/funding/nowfund?campaignId=${item.address}`
-            )
+            .get(`${SERVER_URL}/funding/nowfund?campaignId=${item.address}`)
             .then((response) => {
               this.$set(item, "investprice", response.data);
             });
-          // 달성률 axios 
+          // 달성률 axios
           const fr = new FormData();
           fr.append("campaignId", item.address);
-          axios.post(`${SERVER_URL}/funding/fundingrate`, fr).then((response) => {
-            this.$set(item, "rate", response.data);
-          });
+          axios
+            .post(`${SERVER_URL}/funding/fundingrate`, fr)
+            .then((response) => {
+              this.$set(item, "rate", response.data);
+            });
           // 마감일 기준 남은날짜 계산
           const year = item.deadLine.substring(0, 4);
           const month = item.deadLine.substring(5, 7);
           const day = item.deadLine.substring(8, 10);
-          var Dday = new Date(year, month-1, day);
+          var Dday = new Date(year, month - 1, day);
           var now = new Date();
           var gap = now.getTime() - Dday.getTime();
           var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
@@ -368,7 +395,7 @@ export default {
     const fc = new FormData();
     fc.append("userid", this.pageuserid);
     axios.post(`${SERVER_URL}/util/userinfo`, fc).then((response) => {
-      this.pageusername = response.data.object.name
+      this.pageusername = response.data.object.name;
     });
   },
   computed: {},
