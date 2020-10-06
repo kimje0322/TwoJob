@@ -270,8 +270,8 @@ import Vue from "vue";
 
 // import Navbar from "../../components/Navbar.vue";
 
-// const SERVER_URL = "https://www.twojob.ga/api";
-const SERVER_URL = "http://j3b102.p.ssafy.io:8080"
+const SERVER_URL = "https://www.twojob.ga/api";
+// const SERVER_URL = "http://j3b102.p.ssafy.io:8080"
 
 var sock = new SockJS("https://www.twojob.ga/api/notice");
 // var sock = new SockJS("http://j3b102.p.ssafy.io:8080/api/notice");
@@ -424,6 +424,7 @@ export default {
               console.log(2);
             }
           }
+          store.state.askusername = null
           if (this.createroom) {
             console.log("채팅방만들기");
             this.createRoom();
@@ -459,7 +460,7 @@ export default {
               )
               .then((res) => {
                 this.chatmessage = res.data.content;
-                console.log(this.chatmessage);
+                // console.log(this.chatmessage);
               });
             // this.chatmessage =
           }

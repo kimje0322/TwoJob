@@ -3,7 +3,7 @@
     <!-- 상단 Navbar -->
     <navbar style="border: 1px solid lightgray" />
     <!-- 투자 글쓰기 메뉴바 -->
-    <div class="mypagebox" style="background-color: white;">
+    <div class="mypagebox" style="background-color: white">
       <!-- user 정보 -->
       <div style="margin-top: 45px; margin-right: 5%">
         <!-- <img :src="userimg" style="height: 100px; border-radius: 50%" /> -->
@@ -57,7 +57,10 @@
                                 params: { userid: pageuserid },
                               }"
                             >
-                              <h2 v-if="investnum.length > 0" style="margin-top: 20px">
+                              <h2
+                                v-if="investnum.length > 0"
+                                style="margin-top: 20px"
+                              >
                                 {{ investnum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
@@ -65,7 +68,6 @@
                                 0
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
-
                             </router-link>
                             <!-- </a> -->
                           </li>
@@ -262,8 +264,7 @@ export default {
       this.chatroom = false;
     },
     onChat() {
-      // window.open("");
-      this.chatroom = true; 
+      this.chatroom = true;
       console.log("모달 열어보자" + this.chatroom);
       // this.$router.push("/chat")
     },
@@ -320,6 +321,7 @@ export default {
   mounted() {
     var idx = window.location.href.indexOf("mypage");
     console.log(idx);
+    console.log("url주소 길이" + window.location.href.length);
     const pageid = window.location.href.substring(
       idx + 7,
       window.location.href.length
@@ -358,18 +360,17 @@ export default {
         console.log(error);
       });
 
-
     axios
-     .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
-     .then((res) => {
-       console.log("총 잔액보여줘제발")
-       console.log(res)
-       this.pageuserbalance = res.data
-     })
+      .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
+      .then((res) => {
+        console.log("총 잔액보여줘제발");
+        console.log(res);
+        this.pageuserbalance = res.data;
+      });
 
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
-    this.userbalance = store.state.accessToken
+    this.userbalance = store.state.accessToken;
     console.log("이건 유저 발란스 값" + this.userbalance);
 
     // 거래내역
@@ -414,46 +415,11 @@ export default {
     };
   },
   computed: {},
-  watch: {
-    date1(val) {
-      this.dateFormatted1 = this.formatDate(this.date1);
-    },
-    date2(val) {
-      this.dateFormatted2 = this.formatDate(this.date2);
-    },
-    model(val, prev) {
-      if (val.length === prev.length) return;
-      this.model = val.map((v) => {
-        if (typeof v === "string") {
-          v = { text: `#${v}` };
-          this.items.push(v);
-          this.nonce++;
-        }
-        return v;
-      });
-    },
-    select(val) {
-      if (val == "개인") {
-        this.individual = true;
-        this.business = false;
-      } else {
-        this.business = true;
-        this.individual = false;
-      }
-    },
-  },
 };
 </script>
 
 
 <style scoped>
-.investNav {
-  height: 50px;
-  text-align: center;
-  line-height: 50px;
-  border-bottom: 1px solid gray;
-  margin-bottom: 15px;
-}
 .items div {
   display: inline-block;
   margin: 0 10% 0 0;
