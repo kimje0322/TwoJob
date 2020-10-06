@@ -3,14 +3,10 @@
     <!-- 상단 Navbar -->
     <navbar />
     <!-- 투자 글쓰기 메뉴바 -->
-<<<<<<< HEAD
     <div
       class="mypagebox"
       style="background-color: white; border-top: 1px solid lightgray"
     >
-=======
-    <div class="mypagebox" style="background-color: white">
->>>>>>> cf00f2ded130798dbf97c2c322a9c535d9ab66b8
       <!-- user 정보 -->
       <div style="margin-top: 48px; margin-right: 5%">
         <!-- <img :src="userimg" style="height: 100px; border-radius: 50%" /> -->
@@ -87,17 +83,9 @@
                               class="info_li"
                               style="border-left: 2px solid #e9ecef"
                             >
-<<<<<<< HEAD
                               <span class="pjt_span">참여한 프로젝트</span>
                               <h2 style="margin-top: 20px">
                                 {{ investinnum }}
-=======
-                              <h2
-                                v-if="investnum.length > 0"
-                                style="margin-top: 20px"
-                              >
-                                {{ investnum }}
->>>>>>> cf00f2ded130798dbf97c2c322a9c535d9ab66b8
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
                             </li>
@@ -135,11 +123,6 @@
                                 {{ shoppingcreatenum }}
                                 <h5 style="display: inline-block">회</h5>
                               </h2>
-<<<<<<< HEAD
-=======
-                            </router-link>
-                            <!-- </a> -->
->>>>>>> cf00f2ded130798dbf97c2c322a9c535d9ab66b8
                           </li>
                           </router-link>
                           <router-link
@@ -324,10 +307,6 @@ export default {
       this.chatroom = false;
     },
     onChat() {
-<<<<<<< HEAD
-      // window.open("");
-=======
->>>>>>> cf00f2ded130798dbf97c2c322a9c535d9ab66b8
       this.chatroom = true;
       console.log("모달 열어보자" + this.chatroom);
       // this.$router.push("/chat")
