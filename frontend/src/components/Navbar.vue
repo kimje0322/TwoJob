@@ -234,10 +234,10 @@ export default {
   },
   methods: {
     onWallet() {
-      var web3 = new Web3("https:www.twojob.ga:8545");
+      var web3 = new Web3("https://twojob.ga/eth/");
 
       var Accounts = require("web3-eth-accounts");
-      var accounts = new Accounts("https:www.twojob.ga:8545");
+      var accounts = new Accounts("https://twojob.ga/eth/");
       var result = web3.eth.accounts.create();
       console.log(accounts);
       console.log(result);

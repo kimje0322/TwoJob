@@ -203,9 +203,9 @@ export default {
   },
   methods: {
     onWallet() {
-      var web3 = new Web3("http://j3b102.p.ssafy.io:8545");
+      var web3 = new Web3("https://twojob.ga/eth/");
       var Accounts = require("web3-eth-accounts");
-      var accounts = new Accounts("http://j3b102.p.ssafy.io:8545");
+      var accounts = new Accounts("https://twojob.ga/eth/");
       var result = web3.eth.accounts.create();
       store.commit("setAddress", result.address);
       const fd = new FormData();
