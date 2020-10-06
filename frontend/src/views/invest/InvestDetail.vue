@@ -453,7 +453,7 @@
                 style="padding: 0 5%; display: flex; margin-bottom: 10px"
               >
                 <div style="padding-right: 2%">
-                  <v-avatar style="width: 60px; height: 60px">
+                  <v-avatar style="width: 50px; height: 50px; margin-top: 5px">
                     <img :src="comment.profileImg" alt="John" />
                   </v-avatar>
                 </div>
@@ -591,10 +591,14 @@ export default {
         this.$set(this.investPjt, "rate", response.data);
       });
       // 마감일 기준 남은날짜 계산
+      const year = this.investPjt.deadLine.substring(0, 4);
+      const month = this.investPjt.deadLine.substring(5, 7);
       const day = this.investPjt.deadLine.substring(8, 10);
-      let today = new Date();
-      today.setDate(day - today.getDate());
-      this.$set(this.investPjt, "lastday", today.getDate());
+      var Dday = new Date(year, month-1, day);
+      var now = new Date();
+      var gap = now.getTime() - Dday.getTime();
+      var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+      this.$set(this.investPjt, "lastday", result);
       // 배경 이미지
       $(".investImg").css("background-image", `url(${this.investPjt.picture})`);
       // 글쓴이 소개글 엔터 변환

@@ -209,11 +209,15 @@ export default {
             this.investProjects = response.data.object;
             this.totalpage = this.investProjects[0].totalpage;
             this.investProjects.forEach((investPjt) => {
-              // 마감일
+              // 마감일 기준 남은날짜 계산
+              const year = investPjt.deadLine.substring(0, 4);
+              const month = investPjt.deadLine.substring(5, 7);
               const day = investPjt.deadLine.substring(8, 10);
-              let today = new Date();
-              today.setDate(day - today.getDate());
-              this.$set(investPjt, "lastday", today.getDate());
+              var Dday = new Date(year, month-1, day);
+              var now = new Date();
+              var gap = now.getTime() - Dday.getTime();
+              var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+              this.$set(investPjt, "lastday", result);
               // 제목
               if (investPjt.pjtName.length > 8) {
                 investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
@@ -267,11 +271,15 @@ export default {
               this.ispjt = true
               this.totalpage = this.investProjects[0].totalpage;
               this.investProjects.forEach((investPjt) => {
-                // 마감일
+                // 마감일 기준 남은날짜 계산
+                const year = investPjt.deadLine.substring(0, 4);
+                const month = investPjt.deadLine.substring(5, 7);
                 const day = investPjt.deadLine.substring(8, 10);
-                let today = new Date();
-                today.setDate(day - today.getDate());
-                this.$set(investPjt, "lastday", today.getDate());
+                var Dday = new Date(year, month-1, day);
+                var now = new Date();
+                var gap = now.getTime() - Dday.getTime();
+                var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+                this.$set(investPjt, "lastday", result);
                 // 제목
                 if (investPjt.pjtName.length > 8) {
                   investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";

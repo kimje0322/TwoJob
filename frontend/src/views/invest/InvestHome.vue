@@ -49,9 +49,9 @@
           <v-card-title style="font-weight: 600; margin: auto">{{item.pjtname}}
             <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.lastday}}일 남음</v-chip></div>
           </v-card-title>
-          <v-card-text>
-            <div style="margin-bottom: 15px;">{{item.onelineintro}}</div>
-            <div style="color: black;">
+          <v-card-text style="height: 130px">
+            <div style="margin-bottom: 15px; height: 60px">{{item.onelineintro}}</div>
+            <div style="color: black; height: 50px">
               <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.investprice}}원</h5>
               <div style="display: inline-block; float: right;">
                 <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.rate}}%</h3>
@@ -78,9 +78,9 @@
           <v-card-title style="font-weight: 600; margin: auto">{{item.pjtname}}
             <div style="margin-left: auto;"><v-chip class="likeBadge">{{item.likenum}}명 좋아요</v-chip></div>
           </v-card-title>
-          <v-card-text>
-            <div style="margin-bottom: 15px;">{{item.onelineintro}}</div>
-            <div style="color: black;">
+          <v-card-text style="height: 130px">
+            <div style="margin-bottom: 15px; height: 60px">{{item.onelineintro}}</div>
+            <div style="color: black; height: 50px">
               <h5 style="display: inline-block; height: 41.6px; line-height: 41.6px">{{item.investprice}}원</h5>
               <div style="display: inline-block; float: right;">
                 <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.rate}}%</h3>
@@ -128,11 +128,15 @@ export default {
         this.deadlineItems = response.data.object.closedeadlines
         this.likeItems = response.data.object.popular
         this.deadlineItems.forEach(item => {
-          // 마감일
+          // 마감일 기준 남은날짜 계산
+          const year = item.deadline.substring(0, 4);
+          const month = item.deadline.substring(5, 7);
           const day = item.deadline.substring(8, 10);
-          let today = new Date();
-          today.setDate(day - today.getDate());
-          this.$set(item, "lastday", today.getDate());
+          var Dday = new Date(year, month-1, day);
+          var now = new Date();
+          var gap = now.getTime() - Dday.getTime();
+          var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+          this.$set(item, "lastday", result);
           // 제목
           if (item.pjtname.length > 8) {
             item.pjtname = item.pjtname.substring(0, 10) + "...";
@@ -185,7 +189,7 @@ export default {
   text-align: center;
   line-height: 50px;
   border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
+  /* border-bottom: 1px solid lightgray; */
 }
 .items div {
   display: inline-block;

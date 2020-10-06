@@ -1,0 +1,12 @@
+.myinvestcreate {
+  background-color: white;
+  .v-slide-group__wrapper {
+      background-color: unset;
+  }
+  .theme--dark.v-tabs>.v-tabs-bar {
+      background-color: unset;
+  }
+  .v-btns:hover {
+      text-decoration: none !important;
+  }
+}
