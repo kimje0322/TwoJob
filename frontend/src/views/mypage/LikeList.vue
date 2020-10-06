@@ -284,13 +284,6 @@ export default {
 
 
 <style scoped>
-.investNav {
-  height: 50px;
-  text-align: center;
-  line-height: 50px;
-  border-bottom: 1px solid gray;
-  margin-bottom: 15px;
-}
 .items div {
   display: inline-block;
   margin: 0 10% 0 0;
@@ -351,24 +344,10 @@ input:hover {
 .v-input__slot fieldset {
   display: none;
 }
-.pjtinfo .v-menu {
-  display: unset;
-}
-.startDayBox {
-  display: inline-block;
-  width: 35%;
-}
+
 .tilddIcon {
   display: inline-block;
   margin: 0 9%;
-}
-.categoryDiv {
-  margin-bottom: 28px;
-}
-.categoryDiv .v-btn {
-  width: 105px;
-  margin-right: 10px;
-  margin-bottom: 10px;
 }
 .categorybtn:hover {
   border: 2px solid rgb(22, 150, 245);
@@ -387,76 +366,10 @@ input:hover {
 #introduce:hover {
   border: 2px solid rgb(22, 150, 245);
 }
-.v-card__text {
-  /* height: 600px; */
-}
 .v-card--flat {
   background-color: rgba(173, 220, 254, 0.4);
 }
-.project_info {
-  margin-left: 50px;
-  float: left;
-}
-.mypage_title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-.info_box {
-  box-sizing: border-box;
-}
-.info_frame {
-  background-color: #fff;
-  border: 1px solid #cdd3d8;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px 0 rgba(33, 37, 41, 0.11);
-}
-.info_ul {
-  list-style: none;
-  width: 600px;
-  height: 120px;
-  margin-top: 15px;
-}
-.info_li {
-  display: inline-block;
-  width: 50%;
-  text-align: center;
-}
-.pjt_a {
-  display: block;
-  padding: 20px 0;
-  text-decoration: none;
-  color: #495057;
-}
-.pjt_span {
-  line-height: 25px;
-  font-size: 18px;
-  font-weight: 600;
-  font-style: normal;
-  text-align: center;
-}
-.open_pjt {
-  width: 600px;
-  height: 80px;
-  display: block;
-  margin: 0;
-  list-style: none;
-  background-color: #f2f4f6;
-  border-radius: 0 0 12px 12px;
-}
-.opjt_li {
-  display: inline-block;
-  width: 50%;
-  text-align: center;
-  padding: 29px 6px;
-}
-.opjt_a {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0;
-  font-style: normal;
-  color: #495057;
-}
+
 .v-slide-group__content {
   background-color: white !important;
 }
