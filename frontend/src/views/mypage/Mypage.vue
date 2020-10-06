@@ -12,7 +12,9 @@
         </v-avatar>
         <div style="text-align: center; margin-top: 20px">
           <h5>{{ pageusername }} 님</h5>
-          <p v-if="iswallet">총 {{ pageuserbalance }} 원</p>
+          <div v-if="pageusername == username">
+            <p v-if="iswallet">총 {{ pageuserbalance }} 원</p>
+          </div>
           <div style="margin-top: 50px">
             <router-link to="/" style="text-decoration: none">
               <v-btn class="logoutBtn" @click="onLogout">로그아웃</v-btn>
@@ -49,7 +51,7 @@
                             <!-- <a href="/myinvestpjt" class="pjt_a"> -->
                             <span class="pjt_span">생성한 프로젝트</span>
                             <router-link
-                              style="color: black;"
+                              style="color: black"
                               :to="{
                                 name: 'MyInvestPjt',
                                 params: { userid: pageuserid },
@@ -335,13 +337,12 @@ export default {
     axios
       .get(`${SERVER_URL}/wallet/toid?oauthid=${this.pageuserid}`)
       .then((res) => {
-        this.pageuserbalance = res.data.balance;
+        // this.pageuserbalance = res.data.balance;
         console.log(res.data.balance);
         // this.mywallet = res.data.address;
         // console.log("여기여기``");
         // console.log(this.mywallet);
-        if(res.data != "novalid") {
-
+        if (res.data != "novalid") {
           this.iswallet = true;
         }
         // store.commit("setBalance", res.data.balance);
@@ -352,9 +353,18 @@ export default {
         console.log(error);
       });
 
+
+    axios
+     .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
+     .then((res) => {
+       console.log("총 잔액보여줘제발")
+       console.log(res)
+       this.pageuserbalance = res.data
+     })
+
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
-    this.userbalance = store.state.balance;
+    this.userbalance = store.state.accessToken
     console.log("이건 유저 발란스 값" + this.userbalance);
 
     // 거래내역
