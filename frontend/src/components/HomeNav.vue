@@ -247,9 +247,11 @@ export default {
       var accounts = new Accounts("https://twojob.ga/eth/");
       var result = web3.eth.accounts.create();
       store.commit("setAddress", result.address);
+
+      store.state.userInfo.walletAddress = result.address
       const fd = new FormData();
       fd.append("accessToken", store.state.accessToken);
-      fd.append("address", store.state.address);
+      fd.append("address", store.state.userInfo.walletAddress);
       fd.append("privatekey", result.privateKey);
       axios.post(`${SERVER_URL}/wallet/regist`, fd)
       .then((res) => {
