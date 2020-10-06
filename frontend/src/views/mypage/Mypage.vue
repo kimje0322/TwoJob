@@ -339,7 +339,10 @@ export default {
         // this.mywallet = res.data.address;
         // console.log("여기여기``");
         // console.log(this.mywallet);
-        // this.iswallet = true;
+        if(res.data != "novalid") {
+
+          this.iswallet = true;
+        }
         // store.commit("setBalance", res.data.balance);
         // store.state.balance = res.data.balance;
         // console.log(store.state.balance + 123123);
