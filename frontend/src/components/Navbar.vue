@@ -11,12 +11,12 @@
         <div style="text-align: right">
           <div class="navbarItem">
             <router-link to="/investhome">
-              <h5 class="navbarmenu">투자하기</h5>
+              <h5 class="navbarmenu" :class="{ active: this.$route.path=='/investhome'||this.$route.path=='/investproject'||this.$route.path=='/writeinvest'}">투자하기</h5>
             </router-link>
           </div>
           <div class="navbarItem">
             <router-link to="/shoppinghome">
-              <h5 class="navbarmenu">쇼핑하기</h5>
+              <h5 class="navbarmenu" :class="{ active: this.$route.path=='/shoppinghome'||this.$route.path=='/shoppingproject'}">쇼핑하기</h5>
             </router-link>
           </div>
           <div class="navbarItem" v-if="!login">
@@ -205,7 +205,6 @@ export default {
     axios
       .get(`${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`)
       .then((res) => {
-<<<<<<< HEAD
         if (res.data == "novalid") {
           store.commit("setWalletExist", false);
           this.iswallet = store.state.userInfo.walletExist;
@@ -213,20 +212,6 @@ export default {
           store.commit("setWalletExist", true);
           this.iswallet = store.state.userInfo.walletExist;
         }
-=======
-        console.log(res.data.balance);
-        // this.mywallet = res.data.address;
-        console.log("여기여기``");
-        // console.log(this.mywallet);
-        if (res.data == "novalid") {
-          this.wallet = false;
-        } else {
-          this.iswallet = true;
-          store.commit("setBalance", res.data.balance);
-        }
-        // store.state.balance = res.data.balance;
-        // console.log(store.state.balance + 123123);
->>>>>>> 6cb9d4fbdd8dde32b60988669c99c49fc5be555a
       })
       .catch((error) => {
         console.log(error);
@@ -309,16 +294,16 @@ export default {
       });
     },
     GetMe(authObj) {
-      console.log(authObj);
-      //토큰값 받아오는 부분
-      console.log(authObj.access_token);
+      // console.log(authObj);
+      // //토큰값 받아오는 부분
+      // console.log(authObj.access_token);
       store.commit("setAccessToken", authObj.access_token);
       const fd = new FormData();
       fd.append("accessToken", authObj.access_token);
 
       axios.post(`${SERVER_URL}/login/kakaologin`, fd).then((res) => {
-        console.log("여기여기");
-        console.log(res);
+        // console.log("여기여기");
+        // console.log(res);
         this.login = true;
         // store.state.isSigned = true;
         this.userInfo.login = true;
@@ -332,24 +317,24 @@ export default {
         }
         store.commit("setUserInfo", this.userInfo);
         // this.userInfo.email = res.data.email;
-        console.log("이건 userinfo내용");
-        console.log(this.userInfo);
+        // console.log("이건 userinfo내용");
+        // console.log(this.userInfo);
         // this.$router.push("/");
       });
     },
     onLogout() {
       // this.$store.reset()
-      console.log("로그아웃됨");
+      // console.log("로그아웃됨");
       this.login = false;
       store.commit("deluserInfo");
-      console.log("store.state.isSigned " + store.state.isSigned);
+      // console.log("store.state.isSigned " + store.state.isSigned);
       // this.$router.push("/");
     },
     onChargeDialog() {
-      console.log("충전모달");
-      console.log(this.chargeDialog);
+      // console.log("충전모달");
+      // console.log(this.chargeDialog);
       this.chargeDialog = true;
-      console.log(this.chargeDialog);
+      // console.log(this.chargeDialog);
       // this.chargeDialog = true;
     },
   },
@@ -386,6 +371,7 @@ export default {
   height: 50px;
   line-height: 50px;
   margin: 0;
+  font-weight: 600;
 }
 .navbarmenu:hover {
   color: rgb(22, 150, 245);
@@ -440,5 +426,8 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.active {
+  color: rgb(22, 150, 245);
 }
 </style>

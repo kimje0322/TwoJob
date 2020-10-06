@@ -234,7 +234,12 @@
                               </v-card-actions>
                             </v-card>
                           </v-dialog>
+                          <!-- 쇼핑 오픈 버튼 -->
+                          <!-- 투자 마감 x-->
+                          <v-btn v-if="!item.isfinish" disabled style="width: 40%;"> 쇼핑 오픈</v-btn>
+                          <!-- 투자 마감 -->
                           <router-link
+                            v-if="item.isfinish"
                             :to="{
                               name: 'WriteShopping',
                               params: { address: item.address },
@@ -378,6 +383,8 @@ export default {
         console.log("페이지");
         console.log(response);
         this.investList = response.data.object;
+        console.log('이거investList')
+        console.log(this.investList)
         this.investList.forEach((item) => {
           const idx = this.investList.indexOf(item);
           this.$set(item, "modal", { name: `input${idx}`, isopen: false });
@@ -504,9 +511,6 @@ input:hover {
 #introduce:hover {
   border: 2px solid rgb(22, 150, 245);
 }
-.v-card__text {
-  /* height: 600px; */
-}
 .v-card--flat {
   background-color: rgba(173, 220, 254, 0.4);
 }
@@ -597,5 +601,14 @@ input:hover {
 }
 .reviewImg:hover {
   cursor: pointer;
+}
+.v-btn__content {
+  text-decoration: none !important;
+}
+.v-btn--contained:hover {
+  text-decoration: none !important;
+}
+a {
+  text-decoration: none;
 }
 </style>
