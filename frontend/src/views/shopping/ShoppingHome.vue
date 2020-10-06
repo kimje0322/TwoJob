@@ -194,7 +194,7 @@ export default {
     axios
       .get(`${SERVER_URL}/sale/curation`)
       .then((res) => {
-        console.log(res.data.object);
+        // console.log(res.data.object);
         this.openItems = res.data.object.closeopen;
         // likeopenonelineintro
         this.likeItems = res.data.object.popular;

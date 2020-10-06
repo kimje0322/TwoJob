@@ -11,14 +11,13 @@
           </div><hr>
         </div>
       </div>
-  <!-- expand-on-hover  -->
   <!-- drawer -->
   <v-card>
     <v-navigation-drawer
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-      
+      expand-on-hover 
     >
       <div v-if="!login">
         <v-list-item class="px-2">
@@ -50,7 +49,6 @@
             >
             <!-- <i class="fas fa-coins"></i>   -->
             <v-icon class="mr-1">mdi-plus-circle-outline</v-icon>
-      
              충전
             </v-btn>
             
@@ -66,8 +64,47 @@
              지갑생성 
             </v-btn>
             
+      <!-- 충전하기 new version -->
+      <v-dialog max-width="500" min-height="370" v-model="chargeDialog">
+            <v-card flat tile>
+              <!-- 충전 모달 --> 
+              <v-card-text style="height:220px;" class="pa-1">
+                <v-list>
+                  <v-toolbar dense elevation="1">
+                    <h5 class="mx-auto">충전하기</h5>
+                  </v-toolbar>
+                  <div style="text-align: center; margin-top: 30px;">
+                    <p class="my-2">충전할 금액을 입력해주세요.</p>
+                  </div>
+                  <!-- 금액 -->
+                  <div>
+                    <div style="position:relative">
+                    <v-text-field
+                      class="ml-50"
+                      style="width:50%; position:absolue; left: 25%"
+                      v-model="money"
+                      hide-details
+                      outlined=""
+                      type="number"
+                    />
+                    <div style="position:absolute; bottom: 29%; right: 33%">
+                      <span>원</span>
+                    </div>
+                  </div>
+                  </div>
+                </v-list>
+              </v-card-text>
+                </v-card>
+                
+                <v-card-actions style="background-color: white; padding: 3px 0 3px 0; justify-content:center"> 
+                  <v-btn text @click="onKakao" color="white" style="background-color:rgb(22, 150, 245)">충전</v-btn>
+                  <v-btn text @click="chargeDialog=false" style="background-color:#ECEFF1">취소</v-btn>
+                </v-card-actions>
+                <div style="background-color: white;">　.</div>
+              </v-dialog>   
+
         <!-- 충전하기 모달 -->
-          <v-dialog
+          <!-- <v-dialog
             v-model="chargeDialog"
             scrollable
             max-width="40%"
@@ -81,14 +118,13 @@
               <v-card-text style="padding: 50px 50px 30px 50px">
                 <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
               </v-card-text>
-              <!-- <v-divider></v-divider> -->
               <v-card-actions style="background-color: white">
                 <v-spacer></v-spacer>
                 <v-btn text @click="chargeDialog = false">닫기</v-btn>
                 <v-btn text color="blue" @click="onKakao">충전하기</v-btn>
               </v-card-actions>
             </v-card>
-          </v-dialog>
+          </v-dialog> -->
         </v-list-item>
       </div>
 
