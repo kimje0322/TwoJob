@@ -127,7 +127,7 @@
                           params: { address: item.address },
                         }" -->
                     <router-link
-                      :to="{ name: 'Mypage', params: { userid : userInfo.id } }"
+                      :to="{ name: 'Mypage', params: { userid: userInfo.id } }"
                       style="text-decoration: none"
                     >
                       <v-btn depressed rounded text> 마이페이지 </v-btn>
@@ -199,8 +199,12 @@ export default {
         // this.mywallet = res.data.address;
         console.log("여기여기``");
         // console.log(this.mywallet);
-        this.iswallet = true;
-        store.commit("setBalance", res.data.balance);
+        if (res.data == "novalid") {
+          this.wallet = false;
+        } else {
+          this.iswallet = true;
+          store.commit("setBalance", res.data.balance);
+        }
         // store.state.balance = res.data.balance;
         // console.log(store.state.balance + 123123);
       })
