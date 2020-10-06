@@ -121,7 +121,10 @@ public class SaleController {
 	@ApiOperation(value = "내가 올린 판매 게시글 리스트 가져오기")
 	public Object saleMyList(@RequestParam String userid, @PathVariable int page) {
 		final BasicResponse result = new BasicResponse();
+		Map<String, Object> map = new HashMap<>();
 		List<SaleBoardResponse> resultDatalist = new ArrayList<>();
+		List<String> oneLineIntroList = new ArrayList<>();
+		List<Integer> likeCount = new ArrayList<>();
 		Page<SaleBoardDto> list = saleService.getAllMySaleList(userid, page);
 
 		try {
@@ -143,9 +146,19 @@ public class SaleController {
 				data.setUserid(saleBoardDto.getUserid());
 				data.setIsfinish(saleBoardDto.isIsfinish());
 				resultDatalist.add(data);
+
+				// onelineintro
+				oneLineIntroList
+						.add(investmentService.getInvestment(saleBoardDto.getInvestaddress()).get().getOnelineintro());
+
+				// likecount
+				likeCount.add(likeBoardService.likeCount(saleBoardDto.getAddress()));
 			}
+			map.put("object", resultDatalist);
+			map.put("onelineintros", oneLineIntroList);
+			map.put("likecount", likeCount);
 			result.data = "success";
-			result.object = resultDatalist;
+			result.object = map;
 			result.status = true;
 			result.status = true;
 		} catch (Exception e) {
@@ -197,8 +210,8 @@ public class SaleController {
 					data.setOnelineintro(investmentDto.getOnelineintro());
 					data.setTotalpage(list.getTotalPages());
 					resultDatalist.add(data);
-					
-					//like
+
+					// like
 					likeCount.add(likeBoardService.likeCount(data.getAddress()));
 				}
 			} else {
@@ -231,13 +244,13 @@ public class SaleController {
 						data.setOnelineintro(investmentDto.getOnelineintro());
 						data.setTotalpage(list.getTotalPages());
 						resultDatalist.add(data);
-						
-						//like
+
+						// like
 						likeCount.add(likeBoardService.likeCount(data.getAddress()));
 					}
 				}
 			}
-			
+
 			map.put("object", resultDatalist);
 			map.put("likecount", likeCount);
 			result.data = "success";
