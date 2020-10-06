@@ -183,6 +183,7 @@ export default {
       },
       // 충전 모달
       chargeDialog: false,
+      // 지갑
       iswallet: false,
     };
   },
@@ -204,6 +205,15 @@ export default {
     axios
       .get(`${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`)
       .then((res) => {
+<<<<<<< HEAD
+        if (res.data == "novalid") {
+          store.commit("setWalletExist", false);
+          this.iswallet = store.state.userInfo.walletExist;
+        } else {
+          store.commit("setWalletExist", true);
+          this.iswallet = store.state.userInfo.walletExist;
+        }
+=======
         console.log(res.data.balance);
         // this.mywallet = res.data.address;
         console.log("여기여기``");
@@ -216,6 +226,7 @@ export default {
         }
         // store.state.balance = res.data.balance;
         // console.log(store.state.balance + 123123);
+>>>>>>> 6cb9d4fbdd8dde32b60988669c99c49fc5be555a
       })
       .catch((error) => {
         console.log(error);
@@ -255,6 +266,8 @@ export default {
         if (res.data == 401) {
           store.state.isSigned = false;
         } else if (res.data == "success") {
+          store.commit("setWalletExist", true)
+          this.iswallet = store.state.userInfo.walletExist;
           Swal.fire({
             icon: "success",
             title: "지갑 생성 성공",
