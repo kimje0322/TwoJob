@@ -4,7 +4,7 @@
     <!-- 쇼핑 메뉴바 -->
     <div class="shoppingNav">
       <div class="items">
-        <div>
+        <div style="margin: 0 15% 0 0;">
           <router-link to="/shoppinghome">
             <h5 style="color: rgb(22, 150, 245)">쇼핑홈</h5>
           </router-link>
@@ -223,7 +223,6 @@ export default {
 }
 .items div {
   display: inline-block;
-  margin: 0 10% 0 0;
 }
 .items div a {
   color: black;
