@@ -52,12 +52,13 @@
                                 name: 'MyInvestPjt',
                                 params: { userid: pageuserid },
                               }"
-                            ></router-link>
-                            <span class="pjt_span">생성한 프로젝트</span>
-                            <h2 style="margin-top: 20px">
-                              {{ investnum }}
-                              <h5 style="display: inline-block">회</h5>
-                            </h2>
+                            >
+                              <span class="pjt_span">생성한 프로젝트</span>
+                              <h2 style="margin-top: 20px">
+                                {{ investnum }}
+                                <h5 style="display: inline-block">회</h5>
+                              </h2>
+                            </router-link>
                             <!-- </a> -->
                           </li>
                           <li
