@@ -83,7 +83,7 @@
                           </div>
                         </div>
                         <!-- 영수증 등록, 상품 판매 글쓰기 -->
-                        <div style="margin-bottom: 10px">
+                        <div v-if="userid == pageuserid" style="margin-bottom: 10px">
                           <v-btn
                             @click.stop="item.modal.isopen = true"
                             style="
@@ -111,8 +111,10 @@
                                 </h4>
                               </v-card-title>
                               <v-divider></v-divider>
-                              <v-card-text >
-                                <p style="font-size: 18px;">투자금 사용내역 등록하기</p>
+                              <v-card-text>
+                                <p style="font-size: 18px">
+                                  투자금 사용내역 등록하기
+                                </p>
                                 <div style="padding: 50px 30px 30px">
                                   <!-- 이미지 총 금액 -->
                                   <div
@@ -170,7 +172,7 @@
                                       >사진 첨부하기</span
                                     >
                                   </div>
-                                  
+
                                   <!-- 이미지 첨부된 경우 -->
                                   <!-- 이미지 삭제 버튼 -->
                                   <div
@@ -179,7 +181,7 @@
                                     :key="i"
                                     style="position: relative"
                                   >
-                                  <hr />
+                                    <hr />
                                     <v-btn
                                       x-small
                                       dark
@@ -226,7 +228,9 @@
                                 <v-btn text @click="item.modal.isopen = false"
                                   >닫기</v-btn
                                 >
-                                <v-btn text color="rgb(22, 150, 245)">등록하기</v-btn>
+                                <v-btn text color="rgb(22, 150, 245)"
+                                  >등록하기</v-btn
+                                >
                               </v-card-actions>
                             </v-card>
                           </v-dialog>
@@ -289,6 +293,7 @@ const SERVER_URL = "https://www.twojob.ga/api";
 export default {
   data() {
     return {
+      pageuserid: "",
       userid: "",
       page: 0,
       // 투자금 사용내역 모달
@@ -398,7 +403,6 @@ export default {
     this.userbalance = store.state.balance;
     this.userid = store.state.userInfo.id;
 
-
     var idx = window.location.href.indexOf("pjt");
     console.log(idx);
     const pageid = window.location.href.substring(
@@ -406,17 +410,14 @@ export default {
       window.location.href.length
     );
     console.log(pageid);
+    this.pageuserid = pageid;
 
     // axios
     // console.log(pageid + "asdfadsddd");
     // console.log(typeof pageid);
-    
-
 
     axios
-      .get(
-        `${SERVER_URL}/investment/investList/${this.page}?userid=${pageid}`
-      )
+      .get(`${SERVER_URL}/investment/investList/${this.page}?userid=${pageid}`)
       .then((response) => {
         console.log("페이지");
         console.log(response);

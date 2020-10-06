@@ -47,13 +47,13 @@
                         <ul class="info_ul">
                           <li class="info_li">
                             <!-- <a href="/myinvestpjt" class="pjt_a"> -->
+                            <span class="pjt_span">생성한 프로젝트</span>
                             <router-link
                               :to="{
                                 name: 'MyInvestPjt',
                                 params: { userid: pageuserid },
                               }"
                             >
-                              <span class="pjt_span">생성한 프로젝트</span>
                               <h2 style="margin-top: 20px">
                                 {{ investnum }}
                                 <h5 style="display: inline-block">회</h5>
