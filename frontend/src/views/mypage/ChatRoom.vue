@@ -314,12 +314,12 @@ function connect() {
     {},
     function (frame) {
       ws.subscribe("/sub/notice", function (message) {
-        console.log("!!!!!!!!!!!!event>>", message);
+        // console.log("!!!!!!!!!!!!event>>", message);
       });
       ws.send("/pub/notice", {}, "msg: Haha~~~");
     },
     function (error) {
-      console.log("에러다에러!!!!!");
+      // console.log("에러다에러!!!!!");
       if (reconnect++ <= 5) {
         setTimeout(function () {
           console.log("connection reconnect");
