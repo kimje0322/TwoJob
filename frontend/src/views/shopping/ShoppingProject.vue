@@ -2,7 +2,7 @@
   <div class="investproject">
     <navbar/>
     <!-- 쇼핑 메뉴바 -->
-    <div class="shoppingNav">
+    <div class="investNav">
       <div class="items">
         <div>
           <router-link to="/shoppinghome">
@@ -60,16 +60,18 @@
     </div>
     <!-- 프로젝트 -->
     <div class="projectList" style="padding: 10px 3%;">
-      <div style="height: 45px;">
+      <!-- <div style="height: 45px;"> -->
         <div style="display: inline-block;">
           <!-- <span style="color: rgb(22, 150, 245);">16</span>
           <span>개의 프로젝트가 있습니다.</span> -->
         </div>
         <div style="width: 100px; display: inline-block; float: right;">
-        </div>
+        <!-- </div> -->
       </div>
       <div v-if="ispjt" style="padding: 1% 0">
-        <div v-for="(item, i) in shoppingList" :key="i" 
+        <div 
+          v-for="(item, i) in shoppingList" 
+          :key="i" 
           style="display: inline-block; width: 30%; margin-bottom: 30px;"
         > 
           <router-link :to="{name: 'ShoppingDetail', params: { address : item.address }}">
@@ -97,7 +99,8 @@
           </router-link>
         </div>
       </div>
-      <div v-else>
+      <!-- shoppingpjt 없는 경우 -->
+      <div v-if="!ispjt">
         <h5>쇼핑 프로젝트 검색 결과가 없습니다.</h5>
       </div>
 
@@ -106,25 +109,23 @@
 </template>
 
 <script>
-import "../../../public/css/InvestProject.scss";
-import "../../../public/css/ShoppingHome.scss";
 import Navbar from "../../components/Navbar.vue";
+import "../../../public/css/InvestProject.scss";
+// import "../../../public/css/ShoppingHome.scss";
 import axios from "axios";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar
+    Navbar,
   },
   data() {
     return {
       // page
       page: 0,
       totalpage: 0,
-      // 프로젝트
-      ispjt: false,
-      shoppingList: [],
+      // 카테고리
       categoryList: [
         { icon: "book-multiple-outline", name: "전체", key: "all" },
         { icon: "laptop-windows", name: "테크, 가전", key: "tech" },
@@ -139,21 +140,24 @@ export default {
       ],
       nowcategory: [],
       // 필터
-      nowfilter: "",
+      nowfilter: 0,
       clickfilter: "",
       filter: ["최신순", "인기순"],
+      // 프로젝트
+      ispjt: false,
+      shoppingList: [],
     };
   },
   watch: {
-    nowstate(val) {
-      if(this.nowstate) {
-        this.checkstate = true
+    nowcategory() {
+      if(this.nowcategory==false){
+        $(".all").addClass("active");
+        this.initAxios()
+        console.log('비어있음')
       }
-      else {
-        this.checkstate = false
-      }
-    },
+    }
   },
+
   mounted() {
     // 카테고리
     $('.전체').addClass('active')
@@ -170,7 +174,8 @@ export default {
         if (response.data.data == "success") {
             this.shoppingList = response.data.object;
             if(this.shoppingList.length > 0) {
-              this.isPjt = true
+              this.ispjt = true
+              console.log('ispjt도 되지'+this.ispjt)
               this.shoppingList = response.data.object;
               this.totalpage = this.shoppingList[0].totalpage;
               this.shoppingList.forEach((shoppingPjt) => {
@@ -189,6 +194,7 @@ export default {
       });
     },
     filterAxios() {
+      console.log('이것도 되는거냐')
       const fd = new FormData();
       fd.append("orderOption", this.nowfilter);
       if (this.nowcategory.length > 0 ) {
@@ -199,10 +205,15 @@ export default {
       } else {
         fd.append("categoryfilter", "");
       }
+      console.log(fd)
+      console.log('fd 함 본다')
       axios
         .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
         .then((response) => {
           if (response.data.data == "success") {
+            console.log(response)
+            console.log('쇼핑리스트찾아사만리')
+
             this.shoppingList = response.data.object;
             if(this.shoppingList.length > 0) {
               this.ispjt = true
@@ -224,6 +235,7 @@ export default {
         });
     },
     filterInit() {
+      console.log(this.nowcategory)
       // 카테고리 초기화
       this.nowcategory.forEach((key) => {
         $(`.${key}`).removeClass("active");
@@ -243,16 +255,22 @@ export default {
         });
         this.nowcategory = [];
         $(".전체").addClass("active");
+        this.initAxios()
       } else {
         // 제거
         if (this.nowcategory.indexOf(name) >= 0) {
           const idx = this.nowcategory.indexOf(name);
+          console.log('현재 카테고리')
+          console.log(this.nowcategory)
+
           this.nowcategory.splice(idx, 1);
           $(`.${name}`).removeClass("active");
         } else {
           this.nowcategory.push(name);
           $(`.${name}`).addClass("active");
           $(".전체").removeClass("active");
+          console.log('현재 카테고리')
+          console.log(this.nowcategory)
         }
       }
       this.filterAxios()
@@ -261,15 +279,12 @@ export default {
       // 필터
       if (this.clickfilter == "") {
         this.nowfilter = 0;
-        console.log('nowfilter0')
+        // console.log('nowfilter0')
       } else if (this.clickfilter == "최신순") {
         this.nowfilter = 1;
-        console.log('nowfilter1')
 
       } else if (this.clickfilter == "인기순") {
         this.nowfilter = 2;
-        console.log('nowfilter2')
-
       }
       this.filterAxios()
     },
@@ -278,7 +293,7 @@ export default {
 </script>
 
 <style scoped>
-.shoppingNav {
+.investNav {
   height: 50px;
   text-align: center;
   line-height: 50px;
@@ -387,4 +402,8 @@ export default {
 a {
   text-decoration: none;
 }
+.active {
+  border: 2px solid rgb(22, 150, 245);
+}
+
 </style>
