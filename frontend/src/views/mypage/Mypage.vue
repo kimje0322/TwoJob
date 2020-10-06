@@ -79,7 +79,7 @@
                         </ul>
                       </div>
                     </div>
-                    <div style="margin: 30px 0; overflow: hidden">
+                    <div v-if="pageusername == username" style="margin: 30px 0; overflow: hidden">
                       <h3 class="mypage_title">나의 활동</h3>
                       <div style="padding: 0 3%">
                         <div
