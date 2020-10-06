@@ -31,5 +31,8 @@ public class ReviewService {
 	public List<ReviewDto> getReviews(String saleaddress) {
 		return reviewRepository.findAllBySaleaddress(saleaddress);
 	}
-
+	
+	public int getReviewsCount(String saleaddress) {
+		return reviewRepository.getCountAllReview(saleaddress);
+	}
 }

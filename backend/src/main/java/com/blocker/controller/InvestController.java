@@ -263,6 +263,7 @@ public class InvestController {
 					list = investmentService.getAllInvestmentList(page);
 				} else {
 					list = investmentService.getAllInvestmentList(page, orderOption);
+					System.out.println("============================================================="+list.toString());
 				}
 
 				for (Iterator<InvestmentDto> iter = list.getContent().iterator(); iter.hasNext();) {
@@ -294,6 +295,7 @@ public class InvestController {
 			} else {
 				Page<BoardCategoryMapping> list = boardCategoryService.getAllInvestmentListWithCategory(page,
 						categoryfilter, orderOption);
+				
 				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
 					BoardCategoryMapping nextiter = iter.next();
 					String investaddress = nextiter.getInvestaddress();
@@ -325,7 +327,6 @@ public class InvestController {
 					}
 				}
 			}
-			Collections.reverse(resultDatas);
 			result.data = "success";
 			result.object = resultDatas;
 			result.status = true;
@@ -366,7 +367,7 @@ public class InvestController {
 
 				// comments
 				List<CommentBoardDto> comments = commentBoardService.getAllComment(address);
-
+				map.put("commentsCount", comments.size());
 				InvestmentRequest data = new InvestmentRequest(categorys, tags, comments);
 				data.setCompName(investmentDto.getCompname());
 				data.setDeadLine(investmentDto.getDeadline());
@@ -493,14 +494,21 @@ public class InvestController {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			List<InvestmentDto> popular = investmentService.getThreeInvestmentListOrderbyLikecount();
+			List<InvestmentDto> closedeadlines = investmentService.getThreeInvestmentListOrderbyDeadline();
 			List<Integer> likecount = new ArrayList<>();
-			map.put("closedeadlines", investmentService.getThreeInvestmentListOrderbyDeadline());
+			List<Integer> closedeadlineLikecount = new ArrayList<>();
+			map.put("closedeadlines", closedeadlines);
 			map.put("popular", popular);
 			for (Iterator<InvestmentDto> iter = popular.iterator(); iter.hasNext();) {
 				InvestmentDto investmentDto = iter.next();
 				likecount.add(likeBoardService.likeCount(investmentDto.getAddress()));
 			}
-			map.put("likecount", likecount);
+			for (Iterator<InvestmentDto> iter = closedeadlines.iterator(); iter.hasNext();) {
+				InvestmentDto investmentDto = iter.next();
+				closedeadlineLikecount.add(likeBoardService.likeCount(investmentDto.getAddress()));
+			}
+			map.put("closedeadlinelikecount", closedeadlineLikecount);
+			map.put("popularlikecount", likecount);
 			result.object = map;
 			result.data = "success";
 			result.status = true;

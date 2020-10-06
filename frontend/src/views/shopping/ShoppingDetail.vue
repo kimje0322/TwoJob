@@ -103,7 +103,7 @@
             <p class="mb-3" style="font-size: 1.4rem">금손님 정보</p>
           </strong>
           <div class="maker" style="float: left">
-            <img class="makerImg" src="../../assets/금손.jpg" alt />
+            <img class="makerImg" :src="makerImg" alt />
           </div>
           <div style="float: left; margin: 3px 0 0 15px">
             <p style="font-size: 1.1rem; margin-bottom: 5px">
@@ -164,7 +164,7 @@
                   <div class="row">
                     <div class="col-md-4">
                       <i
-                        class="fas fa-comment-dots fa-6x my-3"
+                        class="fas fa-comment-dots fa-5x my-3"
                         style="color: grey"
                       ></i
                       ><br />
@@ -184,13 +184,13 @@
                           font-weight: bold;
                         "
                       >
-                        3
+                        {{ reviewTotal }}
                       </h1>
                       <span style="font-weight: bold"> 개</span>
                     </div>
                     <div class="col-md-4 px-3">
                       <i
-                        class="fas fa-star fa-6x my-3"
+                        class="fas fa-star fa-5x my-3"
                         style="color: #26c6da"
                       ></i
                       ><br />
@@ -217,7 +217,7 @@
                     </div>
                     <div class="col-md-4 px-3">
                       <i
-                        class="fas fa-file-signature fa-6x my-3 ml-2"
+                        class="fas fa-file-signature fa-5x my-3 ml-2"
                         style="color: #29b6f6"
                       ></i
                       ><br />
@@ -245,7 +245,12 @@
                   </div>
                 </div>
                 <!-- 개별 리뷰 -->
-                <div
+                <!-- 1. 리뷰 없는 경우 -->
+                <div v-if="!totalreview" class="my-5 pb-5" style="text-align:center">
+                  <h5>등록된 리뷰가 없습니다.</h5>
+                </div>
+                <!-- 2. 리뷰 있는 경우 -->
+                <div 
                   class="mt-5 mx-5"
                   style="75%"
                   v-for="(review, i) in reviews"
@@ -264,7 +269,6 @@
                         alt="profile"
                       />
                     </div>
-
                     <p
                       class="my-1 mx-2"
                       style="font-size: 1.1rem; font-weight: bold"
@@ -330,27 +334,55 @@ export default {
       reviewDate: "",
       shoppingPjt: "",
       picture: "",
+      // 리뷰
+      totalreview: 0,
       reviews: {},
       accuracy: 0,
       satisfy: 0,
+      reviewTotal: 0,
       // 좋아요
       isliked: false,
       likeCount: 0,
       likeState: 0,
-
+      // 금손님 이미지
+      makerImg: '',
       chatroom: false,
     };
   },
-  created() {
+  created() {},
+  mounted() {
+    // 디테일 정보
     this.shoppingAddress = this.$route.params.address
     // 쇼핑 디테일 정보 
-   
+    const frm = new FormData();
+    frm.append("address",this.shoppingAddress)
+    frm.append("userid", store.state.userInfo.id)
     axios
-      .post(`${SERVER_URL}/sale/getDetail?address=${this.shoppingAddress}`)
+      .post(`${SERVER_URL}/sale/getDetail`, frm)
       .then((res) => {
-        this.items = res.data.object;
-        this.dto = res.data.object.saleBoardDto
+        this.items = res.data.object.object;
+        // 좋아요 확인
+        if (this.itemslike) {
+          this.likeState = true;
+          $(".like").css("color", "red");
+        } else {
+          this.likeState = false;
+          $(".like").css("color", "rgba(0, 0, 0, 0.54)");
+        }
+        this.dto = this.items.saleBoardDto
         this.picture = this.items.saleBoardDto.picture;
+        const userid= this.items.saleBoardDto.userid
+        axios
+          .post(`${SERVER_URL}/util/userinfo?userid=${userid}`)
+          .then((res) => {
+            // console.log(res.data.object.profileImg )
+            if (res.data.object.profileImg == null) {
+            this.makerImg =
+            "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
+            } else {
+              this.makerImg = res.data.object.profileImg;              
+            }  
+          });
         // 글쓴이 소개글 엔터 변환
         this.items.introduce = this.items.introduce.split("\n").join("<br />");
         // 투자 설명서 엔터 변환
@@ -361,24 +393,39 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-  },
-  mounted() {
+
     // 쇼핑 리뷰
     // page 수정 해야함! (반복문)
-    const frm = new FormData();
-    frm.append("address", this.shoppingAddress);
-    axios.post(`${SERVER_URL}/sale/getReviews/0`, frm).then((response) => {
-      this.reviews = response.data.object.list;
+    const fm = new FormData();
+    fm.append("address", this.shoppingAddress);
+    axios.post(`${SERVER_URL}/sale/getReviews/0`, fm).then((response) => {
+      this.reviews = response.data.object.reviews;
+      this.totalreview = response.data.object.totalreviewcount
+      
+      if (this.totalreview) { 
       // 날짜 slice
       for (let i = 0; i < this.reviews.length; i++) {
         this.reviews[i].createdate = this.reviews[i].createdate.slice(0, 10);
         const userId = this.reviews[i].userid;
+
         axios
           .post(`${SERVER_URL}/util/userinfo?userid=${userId}`)
           .then((res) => {
             this.reviews[i].userid = res.data.object.name;
-            this.reviews[i].profile = res.data.object.profileImg;
-          });
+            console.log(res.data.object)
+            if (res.data.object.profileImg == null) {
+            this.reviews[i].profile = "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
+            } else {
+              this.reviews[i].profile = res.data.object.profileImg;
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+            console.log('아냐나나ㅏ')
+
+          })
+        }
+    
       }
       // console.dir(response)
     });
@@ -388,6 +435,7 @@ export default {
       .then((res) => {
         this.satisfy = res.data.object.satisfy;
         this.accuracy = res.data.object.accuracy;
+        this.reviewTotal = res.data.object.reviewtotalcount;
       })
       .catch((error) => {
         console.log(error);

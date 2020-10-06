@@ -76,14 +76,13 @@
     </div>
     <!-- 프로젝트 -->
     <div class="projectList" style="padding: 10px 3%">
-      <div style="height: 45px">
+      <!-- <div style="height: 45px">
         <div style="display: inline-block">
           <span style="color: rgb(22, 150, 245)">25,540</span>
           <span>개의 프로젝트가 있습니다.</span>
         </div>
-      </div>
-      <!--  v-if="ispjt" -->
-      <div style="padding: 1% 0">
+      </div> -->
+      <div v-if="ispjt" style="padding: 1% 0">
         <div
           v-for="(item, i) in investProjects"
           :key="i"
@@ -116,7 +115,7 @@
                     line-height: 41.6px;
                   "
                 >
-                  없음 원
+                  {{item.investprice}}원
                 </h5>
                 <div style="display: inline-block; float: right">
                   <h3 style="display: inline-block; color: rgb(22, 150, 245)">
@@ -132,9 +131,9 @@
         </div>
       </div>
       <!-- investPjt 없을 때 -->
-      <!-- <div v-else>
+      <div v-else>
         <h5>투자 프로젝트 검색 결과가 없습니다.</h5>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -170,7 +169,7 @@ export default {
       filter: ["최신순", "인기순"],
       // 프로젝트
       investProjects: [],
-      // ispjt: false,
+      ispjt: false,
       // page
       page: 0,
       totalpage: 0,
@@ -187,23 +186,24 @@ export default {
   },
   mounted() {
     // 카테고리
-    $('.all').addClass('active')
+    $('.전체').addClass('active')
     this.initAxios()
   },
   methods: {
     initAxios() {
+      console.log("초기 axios")
       const fd = new FormData();
-    fd.append("orderOption", 0);
-    fd.append("categoryfilter", "");
-    axios
+      fd.append("orderOption", 0);
+      fd.append("categoryfilter", "");
+      axios
       .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
       .then((response) => {
         console.log(response);
         if (response.data.data == "success") {
           this.investProjects = response.data.object;
-          console.log(this.investProjects)
-          // if(response.data.object) {
-          //   this.ispjt = true
+          console.log(this.investProjects.length)
+          if(this.investProjects.length > 0) {
+            this.ispjt = true
             this.investProjects = response.data.object;
             this.totalpage = this.investProjects[0].totalpage;
             this.investProjects.forEach((investPjt) => {
@@ -217,7 +217,10 @@ export default {
                 investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
               }
               // 투자금액 axios 보내기
-              
+              axios.get(`${SERVER_URL}/funding/nowfund?campaignId=${investPjt.address}`)
+                .then(response => {
+                  this.$set(investPjt, "investprice", response.data);
+                })
               // 달성률 axios 보내기
               const fd = new FormData();
               fd.append("campaignId", investPjt.address)
@@ -226,9 +229,9 @@ export default {
                   this.$set(investPjt, "rate", response.data);
                 })
             });
-          // }else{
-          //   this.ispjt = false
-          // }          
+          }else{
+            this.ispjt = false
+          }          
         }
       })
       .catch((error) => {
@@ -236,20 +239,18 @@ export default {
       });
     },
     filterAxios() {
-      console.log("이거")
       const fd = new FormData();
       // const data = this.nowfilter
-      console.log("숫자")
+      console.log("필터 axios")
       fd.append("orderOption", this.nowfilter);
-      console.log(this.nowfilter)
-      console.log(fd)
-      if (this.nowcategory) {
+      console.log(Boolean(this.nowcategory))
+      if (this.nowcategory.length > 0) {
         this.nowcategory.forEach((category) => {
-          console.log(category);
           fd.append("categoryfilter", category);
         });
       } else {
-        fd.append("categoryfilter", );
+        fd.append("categoryfilter", "");
+        console.log("여기")
       }
       axios
         .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
@@ -257,9 +258,8 @@ export default {
           console.log(response);
           if (response.data.data == "success") {
             this.investProjects = response.data.object;
-            console.log(this.investProjects)
-            // if(this.investProjects) {
-              // this.ispjt = true
+            if(this.investProjects.length > 0) {
+              this.ispjt = true
               this.totalpage = this.investProjects[0].totalpage;
               this.investProjects.forEach((investPjt) => {
                 // 마감일
@@ -272,7 +272,10 @@ export default {
                   investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
                 }
                 // 투자금액 axios 보내기
-                
+                axios.get(`${SERVER_URL}/funding/nowfund?campaignId=${investPjt.address}`)
+                  .then(response => {
+                    this.$set(investPjt, "investprice", response.data);
+                  })
                 // 달성률 axios 보내기
                 const fd = new FormData();
                 fd.append("campaignId", investPjt.address)
@@ -281,9 +284,9 @@ export default {
                     this.$set(investPjt, "rate", response.data);
                   })
               });
-            // } else{
-            //   this.ispjt = false
-            // }
+            } else{
+              this.ispjt = false
+            }
           }
         })
         .catch((error) => {
@@ -296,7 +299,7 @@ export default {
         $(`.${key}`).removeClass("active");
       });
       this.nowcategory = [];
-      $(".all").addClass("active");
+      $(".전체").addClass("active");
       // 필터 초기화
       (this.clickfilter = ""), (this.nowfilter = 0);
       this.openfilter = false;
@@ -309,7 +312,7 @@ export default {
           $(`.${name}`).removeClass("active");
         });
         this.nowcategory = [];
-        $(".all").addClass("active");
+        $(".전체").addClass("active");
         this.initAxios()
       }
        else {
@@ -321,7 +324,7 @@ export default {
         } else {
           this.nowcategory.push(name);
           $(`.${name}`).addClass("active");
-          $(".all").removeClass("active");
+          $(".전체").removeClass("active");
         }
         this.filterAxios()
       }

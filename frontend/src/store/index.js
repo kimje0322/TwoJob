@@ -24,8 +24,13 @@ export default new Vuex.Store({
             img: null,
             walletAddress: null
         },
+
+        pjtwriterid: null,
+
+        // 지갑이 있는지 여부
+        iswallet: false,
+
         accessToken: null,
-        address: null,
         balance: null,
         charge: null,
 
@@ -45,7 +50,7 @@ export default new Vuex.Store({
             state.balance = balance;
         },
         setAddress(state, address) {
-            state.address = address;
+            state.userInfo.walletAddress = address;
         },
         setAccessToken(state, token) {
             state.accessToken = token;
@@ -77,6 +82,7 @@ export default new Vuex.Store({
             state.userInfo.name = null;
             state.userInfo.img = null;
             state.isSigned = false;
+            state.userInfo.walletAddress = null;
         },
     },
     actions: {},

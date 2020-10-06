@@ -35,7 +35,7 @@
           <!-- 이미지 첨부된 경우 -->
           <!-- 이미지 삭제 버튼 -->
           <div v-show="imgPath">
-            <v-btn x-small dark fab absolute top right color="black" style="top:293px;right:47px;opacity:.6;"
+            <v-btn x-small dark fab absolute top right style="background-color: black !important; top:293px; right:47px;opacity:.6;"
               @click="onDeleteImg"
             >
               <v-icon dark>mdi-close</v-icon>
