@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.blocker.dto.Chatroom;
 import com.blocker.dto.TransactType;
+import com.blocker.dto.receipt;
 import com.blocker.repository.BlockTransactionRepository;
 import com.blocker.service.FundingService;
 import com.blocker.service.ScheduleTask;
@@ -110,9 +111,8 @@ public class FundingController {
 	}
 	@ApiOperation(value = "[BC][투자 금액 사용 내역] 투자 금액 사용 내역을 블록에 기록합니다. param : [accessToken, campaignId, imgname, value], return : 성공 시 success ")
 	@PostMapping(value = "/usefund")
-	public ResponseEntity<String> usefund(@RequestParam("accessToken") String accessToken, @RequestParam("campainId") String campaignId, @RequestParam("files") MultipartFile[] files, @RequestParam(required=false) Integer value) throws Exception {
-		List<String> imglist = Arrays.asList(files).stream().map(file -> changePath(file)).collect(Collectors.toList());
-		return new ResponseEntity<String>(fundingService.useFund(accessToken, campaignId, imglist, value),HttpStatus.OK);
+	public ResponseEntity<String> usefund(@RequestParam("accessToken") String accessToken, @RequestParam("campainId") String campaignId, @RequestBody List<receipt> list) throws Exception {
+		return new ResponseEntity<String>(fundingService.useFund(accessToken, campaignId, list),HttpStatus.OK);
 	}
 	@ApiOperation(value = "[BC][해당 투자 총 판매 개수] 투자 아이디를 주면, 현재 해당 투자의 총 판매 개수를 가져옴 param : [campaignId], return : 해당 투자 총 판매 개수 ")
 	@GetMapping(value = "/gettotalsell")
@@ -130,25 +130,6 @@ public class FundingController {
 		
 	}
 
-	public String changePath(MultipartFile img) {
-		Map<String, Object> resultMap = new HashMap<>();
-		final BasicResponse result = new BasicResponse();
-		// 이 path는 나중에 서버경로로 바꿔줘야함
-		String path = "/home/ubuntu/apps/upload/image/";
-		UUID uuid = UUID.randomUUID();
-		String savedName = uuid.toString() + "_" + img.getOriginalFilename();
-		File file = new File(path + savedName);
-		try {
-			// 경로바꾸고 이거 주석 풀어줘야함
-			img.transferTo(file);
-			System.out.println("ㅇㅇ?");
-		} catch (Exception e) {
-			System.out.println("이미지 저장중 오류발생");
-			e.printStackTrace();
-		} finally {
-			return file.getAbsolutePath();
-		}
-	}
 	//	@ExceptionHandler(Exception.class)
 	//	public void nullex(Exception e) {
 	//		StringWriter errors = new StringWriter();

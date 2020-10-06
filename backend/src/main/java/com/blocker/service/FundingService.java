@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.blocker.dto.receipt;
+
 public interface FundingService {
 	public void Deploy() throws Exception;
 	public String createCampaign(String accessToken, String id) throws Exception;
@@ -20,6 +22,6 @@ public interface FundingService {
 	public String createSale(String accessToken, String id) throws Exception;
 	public List<String> getReceipt(String campaignId) throws Exception;
 	public String getProjectState(String campaignId) throws Exception;
-	public String useFund(String accessToken, String campaignId,List<String> img, Integer value) throws Exception;
+	public String useFund(String accessToken, String campaignId,List<receipt> list) throws Exception;
 	public String getTotalSell(String campainId) throws Exception;
 }

@@ -59,8 +59,8 @@ public class ScheduleTask extends Thread {
 		calUntil.set( Calendar.YEAR, year);
 		calUntil.set( Calendar.MONTH, month-1);
 		calUntil.set( Calendar.DAY_OF_MONTH, day);
-		calUntil.set( Calendar.HOUR_OF_DAY, 18);
-		calUntil.set( Calendar.MINUTE, 0);
+		calUntil.set( Calendar.HOUR_OF_DAY, 13);
+		calUntil.set( Calendar.MINUTE, 20);
 		calUntil.set( Calendar.SECOND, 0);
 		Date until = calUntil.getTime();
 		long sleep = until.getTime() - now.getTime();
