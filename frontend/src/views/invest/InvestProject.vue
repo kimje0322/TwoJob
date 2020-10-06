@@ -21,11 +21,11 @@
         </div>
       </div>
     </div>
-    <div>
+    <!-- <div>
       <h4 style="padding: 2%; margin: 0">투자 프로젝트</h4>
-    </div>
+    </div> -->
     <!-- 카테고리 -->
-    <div style="margin-bottom: 1rem">
+    <div style="margin: 3rem 0">
       <!-- <v-app id="inspire" style="text-align:center"> -->
       <v-container class="cateContainer" style="text-align: center">
         <v-row no-gutters>
@@ -131,8 +131,8 @@
         </div>
       </div>
       <!-- investPjt 없을 때 -->
-      <div v-else style="height: 300px">
-        <h5>투자 프로젝트 검색 결과가 없습니다.</h5>
+      <div v-else style="height: 350px; display: flex; justify-content: center; align-items: center;">
+        <h4>투자 프로젝트 검색 결과가 없습니다.</h4>
       </div>
     </div>
   </div>

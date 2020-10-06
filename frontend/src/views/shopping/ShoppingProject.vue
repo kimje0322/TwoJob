@@ -4,7 +4,7 @@
     <!-- 쇼핑 메뉴바 -->
     <div class="investNav">
       <div class="items">
-        <div>
+        <div style="margin: 0 15% 0 0;">
           <router-link to="/shoppinghome">
             <h5>쇼핑홈</h5>
           </router-link>
@@ -16,7 +16,6 @@
         </div>
       </div>
     </div>
-    <hr>
     <!-- 카테고리 -->
     <div style="margin-bottom: 1rem;">
       <v-container class="cateContainer" style="text-align:center;">
@@ -298,10 +297,10 @@ export default {
   text-align: center;
   line-height: 50px;
   border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 .items div {
   display: inline-block;
-  margin: 0 10% 0 0;
 }
 .items div a {
   color: black;
