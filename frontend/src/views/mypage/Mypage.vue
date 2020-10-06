@@ -16,7 +16,7 @@
         <div style="text-align: center; margin-top: 20px">
           <h5>{{ pageusername }} 님</h5>
           <div v-if="pageusername == username">
-            <p v-if="!iswallet">총 {{ pageuserbalance }} 원</p>
+            <p v-if="iswallet">총 {{ pageuserbalance }} 원</p>
           </div>
           <div style="margin-top: 50px">
             <router-link to="/" style="text-decoration: none">

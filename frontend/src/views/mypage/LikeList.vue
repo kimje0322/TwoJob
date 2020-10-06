@@ -30,7 +30,7 @@
                     style="
                       display: inline-block;
                       width: 33%;
-                      margin-bottom: 20px;
+                      margin: 20px 5px;
                     "
                   >
                     <v-card
@@ -56,24 +56,19 @@
                         "
                       >
                         <p v-if="item.pjtname.length > 6">
-                          {{ item.pjtname.substring(0, 4) }} ...
+                          {{ item.pjtname.substring(0, 8) }} ...
                         </p>
-                        <p v-else>
+                        <p v-else style="width: 100%">
                           {{ item.pjtname }}
                         </p>
                         <div style="margin-left: auto">
-                          <v-chip v-model="dtime" class="projectBadge"
-                            > {{ item.lastday }}일 남음</v-chip
+                          <v-chip class="projectBadge">
+                            {{ item.lastday }}일 남음</v-chip
                           >
-                          <!-- <v-chip class="likeBadge" style="font-size: 12px"
-                            >100명 좋아요</v-chip
+                          <!-- <v-chip v-model="a" class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요 {{ b }}</v-chip
                           > -->
                         </div>
-                        <!-- <div style="margin-left: auto">
-                          <v-chip class="likeBadge" style="font-size: 12px"
-                            >100명 좋아요</v-chip
-                          >
-                        </div> -->
                       </v-card-title>
                       <!-- max-height: 120px -->
                       <v-card-text style="height: 70px">
@@ -136,19 +131,11 @@
                         "
                       >
                         <p v-if="item.pjtname.length > 6">
-                          {{ item.pjtname.substring(0, 6) }} ...
+                          {{ item.pjtname.substring(0, 8) }} ...
                         </p>
                         <p v-else>
                           {{ item.pjtname }}
                         </p>
-                        <div style="margin-left: auto">
-                          <v-chip class="projectBadge"
-                            > {{ item.lastday }}일 남음</v-chip
-                          >
-                          <!-- <v-chip v-model="a" class="likeBadge" style="font-size: 12px"
-                            >100명 좋아요 {{ b }}</v-chip
-                          > -->
-                        </div>
                         <!-- <div style="margin-left: auto">
                           <v-chip class="likeBadge" style="font-size: 12px"
                             >100명 좋아요</v-chip
@@ -248,25 +235,24 @@ export default {
       console.log(this.investlikelst);
       console.log(this.shopplinglikelst);
       this.investlikelst.forEach((invlst) => {
-        console.log("asdf")
-        const year = invlst.deadline.substring(0, 4)
-        const month = invlst.deadline.substring(5, 7)
-        const day = invlst.deadline.substring(8, 10)
+        console.log("asdf");
+        const year = invlst.deadline.substring(0, 4);
+        const month = invlst.deadline.substring(5, 7);
+        const day = invlst.deadline.substring(8, 10);
 
-        var Dday = new Date(year, month - 1, day)
+        var Dday = new Date(year, month - 1, day);
         var now = new Date();
-        var gap = now.getTime() - Dday.getTime()
+        var gap = now.getTime() - Dday.getTime();
         var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
-        this.$set(invlst, "lastday", result)
-        console.log("남은날짜 " + invlst.lastday)
-      })
+        this.$set(invlst, "lastday", result);
+        console.log("남은날짜 " + invlst.lastday);
+      });
     });
   },
 
   computed: {},
   method: {},
-  watch: {
-  },
+  watch: {},
 };
 </script>
 
