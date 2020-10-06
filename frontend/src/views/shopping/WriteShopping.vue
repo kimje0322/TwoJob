@@ -20,11 +20,11 @@
               <v-card-text>
                 <div class="pjtinfo">
                   <p>상품에 대한 정보를 정확하게 입력해주세요.</p>
-                  <h5>상품명</h5>
+                  <h5><span style="color: red">*</span>상품명</h5>
                   <input v-model="title" 
                   type="text" placeholder="상품명을 입력해주세요." />
                   <h5 style="display: inline-block; margin-left: 5px;"></h5>
-                  <h5>대표 사진</h5>
+                  <h5><span style="color: red">*</span>대표 사진</h5>
                   <v-file-input
                     v-model="thumbnail"
                     @change="onThumbnail"
@@ -36,7 +36,7 @@
                     hide-details
                   ></v-file-input>
                   <!-- 판매 오픈 날짜 -->
-                  <h5>판매 오픈 날짜</h5>
+                  <h5><span style="color: red">*</span>판매 오픈 날짜</h5>
                     <div class="startDayBox">
                       <div>
                         <v-menu
@@ -71,7 +71,7 @@
                       </div>
                     </div>
                   <!-- 판매 금액 -->
-                  <h5>판매 금액</h5>
+                  <h5><span style="color: red">*</span>판매 금액</h5>
                   <input
                     v-model="price"
                     @click="removeTargetPrice"
@@ -172,7 +172,7 @@
                   <div style="margin-bottom: 1rem">
                     <h5
                       style="display: inline-block; height: 36px; line-height: 36px; Smargin: 0;"
-                    >쇼핑설명</h5>
+                    ><span style="color: red">*</span>쇼핑설명</h5>
                     <v-btn @click="onSave" style="float: right; background-color: white; color: rgb(22, 150,245); font-weight: 600">저장하기</v-btn>
                   </div>
                   <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />

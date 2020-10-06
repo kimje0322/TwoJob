@@ -125,8 +125,8 @@
         </div>
       </div>
       <!-- shoppingpjt 없는 경우 -->
-      <div v-if="!ispjt" style="height: 300px; display: flex; justify-content: center; align-items: center;">
-        <h5>쇼핑 프로젝트 검색 결과가 없습니다.</h5>
+      <div v-if="!ispjt" style="height: 100vh; display: flex; justify-content: center;;">
+        <h5 style="margin-top:20%">쇼핑 프로젝트 검색 결과가 없습니다.</h5>
       </div>
     </div>
   </div>
@@ -170,6 +170,7 @@ export default {
       // 프로젝트
       ispjt: false,
       shoppingList: [],
+      likeCount: 0,
     };
   },
   watch: {
@@ -196,14 +197,17 @@ export default {
       .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
       .then((response) => {
         if (response.data.data == "success") {
-            this.shoppingList = response.data.object;
+            this.shoppingList = response.data.object.object;
             if(this.shoppingList.length > 0) {
               this.ispjt = true
-              console.log('쇼핑리스트보자')
               console.log(this.shoppingList)
               this.shoppingList = response.data.object;
               this.totalpage = this.shoppingList[0].totalpage;
               this.shoppingList.forEach((shoppingPjt) => {
+              // 좋아요
+              shoppingPjt.likeCount = response.data.object.likecount;
+              console.log('likeCount볼거란다')
+              console.log(response.data.object.likecount)
               // 제목
               if (shoppingPjt.pjtname.length > 12) {
                 shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 14) + "...";
