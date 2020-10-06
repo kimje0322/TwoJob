@@ -46,13 +46,19 @@
                       <div class="info_frame">
                         <ul class="info_ul">
                           <li class="info_li">
-                            <a href="/myinvestpjt" class="pjt_a">
-                              <span class="pjt_span">생성한 프로젝트</span>
-                              <h2 style="margin-top: 20px">
-                                {{ investnum }}
-                                <h5 style="display: inline-block">회</h5>
-                              </h2>
-                            </a>
+                            <!-- <a href="/myinvestpjt" class="pjt_a"> -->
+                            <router-link
+                              :to="{
+                                name: 'MyInvestPjt',
+                                params: { userid: pageuserid },
+                              }"
+                            ></router-link>
+                            <span class="pjt_span">생성한 프로젝트</span>
+                            <h2 style="margin-top: 20px">
+                              {{ investnum }}
+                              <h5 style="display: inline-block">회</h5>
+                            </h2>
+                            <!-- </a> -->
                           </li>
                           <li
                             class="info_li"
@@ -79,7 +85,10 @@
                         </ul>
                       </div>
                     </div>
-                    <div v-if="pageusername == username" style="margin: 30px 0; overflow: hidden">
+                    <div
+                      v-if="pageusername == username"
+                      style="margin: 30px 0; overflow: hidden"
+                    >
                       <h3 class="mypage_title">나의 활동</h3>
                       <div style="padding: 0 3%">
                         <div
@@ -308,24 +317,23 @@ export default {
     );
     console.log(pageid);
     // console.log(pageid + "asdfadsddd");
-    console.log(typeof pageid)
+    console.log(typeof pageid);
     const fd = new FormData();
     fd.append("userid", pageid);
-    console.log("pageid" + pageid)
-    this.pageuserid = pageid
-    axios.post(`${SERVER_URL}/util/userinfo`, fd ).then((res) => {
+    console.log("pageid" + pageid);
+    this.pageuserid = pageid;
+    axios.post(`${SERVER_URL}/util/userinfo`, fd).then((res) => {
       console.log("성공인가??");
-      console.log(res)
+      console.log(res);
       this.pageuserimg = res.data.object.profileImg;
       this.pageusername = res.data.object.name;
-      this.pageuseraccestoken = res.data.object.accessToken
+      this.pageuseraccestoken = res.data.object.accessToken;
     });
-
 
     axios
       .get(`${SERVER_URL}/wallet/toid?oauthid=${this.pageuserid}`)
       .then((res) => {
-        this.pageuserbalance = res.data.balance
+        this.pageuserbalance = res.data.balance;
         console.log(res.data.balance);
         // this.mywallet = res.data.address;
         // console.log("여기여기``");

@@ -397,12 +397,28 @@ export default {
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
     this.userid = store.state.userInfo.id;
+
+
+    var idx = window.location.href.indexOf("pjt");
+    console.log(idx);
+    const pageid = window.location.href.substring(
+      idx + 4,
+      window.location.href.length
+    );
+    console.log(pageid);
+
+    // axios
+    // console.log(pageid + "asdfadsddd");
+    // console.log(typeof pageid);
+    
+
+
     axios
       .get(
-        `${SERVER_URL}/investment/investList/${this.page}?userid=${this.userid}`
+        `${SERVER_URL}/investment/investList/${this.page}?userid=${pageid}`
       )
       .then((response) => {
-        console.log("나의 투자프로젝트 페이지");
+        console.log("페이지");
         console.log(response);
         this.investList = response.data.object;
         this.investList.forEach((item) => {
