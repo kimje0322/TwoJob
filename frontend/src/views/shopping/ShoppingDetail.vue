@@ -36,7 +36,7 @@
           <hr />
           <p style="font-size: 1.2em; margin-bottom: 4%">
             <strong>
-              <span style="color: rgb(22, 150, 245)">1500</span> </strong
+              <span style="color: rgb(22, 150, 245)">{{this.perchased}}</span> </strong
             >개 구매 중
           </p>
           <!-- 카테고리 -->
@@ -68,9 +68,52 @@
           >
           <br />
           <br />
-          <v-btn class="perchaseBtn white--text">
+          <v-list-item>
+         
+          </v-list-item>
+          <v-btn @click="selectCount" class="perchaseBtn white--text">
             <v-icon size="18" class="mr-1">mdi-cart-outline</v-icon>상품 구매
           </v-btn>
+
+            <v-dialog max-width="500" min-height="370" v-model="perchaseDialog">
+
+            <v-card flat tile>
+              <!-- 모달 --> 
+              <v-card-text style="height:270;" class="pa-1">
+                <v-list>
+                  <v-toolbar dense elevation="1">
+                    <h5 class="mx-auto">상품 구매</h5>
+                  </v-toolbar>
+                  <div style="text-align: center; margin-top: 30px;">
+                    <h4>{{ dto.pjtname }}</h4> 
+                    <img :src="dto.picture" width="65%" style="border-radius: 15px;" alt="picture">
+                    <p class="my-2">구매 수량을 선택해주세요 !</p>
+                  </div>
+                  <!-- 수량 -->
+                  <div>
+                    <div style="position:relative">
+                    <v-text-field
+                      class="ml-50"
+                      style="width:50%; position:absolue; left: 25%"
+                      v-model="numberCount"
+                      hide-details
+                      outlined=""
+                      type="number"
+                    />
+                    <div style="position:absolute; bottom: 29%; right: 33%">
+                      <span>개</span>
+                    </div>
+                  </div>
+                  </div>
+                </v-list>
+              </v-card-text>
+                </v-card>
+                <v-card-actions style="background-color: white; justify-content:center"> 
+                  <v-btn text @click="onPerchase" color="white" style="background-color:rgb(22, 150, 245)">구매</v-btn>
+                  <v-btn text @click="perchaseDialog=false" style="background-color:#ECEFF1">취소</v-btn>
+                </v-card-actions>
+              </v-dialog>   
+
           <!-- 좋아요 & 문의 버튼 -->
           <div style="display: flex; margin-top: 15px">
             <button @click="likeBtn" style="flex: 1">
@@ -106,8 +149,9 @@
             <img class="makerImg" :src="makerImg" alt />
           </div>
           <div style="float: left; margin: 3px 0 0 15px">
-            <p style="font-size: 1.1rem; margin-bottom: 5px">
-              <strong class="mr-2">{{ items.compname }}</strong>
+            <p style="font-size: 1rem; margin-bottom: 5px">
+              (주){{ items.compname }}
+              <strong class="mr-2">{{ makerName }}</strong>
               <v-chip @click="visit(items.url)" label small class="visit px-1"
                 >사이트 방문</v-chip
               >
@@ -280,7 +324,6 @@
                     </p>
                     <br />
                   </div>
-
                   <div style="width: 78%">
                     <div style="display: flex" class="ml-4">
                       <p class="ml-2" style="font-weight: bold">
@@ -346,11 +389,24 @@ export default {
       likeState: 0,
       // 금손님 이미지
       makerImg: '',
+      makerName:'',
       chatroom: false,
+      // 블록체인, 결제
+      investaddress:'',
+      perchased: 0,
+      perchaeCount: 0,
+      perchaseDialog: false,
+      numberCount: 1,
     };
   },
   created() {},
   mounted() {
+    // 판매개수
+    axios
+      .get(`${SERVER_URL}/funding/gettotalsell?campaignId=${this.investaddress}`)
+      .then((res) => {
+        this.perchased = res.data
+      })
     // 디테일 정보
     this.shoppingAddress = this.$route.params.address
     // 쇼핑 디테일 정보 
@@ -361,8 +417,7 @@ export default {
       .post(`${SERVER_URL}/sale/getDetail`, frm)
       .then((res) => {
         this.items = res.data.object.object;
-        console.log(this.items)
-        console.log('여기 ')
+        this.investaddress = this.items.saleBoardDto.investaddress
         // 좋아요 확인
         if (this.itemslike) {
           this.likeState = true;
@@ -377,7 +432,7 @@ export default {
         axios
           .post(`${SERVER_URL}/util/userinfo?userid=${userid}`)
           .then((res) => {
-            // console.log(res.data.object.profileImg )
+            this.makerName = res.data.object.name
             if (res.data.object.profileImg == null) {
             this.makerImg =
             "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
@@ -393,11 +448,11 @@ export default {
           .join("<br />");
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
 
     // 쇼핑 리뷰
-    // page 수정 해야함! (반복문)
+    // page 수정 해야함! 
     const fm = new FormData();
     fm.append("address", this.shoppingAddress);
     axios.post(`${SERVER_URL}/sale/getReviews/0`, fm).then((response) => {
@@ -422,9 +477,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err)
-            // console.log('아냐나나ㅏ')
-
+            // console.log(err)
           })
         }
     
@@ -444,6 +497,24 @@ export default {
       });
   },
   methods: {
+    // 상품 구매 전 모달
+    selectCount() {
+      this.perchaseDialog = true;
+    },
+    // 상품 구매
+    onPerchase() {
+      console.log(this.numberCount)
+      const fd = new FormData();
+      fd.append("campaignId ", this.investaddress);
+      fd.append("accessToken ", store.state.accessToken);
+      fd.append("count", this.numberCount);
+      fd.append("money", this.dto.saleprice);
+      axios
+        .post(`${SERVER_URL}/funding/sellitem`, fd)
+        .then((res) => {
+          console.log(res)
+        })
+    },
     closeChatRoom() {
       this.chatroom = false;
       store.commit("setAsk", null);
