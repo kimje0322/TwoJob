@@ -1,12 +1,15 @@
 package com.blocker.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.RawTransactionManager;
@@ -74,10 +77,13 @@ public class WalletServiceImpl implements WalletService{
 	}
 
 	@Override
-	public Object getBalance(String address) {
+	public Object getBalance(String address) throws IOException {
 		Optional<Wallet> wallet = walletRepository.findByAddress(address);
 		if(wallet.isPresent()) {
-			return wallet.get().getBalance();
+			Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+			Credentials credentials = Credentials.create(wallet.get().getPrivatekey());
+			String value = String.valueOf(web3j.ethGetBalance(address,DefaultBlockParameterName.LATEST).send().getBalance());
+			return String.valueOf(Convert.fromWei(value, Convert.Unit.ETHER));
 		}else {
 			return "novalid"; 
 		}

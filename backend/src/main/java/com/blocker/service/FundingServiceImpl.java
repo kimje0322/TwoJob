@@ -51,7 +51,8 @@ public class FundingServiceImpl implements FundingService{
 	SaleBoardRepository saleBoardRepository;
 	@Autowired
 	BlockTransactionRepository blockTransactionRepository;
-
+	@Autowired
+	TokenService tokenService;
 	@Override
 	public void Deploy() throws Exception {
 		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
@@ -107,7 +108,10 @@ public class FundingServiceImpl implements FundingService{
 					Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
 					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-
+					String val = tokenService.getTokenNum(accessToken);
+					if(Long.valueOf(val) < Long.valueOf(value)) {
+						return "보유토큰부족";
+					}
 					System.out.println("후 = " +contract.isValid());
 					System.out.println("주소? " + myInvest.getAddress());
 					TransactionReceipt tr =contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getAddress()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
@@ -184,6 +188,10 @@ public class FundingServiceImpl implements FundingService{
 			if(wallets.isPresent()) {
 				Optional<InvestmentDto> invest = investmentRepository.findById(campaignId);
 				if(invest.isPresent()) {
+					String myToken = tokenService.getTokenNum(accessToken);
+					if(Long.valueOf(myToken) < cnt*money) {
+						return "보유토큰부족";
+					}
 					InvestmentDto myInvest = invest.get();
 					Wallet mywallet = wallets.get();
 					Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
@@ -359,7 +367,7 @@ public class FundingServiceImpl implements FundingService{
 		return val;
 	}
 	@Override
-	public void getReceipt(String campaignId) throws Exception {
+	public List<String> getReceipt(String campaignId) throws Exception {
 		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
 		Credentials credentials = Credentials.create(property.getAdminPK());
 		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
@@ -367,10 +375,46 @@ public class FundingServiceImpl implements FundingService{
 		for(int i=0; i<list.size(); i++) {
 			System.out.println(list.get(i));
 		}
+		return list;
 	}
-	public void useFund(String campaignId,String imgname) {
-		
+	@Override
+	public String useFund(String accessToken, String campaignId,List<String> imgname, Integer value) throws Exception {
+		Object result =  loginService.getUserInfo(accessToken);
+		if(result.getClass() == Member.class) {
+			Member m = (Member)result;
+			Optional<Wallet> wallets = walletRepository.findById(m.getOauthId());
+			Optional<InvestmentDto> Invest = investmentRepository.findById(campaignId);
+			if(wallets.isPresent()) {
+				if(Invest.isPresent()) {
+					Wallet mywallet = wallets.get();
+					InvestmentDto myInvest = Invest.get();
+					Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
+					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+					for(int i=0; i<imgname.size(); i++) {
+						contract.usefund(campaignId, imgname.get(i), BigInteger.valueOf(value)).send();
+					}
+					return "scucess";
+				}else {
+					return "noInvest";
+				}
+			}else {
+				return "noWallet";
+			}
+		}else if(result.getClass() == String.class){
+			return (String)result;
+		}else {
+			return String.valueOf(result);
+		}
 	}
+	@Override
+	public String getTotalSell(String campainId) throws Exception {
+		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
+		Credentials credentials = Credentials.create(property.getAdminPK());
+		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
+		return String.valueOf(contract.getTotalSell(campainId).send());
+	}
+	
 	public void makeAllTask() throws Exception {
 		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
 		Credentials credentials = Credentials.create(property.getAdminPK());
