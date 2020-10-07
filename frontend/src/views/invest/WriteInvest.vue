@@ -365,7 +365,7 @@ export default {
                   18,
                   response.data.length - 17
                 );
-                const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+                const imgUrl = "https://twojob.ga/" + cutUrl;
                 callback(imgUrl);
               })
               .catch((error) => {
@@ -484,7 +484,7 @@ export default {
         })
         .then((response) => {
           const cutUrl = response.data.substr(18, response.data.length - 17);
-          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+          const imgUrl = "https://twojob.ga/" + cutUrl;
           this.picture = imgUrl;
           $(".v-file-input__text").text(event.name);
         })
@@ -609,7 +609,6 @@ export default {
                     let timerInterval;
                     Swal.fire({
                       title: "투자 프로젝트 오픈중",
-                      html: "<b></b> milliseconds 기다려주세요.",
                       timer: 10000,
                       timerProgressBar: true,
                       onBeforeOpen: () => {
@@ -629,14 +628,19 @@ export default {
                       },
                     })
                     .then((response) => {
-                      // console.log(response);
-                      this.$router.push("/investhome");
-                      Swal.fire({
-                        icon: "success",
-                        title: "",
-                        text: "프로젝트가 성공적으로 오픈되었습니다.",
-                        showConfirmButton: false,
-                      })
+                      console.log(response);
+                      if(response.data == 'success'){
+                        this.$router.push("/investhome");
+                        Swal.fire({
+                          icon: "success",
+                          title: "",
+                          text: "프로젝트가 성공적으로 오픈되었습니다.",
+                          showConfirmButton: false,
+                        })
+                      }else{
+                        alert("블록체인 프로젝트 오픈에 실패했습니다.");
+                      }
+                      
                     });
                 } else {
                   alert("프로젝트 오픈에 실패했습니다.");

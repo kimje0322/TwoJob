@@ -196,7 +196,7 @@ export default {
       filter: ["최신순", "인기순"],
       // 프로젝트
       investProjects: [],
-      ispjt: false,
+      ispjt: true,
       // page
       page: 0,
       totalpage: 0,

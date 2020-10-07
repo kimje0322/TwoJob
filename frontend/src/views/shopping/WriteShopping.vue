@@ -268,7 +268,7 @@ export default {
                 headers: { 'Content-Type': 'multipart/form-data' } 
             }).then(response => {
                 const cutUrl = response.data.substr(18, response.data.length-17)
-                const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+                const imgUrl = 'https://twojob.ga/' + cutUrl
                 console.log(response.data);
               callback(imgUrl)
             });
@@ -331,8 +331,8 @@ export default {
             headers: { 'Content-Type': 'multipart/form-data' } 
         }).then(response => {
             const cutUrl = response.data.substr(18, response.data.length-17)
-            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
-            // console.log(response.data);
+            const imgUrl = 'https://twojob.ga/' + cutUrl
+            console.log(response.data);
             this.picture = imgUrl;
 
         });
@@ -436,7 +436,6 @@ export default {
                     let timerInterval;
                     Swal.fire({
                       title: "쇼핑 프로젝트 오픈중",
-                      html: "<b></b> milliseconds 기다려주세요.",
                       timer: 10000,
                       timerProgressBar: true,
                       onBeforeOpen: () => {

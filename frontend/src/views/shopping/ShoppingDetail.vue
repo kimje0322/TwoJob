@@ -390,6 +390,7 @@ export default {
     return {
       // 로그인 
       islogin: store.state.isSigned,
+      userid: store.state.userInfo.id,
       currentItem: "tab-Web",
       tabItems: ["pjtInfo", "reviews"],
       items: [],
@@ -454,6 +455,7 @@ export default {
         axios
           .post(`${SERVER_URL}/util/userinfo?userid=${userid}`)
           .then((res) => {
+            this.maker = res.data.object
             this.makerName = res.data.object.name
             if (res.data.object.profileImg == null) {
             this.makerImg =
@@ -490,7 +492,6 @@ export default {
           .post(`${SERVER_URL}/util/userinfo?userid=${userId}`)
           .then((res) => {
             this.reviews[i].userid = res.data.object.name;
-            this.maker = response.data.object;
             // console.log(res.data.object)
             if (res.data.object.profileImg == null) {
             this.reviews[i].profile = "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
@@ -535,7 +536,6 @@ export default {
         let timerInterval;
         Swal.fire({
           title: '구매완료까지',
-          html: "<b></b> milliseconds 기다려주세요.",
           timer: 5000,
           timerProgressBar: true,
           onBeforeOpen: () => {

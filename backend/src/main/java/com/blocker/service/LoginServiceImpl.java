@@ -13,19 +13,22 @@ import org.springframework.stereotype.Service;
 import com.blocker.dto.Member;
 import com.blocker.dto.Property;
 import com.blocker.repository.MemberRepository;
+import com.blocker.request.LoginResponse;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 @Service
-public class LoginServiceImpl implements LoginService{
+public class LoginServiceImpl implements LoginService {
 	@Autowired
 	Property property;
 
 	@Autowired
 	MemberRepository memberRepository;
-	public Object getUserInfo (String accessToken) {
+
+	public Object getUserInfo(String accessToken) {
 		String reqURL = "https://kapi.kakao.com/v2/user/me";
+
 		try {
 			URL url = new URL(reqURL);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -33,7 +36,7 @@ public class LoginServiceImpl implements LoginService{
 			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 			int responseCode = conn.getResponseCode();
 			System.out.println("responseCode : " + responseCode);
-			if(responseCode == 200) {
+			if (responseCode == 200) {
 				BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
 				String line = "";
@@ -52,23 +55,28 @@ public class LoginServiceImpl implements LoginService{
 				String nickname = properties.getAsJsonObject().get("nickname").getAsString();
 				JsonElement nprofile_image = properties.getAsJsonObject().get("profile_image");
 				JsonElement nemail = kakao_account.getAsJsonObject().get("email");
-				String email = nemail==null?null:nemail.getAsString();
-				String profile_image = nprofile_image==null?"https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg":nprofile_image.getAsString();
+				String email = nemail == null ? null : nemail.getAsString();
+				String profile_image = nprofile_image == null
+						? "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg"
+						: nprofile_image.getAsString();
 				Optional<Member> m = memberRepository.findById(id);
 				Member m1 = null;
-				if(m.isPresent()) {
+				LoginResponse loginResponse;
+				if (m.isPresent()) {
 					m1 = m.get();
 					m1.setAccessToken(accessToken);
 					m1.setName(nickname);
 					m1.setEmail(email);
 					m1.setProfileImg(profile_image);
+					m1.setIsfirsttime(false);
 					memberRepository.save(m1);
-				}else {
-					m1 = new Member(id, nickname, profile_image,"KAKAO", email, accessToken);
+				} else {// 최초로그인
+					m1 = new Member(id, nickname, profile_image, "KAKAO", email, accessToken);
+					m1.setIsfirsttime(true);
 					memberRepository.save(m1);
 				}
 				return m1;
-			}else {
+			} else {
 				return responseCode;
 			}
 		} catch (IOException e) {
@@ -76,6 +84,7 @@ public class LoginServiceImpl implements LoginService{
 		}
 		return "fail";
 	}
+
 	public String Logout(String accessToken) {
 		String reqURL = "https://kapi.kakao.com/v1/user/logout";
 		try {
@@ -86,9 +95,9 @@ public class LoginServiceImpl implements LoginService{
 
 			int responseCode = conn.getResponseCode();
 			System.out.println("responseCode : " + responseCode);
-			if(responseCode == 200) {
+			if (responseCode == 200) {
 				return "success";
-			}else {
+			} else {
 				return String.valueOf(responseCode);
 			}
 		} catch (IOException e) {
@@ -96,6 +105,5 @@ public class LoginServiceImpl implements LoginService{
 		}
 		return "fail";
 	}
-	
-	
+
 }
