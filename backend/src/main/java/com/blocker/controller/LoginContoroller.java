@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blocker.dto.Member;
 import com.blocker.service.LoginService;
+import com.blocker.service.ObjectToMap;
 import com.blocker.util.webhook;
 
 import io.swagger.annotations.ApiOperation;
@@ -25,15 +26,17 @@ import io.swagger.annotations.ApiOperation;
 public class LoginContoroller {
     @Autowired
     LoginService loginService;
+    @Autowired
+    ObjectToMap objecttomap;
     
     @PostMapping("/kakaologin")
     @ApiOperation(value = "[카카오 로그인] accessToken을 전달해 로그인한다, 만약 사용자 정보가 제대로 넘어오면, Member Dto, 잘못된 access면 responseCode return, 실패하면 fail을 return")
     public ResponseEntity<?> login(@RequestParam("accessToken") String accessToken) {
     	Object result =  loginService.getUserInfo(accessToken);
     	if(result.getClass() == Member.class){
-    		Map<String, Object> test = (Map)result;
+    		Map<String, Object> test = objecttomap.ConvertObjectToMap(result);
     		System.out.println(test.toString());
-    		return new ResponseEntity<Map>((Map)result, HttpStatus.OK);
+    		return new ResponseEntity<>(test, HttpStatus.OK);
     	}else if(result.getClass() == String.class) {
     		return new ResponseEntity<String>((String)result, HttpStatus.OK);
     	}else {
