@@ -100,9 +100,7 @@ public class FundingController {
 //		calUntil.set( Calendar.SECOND, 0);
 //		Date until = calUntil.getTime();
 //		long sleep = until.getTime() - now.getTime();
-//		System.out.println(sleep);
 		//int test = Integer.parseInt("dddd");
-		//System.out.println("dd? " + BigInteger.valueOf(4_300_000));
 //		ScheduleTask st = new ScheduleTask(2020,10,3,9,51);
 //		st.start();
 	}
@@ -112,7 +110,6 @@ public class FundingController {
 //        e.printStackTrace(new PrintWriter(errors));
 //        String result = errors.toString();
 //		System.err.println("Funding 부분에서 " + e.getClass());
-//		System.out.println(result);
 //		webhook w = new webhook();
 //		w.send("Funding 부분에서 " + e.getClass());
 //		//w.postHttpsRequest(result, e.getClass().toString());

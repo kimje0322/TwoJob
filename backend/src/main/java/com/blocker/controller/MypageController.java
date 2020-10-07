@@ -98,7 +98,6 @@ public class MypageController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("찜한 목록 error");
 			result.data = "fail";
 			result.status = true;
 		} finally {

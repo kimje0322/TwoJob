@@ -54,8 +54,6 @@ public class FundingServiceImpl implements FundingService{
 		Credentials credentials = Credentials.create(property.getAdminPK());
 		CrowdFunding contract = null;
 		contract = CrowdFunding.deploy(web3j, credentials, new DefaultGasProvider()).send();
-		System.out.println(contract.isValid());
-		System.out.println(contract.getContractAddress());
 	}
 	@Override
 	public String createCampaign(String accessToken, String id) throws Exception {
@@ -72,7 +70,6 @@ public class FundingServiceImpl implements FundingService{
 					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
 					TransactionReceipt tr = contract.createCampaign(String.valueOf(myInvest.getAddress()), Convert.toWei(String.valueOf(myInvest.getGoalprice()), Convert.Unit.ETHER).toBigInteger()).send();
-					System.out.println("캠페인 생성 완료!");
 					BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),tr.getFrom(),m.getProfileImg(),Double.valueOf("0"),TransactType.CREATE,1);
 					blockTransactionRepository.save(transact);
 					makeTask(myInvest);
@@ -104,12 +101,9 @@ public class FundingServiceImpl implements FundingService{
 					Credentials credentials = Credentials.create(mywallet.getPrivatekey());
 					CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
 
-					System.out.println("후 = " +contract.isValid());
-					System.out.println("주소? " + myInvest.getAddress());
 					TransactionReceipt tr =contract.FundingCampign(property.getTokenAddr(),credentials.getAddress(), String.valueOf(myInvest.getAddress()), Convert.toWei(value, Convert.Unit.ETHER).toBigInteger()).send();
 					BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),tr.getFrom(),m.getProfileImg(),Double.valueOf(value),TransactType.FUND,1);
 					blockTransactionRepository.save(transact);
-					System.out.println("fundingCampaign succss");
 					return "success";
 				}else {
 					return "noInvest";
@@ -140,7 +134,6 @@ public class FundingServiceImpl implements FundingService{
 			}
 			BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),m.get().getProfileImg(),mywallet.get().getAddress(),Double.valueOf(value),TransactType.RECEIVE,1);
 			blockTransactionRepository.save(transact);
-			System.out.println("receiveFund Success");
 			return "success";
 		}else {
 			return "noInvest";
@@ -164,7 +157,6 @@ public class FundingServiceImpl implements FundingService{
 				BlockTransaction transact = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),m.get().getProfileImg(),mywallet.get().getAddress(),value,TransactType.REFUND,1);
 				blockTransactionRepository.save(transact);
 			}
-			System.out.println("환불 완료");
 			return "success";
 		}else {
 			return "noInvest";
@@ -209,7 +201,6 @@ public class FundingServiceImpl implements FundingService{
 //						BlockTransaction transact2 = new BlockTransaction(tr.getBlockHash(),myInvest.getAddress(),myInvest.getCompname(),m2.get().getProfileImg(),wallet2.get().getAddress(),myval.doubleValue(),TransactType.SALEPARTIN,2);
 //						blockTransactionRepository.save(transact2);
 //					}
-					System.out.println("판매완료!");
 					return "scucess";
 				}else {
 					return "noInvest";
@@ -251,11 +242,6 @@ public class FundingServiceImpl implements FundingService{
 		Credentials credentials = Credentials.create(property.getAdminPK());
 		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
 
-		//System.out.println(contract.test(property.getTokenAddr(), new BigInteger("100")).send());
-		//System.out.println(contract.getAddress().send());
-		//System.out.println(contract.getSender().send());
-		System.out.println(contract.getCampaign(campaignId,property.getAdminAddr()).send());
-		System.out.println(contract.getBalance(property.getTokenAddr()).send());
 	}
 	@Override
 	public String getPepleNum(String campaignId) throws Exception {
@@ -263,7 +249,6 @@ public class FundingServiceImpl implements FundingService{
 		Credentials credentials = Credentials.create(property.getAdminPK());
 		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
 		String val = String.valueOf(contract.getPeopleNum(campaignId).send());
-		System.out.println(val);
 		return val;
 	}
 
@@ -310,7 +295,6 @@ public class FundingServiceImpl implements FundingService{
 		day = day.charAt(0)=='0'?day.substring(1,2):day;
 		ScheduleTask task = new ScheduleTask(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day), invest.getAddress());
 		//task.start();
-		System.out.println("task 생성완료!");
 		return task;
 	}
 }

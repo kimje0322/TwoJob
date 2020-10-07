@@ -35,7 +35,6 @@ public class LoginServiceImpl implements LoginService {
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 			int responseCode = conn.getResponseCode();
-			System.out.println("responseCode : " + responseCode);
 			if (responseCode == 200) {
 				BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
@@ -45,7 +44,6 @@ public class LoginServiceImpl implements LoginService {
 				while ((line = br.readLine()) != null) {
 					result += line;
 				}
-				System.out.println("response body : " + result);
 
 				JsonParser parser = new JsonParser();
 				JsonElement element = parser.parse(result);
@@ -94,7 +92,6 @@ public class LoginServiceImpl implements LoginService {
 			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 
 			int responseCode = conn.getResponseCode();
-			System.out.println("responseCode : " + responseCode);
 			if (responseCode == 200) {
 				return "success";
 			} else {

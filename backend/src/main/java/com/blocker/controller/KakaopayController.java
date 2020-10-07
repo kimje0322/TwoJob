@@ -53,8 +53,6 @@ public class KakaopayController {
 	@ApiOperation(value = "카카오페이 성공했을 경우")
 
 	public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token, @RequestParam("access_token") String access_token, @RequestParam("userid") String userid) throws Exception {
-		System.out.println("kakaoPaySuccess get----------------------");
-		System.out.println("kakaoPaySuccess pg_token : " + pg_token);
 
 		kakaopay.kakaoPayInfo(pg_token, chargeMoney.get(userid) + "");
 

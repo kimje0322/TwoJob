@@ -54,7 +54,6 @@ public class ChatController {
 	
 	@MessageMapping("/notice")
 	public void notice(String val) {
-		System.out.println("val = " + val);
 		messagingTemplate.convertAndSend("/sub/notice","hello");
 	}
 	

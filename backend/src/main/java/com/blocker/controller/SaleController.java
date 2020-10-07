@@ -109,7 +109,6 @@ public class SaleController {
 		} catch (Exception e) {
 			result.data = "fail";
 			result.status = false;
-			System.out.println("판매 게시글 생성중 애러 발생");
 			e.printStackTrace();
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
@@ -164,7 +163,6 @@ public class SaleController {
 		} catch (Exception e) {
 			result.data = "fail";
 			result.status = false;
-			System.out.println("판매 게시글 리스트 추출중 애러 발생");
 			e.printStackTrace();
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
@@ -259,7 +257,6 @@ public class SaleController {
 		} catch (Exception e) {
 			result.data = "fail";
 			result.status = false;
-			System.out.println("판매 게시글 리스트 추출중 애러 발생");
 			e.printStackTrace();
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
@@ -286,7 +283,6 @@ public class SaleController {
 			result.status = true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("리뷰등록 중 실패하였습니다");
 			result.data = "fail";
 			result.object = null;
 			result.status = false;
@@ -351,7 +347,6 @@ public class SaleController {
 				result.status = true;
 			}
 		} catch (Exception e) {
-			System.out.println("판매 디테일을 가져오던도중 애러발생");
 			result.data = "fail";
 			result.object = null;
 			result.status = false;
@@ -379,7 +374,6 @@ public class SaleController {
 			result.data = "fail";
 			result.status = true;
 			e.printStackTrace();
-			System.out.println("리뷰를 가져오기 실패");
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
@@ -459,7 +453,6 @@ public class SaleController {
 			result.status = true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("curation error");
 			result.object = null;
 			result.data = "fail";
 			result.status = false;

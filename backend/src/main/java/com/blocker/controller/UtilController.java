@@ -51,11 +51,9 @@ public class UtilController {
 				LikeBoardDto updatelikeBoardDto = oplikeBoardDto.get();
 
 				if (updatelikeBoardDto.isIschecked()) {
-					System.out.println("true=>false");
 					updatelikeBoardDto.setIschecked(false);
 					map.put("likestate", 0);
 				} else {
-					System.out.println("false=>true");
 					updatelikeBoardDto.setIschecked(true);
 					map.put("likestate", 1);
 				}
@@ -78,7 +76,6 @@ public class UtilController {
 					result.data = "success";
 					result.status = true;
 				} else {
-					System.out.println("save도중에 애러가 발생함");
 					result.object = null;
 					result.data = "sql error";
 					result.status = false;
@@ -87,7 +84,6 @@ public class UtilController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("좋아요 true로 하던도중 애러발생");
 			result.data = "fail";
 			result.object = null;
 			result.status = true;
@@ -109,7 +105,6 @@ public class UtilController {
 			result.status = true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("유저정보를 가져오던 도중 오류가 났습니다");
 			result.data = "fail";
 			result.status = true;
 		} finally {

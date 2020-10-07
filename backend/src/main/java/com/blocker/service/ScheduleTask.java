@@ -39,10 +39,8 @@ public class ScheduleTask extends Thread {
 		try {
 			BigDecimal result = fundingService.getfundingrate(campaignId);
 			if(result.compareTo(new BigDecimal("100")) == -1) {
-				System.out.println("환불");
 				fundingService.reFund(campaignId);
 			}else {
-				System.out.println("펀딩자 수령");
 				fundingService.receiveFund(campaignId);
 			}
 			Optional<InvestmentDto> in =investmentRepository.findById(campaignId);
@@ -64,7 +62,6 @@ public class ScheduleTask extends Thread {
 		calUntil.set( Calendar.SECOND, 0);
 		Date until = calUntil.getTime();
 		long sleep = until.getTime() - now.getTime();
-		System.out.println(until.getTime() + " " + now.getTime() + " sleep ? = " + sleep);
 		return sleep;
 	}
 }

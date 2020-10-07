@@ -95,7 +95,6 @@ public class InvestController {
 		try {
 			InvestmentDto investmentdto = new InvestmentDto();
 
-			System.out.println("userid==========>" + pinvestment.getUserid());
 			UUID uuid = UUID.randomUUID();
 			investmentdto.setAddress(uuid.toString());
 			investmentdto.setUserid(pinvestment.getUserid());
@@ -133,7 +132,6 @@ public class InvestController {
 				} else {
 					tagdto = new TagDto(optagdto.get());
 				}
-				System.out.println("tagdto==>" + tagdto.toString());
 				BoardTagDto boardTagDto = new BoardTagDto();
 				boardTagDto.setInvestaddress(tempInvestmentDto.getAddress());
 				boardTagDto.setTagname(tagdto.getTagname());
@@ -154,7 +152,6 @@ public class InvestController {
 				} else {
 					categoryDto = new CategoryDto(opCategorydto.get());
 				}
-				System.out.println("categorydto==>" + categoryDto.toString());
 				BoardCategoryDto boardCategoryDto = new BoardCategoryDto();
 				boardCategoryDto.setCategoryname(category);
 				boardCategoryDto.setInvestaddress(tempInvestmentDto.getAddress());
@@ -169,7 +166,6 @@ public class InvestController {
 			result.status = false;
 			result.object = null;
 
-			System.out.println("투자 게시글 생성중 오류 발생");
 			e.printStackTrace();
 		} finally {
 			return new ResponseEntity<>(result, HttpStatus.OK);
@@ -191,7 +187,6 @@ public class InvestController {
 			// 경로바꾸고 이거 주석 풀어줘야함
 			img.transferTo(file);
 		} catch (Exception e) {
-			System.out.println("이미지 저장중 오류발생");
 			e.printStackTrace();
 		} finally {
 			return file.getAbsolutePath();
@@ -255,16 +250,12 @@ public class InvestController {
 		List<InvestmentResponse> resultDatas = new ArrayList<>();
 
 		try {
-			System.out.println(categoryfilter.isEmpty());
 			if (categoryfilter.isEmpty()) {
 				Page<InvestmentDto> list = null;
 				if (orderOption == 0) {
-					System.out.println(0);
 					list = investmentService.getAllInvestmentList(page);
 				} else {
 					list = investmentService.getAllInvestmentList(page, orderOption);
-					System.out
-							.println("=============================================================" + list.toString());
 				}
 
 				for (Iterator<InvestmentDto> iter = list.getContent().iterator(); iter.hasNext();) {
@@ -423,17 +414,13 @@ public class InvestController {
 			List<getAllMyPjtResponse> resultdatas = new ArrayList<>();
 			for (Iterator<InvestmentDto> iter = templist.iterator(); iter.hasNext();) {
 				InvestmentDto pinvestmentdDto = iter.next();
-				System.out.println("address=====>" + pinvestmentdDto.getAddress());
 				Optional<SaleBoardDto> opsaleBoardDto = saleService
 						.getSaleBoardByInvestAddress(pinvestmentdDto.getAddress());
-				System.out.println("opsaleBoardDto=====>" + opsaleBoardDto.isPresent());
 				if (opsaleBoardDto.isPresent()) {
-					System.out.println(opsaleBoardDto.get().toString());
 					getAllMyPjtResponse data = new getAllMyPjtResponse(pinvestmentdDto, opsaleBoardDto.get(),
 							pageInvestment.getTotalPages());
 					resultdatas.add(data);
 				} else {
-					System.out.println(pageInvestment.getTotalPages());
 					getAllMyPjtResponse data = new getAllMyPjtResponse(pinvestmentdDto, pageInvestment.getTotalPages());
 					resultdatas.add(data);
 				}
@@ -466,7 +453,6 @@ public class InvestController {
 			result.status = true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("댓글생성중 오류 발생");
 			result.object = null;
 			result.data = "fail";
 			result.status = true;
@@ -481,10 +467,8 @@ public class InvestController {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			int data = commentBoardService.deleteComment(num);
-			System.out.println("data====>" + data);
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("댓글 삭제 도중 error발생");
 		}
 	}
 
@@ -515,7 +499,6 @@ public class InvestController {
 			result.status = true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("curation error");
 			result.object = null;
 			result.data = "fail";
 			result.status = false;
