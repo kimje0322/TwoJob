@@ -2,9 +2,9 @@
   <div class="investproject">
     <navbar/>
     <!-- 쇼핑 메뉴바 -->
-    <div class="shoppingNav">
+    <div class="investNav">
       <div class="items">
-        <div>
+        <div style="margin: 0 15% 0 0;">
           <router-link to="/shoppinghome">
             <h5>쇼핑홈</h5>
           </router-link>
@@ -14,16 +14,10 @@
             <h5 style="color: rgb(22, 150, 245)">프로젝트</h5>
           </router-link>
         </div>
-        <div>
-          <router-link to="/shoppinghome">
-            <h5>오픈예정</h5>
-          </router-link>
-        </div>
       </div>
     </div>
-    <hr>
     <!-- 카테고리 -->
-    <div style="margin-bottom: 1rem;">
+    <div style="margin: 3rem 0px;">
       <v-container class="cateContainer" style="text-align:center;">
         <v-row no-gutters>
           <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
@@ -31,11 +25,13 @@
           <!-- 카테고리 for문 -->
           <v-col v-for="(category, i) in categoryList" :key="i" cols="12" sm="1">
             <v-card
-              class="pa-2"
+               @click="onCategory(category.name, category.key)"
+              :class="category.key"
+              class="pa-2 categoryCard"
               outlined
               tile
             >
-              <v-icon size="30">mdi-{{category.icon}}</v-icon><br>
+              <v-icon :class="`${category.key}icon`" size="30">mdi-{{ category.icon }}</v-icon>
               <p class="categoryTag">{{category.name}}</p>
             </v-card>
           </v-col>
@@ -44,18 +40,15 @@
     </div>
     <!-- 필터 -->
     <div class="filterBox">
-      <!-- 상태 -->
       <div style="display: inline-block; margin-right: 2%">
-        <!-- 1 -->
         <v-select
-          :items="state"
-          label="상태"
+          :items="filter"
+          label="　정렬"
           outlined
           hide-details
-          v-model="nowstate"
-          @click="openState"
-          :class="{checkstate: checkstate}"
           class="origin"
+          v-model="clickfilter"
+          @change="onfilter()"
         ></v-select>
       </div>
       <div style="width: 150px; display: inline-block; float: right">
@@ -64,80 +57,103 @@
         </v-btn>
       </div>
     </div>
-    <!-- 프로젝트 -->
-    <div class="projectList" style="padding: 10px 3%;">
-      <div style="height: 45px;">
-        <div style="display: inline-block;">
-          <span style="color: rgb(22, 150, 245);">16</span>
-          <span>개의 프로젝트가 있습니다.</span>
-        </div>
-        <div style="width: 100px; display: inline-block; float: right;">
-          <!-- 2 -->
-          <v-select
-            :items="filter"
-            hide-details
-            label="최신순"
-            single-line
-            @click="openFilter"
-            v-model="nowfilter"
-            append-icon="mdi-arrow-down-drop-circle-outline"
-            class="filter"
-          ></v-select>
+  <!-- 프로젝트 -->
+  <div style="margin: 15px 80px; padding-left: 105px">
+      <div v-if="ispjt" style="padding: 1% 0">
+        <div
+          v-for="(item, i) in shoppingList"
+          :key="i"
+          style="display: inline-block; width: 30%; margin-bottom: 30px"
+        >
+          <v-card class="my-12" max-width="320" style="margin: auto">
+            <router-link
+              :to="{ name: 'ShoppingDetail', params: { address: item.address } }"
+            >
+              <v-img
+                height="250"
+                :src="item.picture"
+              ></v-img>
+            </router-link>
+            <p class="mt-2 mb-1 ml-3 mr-3" style="font-size:13px;">(주){{item.compname}}
+              <v-chip
+              small
+              class="ma-2 ml-auto px-2"
+              label
+              outlined=""
+              style="background-color:#FF4081; color:black; float:right;"
+            >
+              <span>
+                <v-icon left
+                  style="color:#FF1744"
+                  class="mr-0 heartChip" size="19">
+                  mdi-heart
+                </v-icon>
+                {{item.likeCount}}개
+              </span>
+              </v-chip>
+            </p>
+            
+            <v-card-title style="font-weight: 600; margin: auto">
+              {{ item.pjtname }}
+              <div style="margin-left: auto">
+                <!-- <v-chip class="projectBadge">{{ item.lastday }}일 남음</v-chip> -->
+              </div>
+            </v-card-title>
+            <v-card-text style="height: 105px">
+              <div style="margin-bottom: 10px; height: 40px">
+                {{ item.onelineintro }}
+              </div>
+              <div style="color: black">
+                <h5
+                  style="
+                    text-align:end;
+                    font-weight: bold;
+                    height: 41.6px;
+                    line-height: 41.6px;
+                  "
+                >
+                  판매가 {{item.saleprice}}원
+                </h5>
+                <div style="display: inline-block; float: right">
+                  <h3 style="display: inline-block; color: rgb(22, 150, 245)">
+                    <!-- {{ item.rate }}% -->
+                  </h3>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
         </div>
       </div>
-      <div style="padding: 1% 0">
-        <div v-for="(item, i) in shoppingList" :key="i" 
-          style="display: inline-block; width: 30%; margin-bottom: 30px;"
-        > 
-          <router-link :to="{name: 'ShoppingDetail', params: { address : item.address }}">
-            <v-card class="my-12 pjtCard" height="436px" max-width="320" style="margin: auto">
-              <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>   
-              <p class="mt-2 mb-1 ml-3">{{item.compname}}</p>
-              <v-card-title style="font-weight: 600; margin: auto">
-                {{item.pjtname}}
-              </v-card-title>
-              <v-card-text>
-                <div style="margin-bottom: 15px;">
-                  <p>{{item.onelineintro}}</p>
-                </div>
-                <div style="color: black;">
-                  <h5
-                    style="display: inline-block; height: 41.6px; line-height: 41.6px"
-                  >{{item.saleprice}} 원</h5>
-                  <div style="display: inline-block; float: right;">
-                    <h3 style="display: inline-block; color:rgb(22, 150, 245)">{{item.sold}}21개</h3>
-                    <h5 style="display: inline-block; color:rgb(123, 197, 254)">구매중</h5>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-card>
-          </router-link>
-        </div>
+      <!-- shoppingpjt 없는 경우 -->
+      <div v-if="!ispjt" style="height: 100vh; display: flex; justify-content: center;;">
+        <h5 style="margin-top:20%">쇼핑 프로젝트 검색 결과가 없습니다.</h5>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import "../../../public/css/InvestProject.scss";
-import "../../../public/css/ShoppingHome.scss";
 import Navbar from "../../components/Navbar.vue";
+import "../../../public/css/InvestProject.scss";
+// import "../../../public/css/ShoppingHome.scss";
 import axios from "axios";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar
+    Navbar,
   },
   data() {
     return {
+      // page
       page: 0,
-      shoppingList: [],
+      totalpage: 0,
+      // 카테고리
       categoryList: [
         { icon: "book-multiple-outline", name: "전체", key: "all" },
-        { icon: "laptop-windows", name: "테크, 가전", key: "tech" },
-        { icon: "shoe-heel", name: "패션, 잡화", key: "fashion" },
+        { icon: "laptop-windows", name: "테크", key: "tech" },
+        { icon: "shoe-heel", name: "패션", key: "fashion" },
         { icon: "lipstick", name: "뷰티", key: "beauty" },
         { icon: "food", name: "푸드", key: "food" },
         { icon: "hair-dryer", name: "홈리빙", key: "home" },
@@ -146,99 +162,184 @@ export default {
         { icon: "book-open-variant", name: "책", key: "book" },
         { icon: "violin", name: "악기", key: "instrument" },
       ],
-      items: [
-        {
-          src: "https://image.freepik.com/free-photo/_93675-87338.jpg",
-        },
-        {
-          src:
-            "https://lh3.googleusercontent.com/proxy/eEAKz6kNc0gXbYyQR5AM2PFZQYoKepaO4JbqZAjJWtbGtTPvBVfh_2sTRVlj6Woh-UIHNphyKm9bIdkz5va1p2KKywJyl7Ed4872B5o9yQ",
-        },
-        {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green002/2019/0430/20190430185646591_32703.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
-        },
-      ],
-      // 상태
-      nowstate: "",
-      checkstate: false,
-      openstate: false,
-      state: [
-        "전체 프로젝트",
-        "진행중인 프로젝트",
-        "종료된 프로젝트",
-      ],
+      nowcategory: [],
       // 필터
-      nowfilter: "",
-      openfilter: false,
-      filter: ["최신순", "인기순","낮은 가격순, 높은 가격순"],
+      nowfilter: 0,
+      clickfilter: "",
+      filter: ["최신순", "인기순"],
+      // 프로젝트
+      ispjt: false,
+      shoppingList: [],
+      likeCount: 0,
     };
   },
   watch: {
-    nowstate(val) {
-      if(this.nowstate) {
-        this.checkstate = true
+    nowcategory() {
+      if(this.nowcategory==false){
+        $(".all").addClass("active");
+         $('.allicon').addClass('activeIcon')
+        this.initAxios()
       }
-      else {
-        this.checkstate = false
-      }
-    },
+    }
   },
-  created() {
-    axios.get(`${SERVER_URL}/sale/getAllSaleList/${this.page}`)
-      .then(response => {
-        this.shoppingList = response.data.object
-        // console.log(this.shoppingList)
-      })
-      .catch(error => {
-        console.log(error)
-      })
+
+  mounted() {
+    // 카테고리
+    $('.all').addClass('active')
+    this.initAxios();
   },
   methods: {
-    openState() {
-      this.openstate = !this.openstate;
-      if (this.openstate) {
-        this.nowstate = "";
-        $(".v-menu").css("display", "block");
+    initAxios() {
+      const fd = new FormData();
+      fd.append("orderOption", 0);
+      fd.append("categoryfilter", "");
+      axios
+      .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
+      .then((response) => {
+        if (response.data.data == "success") {
+            this.shoppingList = response.data.object.object;
+            console.log(response.data.object.likecount[0])
+            if(this.shoppingList.length > 0) {
+              this.ispjt = true
+              // console.log(this.shoppingList)
+              this.shoppingList = response.data.object.object;
+              this.totalpage = this.shoppingList[0].totalpage;
+              for (let i = 0; i < this.shoppingList.length; i++) {
+                this.shoppingList[i].likeCount =  response.data.object.likecount[i];
+            console.log(this.shoppingList[i].likeCount )
+              }
+              console.log(response.data.object.likeCount)
+              this.shoppingList.forEach((shoppingPjt) => {
+              // 좋아요
+              // shoppingPjt.likeCount = response.data.object.likecount[0];
+              // console.log(shoppingPjt)
+              // 제목
+              if (shoppingPjt.pjtname.length > 11) {
+                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 13) + "...";
+              }
+            });
+            } else {
+              this.ispjt = false
+            }
+          }
+        })
+      .catch((error) => {
+        console.log(error);
+      });
+    },
+    filterAxios() {
+      const fd = new FormData();
+      fd.append("orderOption", this.nowfilter);
+      if (this.nowcategory.length > 0 ) {
+        this.nowcategory.forEach((category) => {
+          // console.log(Boolean(this.nowcategory))
+          fd.append("categoryfilter", category);
+        });
       } else {
-        $(".v-menu").css("display", "none");
+        fd.append("categoryfilter", "");
       }
+      axios
+        .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
+        .then((response) => {
+          if (response.data.data == "success") {
+            this.shoppingList = response.data.object;
+            if(this.shoppingList.length > 0) {
+              this.ispjt = true
+              this.shoppingList = response.data.object;
+              this.totalpage = this.shoppingList[0].totalpage;
+              this.shoppingList.forEach((shoppingPjt) => {
+              // 제목
+              if (shoppingPjt.pjtname.length > 8) {
+                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
+              }
+            });
+            } else {
+              this.ispjt = false
+          }
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     filterInit() {
-      this.nowstate = ''
-      this.checkstate = false
-      this.opensate = false
-      this.nowrate = ""
-      this.checkrate = false
-      this.longrate = false
-      this.openrate = false
+      // 카테고리 초기화
+      this.categoryList.forEach(item =>{
+        this.nowcategory.forEach((nn) => {
+          if(item.name == nn){
+            $(`.${item.key}`).removeClass("active");
+            $(`.${item.key}icon`).removeClass("activeIcon")
+          }
+        });
+      })
+      this.nowcategory = [];
+      $(".all").addClass("active");
+      $(".allicon").addClass("activeIcon")
+      // 필터 초기화
+      (this.clickfilter = ""), (this.nowfilter = 0);
+      this.openfilter = false;
+      this.initAxios()
     },
-    openFilter() {
-      this.openfilter = !this.openfilter;
-      if (this.openfilter) {
-        this.nowfilter = "";
-        $(".v-menu").css("display", "block");
-      } else {
-        $(".v-menu").css("display", "none");
+    onCategory(name, key) {
+      // 카테고리
+      if (name == "전체") {
+        this.categoryList.forEach(item =>{
+          this.nowcategory.forEach((nn) => {
+            if(item.name == nn){
+              $(`.${item.key}`).removeClass("active");
+              $(`.${item.key}icon`).removeClass("activeIcon")
+            }
+          });
+        })
+        this.nowcategory = [];
+        $(".all").addClass("active");
+        $(".allicon").addClass("activeIcon")
+        this.initAxios()
       }
+       else {
+        // 제거
+        if (this.nowcategory.indexOf(name) >= 0) {
+          const idx = this.nowcategory.indexOf(name);
+          this.nowcategory.splice(idx, 1);
+          $(`.${key}`).removeClass("active");
+          $(`.${key}icon`).removeClass("activeIcon")
+        } else {
+          this.nowcategory.push(name);
+          $(`.${key}`).addClass("active");
+          $(`.${key}icon`).addClass("activeIcon")
+          $(".all").removeClass("active");
+          $(".allicon").removeClass("activeIcon");
+        }
+        this.filterAxios()
+      }    
+    },
+    onfilter() {
+      // 필터
+      if (this.clickfilter == "") {
+        this.nowfilter = 0;
+        // console.log('nowfilter0')
+      } else if (this.clickfilter == "최신순") {
+        this.nowfilter = 1;
+
+      } else if (this.clickfilter == "인기순") {
+        this.nowfilter = 2;
+      }
+      this.filterAxios()
     },
   },
 };
 </script>
 
 <style scoped>
-.shoppingNav {
+.investNav {
   height: 50px;
   text-align: center;
   line-height: 50px;
   border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 .items div {
   display: inline-block;
-  margin: 0 10% 0 0;
 }
 .items div a {
   color: black;
@@ -268,7 +369,8 @@ export default {
   color: rgb(22, 150, 245);
 }
 .categoryTag {
-  margin-bottom: 0;
+  margin-top: 10px;
+  /* margin-bottom: 0; */
 }
 .v-application--wrap {
   min-height: 0;
@@ -337,6 +439,29 @@ export default {
   padding-top: 0px;
 }
 a {
-  text-decoration: none;
+  text-decoration: none !important;
+  color: black;
 }
+.active {
+  background-color: rgba(22, 150, 245, 0.1) !important;
+}
+.activeIcon {
+  color: rgb(22,150,245);
+}
+.btn:hover {
+  cursor: pointer;
+}
+.categoryCard {
+  padding: 8px;
+  border: none;
+  border-radius: 100px !important;
+  max-width: 94px;
+}
+.v-card--link:before{
+  background: none;
+}
+.heartChip:hover {
+  display: none !important;
+}
+
 </style>

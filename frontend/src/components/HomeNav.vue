@@ -11,19 +11,19 @@
           </div><hr>
         </div>
       </div>
-  
+      <!-- expand-on-hover  -->
   <!-- drawer -->
   <v-card>
     <v-navigation-drawer
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-      expand-on-hover
+     
     >
       <div v-if="!login">
         <v-list-item class="px-2">
           <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
+            <v-img src="https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg"></v-img>
           </v-list-item-avatar>
           <v-list-item-title @click="onLogin" class="loginBtn ml-3">로그인</v-list-item-title>
           <v-btn
@@ -40,44 +40,85 @@
             <v-img :src="userInfo.img"></v-img>
           </v-list-item-avatar>
           <!-- <div style="display:flex"> -->
-          <v-list-item-title class="ml-3">{{ userInfo.name }}님</v-list-item-title>
+          <v-list-item-title class="ml-1">{{ userInfo.name }}님</v-list-item-title>
+            
+            <!-- 지갑 없는 경우 -->
             <v-btn
-              class="chargeBtn ma-2 px-1 py-1 mr-2 mt-2"
+              v-if="!walletExist"
+              @click="onWallet"
+              class="WalletBtn ma-2 px-1 py-1 mr-2 mt-2"
               outlined
             >
-            <!-- <i class="fas fa-coins"></i>   -->
-            <v-icon class="mr-1" @click="chargeDialog = true">mdi-plus-circle-outline</v-icon>
-             충전
+            <v-icon>mdi-wallet-outline</v-icon>
+             지갑생성 
             </v-btn>
-
-        <!-- 충전하기 모달 -->
-          <v-dialog
-            v-model="chargeDialog"
-            scrollable
-            max-width="40%"
-            style="height: 400px"
-          >
-            <v-card>
-              <v-card-title class="headline lighten-2" style="padding-bottom: 0 !important">
-                <h4 style="margin-left: 30px">충전하기</h4>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text style="padding: 50px 50px 30px 50px">
-                <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
+            
+      <!-- 충전하기 new version -->
+      <v-dialog max-width="500" min-height="370" v-model="chargeDialog">
+            <v-card flat tile>
+              <!-- 충전 모달 --> 
+              <v-card-text style="height:220px;" class="pa-1">
+                <v-list>
+                  <v-toolbar dense elevation="1">
+                    <h5 class="mx-auto">충전하기</h5>
+                  </v-toolbar>
+                  <div style="text-align: center; margin-top: 30px;">
+                    <p class="my-2">충전할 금액을 입력해주세요.</p>
+                  </div>
+                  <!-- 금액 -->
+                  <div>
+                    <div style="position:relative">
+                    <v-text-field
+                      class="ml-50"
+                      style="width:50%; position:absolue; left: 25%"
+                      v-model="money"
+                      hide-details
+                      outlined=""
+                      type="number"
+                    />
+                    <div style="position:absolute; bottom: 29%; right: 33%">
+                      <span>원</span>
+                    </div>
+                  </div>
+                  </div>
+                </v-list>
               </v-card-text>
-              <!-- <v-divider></v-divider> -->
-              <v-card-actions style="background-color: white">
-                <v-spacer></v-spacer>
-                <v-btn text @click="chargeDialog = false">닫기</v-btn>
-                <v-btn text color="blue" @click="onKakao">충전하기</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+                </v-card>
+                
+                <v-card-actions style="background-color: white; padding: 3px 0 3px 0; justify-content:center"> 
+                  <v-btn text @click="onKakao" color="white" style="background-color:rgb(22, 150, 245)">충전</v-btn>
+                  <v-btn text @click="chargeDialog=false" style="background-color:#ECEFF1">취소</v-btn>
+                </v-card-actions>
+                <div style="background-color: white; color:white">　.</div>
+              </v-dialog>   
         </v-list-item>
       </div>
 
+      <!-- 지갑있는 경우 잔액, 충전 -->
       <v-divider class="divider"></v-divider>
-
+      <div v-if="walletExist">
+        <!-- <i class="fas fa-wallet"></i>  -->
+      <v-list-item>
+        <v-list-item-icon>
+          <v-icon>mdi-wallet-outline</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>{{asset}}원</v-list-item-title>
+        </v-list-item-content>
+        <v-btn
+          @click="chargeDialog = true"
+          v-if="walletExist"
+          class="chargeBtn ma-2 px-1 py-1 mr-2 mt-2"
+          outlined
+        >
+        <!-- <i class="fas fa-coins"></i>   -->
+        <v-icon class="mr-1">mdi-plus-circle-outline</v-icon>
+          충전
+        </v-btn>
+      </v-list-item>
+      <v-divider class="divider"></v-divider>
+      </div>   
+      <!-- 페이지 -->
       <v-list dense>
         <v-list-item
           v-for="item in items"
@@ -103,59 +144,49 @@
 import axios from "axios";
 import store from "../store/index.js";
 import "../../public/css/HomeNav.scss";
+import Web3 from "web3";
+import Swal from "sweetalert2";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 const app_key = "2d3bdff993293b2a8c5a82f963175c8a";
 const redirect_uri = "https://www.twojob.ga/api";
 
 export default {
-    data () {
-      return {
-        drawer: true,
-        items: [
-          { title: '투자 프로젝트', icon: 'mdi-lightbulb-on-outline' },
-          { title: '쇼핑 프로젝트', icon: 'mdi-basket' },
-        ],
-        mini: true,
-        // 로그인
-        userInfo: {
-          id: "",
-          name: "",
-          img: "",
-          login: false,
-        },
-        index: "",
-        pg_token: "",
+  data () {
+    return {
+      drawer: true,
+      wallet: false,
+      walletExist: false,
+      items: [
+        { title: '투자 프로젝트', icon: 'mdi-lightbulb-on-outline' },
+        { title: '쇼핑 프로젝트', icon: 'mdi-basket' },
+      ],
+      mini: true,
+      // 로그인
+      userInfo: {
+        id: "",
+        name: "",
+        img: "",
         login: false,
-        openbox: false,
-        money: "",
-        asset: "0",
-        next: false,
-        nexturl: "",
-        // 충전모달
-        chargeDialog: false,
-      }
-    },
+      },
+      index: "",
+      pg_token: "",
+      login: false,
+      openbox: false,
+      money: "",
+      asset: "0",
+      next: false,
+      nexturl: "",
+      // 충전모달
+      chargeDialog: false,
+    }
+  },
   watch: {
     money(val) {
       return (this.money = this.money.replace(/[^0-9]/g, ""));
     }
   },
   mounted() {
-    if (location.href.includes("pg_token")) {
-      //     window.opener.closed = true;
-      this.index = location.href.indexOf("pg_token");
-      this.pg_token = location.href.slice(this.index + 9);
-      axios
-        .get(
-          `${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${store.state.userInfo.id}`
-        )
-        .then((res) => {
-          console.log(res);
-        });
-      //}
-    }
-    this.asset = store.state.balance;
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.login = store.state.isSigned;
@@ -163,6 +194,41 @@ export default {
     } else {
       this.login = false;
     }
+    // 지갑 생성 여부 확인
+    axios.get(
+        `${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`)
+        .then((res) => {
+          console.log(res.data)
+          if (res.data == "novalid") {
+            store.commit("setWalletExist", false);
+            store.commit("setAddress", res.data.address);
+            this.walletExist = store.state.userInfo.walletExist;
+          } else {
+            store.commit("setWalletExist", true);
+            store.commit("setAddress", null);
+            this.walletExist = store.state.userInfo.walletExist;
+          }
+        })
+    if (location.href.includes("pg_token")) {
+      // window.opener.closed = true;
+      this.index = location.href.indexOf("pg_token");
+      this.pg_token = location.href.slice(this.index + 9);
+      axios
+        .get(
+          `${SERVER_URL}/kakaopay/kakaoPayReadySuccess?access_token=${store.state.accessToken}&pg_token=${this.pg_token}&userid=${store.state.userInfo.id}`
+        )
+        .then((res) => {
+          // console.log(res);
+        });
+      }
+    this.asset = store.state.balance;
+    // 총 balance
+    axios
+     .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
+     .then((res) => {
+       console.log(store.state.accessToken)
+       this.asset = res.data
+     })
   },
   updated() {
     if (this.login && this.items.length == 2) {
@@ -171,13 +237,45 @@ export default {
     }
   },
   methods: {
+    onWallet() {
+      var web3 = new Web3("https://twojob.ga/eth/");
+      var Accounts = require("web3-eth-accounts");
+      var accounts = new Accounts("https://twojob.ga/eth/");
+      var result = web3.eth.accounts.create();
+      store.commit("setAddress", result.address);
+
+      store.state.userInfo.walletAddress = result.address
+      const fd = new FormData();
+      fd.append("accessToken", store.state.accessToken);
+      fd.append("address", store.state.userInfo.walletAddress);
+      fd.append("privatekey", result.privateKey);
+      axios.post(`${SERVER_URL}/wallet/regist`, fd)
+      .then((res) => {
+        // console.log(fd);
+        if (res.data == 401) {
+          store.state.isSigned = false;
+        } else if (res.data == "success") {
+          this.wallet = store.state.userInfo.walletAddress;
+          store.commit("setWalletExist", true)
+          this.walletExist = store.state.userInfo.walletExist;
+          Swal.fire({
+            icon: "success",
+            title: "지갑 생성 성공",
+            text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
+            confirmButtonText: "확인",
+            // cancelButtonText: "취소하기",
+          });
+        }
+      })
+    },
     move(title) {
       if (title == '투자 프로젝트') {
         this.$router.push('/investhome');
       } else if (title == '쇼핑 프로젝트') {
         this.$router.push('/shoppinghome');
       } else if (title == '마이페이지') {
-        this.$router.push('/mypage');
+        // this.$router.push('/mypage');
+        this.$router.push({ name: 'Mypage', params: { userid: this.userInfo.id}})
       } else if (title == '로그아웃'){
         this.onLogout();
       }
@@ -186,28 +284,39 @@ export default {
       window.Kakao.Auth.loginForm({
       success: this.GetMe,
       });
-      console.log('아이템s길이'+this.items.length)
-      // if ({ title: '쇼핑 프로젝트', icon: 'mdi-basket' } in this.items) {
-      //   console.log('이미있어요')
-      // } else {
-      //   console.log('없어요')
-      // }
     },
     GetMe(authObj) {
       //토큰값 받아오는 부분
-      console.log('authObj입니다');
-      console.log(authObj);
+      // console.log(authObj);
+      store.state.accessToken = authObj.access_token
       console.log(authObj.access_token);
       store.commit("setAccessToken", authObj.access_token);
       const fd = new FormData();
       fd.append("accessToken", authObj.access_token);
 
-      axios.post(`${SERVER_URL}/login/kakaologin`, fd).then((res) => {
+      axios.post(`${SERVER_URL}/login/kakaologin`, fd)
+      .then((res) => {
         this.login = true;
         // store.state.isSigned = true;
         this.userInfo.login = true;
         this.userInfo.id = res.data.oauthId;
         this.userInfo.name = res.data.name;
+        // 지갑 정보 조회
+        axios.get(
+        `${SERVER_URL}/wallet/toid?oauthid=${this.userInfo.id}`)
+        .then((res) => {
+          console.log(res.data)
+          if (res.data == "novalid") {
+            store.commit("setWalletExist", false);
+            this.walletExist = store.state.userInfo.walletExist;
+          } else {
+            store.commit("setWalletExist", true);
+            this.walletExist = store.state.userInfo.walletExist;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
         if (res.data.profileImg == null) {
           this.userInfo.img =
             "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
@@ -215,15 +324,11 @@ export default {
           this.userInfo.img = res.data.profileImg;
         }
         store.commit("setUserInfo", this.userInfo);
-        // this.userInfo.email = res.data.email;
-        console.log(this.userInfo);
-        // this.$router.push("/");
      });
     },
     onLogout() {
       store.commit("deluserInfo");
       this.login = false;
-      console.log("로그아웃됨");
       this.items = [
           { title: '투자 프로젝트', icon: 'mdi-lightbulb-on-outline' },
           { title: '쇼핑 프로젝트', icon: 'mdi-basket' },
@@ -231,11 +336,7 @@ export default {
       // console.log("store.state.isSigned " + store.state.isSigned);
     },
     onChargeDialog() {
-      console.log("충전모달");
-      console.log(this.chargeDialog);
       this.chargeDialog = true;
-      console.log(this.chargeDialog);
-      // this.chargeDialog = true;
      },
     //  충전
     onchargebox() {
@@ -245,24 +346,20 @@ export default {
       // this.kakopay = true;
       this.money = this.money * 1;
       store.commit("setCharge", this.money);
-      console.log("vuex에 저장된 충전할 금액은");
-      console.log(store.state.charge);
       const fd = new FormData();
       fd.append("count", this.money);
       fd.append("userid", this.userInfo.id);
       axios
         .post(`${SERVER_URL}/kakaopay/kakaoPay`, fd)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           // router.push(response.data)
           this.next = true;
-          console.log("이건 넥스트");
-          console.log(this.next);
           this.nexturl = response.data;
           window.location.href = this.nexturl;
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
       },
     },
@@ -295,8 +392,12 @@ export default {
 .divider {
   margin-top: 10px;
 }
-.loginBtn:hover {
+.loginBtn:hover{
   cursor: pointer;
+  /* background-color: rgba(123, 197, 254, 0.8) */
+}
+.chargeBtn:hover, .WalletBtn:hover {
+  background-color: rgba(123, 197, 254, 0.1) !important;
 }
 
 </style>

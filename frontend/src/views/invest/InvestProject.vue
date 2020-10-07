@@ -21,11 +21,11 @@
         </div>
       </div>
     </div>
-    <div>
+    <!-- <div>
       <h4 style="padding: 2%; margin: 0">투자 프로젝트</h4>
-    </div>
+    </div> -->
     <!-- 카테고리 -->
-    <div style="margin-bottom: 1rem">
+    <div style="margin: 3rem 0">
       <!-- <v-app id="inspire" style="text-align:center"> -->
       <v-container class="cateContainer" style="text-align: center">
         <v-row no-gutters>
@@ -39,13 +39,15 @@
             sm="1"
           >
             <v-card
-              @click="onCategory(category.key)"
-              :class="category.key"
+              @click="onCategory(category.name, category.key)"
               class="pa-2 categoryCard"
+              :class="category.key"
               outlined
               tile
             >
-              <v-icon size="30">mdi-{{ category.icon }}</v-icon>
+              <v-icon :class="`${category.key}icon`" size="30"
+                >mdi-{{ category.icon }}</v-icon
+              >
               <p class="categoryTag">{{ category.name }}</p>
             </v-card>
           </v-col>
@@ -58,7 +60,7 @@
       <div style="display: inline-block">
         <v-select
           :items="filter"
-          label="정렬"
+          label="　정렬"
           outlined
           hide-details
           class="origin"
@@ -75,36 +77,43 @@
       </div>
     </div>
     <!-- 프로젝트 -->
-    <div class="projectList" style="padding: 10px 3%">
-      <div style="height: 45px">
+    <div class="projectList" style="padding: 10px 13%">
+      <!-- <div style="height: 45px">
         <div style="display: inline-block">
           <span style="color: rgb(22, 150, 245)">25,540</span>
           <span>개의 프로젝트가 있습니다.</span>
         </div>
-      </div>
-      <div style="padding: 1% 0">
+      </div> -->
+      <div v-if="ispjt" style="padding: 1% 0">
         <div
           v-for="(item, i) in investProjects"
           :key="i"
-          style="display: inline-block; width: 30%; margin-bottom: 30px"
+          style="display: inline-block; width: 33%; margin-top: 5%"
         >
+          <!-- :class="`${item.address}img`" @mouseover="cardhover(item.address)" transform:scale(1); -->
           <v-card class="my-12" max-width="320" style="margin: auto">
             <router-link
+              style="text-decoration: none"
               :to="{ name: 'InvestDetail', params: { address: item.address } }"
             >
-              <v-img
-                height="250"
-                src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
-              ></v-img>
+              <v-img height="220" :src="item.picture"></v-img>
             </router-link>
             <v-card-title style="font-weight: 600; margin: auto">
-              {{ item.pjtName }}
+              <router-link
+                style="color: black"
+                :to="{
+                  name: 'InvestDetail',
+                  params: { address: item.address },
+                }"
+              >
+                <span>{{ item.pjtName }}</span></router-link
+              >
               <div style="margin-left: auto">
                 <v-chip class="projectBadge">{{ item.lastday }}일 남음</v-chip>
               </div>
             </v-card-title>
-            <v-card-text style="height: 130px">
-              <div style="margin-bottom: 15px; height: 60px">
+            <v-card-text style="height: 120px">
+              <div style="margin-bottom: 15px; height: 50px">
                 {{ item.oneLineIntro }}
               </div>
               <div style="color: black">
@@ -115,11 +124,11 @@
                     line-height: 41.6px;
                   "
                 >
-                  {{ item.goalPrice }} 원
+                  {{ item.investprice }}원
                 </h5>
                 <div style="display: inline-block; float: right">
                   <h3 style="display: inline-block; color: rgb(22, 150, 245)">
-                    {{ item.percent }}%
+                    {{ item.rate }}%
                   </h3>
                   <h5 style="display: inline-block; color: rgb(123, 197, 254)">
                     달성
@@ -130,7 +139,22 @@
           </v-card>
         </div>
       </div>
+      <!-- investPjt 없을 때 -->
+      <div
+        v-else
+        style="
+          height: 350px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
+      >
+        <h4>투자 프로젝트 검색 결과가 없습니다.</h4>
+      </div>
     </div>
+    <infinite-loading @infinite="infiniteHandler" spinner="waveDots" style="height: 300px">
+      <div slot="no-more" style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px;">목록의 끝입니다 :)</div>
+    </infinite-loading>
   </div>
 </template>
 
@@ -138,18 +162,21 @@
 import Navbar from "../../components/Navbar.vue";
 import "../../../public/css/InvestProject.scss";
 import axios from "axios";
+import InfiniteLoading from 'vue-infinite-loading';
+
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
     Navbar,
+    InfiniteLoading
   },
   data() {
     return {
       categoryList: [
         { icon: "book-multiple-outline", name: "전체", key: "all" },
-        { icon: "laptop-windows", name: "테크, 가전", key: "tech" },
-        { icon: "shoe-heel", name: "패션, 잡화", key: "fashion" },
+        { icon: "laptop-windows", name: "테크", key: "tech" },
+        { icon: "shoe-heel", name: "패션", key: "fashion" },
         { icon: "lipstick", name: "뷰티", key: "beauty" },
         { icon: "food", name: "푸드", key: "food" },
         { icon: "hair-dryer", name: "홈리빙", key: "home" },
@@ -165,88 +192,149 @@ export default {
       filter: ["최신순", "인기순"],
       // 프로젝트
       investProjects: [],
+      ispjt: true,
       // page
       page: 0,
       totalpage: 0,
     };
   },
   watch: {
-    nowstate(val) {
-      if (this.nowstate) {
-        this.checkstate = true;
-      } else {
-        this.checkstate = false;
+    nowcategory() {
+      if (this.nowcategory == false) {
+        $(".all").addClass("active");
+        $(".allicon").addClass("activeIcon");
+        this.initAxios();
+        console.log("비어있음");
       }
     },
   },
   mounted() {
     // 카테고리
-    $('.all').addClass('active')
-    this.initAxios()
-    // console.log(this.investProjects)
-
-    // for(var i=0; i<this.investProjects.length; i++) {
-    //   console.log(this.investProjects[i])
-    // }
+    $(".all").addClass("active");
+    $(".allicon").addClass("activeIcon");
   },
   methods: {
     initAxios() {
+      this.page = 0
+      console.log("초기 axios");
       const fd = new FormData();
-    fd.append("orderOption", 0);
-    fd.append("categoryfilter", "");
-    axios
-      .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
-      .then((response) => {
-        console.log(response);
-        if (response.data.data == "success") {
-          this.investProjects = response.data.object;
-          this.totalpage = this.investProjects[0].totalpage;
-          this.investProjects.forEach((investPjt) => {
-            // 마감일
-            const day = investPjt.deadLine.substring(8, 10);
-            let today = new Date();
-            today.setDate(day - today.getDate());
-            this.$set(investPjt, "lastday", today.getDate());
-            // 제목
-            if (investPjt.pjtName.length > 8) {
-              investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    },
-    filterAxios() {
-      const fd = new FormData();
-      fd.append("orderOption", this.nowfilter);
-      if (this.nowcategory) {
-        this.nowcategory.forEach((category) => {
-          console.log(category);
-          fd.append("categoryfilter", category);
-        });
-      } else {
-        fd.append("categoryfilter", "");
-      }
+      fd.append("orderOption", 0);
+      fd.append("categoryfilter", "");
       axios
         .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
         .then((response) => {
           console.log(response);
           if (response.data.data == "success") {
             this.investProjects = response.data.object;
-            this.totalpage = this.investProjects[0].totalpage;
-            this.investProjects.forEach((investPjt) => {
-              // 마감일
-              const day = investPjt.deadLine.substring(8, 10);
-              let today = new Date();
-              today.setDate(day - today.getDate());
-              this.$set(investPjt, "lastday", today.getDate());
-              // 제목
-              if (investPjt.pjtName.length > 8) {
-                investPjt.pjtName = investPjt.pjtName.substring(0, 10) + "...";
-              }
-            });
+            console.log(this.investProjects.length);
+            if (this.investProjects.length > 0) {
+              this.ispjt = true;
+              this.investProjects = response.data.object;
+              this.totalpage = this.investProjects[0].totalpage;
+              this.investProjects.forEach((investPjt) => {
+                // 마감일 기준 남은날짜 계산
+                const year = investPjt.deadLine.substring(0, 4);
+                const month = investPjt.deadLine.substring(5, 7);
+                const day = investPjt.deadLine.substring(8, 10);
+                var Dday = new Date(year, month - 1, day);
+                var now = new Date();
+                var gap = now.getTime() - Dday.getTime();
+                var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+                this.$set(investPjt, "lastday", result);
+                // 제목
+                if (investPjt.pjtName.length > 8) {
+                  investPjt.pjtName =
+                    investPjt.pjtName.substring(0, 10) + "...";
+                }
+                // 투자금액 axios 보내기
+                axios
+                  .get(
+                    `${SERVER_URL}/funding/nowfund?campaignId=${investPjt.address}`
+                  )
+                  .then((response) => {
+                    this.$set(investPjt, "investprice", response.data);
+                  });
+                // 달성률 axios 보내기
+                const fd = new FormData();
+                fd.append("campaignId", investPjt.address);
+                axios
+                  .post(`${SERVER_URL}/funding/fundingrate`, fd)
+                  .then((response) => {
+                    this.$set(investPjt, "rate", response.data);
+                  });
+              });
+            } else {
+              this.ispjt = false;
+            }
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    filterAxios() {
+      this.page = 0
+      const fd = new FormData();
+      // const data = this.nowfilter
+      console.log("필터 axios");
+      fd.append("orderOption", this.nowfilter);
+      // console.log(Boolean(this.nowcategory));
+      // console.log(this.nowcategory.length)
+      if (this.nowcategory.length > 0) {
+        this.nowcategory.forEach((category) => {
+          fd.append("categoryfilter", category);
+          console.log(fd);
+        });
+      } else {
+        fd.append("categoryfilter", "");
+        console.log("여기");
+      }
+      console.log("폼데이터");
+      console.log(fd);
+      axios
+        .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
+        .then((response) => {
+          console.log(response);
+          if (response.data.data == "success") {
+            this.investProjects = response.data.object;
+            if (this.investProjects.length > 0) {
+              this.ispjt = true;
+              this.totalpage = this.investProjects[0].totalpage;
+              this.investProjects.forEach((investPjt) => {
+                // 마감일 기준 남은날짜 계산
+                const year = investPjt.deadLine.substring(0, 4);
+                const month = investPjt.deadLine.substring(5, 7);
+                const day = investPjt.deadLine.substring(8, 10);
+                var Dday = new Date(year, month - 1, day);
+                var now = new Date();
+                var gap = now.getTime() - Dday.getTime();
+                var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+                this.$set(investPjt, "lastday", result);
+                // 제목
+                if (investPjt.pjtName.length > 8) {
+                  investPjt.pjtName =
+                    investPjt.pjtName.substring(0, 10) + "...";
+                }
+                // 투자금액 axios 보내기
+                axios
+                  .get(
+                    `${SERVER_URL}/funding/nowfund?campaignId=${investPjt.address}`
+                  )
+                  .then((response) => {
+                    this.$set(investPjt, "investprice", response.data);
+                  });
+                // 달성률 axios 보내기
+                const fd = new FormData();
+                fd.append("campaignId", investPjt.address);
+                axios
+                  .post(`${SERVER_URL}/funding/fundingrate`, fd)
+                  .then((response) => {
+                    this.$set(investPjt, "rate", response.data);
+                  });
+              });
+            } else {
+              this.ispjt = false;
+            }
           }
         })
         .catch((error) => {
@@ -255,38 +343,55 @@ export default {
     },
     filterInit() {
       // 카테고리 초기화
-      this.nowcategory.forEach((key) => {
-        $(`.${key}`).removeClass("active");
+      this.categoryList.forEach((item) => {
+        this.nowcategory.forEach((nn) => {
+          if (item.name == nn) {
+            $(`.${item.key}`).removeClass("active");
+            $(`.${item.key}icon`).removeClass("activeIcon");
+          }
+        });
       });
       this.nowcategory = [];
       $(".all").addClass("active");
-      // 필터 초기화
-      (this.clickfilter = ""), (this.nowfilter = 0);
+      $(".allicon").addClass("activeIcon")(
+        // 필터 초기화
+        (this.clickfilter = "")
+      ),
+        (this.nowfilter = 0);
       this.openfilter = false;
-      this.initAxios()
+      this.initAxios();
     },
-    onCategory(key) {
+    onCategory(name, key) {
       // 카테고리
-      if (key == "all") {
-        this.nowcategory.forEach((key) => {
-          $(`.${key}`).removeClass("active");
+      if (name == "전체") {
+        this.categoryList.forEach((item) => {
+          this.nowcategory.forEach((nn) => {
+            if (item.name == nn) {
+              $(`.${item.key}`).removeClass("active");
+              $(`.${item.key}icon`).removeClass("activeIcon");
+            }
+          });
         });
         this.nowcategory = [];
         $(".all").addClass("active");
+        $(".allicon").addClass("activeIcon");
+        this.initAxios();
       } else {
         // 제거
-        if (this.nowcategory.indexOf(key) >= 0) {
-          const idx = this.nowcategory.indexOf(key);
+        if (this.nowcategory.indexOf(name) >= 0) {
+          const idx = this.nowcategory.indexOf(name);
           this.nowcategory.splice(idx, 1);
           $(`.${key}`).removeClass("active");
+          $(`.${key}icon`).removeClass("activeIcon");
         } else {
-          this.nowcategory.push(key);
+          this.nowcategory.push(name);
           $(`.${key}`).addClass("active");
+          $(`.${key}icon`).addClass("activeIcon");
           $(".all").removeClass("active");
+          $(".allicon").removeClass("activeIcon");
         }
+        this.filterAxios()
       }
-      this.filterAxios()
-      
     },
     onfilter() {
       // 필터
@@ -297,8 +402,94 @@ export default {
       } else if (this.clickfilter == "인기순") {
         this.nowfilter = 2;
       }
-      this.filterAxios()
+      this.filterAxios();
     },
+    // 카드 mouseover 했을 떄
+    // cardhover(address) {
+    //   $(`.${address}img`).hover(function() {
+    //     $(`.${address}img`).css("transform", "scale(1.1)")
+    //   }, function() {
+    //     $(`.${address}img`).css("transform", "scale(1)")
+    //   })
+    // }
+    // 무한 스크롤
+    infiniteHandler($state) {
+      
+      const fd = new FormData();
+      // const data = this.nowfilter
+      console.log("필터 axios");
+      fd.append("orderOption", this.nowfilter);
+      console.log(Boolean(this.nowcategory));
+      if (this.nowcategory.length > 0) {
+        this.nowcategory.forEach((category) => {
+          fd.append("categoryfilter", category);
+          console.log(fd);
+        });
+      } else {
+        fd.append("categoryfilter", "");
+        console.log("여기");
+      }
+      console.log("폼데이터");
+      console.log(fd);
+      axios
+        .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
+        .then((response) => {
+          setTimeout(() => {
+            console.log(response);
+            if (response.data.data == "success") {
+              this.investProjects = this.investProjects.concat(response.data.object);
+              if (this.investProjects.length > 0) {
+                this.ispjt = true;
+                this.totalpage = this.investProjects[0].totalpage;
+                this.investProjects.forEach((investPjt) => {
+                  // 마감일 기준 남은날짜 계산
+                  const year = investPjt.deadLine.substring(0, 4);
+                  const month = investPjt.deadLine.substring(5, 7);
+                  const day = investPjt.deadLine.substring(8, 10);
+                  var Dday = new Date(year, month - 1, day);
+                  var now = new Date();
+                  var gap = now.getTime() - Dday.getTime();
+                  var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+                  this.$set(investPjt, "lastday", result);
+                  // 제목
+                  if (investPjt.pjtName.length > 8) {
+                    investPjt.pjtName =
+                      investPjt.pjtName.substring(0, 10) + "...";
+                  }
+                  // 투자금액 axios 보내기
+                  axios
+                    .get(
+                      `${SERVER_URL}/funding/nowfund?campaignId=${investPjt.address}`
+                    )
+                    .then((response) => {
+                      this.$set(investPjt, "investprice", response.data);
+                    });
+                  // 달성률 axios 보내기
+                  const fd = new FormData();
+                  fd.append("campaignId", investPjt.address);
+                  axios
+                    .post(`${SERVER_URL}/funding/fundingrate`, fd)
+                    .then((response) => {
+                      this.$set(investPjt, "rate", response.data);
+                    });
+                });
+                $state.loaded()
+                this.page += 1
+                console.log("after", this.investProjects, this.page)
+                if(this.page >= this.totalpage) {
+                  $state.complete()
+                }
+              } else {
+                this.ispjt = false;
+                $state.complete()
+              }
+            }
+          }, 1000)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   },
 };
 </script>
@@ -326,11 +517,15 @@ export default {
 }
 .categoryCard {
   padding: 8px;
+  border: none;
+  border-radius: 100px !important;
+  max-width: 94px;
 }
-.categoryCard:hover {
-  border: 2px solid rgb(22, 150, 245);
-  /* background-color: rgba(173, 220, 254, 0.4); */
-  cursor: pointer;
+.v-card--link:before {
+  background: none;
+}
+.categoryTag {
+  margin-top: 10px;
 }
 .filterBox {
   padding: 0 3%;
@@ -390,6 +585,10 @@ export default {
   text-align: right;
 }
 .active {
-  border: 2px solid rgb(22, 150, 245);
+  /* border: 2px solid rgb(22, 150, 245); */
+  background-color: rgba(22, 150, 245, 0.1) !important;
+}
+.activeIcon {
+  color: rgb(22, 150, 245);
 }
 </style>

@@ -1,10 +1,11 @@
 <template>
   <div class="shoppingHome">
-    <navbar />
+    <!-- <navbar /> -->
+    <HomeNav />
     <!-- 쇼핑 메뉴바 -->
     <div class="shoppingNav">
       <div class="items">
-        <div>
+        <div style="margin: 0 15% 0 0;">
           <router-link to="/shoppinghome">
             <h5 style="color: rgb(22, 150, 245)">쇼핑홈</h5>
           </router-link>
@@ -12,11 +13,6 @@
         <div>
           <router-link to="/shoppingproject">
             <h5>프로젝트</h5>
-          </router-link>
-        </div>
-        <div>
-          <router-link to="/shoppinghome">
-            <h5>오픈예정</h5>
           </router-link>
         </div>
       </div>
@@ -33,29 +29,6 @@
         ></v-carousel-item>
       </v-carousel>
     </div>
-    <!-- 카테고리 -->
-    <v-app id="inspire" style="text-align: center">
-      <v-container class="cateContainer">
-        <v-row no-gutters>
-          <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
-          <v-col cols="12" sm="1"></v-col>
-          <!-- 카테고리 for문 -->
-          <v-col
-            v-for="(category, i) in categoryList"
-            :key="i"
-            cols="12"
-            sm="1"
-          >
-            <v-card class="pa-2" outlined tile>
-              <v-icon size="30">mdi-{{ category.icon }}</v-icon
-              ><br />
-              <p class="categoryTag">{{ category.name }}</p>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-app>
-
     <div>
       <!-- 임시 리뷰작성 버튼 activator -->
       <div style="text-align: end; margin-right: 70px">
@@ -70,45 +43,51 @@
           <v-btn text @click="reviewDialog=false">취소</v-btn>
           <v-btn text color="blue">등록</v-btn>
         </v-card-actions>
-      </v-dialog>
-      
+      </v-dialog>    
     </div>
 
-    <!-- 인기순 -->
-    <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">
-        인기순<v-icon style="font-size: 36px; color: black"
-          >mdi-chevron-right</v-icon
-        >
+    <div style="margin: 0px 185px 0 185px">
+    <!-- 오픈예정 -->
+    <div style="margin-left: 3%; margin-top: 3%">
+      <h4 style="font-weight: 600; margin-bottom:3px">
+        이 프로젝트 어때요?
       </h4>
+      <span style="font-size: 0.9rem; margin-bottom:4px">오픈이 예정되어 있는 프로젝트입니다.</span>
     </div>
+
     <div style="display: flex; padding: 1% 0">
-      <div v-for="(item, i) in likeItems" :key="i" style="display: inline-block; flex:1">
+      <div v-for="(item, i) in openItems" :key="i" style="display: inline-block; flex:1">
         <v-card class="my-12" max-width="320" style="margin: auto">
-          <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
-          <v-card-title style="font-weight: 600; margin: auto">{{item.title}}
-            <div style="margin-left: auto;"><v-chip class="likeBadge">{{item.likenum}}명 좋아요</v-chip></div>
+          <router-link :to="{ name: 'ShoppingDetail', params: { address: item.address } }">
+          <v-img height="250" :src="item.picture"></v-img>
+          <v-card-title style="font-weight: 600; margin: auto">{{item.pjtname}}
+            <v-chip label small style="padding:7px; background-color: rgb(22, 150, 245); margin-left: auto;">
+            <!-- <v-icon style= "margin-right: 3px; color: white"
+                >mdi-clock-outline
+            </v-icon> -->
+                <span class="openBadge" style="color:white">오픈 D-{{ item.afterday }}</span>
+            </v-chip>
           </v-card-title>
           <v-card-text>
-            <div style="margin-bottom: 15px">{{ item.content }}</div>
-            <!-- <div style="color: black; display: inline-block; float: right;">
-              <v-icon size="20" class="mr-1">mdi-heart</v-icon>128
-            </div> -->
+            <div style="margin-bottom: 15px;">{{item.openintro}}</div>
+            <div style="color: black;">
+              <h5 style="text-align: end; font-weight: bold; margin-right:10px; margin-bottom:0px;">판매가 {{item.saleprice}} 원</h5>
+            </div>
           </v-card-text>
+          </router-link>
         </v-card>
       </div>
     </div>
-    <!-- 오픈예정 -->
-    <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600">
-        오픈예정<v-icon style="font-size: 36px; color: black"
-          >mdi-chevron-right</v-icon
-        >
+
+    <!-- 인기순 -->
+    <div style="margin-left: 5%; margin-top: 5%">
+      <h4 style="font-weight: 600; margin-left:8px;">
+        인기 프로젝트를 추천해드려요
       </h4>
     </div>
     <div style="padding: 1% 0">
       <v-card
-        v-for="(item, i) in openItems"
+        v-for="(item, i) in likeItems"
         :key="i"
         style="
           width: 38%;
@@ -117,38 +96,42 @@
           margin: 0 6% 4% 6%;
         "
       >
+      <router-link :to="{ name: 'ShoppingDetail', params: { address: item.address } }">
         <v-img
           style="width: 33%; float: left"
           height="180"
-          src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+          :src="item.picture"
         ></v-img>
-        <div style="width: 67%; float: right">
+        <div style="margin-top: 3px; width: 67%; float: right">
           <v-card-title style="font-weight: 600"
-            >{{ item.title }}
-            <div style="margin-left: auto">
-              <v-icon style="color: rgb(22, 150, 245); margin-right: 10px"
-                >mdi-clock-outline</v-icon
-              ><span class="openBadge">{{ item.opendate }}일 뒤 오픈</span>
-            </div>
+            >{{ item.pjtname }}
+          <v-chip
+            small
+            class="ma-2 ml-auto px-2"
+            label
+            outlined=""
+            style="background-color:#FF4081; color:black"
+          >
+          <span>
+            <v-icon left
+              style="color:#FF1744"
+              class="mr-0" size="19">
+              mdi-heart
+            </v-icon>
+            {{item.likecount}}개
+          </span>
+          </v-chip>
           </v-card-title>
           <v-card-text>
-            <div style="margin-bottom: 15px">{{ item.content }}</div>
+            <div style="margin-bottom: 13px; height:48px">{{ item.likeintro }}</div>
             <div style="color: black">
-              <strong
-                ><p
-                  style="
-                    display: inline-block;
-                    height: 41.6px;
-                    line-height: 41.6px;
-                  "
-                >
-                  판매 예정금액 {{ item.price }} 원
-                </p></strong
-              >
+              <h5 style="text-align: end; font-weight: bold; margin-right:8px; margin-bottom:0px;">판매가 {{item.saleprice}} 원</h5>
             </div>
           </v-card-text>
         </div>
+        </router-link>
       </v-card>
+    </div>
     </div>
   </div>
 </template>
@@ -156,13 +139,20 @@
 <script>
 import "../../../public/css/InvestHome.scss";
 import "../../../public/css/ShoppingHome.scss";
-import Navbar from "../../components/Navbar.vue";
+// import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
+import axios from "axios";
+
+const SERVER_URL = "https://www.twojob.ga/api";
+
 // 쇼핑 리뷰
 import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
+import Axios from 'axios';
 
 export default {
   components: {
-    Navbar,
+    HomeNav,
+    // Navbar,
     ShoppingReview,
   },
   data() {
@@ -182,103 +172,55 @@ export default {
       ],
       items: [
         {
-          src: "https://image.freepik.com/free-photo/_93675-87338.jpg",
+          src: "https://boxmaster.co.kr/upload/magazine/5c99e2ed92bd7.jpg",
         },
         {
           src:
-            "https://lh3.googleusercontent.com/proxy/eEAKz6kNc0gXbYyQR5AM2PFZQYoKepaO4JbqZAjJWtbGtTPvBVfh_2sTRVlj6Woh-UIHNphyKm9bIdkz5va1p2KKywJyl7Ed4872B5o9yQ",
+            "https://boxmaster.co.kr/upload/magazine/5c99e01e4c37e.jpg",
         },
         {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green002/2019/0430/20190430185646591_32703.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
+          src: "https://cdn.pixabay.com/photo/2017/04/06/11/24/fashion-2208045_1280.jpg",
         },
       ],
-      deadlineItems: [
-        {
-          title: "Ostay 다이슨 드라이어",
-          deadline: "2",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,500,500",
-          percent: "98",
-        },
-        {
-          title: "특별한 숟가락",
-          deadline: "3",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,300,500",
-          percent: "95",
-        },
-        {
-          title: "달라진 안경",
-          deadline: "7",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,500",
-          percent: "88",
-        },
-      ],
-      likeItems: [
-        {
-          title: "특별한 자전거",
-          likenum: "10000",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,500,500",
-          percent: "92",
-        },
-        {
-          title: "특별한 숟가락",
-          likenum: "5000",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,300,500",
-          percent: "85",
-        },
-        {
-          title: "달라진 안경",
-          likenum: "3500",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,500",
-          percent: "79",
-        },
-      ],
-      openItems: [
-        {
-          title: "특별한 자전거",
-          opendate: "2",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "39,000",
-        },
-        {
-          title: "특별한 숟가락",
-          opendate: "5",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "75,000",
-        },
-        {
-          title: "달라진 안경",
-          opendate: "10",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "1,000,000",
-        },
-        {
-          title: "날이 없는 선풍기",
-          opendate: "12",
-          content:
-            "Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.",
-          price: "50,000",
-        },
-      ],
+      openItems: [],
+      likeItems: [],
     };
+  },
+  mounted() {
+    axios
+      .get(`${SERVER_URL}/sale/curation`)
+      .then((res) => {
+        // console.log(res.data.object);
+        this.openItems = res.data.object.closeopen;
+        // likeopenonelineintro
+        this.likeItems = res.data.object.popular;
+        
+        for (var i = 0; i < this.likeItems.length; i++) {
+          this.likeItems[i].likeintro = res.data.object.likeonelineintro[i]
+          this.likeItems[i].likecount = res.data.object.popularlikecount[i]
+        }
+        for (var j = 0; j < this.openItems.length; j++) {
+          this.openItems[j].openintro = res.data.object.closeopenonelineintro[j] 
+        }
+
+        this.openItems.forEach(item => {
+            // 마감일
+            const day = item.startdate.substring(8, 10);
+            let today = new Date();
+            today.setDate(day - today.getDate());
+            this.$set(item, "afterday", today.getDate());
+            // 제목
+            if (item.pjtname.length > 10) {
+              item.pjtname = item.pjtname.substring(0, 13) + "...";
+            }
+        })
+        this.likeItems.forEach(item => {
+          // 제목
+          if (item.pjtname.length > 10) {
+            item.pjtname = item.pjtname.substring(0, 12) + "...";
+          }
+        })
+      }) 
   },
   methods: {
     openReviewDialog() {
@@ -300,7 +242,6 @@ export default {
 }
 .items div {
   display: inline-block;
-  margin: 0 10% 0 0;
 }
 .items div a {
   color: black;
@@ -313,7 +254,7 @@ export default {
   font-weight: 600;
 }
 .homeImg {
-  margin-bottom: 3%;
+  margin-bottom: 5%;
 }
 .deadlineBadge {
   background-color: rgb(22, 150, 245) !important;
@@ -333,5 +274,13 @@ export default {
 }
 .v-application--wrap {
   min-height: 0;
+}
+.v-card__title {
+  color: black;
+  text-decoration: none;
+}
+a {
+  text-decoration: none !important;
+  color: black;
 }
 </style>

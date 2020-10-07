@@ -5,11 +5,17 @@
     .theme--dark.v-tabs>.v-tabs-bar {
         background-color: unset;
     }
-    .v-application--wrap {
-        display: none;
-    }
+    // .v-application--wrap {
+    //     display: none;
+    // }
     .v-dialog--active {
         overflow-y: hidden;
         overflow-x: hidden;
+    }
+    .v-tabs-bar__content {
+        // display: none;
+    }
+    .theme--light.v-tabs-items {
+        border-radius: 12px !important;
     }
 }

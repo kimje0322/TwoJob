@@ -1,11 +1,13 @@
 .investhome {
+  background-color: white;
   .v-window__prev {
     background: unset !important;
+    margin-left: 5%
   }
-  
   .v-window__next {
     right: 5px !important;
     background: unset !important;
+    margin-right: 5%
     }
   
   .v-carousel__controls {
@@ -13,11 +15,26 @@
   }
   
   .v-window__prev .mdi-chevron-left {
-    font-size: 100px !important;
+    font-size: 60px !important;
   }
-  
+  .mdi-chevron-left::before {
+    background: lightgray;
+    border-radius: 100px;
+  }
   .v-window__next .mdi-chevron-right {
-    font-size: 100px !important;
+    font-size: 60px !important;
+  }
+  .mdi-chevron-right::before {
+    background: lightgray;
+    border-radius: 100px;
+  }
+  .homeImg > .v-item-group {
+    height: 400px !important;
+  }
+  .v-carousel__item {
+    height: 400px !important;
+    width: 75%;
+    margin: auto;
   }
 }
 

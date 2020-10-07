@@ -35,7 +35,7 @@
           <!-- 이미지 첨부된 경우 -->
           <!-- 이미지 삭제 버튼 -->
           <div v-show="imgPath">
-            <v-btn x-small dark fab absolute top right color="black" style="top:293px;right:47px;opacity:.6;"
+            <v-btn x-small dark fab absolute top right style="background-color: black !important; top:293px; right:47px;opacity:.6;"
               @click="onDeleteImg"
             >
               <v-icon dark>mdi-close</v-icon>
@@ -192,7 +192,7 @@ export default {
                 headers: { 'Content-Type': 'multipart/form-data' } 
         }).then(response => {
             const cutUrl = response.data.substr(18, response.data.length-17)
-            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+            const imgUrl = 'https://twojob.ga/' + cutUrl
             this.imgPath = imgUrl;   
         });
     },
@@ -220,7 +220,7 @@ export default {
 
 <style scoped>
   .reviewImg {
-     background-color: #E1F5FE;
+    background-color: #E1F5FE;
     width: 60%;
     padding: 5px 0px 12px 0px;
     border-radius: 15px;

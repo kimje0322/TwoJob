@@ -13,7 +13,10 @@ import ShoppingProject from "@/views/shopping/ShoppingProject.vue";
 import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
 import Mypage from "@/views/mypage/Mypage.vue";
 import WriteShopping from "@/views/shopping/WriteShopping.vue";
-import MyInvestPjt from "@/views/mypage/MyInvestPjt.vue"
+import MyInvestCreate from "@/views/mypage/MyInvestCreate.vue";
+import MyInvestIn from "@/views/mypage/MyInvestIn.vue";
+import MyShoppingCreate from "@/views/mypage/MyShoppingCreate.vue";
+import MyShoppingIn from "@/views/mypage/MyShoppingIn.vue";
 import LikeList from "@/views/mypage/LikeList.vue"
 import Messenger from "@/views/mypage/Messenger.vue"
 // import ChatRoom from "@/views/c"
@@ -65,7 +68,7 @@ const routes = [{
         component: ShoppingHome,
     },
     {
-        path: "/shoppingdetail",
+        path: "/shoppingdetail/:address?",
         name: "ShoppingDetail",
         component: ShoppingDetail,
     },
@@ -91,9 +94,24 @@ const routes = [{
         component: WriteShopping,
     },
     {
-        path: "/myinvestpjt",
-        name: "MyInvestPjt",
-        component: MyInvestPjt,
+        path: "/myinvestcreate/:userid?",
+        name: "MyInvestCreate",
+        component: MyInvestCreate,
+    },
+    {
+        path: "/myinvestin/:userid?",
+        name: "MyInvestIn",
+        component: MyInvestIn,
+    },
+    {
+        path: "/myshoppingcreate/:userid?",
+        name: "MyShoppingCreate",
+        component: MyShoppingCreate,
+    },
+    {
+        path: "/myshoppingin/:userid?",
+        name: "MyShoppingIn",
+        component: MyShoppingIn,
     },
     {
         path: "/likelist",

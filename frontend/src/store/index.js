@@ -22,15 +22,30 @@ export default new Vuex.Store({
             id: null,
             name: null, // 사용자 아이디 저장
             img: null,
-            walletAddress: null
+            walletAddress: null,
+            walletExist: false,
         },
+        // 투자
+        pjtwriterid: null,
+        // 쇼핑
+        pjtmakerid: null,
+
+        // 지갑이 있는지 여부
+        iswallet: false,
+
         accessToken: null,
-        address: null,
         balance: null,
         charge: null,
 
+        askusername: null,
+        askuserid: null,
+
     },
     mutations: {
+        setAsk(state, askusername, askuserid) {
+            state.askusername = askusername;
+            state.askuserid = askuserid;
+        },
         setCharge(state, charge) {
             state.charge = charge;
         },
@@ -38,7 +53,10 @@ export default new Vuex.Store({
             state.balance = balance;
         },
         setAddress(state, address) {
-            state.address = address;
+            state.userInfo.walletAddress = address;
+        },
+        setWalletExist(state, wallet) {
+            state.userInfo.walletExist = wallet;
         },
         setAccessToken(state, token) {
             state.accessToken = token;
@@ -59,7 +77,7 @@ export default new Vuex.Store({
         },
         setUserInfo(state, userinfo) {
             console.log(userinfo)
-            // state.userInfo.email = userinfo.email;
+                // state.userInfo.email = userinfo.email;
             state.userInfo.id = userinfo.id;
             state.userInfo.name = userinfo.name;
             state.userInfo.img = userinfo.img;
@@ -70,6 +88,8 @@ export default new Vuex.Store({
             state.userInfo.name = null;
             state.userInfo.img = null;
             state.isSigned = false;
+            state.userInfo.walletAddress = null;
+            state.userInfo.walletExist = false;
         },
     },
     actions: {},
