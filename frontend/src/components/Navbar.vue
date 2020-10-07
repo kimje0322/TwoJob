@@ -242,7 +242,7 @@ export default {
 
       const fd = new FormData();
       fd.append("accessToken", store.state.accessToken);
-      fd.append("address", store.state.address);
+      fd.append("address", result.address);
       fd.append("privatekey", result.privateKey);
       axios.post(`${SERVER_URL}/wallet/regist`, fd).then((res) => {
         console.log("wow!!success!!");

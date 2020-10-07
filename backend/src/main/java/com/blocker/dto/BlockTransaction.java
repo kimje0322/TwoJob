@@ -34,7 +34,7 @@ public class BlockTransaction {
 	private String toaddress;
 
 	@Column
-	private String compname;
+	private String pjtname;
 	@Column
 	private String fromaddress;
 
@@ -56,7 +56,7 @@ public class BlockTransaction {
 		super();
 		this.blockhash = blockhash;
 		this.toaddress = toaddress;
-		this.compname = compName;
+		this.pjtname = compName;
 		this.fromaddress = fromaddress;
 		this.image = image;
 		this.value = value;

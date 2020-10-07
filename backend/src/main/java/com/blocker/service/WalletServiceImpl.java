@@ -62,7 +62,7 @@ public class WalletServiceImpl implements WalletService{
 				String pk = property.getAdminPK();
 				Credentials credentials = Credentials.create(pk);
 				RawTransactionManager rt = new RawTransactionManager(web3j, credentials);
-				Transfer tf = new Transfer(web3j, rt);
+				Transfer tf = new Transfer(web3j, rt); 
 				TransactionReceipt tr = tf.sendFunds(wallet.get().getAddress(), BigDecimal.valueOf(ether), Convert.Unit.ETHER).send();
 				System.out.println(tr);
 				return "success";

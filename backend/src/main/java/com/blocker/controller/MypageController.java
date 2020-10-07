@@ -25,6 +25,7 @@ import com.blocker.dto.SaleBoardDto;
 import com.blocker.service.InvestmentService;
 import com.blocker.service.LikeBoardService;
 import com.blocker.service.MyPageService;
+import com.blocker.service.MySellPList;
 import com.blocker.service.SaleService;
 import com.blocker.util.BasicResponse;
 import com.blocker.util.PageRequest;
@@ -60,6 +61,11 @@ public class MypageController {
 	@GetMapping("/salelist")
 	public Page<BlockTransaction> salelist(@RequestParam("oauthId") String oauthId, PageRequest pageable) {
 		return myPageService.salelist(oauthId, pageable.of());
+	}
+	@ApiOperation(value = "[mypage-쇼핑] 내가 참여한 쇼핑 프로젝트를 가져옵니다.")
+	@GetMapping("/saleplist")
+	public List<MySellPList> getsalelist(@RequestParam("oauthId") String oauthId, PageRequest pageable) {
+		return myPageService.getsaleList(oauthId, pageable.of());
 	}
 
 	@PostMapping("/likelist")
