@@ -821,7 +821,6 @@ export default {
       axios
         .post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
         .then((response) => {
-          console.log(response.data.object)
           setTimeout(() => {
           if(response.data.data == "success"){
             this.projectList = this.projectList.concat(response.data.object);
@@ -844,7 +843,6 @@ export default {
               // 투자 프로젝트 사용내역 보여주기
               axios.get(`${SERVER_URL}/funding/getreceipt?campaignId=${item.investmentDto.address}`)
                 .then(response => {
-                  console.log(response)
                   // this.items = response.data
                 })
               // pjtname

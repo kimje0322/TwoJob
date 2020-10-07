@@ -525,7 +525,6 @@ export default {
     },
     // 상품 구매
     onPerchase() {
-      console.log(this.numberCount)
       const fd = new FormData();
       fd.append("campaignId ", this.investaddress);
       fd.append("accessToken ", store.state.accessToken);

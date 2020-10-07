@@ -476,7 +476,6 @@ export default {
                     });
                 });
                 $state.loaded()
-                console.log("after", this.investProjects, this.page)
                 if(this.page >= this.totalpage) {
                   $state.complete()
                 }
@@ -488,7 +487,7 @@ export default {
           }, 1000)
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     }
   },

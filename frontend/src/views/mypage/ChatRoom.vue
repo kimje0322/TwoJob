@@ -321,7 +321,6 @@ function connect() {
       // console.log("에러다에러!!!!!");
       if (reconnect++ <= 5) {
         setTimeout(function () {
-          console.log("connection reconnect");
           sock = new SockJS("https://www.twojob.ga/api/notice");
           // sock = new SockJS("http://j3b102.p.ssafy.io:8080/api/notice");
           ws = Stomp.over(sock);
@@ -354,7 +353,6 @@ function connection() {
     function (error) {
       if (reconnect++ <= 5) {
         setTimeout(function () {
-          console.log("connection reconnect");
           sock = new SockJS("https://www.twojob.ga/api/ws-stomp");
           // sock = new SockJS("http://j3b102.p.ssafy.io:8080/api/ws-stomp");
           ws = Stomp.over(sock);
@@ -402,7 +400,6 @@ export default {
     axios
       .get(`${SERVER_URL}/chat/chatlist?accessToken=${store.state.accessToken}`)
       .then((res) => {
-        console.log(res);
         this.userlst = res.data;
         if (this.userlst.toimg == null) {
           this.userlst.toimg =
@@ -411,22 +408,18 @@ export default {
         // if (userInfo.) {
         // } else {
           if (store.state.askusername != null) {
-            console.log("askusername" + store.state.askusername);
             this.createroom = true;
             // console.log(this.userlst[1].user1);
             for (var i = 0; i < this.userlst.length; i++) {
               if (this.userlst[i].user1 == store.state.askusername) {
                 this.createroom = false;
-                console.log(1);
               }
               if (this.userlst[i].user2 == store.state.askusername) {
                 this.createroom = false;
-                console.log(2);
               }
             }
             store.state.askusername = null;
             if (this.createroom) {
-              console.log("채팅방만들기");
               this.createRoom();
             }
           }
@@ -450,9 +443,7 @@ export default {
           `${SERVER_URL}/chat/getMessage?direction=ASC&page=0&roomId=${this.chatroomid}&size=1`
         )
         .then((res) => {
-          console.log(res);
           this.totalmessage = res.data.totalElements;
-          console.log(this.totalmessage);
           if (this.totalmessage == "0") {
           } else {
             axios
@@ -515,19 +506,13 @@ export default {
         message: recv.message,
         time: recv.time,
       });
-      console.log("메시지 수신");
-      console.log(this.messages);
     },
 
     // 채팅방 만들기
     createRoom: function () {
-      console.log("채팅방만들기11");
       const fd = new FormData();
       fd.append("fromAccessToken", store.state.accessToken);
       fd.append("toOauthID", store.state.askuserid);
-      console.log("여기여깅겨이겨이");
-      console.log(store.state.accessToken);
-      console.log(store.state.askuserid);
       axios
         .post(`${SERVER_URL}/chat/startchat`, fd)
         .then((response) => {
@@ -547,12 +532,9 @@ export default {
           `${SERVER_URL}/chat/chatlist?accessToken=${store.state.accessToken}`
         )
         .then((response) => {
-          console.log("채팅 리스트");
-          console.log(response);
           this.userlst = response.data;
         })
         .catch((error) => {
-          console.log(error);
         });
     },
   },

@@ -79,7 +79,7 @@
                     </div>
                   </div>
                   <!-- 영수증 등록, 상품 판매 글쓰기 -->
-                  <div v-if="userid == pageuserid" style="margin-bottom: 10px">
+                  <div v-show="userid == pageuserid && item.isfinish==true" style="margin-bottom: 10px; height: 36px">
                     <!-- :disabled="item.isfinish" -->
                     <v-btn
                       @click.stop="item.modal.isopen = true"
@@ -365,7 +365,6 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response)
         if(response.data == 'scucess') {
           
         } else{
@@ -383,7 +382,6 @@ export default {
           `${SERVER_URL}/investment/investList/${this.page}?userid=${this.pageuserid}`
         )
         .then((response) => {
-          console.log(response);
           setTimeout(() => {
             if (response.data.data == "success") {
               this.investList = this.investList.concat(response.data.object);
@@ -397,7 +395,7 @@ export default {
                 });
                 // 제목
                 if (item.pjtName.length > 8) {
-                  item.pjtName = item.pjtName.substring(0, 10) + "...";
+                  item.pjtName = item.pjtName.substring(0, 9) + "...";
                 }
                 // 한줄소개
                 if (item.oneLineIntro.length > 40) {
@@ -441,7 +439,7 @@ export default {
           }, 1000);
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     },
   },

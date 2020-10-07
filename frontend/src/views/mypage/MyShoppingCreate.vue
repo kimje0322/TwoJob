@@ -144,7 +144,6 @@ export default {
         .then((response) => {
           setTimeout(() => {
             if (response.data.data == "success") {
-              console.log(response)
               this.shoppingList = response.data.object.object;
               this.totalpage = response.data.object.totalpage;
               this.shoppingList.forEach((item) => {
@@ -180,7 +179,7 @@ export default {
           }, 1000);
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     },
   },
