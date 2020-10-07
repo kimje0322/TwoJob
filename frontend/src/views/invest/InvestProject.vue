@@ -103,8 +103,7 @@
                   params: { address: item.address },
                 }"
               >
-                <span>{{ item.pjtName }}</span></router-link
-              >
+                <span>{{ item.pjtName }}</span></router-link>
               <div style="margin-left: auto">
                 <!-- 종료 -->
                 <v-chip

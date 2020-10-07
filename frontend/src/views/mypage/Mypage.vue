@@ -180,38 +180,71 @@
               </div>
                 <div style="padding: 1% 0">
                   <v-card
-                    v-for="(item, i) in transactions"
+                    v-for="(item, i) in filtertransactions"
                     :key="i"
                     style="
-                      width: 85%;
-                      height: 90px;
+                      width: 90%;
+                      height: 120px;
                       display: inline-block;
                       margin: 0 6% 4% 6%;
                     "
                   >
+                  <router-link
+                    style="color: black"
+                    :to="{
+                      name: 'InvestDetail',
+                      params: { address: item.toaddress },
+                    }"
+                  >
                     <v-img
-                      style="width: 15%; float: left"
-                      height="90"
-                     
-                      :src="userimg"
-                    ></v-img>
-                    <div style="margin-top: 3px; width: 85%; float: right">
-                      <v-card-title 
+                      style="width: 20%; float: left"
+                      height="120"
+                      :src="item.image"
+                    ></v-img></router-link>
+                    <div style="width: 80%; float: right; display:flex">
+                      <div style="width: 70%; display: inline-block; height: 120px; padding: 10px">
+                        <router-link
+                          style="color: black"
+                          :to="{
+                            name: 'InvestDetail',
+                            params: { address: item.toaddress },
+                          }"
                         >
-                        <div >
-                        <span class="mr-auto mb-1" style="font-size:20px" v-if="item.pjtname.length < 17">{{ item.pjtname }}</span>
-                        <span class="mr-auto mb-1" v-else>{{ item.pjtname.substring(0, 17) }} ...</span>
+                        <span class="mr-auto mb-1" style="font-size:18px; font-weight: 600">{{ item.pjtname }}</span>
+                        </router-link>
+                        <v-chip  style="background-color: rgba(22, 150, 245, 0.8); color: white; margin-left: 10px;">{{item.typename}}</v-chip>
+                        <p style="padding: 5px">Hash {{item.blockhash}}</p>
+                      </div>
+                      <div style="display: flex; align-items: center; justify-content: center; height: 120px; width: 30%; padding: 12px;">
+                        <p v-if="item.isplus == 'FUND'" style="margin: 0; color: blue; ">
+                          <v-icon left
+                            class="mr-0" size="30">
+                            mdi-plus
+                          </v-icon>
+                          <strong style="font-size: 20px">{{ item.value }}</strong> 토큰
+                        </p>
+                        <p v-else style="margin: 0;"> 
+                          <v-icon left
+                            style="color:#FF1744; margin: 0; "
+                            class="mr-0" size="30">
+                            mdi-minus
+                          </v-icon>
+                          <strong style="font-size: 20px">{{ item.value }}</strong> 토큰
+                        </p>
+                      </div>
+                      <!-- <v-card-title style="padding: 10px">
+                        <div>
+                          <span class="mr-auto mb-1" style="font-size:18px; font-weight: 600">{{ item.pjtname }}</span>
                         </div>
                       <v-chip
                         small
                         class="ma-2 ml-auto px-2"
                         label
                         outlined=""
-                        style=background-color: rgb(22, 150, 245);
+                        style="background-color: rgb(22, 150, 245)"
                       >
-                      <span v-if="item.type == 'FUND'" style="color: white; ">
+                      <span v-if="item.type == 'FUND'" style="color: blue; ">
                         <v-icon left
-                          
                           class="mr-0" size="19">
                           mdi-plus
                         </v-icon>
@@ -226,84 +259,14 @@
                         </v-icon>
                         {{ item.value }} 토큰
                       </span>
-
-
-
                       </v-chip>
                       </v-card-title>
                       <v-card-text>
-                        <div style="margin-bottom: 13px; height:48px">{{ item.likeintro }}</div>
-                        <div style="color: black">
-                          <h5 style="text-align: end; font-weight: bold; margin-right:8px; margin-bottom:0px;">판매가 {{item.saleprice}} 원</h5>
-                        </div>
-                      </v-card-text>
+                        <div><span>Hash {{item.blockhash}}</span></div>
+                      </v-card-text> -->
                     </div>
                   </v-card>
                 </div>
-              <!-- <div style="margin-top: 18px; padding: 0 3%">
-                <div
-                  v-for="(item, i) in transactions"
-                  :key="i"
-                  style="margin-bottom: 15px"
-                >
-                  <v-avatar style="width: 50px; height: 50px">
-                    <img :src="userimg" alt="John" />
-                  </v-avatar>
-                  <span
-                    style="
-                      margin-left: 5%;
-                      font-size: 18px;
-                      height: 50px;
-                      line-height: 50px;
-                    "
-                    v-if="item.pjtname.length > 13"
-                    >{{ item.pjtname.substring(0, 13) }} ...</span
-                  >
-                  <span
-                    style="
-                      margin-left: 5%;
-                      font-size: 18px;
-                      height: 50px;
-                      line-height: 50px;
-                    "
-                    v-else
-                    >{{ item.pjtname }}</span
-                  >
-                  <div style="display: inline-block; float: right">
-                    <v-icon
-                      v-if="item.type == 'FUND'"
-                      style="
-                        float: left;
-                        font-size: 16px;
-                        height: 50px;
-                        line-height: 50px;
-                        padding-right: 10px;
-                      "
-                      >mdi-minus</v-icon
-                    >                    
-                    <v-icon
-                      v-else
-                      style="
-                        float: left;
-                        font-size: 18px;
-                        height: 50px;
-                        line-height: 50px;
-                        padding-right: 10px;
-                      "
-                      >mdi-plus</v-icon
-                    >
-                    <span
-                      style="
-                        float: right;
-                        font-size: 16px;
-                        height: 50px;
-                        line-height: 50px;
-                      "
-                      >{{ item.value }} 토큰</span
-                    >
-                  </div>
-                </div>
-              </div> -->
             </div>
           </div>
         </div>
@@ -349,12 +312,7 @@ export default {
       text: ["1", "2", "3"],
       tabs: ["투자", "쇼핑"],
       // 거래내역
-      accounts: [
-        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
-        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: false },
-        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
-        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
-      ],
+      filtertransactions: [],
     };
   },
   computed: {},
@@ -461,6 +419,44 @@ export default {
         .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=${this.transnum}`)
         .then((res) => {
           this.transactions = res.data.content
+          // CREATE, SALEOPEN 빼주기
+          this.transactions.forEach(item=>{
+            if(item.type != 'CREATE' && item.type != 'SALEOPEN'){
+              this.filtertransactions.push(item)
+            }
+          })
+          this.filtertransactions.forEach(item => {
+            // 제목
+            if (item.pjtname.length > 10) {
+              item.pjtname = item.pjtname.substring(0, 10) + "...";
+            }
+            // type +, - 변환
+            if(item.type == 'REFUND' || item.type == 'RECEIVE' || item.type == 'SALE' || item.type == 'SALEPARTIN') {
+              this.$set(item, "isplus", true)
+            }
+            else{
+              this.$set(item, "isplus", false)
+            }
+            // 유형 나누기
+            if(item.type == 'FUND'){
+              this.$set(item, "typename", "투자함")
+            }
+            else if(item.type == 'REFUND'){
+              this.$set(item, "typename", "투자환불")
+            }
+            else if(item.type == 'RECEIVE'){
+              this.$set(item, "typename", "투자받음")
+            }
+            else if(item.type == 'SALE'){
+              this.$set(item, "typename", "판매")
+            }
+            else if(item.type == 'BUY'){
+              this.$set(item, "typename", "구매")
+            }
+            else if(item.type == 'SALEPARTIN'){
+              this.$set(item, "typename", "투자수익금")
+            }
+          })
           console.log(this.transactions)
         })
       }
