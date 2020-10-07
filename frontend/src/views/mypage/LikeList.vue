@@ -24,7 +24,7 @@
             <v-card flat tile>
               <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
-                <div style="padding: 1% 0; display: flex;">
+                <div style="padding: 1% 0;">
                   <div
                     v-for="(item, i) in investlikelst"
                     :key="i"
@@ -101,7 +101,7 @@
             <v-card flat tile>
               <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
-                <div style="padding: 1% 0; display: flex;">
+                <div style="padding: 1% 0;">
                   <div
                     v-for="(item, i) in shopplinglikelst"
                     :key="i"
@@ -246,8 +246,8 @@ export default {
     const fd = new FormData();
     fd.append("userid", store.state.userInfo.id);
     axios.post(`${SERVER_URL}/mypage/likelist`, fd).then((response) => {
-      // console.log("여기요!");
-      // console.log(response);
+      console.log("여기요!");
+      console.log(response);
 
       this.investlikelst = response.data.object.investmentList;
       this.shopplinglikelst = response.data.object.saleboardList;

@@ -160,7 +160,7 @@
               </div>
               <div style="margin-top: 18px; padding: 0 3%">
                 <div
-                  v-for="(item, i) in accounts"
+                  v-for="(item, i) in transactions"
                   :key="i"
                   style="margin-bottom: 15px"
                 >
@@ -174,11 +174,22 @@
                       height: 50px;
                       line-height: 50px;
                     "
-                    >{{ item.pjtName }}</span
+                    v-if="item.pjtname.length > 13"
+                    >{{ item.pjtname.substring(0, 13) }} ...</span
+                  >
+                  <span
+                    style="
+                      margin-left: 5%;
+                      font-size: 18px;
+                      height: 50px;
+                      line-height: 50px;
+                    "
+                    v-else
+                    >{{ item.pjtname }}</span
                   >
                   <div style="display: inline-block; float: right">
                     <v-icon
-                      v-if="item.isAdded"
+                      v-if="item.type == 'FUND'"
                       style="
                         float: left;
                         font-size: 16px;
@@ -186,8 +197,8 @@
                         line-height: 50px;
                         padding-right: 10px;
                       "
-                      >mdi-plus</v-icon
-                    >
+                      >mdi-minus</v-icon
+                    >                    
                     <v-icon
                       v-else
                       style="
@@ -197,7 +208,7 @@
                         line-height: 50px;
                         padding-right: 10px;
                       "
-                      >mdi-minus</v-icon
+                      >mdi-plus</v-icon
                     >
                     <span
                       style="
@@ -206,7 +217,7 @@
                         height: 50px;
                         line-height: 50px;
                       "
-                      >{{ item.transitPrice }} ETH</span
+                      >{{ item.value }} 토큰</span
                     >
                   </div>
                 </div>
@@ -348,8 +359,21 @@ export default {
     // console.log("이건 유저 발란스 값" + this.userbalance);
 
     // 거래내역
-    // axios
-    // .get(`http://j3b102.p.ssafy.io:8080/mypage/tojalist`)
+    axios
+    .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=1`)
+    .then((res) => {
+      console.log("거래내역")
+      console.log(res.data.totalElements)
+      this.transnum = res.data.totalElements
+      if(this.transnum > 0) {
+        axios
+        .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=${this.transnum}`)
+        .then((res) => {
+          this.transactions = res.data.content
+          console.log(this.transactions)
+        })
+      }
+    })
 
     axios
       .get(`${SERVER_URL}/mypage/myproject?oauthId=${store.state.userInfo.id}`)
@@ -363,6 +387,8 @@ export default {
   },
   data() {
     return {
+      transnum: "",
+      transactions: [],
       pageuserid: "",
       pageuserimg: "",
       pageusername: "",
