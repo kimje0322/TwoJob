@@ -2,9 +2,12 @@
   <div class="myinvestcreate">
     <!-- 상단 Navbar -->
     <navbar style="" />
-    <div style="border-top: 1px solid lightgray; height: 100vh;">
+    <div style="border-top: 1px solid lightgray; height: 100vh">
       <div style="padding: 3% 0 2% 10%">
-        <h4 style="font-weight: 800"><span style="color: rgb(22, 150, 245)">{{pageusername}}</span>님이 생성한 쇼핑 프로젝트</h4>
+        <h4 style="font-weight: 800">
+          <span style="color: rgb(22, 150, 245)">{{ pageusername }}</span
+          >님이 생성한 쇼핑 프로젝트
+        </h4>
       </div>
       <!-- 프로젝트 메뉴바 -->
       <div style="padding: 0 12%">
@@ -20,28 +23,51 @@
                 class="my-12"
                 max-width="78%"
                 max-height="600px"
-                style="margin: auto"
-              >
-                <v-img height="250" :src="item.picture"></v-img>
+                style="margin: auto; margin-bottom: 30px"
+                ><router-link
+                  style="text-decoration: none"
+                  :to="{
+                    name: 'ShoppingDetail',
+                    params: { address: item.address },
+                  }"
+                >
+                  <v-img height="250" :src="item.picture"></v-img>
+                </router-link>
                 <v-card-title style="font-weight: 600; margin: auto">
-                  {{ item.pjtname }}
+                  <router-link
+                    style="color: black"
+                    :to="{
+                      name: 'InvestDetail',
+                      params: { address: item.address },
+                    }"
+                  >
+                    <span>{{ item.pjtname }}</span></router-link
+                  >
                   <!-- <div style="margin-left: auto;"><v-chip class="deadlineBadge">{{item.lastday}}일 남음</v-chip></div> -->
+                  <div style="margin-left: auto">
+                    <span style="text-align: right">
+                      <v-icon left style="color: red" class="mr-0" size="19">
+                        mdi-heart
+                      </v-icon>
+                      {{ item.likecount }}개
+                    </span>
+                  </div>
                 </v-card-title>
                 <!-- max-height: 120px -->
                 <v-card-text style="">
-                  <div style="margin-bottom: 15px">
+                  <div style="margin-bottom: 15px; height: 50px">
                     {{ item.oneLineIntro }}
                   </div>
-                  <div style="color: black; text-align: right;">
-                    <h5
+                  <div style="color: black; text-align: right">
+                    <h4
                       style="
                         display: inline-block;
                         height: 41.6px;
                         line-height: 41.6px;
                       "
                     >
-                      {{ item.saleprice }} 원
-                    </h5>
+                      <span style="color: rgb(22, 150, 245)">{{ item.saleprice }}</span> 원
+                    </h4>
                   </div>
                 </v-card-text>
               </v-card>
@@ -77,10 +103,13 @@ export default {
       page: 0,
       // 쇼핑리스트
       shoppingList: [],
+      // 좋아요
+      // likecount: "",
+      // 한줄소개
+      // oneLineIntro: [],
     };
   },
-  methods: {
-  },
+  methods: {},
   components: {
     Navbar,
   },
@@ -91,22 +120,29 @@ export default {
     this.userid = store.state.userInfo.id;
 
     var idx = window.location.href.indexOf("pjt");
-    const pageid = this.$route.params.userid
+    const pageid = this.$route.params.userid;
     this.pageuserid = pageid;
 
     // pageuser가 참가한 투자 프로젝트 가져오기
-    console.log(this.pageuserid)
+    console.log(this.pageuserid);
     axios
-      .get(
-        `${SERVER_URL}/sale/saleList/${this.page}?userid=${this.pageuserid}`
-      )
+      .get(`${SERVER_URL}/sale/saleList/${this.page}?userid=${this.pageuserid}`)
       .then((response) => {
         console.log(response);
-        this.shoppingList = response.data.object;
+        // this.oneLineIntro = response.data.object.oneLineIntro;
+        // this.likecount = response.data.object.likecount;
+        this.shoppingList = response.data.object.object;
         this.shoppingList.forEach((item) => {
-          // 제목 
+          const idx = this.shoppingList.indexOf(item);
+          this.$set(item, "likecount", response.data.object.likecount[idx])
+          this.$set(item, "oneLineIntro", response.data.object.onelineintros[idx])
+          // 제목
           if (item.pjtname.length > 8) {
             item.pjtname = item.pjtname.substring(0, 10) + "...";
+          }
+          // 한줄소개
+          if (item.oneLineIntro.length > 40) {
+            item.oneLineIntro = item.oneLineIntro.substring(0, 40) + "...";
           }
         });
       })
@@ -117,12 +153,11 @@ export default {
     const fc = new FormData();
     fc.append("userid", this.pageuserid);
     axios.post(`${SERVER_URL}/util/userinfo`, fc).then((response) => {
-      this.pageusername = response.data.object.name
+      this.pageusername = response.data.object.name;
     });
   },
   computed: {},
-  watch: {
-  },
+  watch: {},
 };
 </script>
 

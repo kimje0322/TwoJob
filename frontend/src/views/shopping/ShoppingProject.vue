@@ -17,7 +17,7 @@
       </div>
     </div>
     <!-- 카테고리 -->
-    <div style="margin-bottom: 1rem;">
+    <div style="margin: 3rem 0px;">
       <v-container class="cateContainer" style="text-align:center;">
         <v-row no-gutters>
           <!-- 정렬 맞추기 위해 왼쪽 빈칸 사용 -->
@@ -26,8 +26,8 @@
           <v-col v-for="(category, i) in categoryList" :key="i" cols="12" sm="1">
             <v-card
                @click="onCategory(category.name, category.key)"
-              :class="category.name"
-              class="category.key"
+              :class="category.key"
+              class="pa-2 categoryCard"
               outlined
               tile
             >
@@ -74,13 +74,13 @@
                 :src="item.picture"
               ></v-img>
             </router-link>
-            <p class="mt-2 mb-1 ml-3" style="font-size:13px;">(주){{item.compname}}
-              <!-- <v-chip
+            <p class="mt-2 mb-1 ml-3 mr-3" style="font-size:13px;">(주){{item.compname}}
+              <v-chip
               small
               class="ma-2 ml-auto px-2"
               label
               outlined=""
-              style="background-color:#FF4081; color:black"
+              style="background-color:#FF4081; color:black; float:right;"
             >
               <span>
                 <v-icon left
@@ -88,9 +88,9 @@
                   class="mr-0" size="19">
                   mdi-heart
                 </v-icon>
-                {{item.likecount}}개
+                {{item.likeCount}}개
               </span>
-              </v-chip> -->
+              </v-chip>
             </p>
             
             <v-card-title style="font-weight: 600; margin: auto">
@@ -152,8 +152,8 @@ export default {
       // 카테고리
       categoryList: [
         { icon: "book-multiple-outline", name: "전체", key: "all" },
-        { icon: "laptop-windows", name: "테크, 가전", key: "tech" },
-        { icon: "shoe-heel", name: "패션, 잡화", key: "fashion" },
+        { icon: "laptop-windows", name: "테크", key: "tech" },
+        { icon: "shoe-heel", name: "패션", key: "fashion" },
         { icon: "lipstick", name: "뷰티", key: "beauty" },
         { icon: "food", name: "푸드", key: "food" },
         { icon: "hair-dryer", name: "홈리빙", key: "home" },
@@ -185,7 +185,7 @@ export default {
 
   mounted() {
     // 카테고리
-    $('.전체').addClass('active')
+    $('.all').addClass('active')
     this.initAxios();
   },
   methods: {
@@ -198,19 +198,24 @@ export default {
       .then((response) => {
         if (response.data.data == "success") {
             this.shoppingList = response.data.object.object;
+            console.log(response.data.object.likecount[0])
             if(this.shoppingList.length > 0) {
               this.ispjt = true
-              console.log(this.shoppingList)
-              this.shoppingList = response.data.object;
+              // console.log(this.shoppingList)
+              this.shoppingList = response.data.object.object;
               this.totalpage = this.shoppingList[0].totalpage;
+              for (let i = 0; i < this.shoppingList.length; i++) {
+                this.shoppingList[i].likeCount =  response.data.object.likecount[i];
+            console.log(this.shoppingList[i].likeCount )
+              }
+              console.log(response.data.object.likeCount)
               this.shoppingList.forEach((shoppingPjt) => {
               // 좋아요
-              shoppingPjt.likeCount = response.data.object.likecount;
-              console.log('likeCount볼거란다')
-              console.log(response.data.object.likecount)
+              // shoppingPjt.likeCount = response.data.object.likecount[0];
+              // console.log(shoppingPjt)
               // 제목
-              if (shoppingPjt.pjtname.length > 12) {
-                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 14) + "...";
+              if (shoppingPjt.pjtname.length > 11) {
+                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 13) + "...";
               }
             });
             } else {
@@ -364,7 +369,8 @@ export default {
   color: rgb(22, 150, 245);
 }
 .categoryTag {
-  margin-bottom: 0;
+  margin-top: 10px;
+  /* margin-bottom: 0; */
 }
 .v-application--wrap {
   min-height: 0;
@@ -437,7 +443,22 @@ a {
   color: black;
 }
 .active {
-  border: 2px solid rgb(22, 150, 245);
+  background-color: rgba(22, 150, 245, 0.1) !important;
+}
+.activeIcon {
+  color: rgb(22,150,245);
+}
+.btn:hover {
+  cursor: pointer;
+}
+.categoryCard {
+  padding: 8px;
+  border: none;
+  border-radius: 100px !important;
+  max-width: 94px;
+}
+.v-card--link:before{
+  background: none;
 }
 
 </style>

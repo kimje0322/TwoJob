@@ -192,7 +192,6 @@
                     <div
                       v-else
                       style="
-
                         width: 250px;
                         height: 30px;
                         background-color: rgba(0, 0, 0, 0.15);
@@ -409,27 +408,29 @@ export default {
           this.userlst.toimg =
             "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
         }
-
-        if (store.state.askusername != null) {
-          console.log("askusername" + store.state.askusername);
-          this.createroom = true;
-          // console.log(this.userlst[1].user1);
-          for (var i = 0; i < this.userlst.length; i++) {
-            if (this.userlst[i].user1 == store.state.askusername) {
-              this.createroom = false;
-              console.log(1);
+        // if (userInfo.) {
+        // } else {
+          if (store.state.askusername != null) {
+            console.log("askusername" + store.state.askusername);
+            this.createroom = true;
+            // console.log(this.userlst[1].user1);
+            for (var i = 0; i < this.userlst.length; i++) {
+              if (this.userlst[i].user1 == store.state.askusername) {
+                this.createroom = false;
+                console.log(1);
+              }
+              if (this.userlst[i].user2 == store.state.askusername) {
+                this.createroom = false;
+                console.log(2);
+              }
             }
-            if (this.userlst[i].user2 == store.state.askusername) {
-              this.createroom = false;
-              console.log(2);
+            store.state.askusername = null;
+            if (this.createroom) {
+              console.log("채팅방만들기");
+              this.createRoom();
             }
           }
-          store.state.askusername = null
-          if (this.createroom) {
-            console.log("채팅방만들기");
-            this.createRoom();
-          }
-        }
+        // }
       });
     // console.log("askusername" + store.state.askusername)
   },
@@ -524,9 +525,9 @@ export default {
       const fd = new FormData();
       fd.append("fromAccessToken", store.state.accessToken);
       fd.append("toOauthID", store.state.askuserid);
-      console.log("여기여깅겨이겨이")
-      console.log(store.state.accessToken)
-      console.log(store.state.askuserid)
+      console.log("여기여깅겨이겨이");
+      console.log(store.state.accessToken);
+      console.log(store.state.askuserid);
       axios
         .post(`${SERVER_URL}/chat/startchat`, fd)
         .then((response) => {
@@ -534,23 +535,25 @@ export default {
           // this.mounted();
           // this.room_name = "";
           // this.findAllRoom();
-          this.chatlist()
+          this.chatlist();
         })
         .catch((response) => {
           alert("채팅방 개설에 실패하였습니다.");
         });
     },
-    chatlist(){
+    chatlist() {
       axios
-        .get(`${SERVER_URL}/chat/chatlist?accessToken=${store.state.accessToken}`)
-        .then(response =>{
-          console.log("채팅 리스트")
-          console.log(response)
+        .get(
+          `${SERVER_URL}/chat/chatlist?accessToken=${store.state.accessToken}`
+        )
+        .then((response) => {
+          console.log("채팅 리스트");
+          console.log(response);
           this.userlst = response.data;
         })
-        .catch(error=>{
-          console.log(error)
-        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

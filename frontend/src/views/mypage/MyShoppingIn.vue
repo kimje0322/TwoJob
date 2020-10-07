@@ -103,6 +103,8 @@ export default {
       )
       .then((response) => {
         console.log(response);
+        if(response.data.content.type == "FUNDING"){
+        }
         // this.shoppingList = response.data.object;
         // this.shoppingList.forEach((item) => {
         //   // 제목 

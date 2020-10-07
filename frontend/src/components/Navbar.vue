@@ -197,6 +197,7 @@ export default {
     axios
      .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
      .then((res) => {
+       console.log(store.state.accessToken)
        console.log("총 잔액보여줘제발")
        console.log(res)
        this.asset = res.data
@@ -260,6 +261,7 @@ export default {
             confirmButtonText: "확인",
           });
           this.iswallet = true;
+          this.asset = 0;
 
         }
       });

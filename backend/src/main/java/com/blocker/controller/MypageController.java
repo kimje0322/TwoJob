@@ -74,6 +74,7 @@ public class MypageController {
 		BasicResponse result = new BasicResponse();
 		List<InvestmentDto> investmentList = new ArrayList<>();
 		List<SaleBoardDto> saleboardList = new ArrayList<>();
+		List<String> saleOneLineIntro = new ArrayList<>();
 
 		Map<String, Object> map = new HashMap<>();
 		try {
@@ -85,16 +86,20 @@ public class MypageController {
 				if (opinvestmentDto.isPresent()) {
 					investmentList.add(opinvestmentDto.get());
 				} else {
-					saleboardList.add(saleService.getSaleBoard(likeBoardDto.getAddress()).get());
+					SaleBoardDto saleboardDto = saleService.getSaleBoard(likeBoardDto.getAddress()).get();
+					saleboardList.add(saleboardDto);
+					saleOneLineIntro.add(
+							investmentService.getInvestment(saleboardDto.getInvestaddress()).get().getOnelineintro());
 				}
 			}
 			map.put("investmentList", investmentList);
 			map.put("saleboardList", saleboardList);
+			map.put("saleonelineIntro", saleOneLineIntro);
 
 			result.object = map;
 			result.data = "success";
 			result.status = true;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("찜한 목록 error");
