@@ -21,10 +21,10 @@
           >
           <!-- 투자 좋아요 프로젝트 창 -->
           <v-tab-item :value="'tab-0'">
-            <v-card flat tile style="height: 100vh, border-radius: 12px !important">
+            <v-card flat tile style="border-radius: 12px !important">
               <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
-                <div style="padding: 1% 0;">
+                <div style="padding: 1% 0; height: 100vh;">
                   <div
                     v-for="(item, i) in investlikelst"
                     :key="i"
@@ -53,15 +53,22 @@
                             font-family: BPreplayExtended;
                           "
                         >
-                          <span v-if="item.pjtname.length > 15" style="width: 100%">
-                            {{ item.pjtname.substring(0, 15) }} ...
+                          <span>
+                            {{ item.pjtname}}
                             <!-- {{ item.onelineintro.length }} -->
                           </span>
-                          <span v-else style="width: 100%">
+                          <!-- <span style="width: 100%">
                             {{ item.pjtname }}
-                          </span>
+                          </span> -->
                           <div style="margin-left: auto">
-                            <v-chip class="projectBadge">
+                            <!-- 종료 -->
+                            <v-chip
+                              v-if="item.isfinish"
+                              class="investPjtBadge"
+                              style="background-color: gray; color: white"
+                              >종료</v-chip
+                            >
+                            <v-chip v-else class="projectBadge">
                               {{ item.lastday }}일 남음</v-chip
                             >
                           </div>
@@ -78,11 +85,7 @@
                               color: rgb(0, 0, 0, 0.6);
                             "
                           >
-                            <!-- v-if="item.pjtname.length > 6" -->
-                            <p v-if="item.onelineintro.length > 30">
-                              {{ item.onelineintro.substring(0, 30) }}
-                            </p>
-                            <p v-else>
+                            <p>
                               {{ item.onelineintro }}
                             </p>
                           </div>
@@ -101,7 +104,7 @@
             <v-card flat tile>
               <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
-                <div style="padding: 1% 0;">
+                <div style="padding: 1% 0; height: 100vh;">
                   <div
                     v-for="(item, i) in shopplinglikelst"
                     :key="i"
@@ -133,10 +136,7 @@
                           font-family: BPreplayExtended;
                         "
                       >
-                        <p v-if="item.pjtname.length > 15">
-                          {{ item.pjtname.substring(0, 15) }} ...
-                        </p>
-                        <p v-else>
+                        <p>
                           {{ item.pjtname }}
                         </p>
                         <!-- <div style="margin-left: auto">
@@ -156,27 +156,9 @@
                             letter-spacing: 0.0071428571em;
                             color: rgb(0, 0, 0, 0.6);
                           "
-                          v-if="saleonelineIntro[i].length > 30"
                         >
-                          <!-- {{ item.onelineintro }} -->
-                          {{ saleonelineIntro[i].substring(0, 30) }}
+                          {{ item.onelineintro }}
                         </div>
-                             <div
-                          style="
-                            margin-bottom: 10px;
-                            font-size: 0.875rem;
-                            font-weight: 400;
-                            line-height: 1.375rem;
-                            letter-spacing: 0.0071428571em;
-                            color: rgb(0, 0, 0, 0.6);
-                          "
-                          v-else
-                        >
-                          <!-- {{ item.onelineintro }} -->
-                          {{ saleonelineIntro[i] }}
-                        </div>
-                        <!-- <div style="color: black">
-                        </div>                         -->
                       </v-card-text>
                     </v-card>
                   </div>
@@ -246,27 +228,40 @@ export default {
     const fd = new FormData();
     fd.append("userid", store.state.userInfo.id);
     axios.post(`${SERVER_URL}/mypage/likelist`, fd).then((response) => {
-      console.log("여기요!");
-      console.log(response);
-
       this.investlikelst = response.data.object.investmentList;
       this.shopplinglikelst = response.data.object.saleboardList;
       // console.log("investlikelst");
       // console.log(this.investlikelst);
       // console.log(this.shopplinglikelst);
       this.investlikelst.forEach((invlst) => {
-        // console.log("asdf");
+        // 마감일
         const year = invlst.deadline.substring(0, 4);
         const month = invlst.deadline.substring(5, 7);
         const day = invlst.deadline.substring(8, 10);
-
         var Dday = new Date(year, month - 1, day);
         var now = new Date();
         var gap = now.getTime() - Dday.getTime();
         var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
         this.$set(invlst, "lastday", result);
-        // console.log("남은날짜 " + invlst.lastday);
+        // 제목
+        if (invlst.pjtname.length > 12) {
+          invlst.pjtname = invlst.pjtname.substring(0, 12) + "...";
+        }
+        // 한줄소개
+        if (invlst.onelineintro.length > 30) {
+          invlst.onelineintro = invlst.onelineintro.substring(0, 30) + "...";
+        }
       });
+      this.shopplinglikelst.forEach(item => {
+        // 제목
+        if (item.pjtname.length > 11) {
+          item.pjtname = item.pjtname.substring(0, 11) + "...";
+        }
+        // 한줄소개
+        if (item.onelineintro.length > 30) {
+          item.onelineintro = item.onelineintro.substring(0, 30) + "...";
+        }
+      })
     });
   },
 

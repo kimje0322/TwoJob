@@ -103,8 +103,7 @@
                   params: { address: item.address },
                 }"
               >
-                <span>{{ item.pjtName }}</span></router-link
-              >
+                <span>{{ item.pjtName }}</span></router-link>
               <div style="margin-left: auto">
                 <!-- 종료 -->
                 <v-chip
@@ -255,7 +254,7 @@ export default {
                 var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
                 this.$set(investPjt, "lastday", result);
                 // 제목
-                if (investPjt.pjtName.length > 8) {
+                if (investPjt.pjtName.length > 10) {
                   investPjt.pjtName =
                     investPjt.pjtName.substring(0, 10) + "...";
                 }
@@ -321,7 +320,7 @@ export default {
                 var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
                 this.$set(investPjt, "lastday", result);
                 // 제목
-                if (investPjt.pjtName.length > 8) {
+                if (investPjt.pjtName.length > 10) {
                   investPjt.pjtName =
                     investPjt.pjtName.substring(0, 10) + "...";
                 }
@@ -464,7 +463,7 @@ export default {
                   var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
                   this.$set(investPjt, "lastday", result);
                   // 제목
-                  if (investPjt.pjtName.length > 8) {
+                  if (investPjt.pjtName.length > 10) {
                     investPjt.pjtName =
                       investPjt.pjtName.substring(0, 10) + "...";
                   }

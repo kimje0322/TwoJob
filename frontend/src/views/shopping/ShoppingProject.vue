@@ -224,7 +224,7 @@ export default {
               shoppingPjt.likeCount = response.data.object.likecount[idx];
               // console.log(shoppingPjt)
               // 제목
-              if (shoppingPjt.pjtname.length > 11) {
+              if (shoppingPjt.pjtname.length > 10) {
                 shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
               }
             });
@@ -264,7 +264,7 @@ export default {
               const idx = this.shoppingList.indexOf(shoppingPjt)
               shoppingPjt.likeCount = response.data.object.likecount[idx];
               // 제목
-              if (shoppingPjt.pjtname.length > 8) {
+              if (shoppingPjt.pjtname.length > 10) {
                 shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
               }
             });
@@ -368,7 +368,7 @@ export default {
               const idx = this.shoppingList.indexOf(shoppingPjt)
               shoppingPjt.likeCount = response.data.object.likecount[idx];
               // 제목
-              if (shoppingPjt.pjtname.length > 8) {
+              if (shoppingPjt.pjtname.length > 10) {
                 shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
               }
               });

@@ -196,7 +196,6 @@ export default {
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.login = store.state.isSigned;
-      // console.log(this.userInfo);
     } else {
       this.login = false;
     }
