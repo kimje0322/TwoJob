@@ -91,7 +91,7 @@
                   <div style="text-align: center; margin-top: 30px;">
                     <h4>{{ dto.pjtname }}</h4> 
                     <img :src="dto.picture" width="65%" style="border-radius: 15px;" alt="picture">
-                    <p class="my-2">구매 수량을 선택해주세요 !</p>
+                    <p class="my-2">구매 수량을 선택해주세요!</p>
                   </div>
                   <!-- 수량 -->
                   <div>
@@ -470,7 +470,6 @@ export default {
       });
 
     // 쇼핑 리뷰
-    // page 수정 해야함! 
     const fm = new FormData();
     fm.append("address", this.shoppingAddress);
     axios.post(`${SERVER_URL}/sale/getReviews/0`, fm).then((response) => {
@@ -511,7 +510,7 @@ export default {
         this.reviewTotal = res.data.object.reviewtotalcount;
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   },
   methods: {
@@ -528,12 +527,41 @@ export default {
       fd.append("count", this.numberCount);
       fd.append("money", this.dto.saleprice);
       axios
-        .post(`${SERVER_URL}/funding/sellitem`, fd)
+        .post(`${SERVER_URL}/funding/sellitem`, fd);
+        let timerInterval;
+        Swal.fire({
+          title: '구매완료까지',
+          html: "<b></b> milliseconds 기다려주세요.",
+          timer: 5000,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+            timerInterval = setInterval(() => {
+              const content = Swal.getContent();
+              if (content) {
+                const b = content.querySelector("b");
+                if (b) {
+                  b.textContent = Swal.getTimerLeft();
+                }
+              }
+            }, 100);
+           },
+          onClose: () => {
+            clearInterval(timerInterval);
+          },
+        })
         .then((res) => {
-          // console.log(res)
-
+          Swal.fire({
+            icon: "success",
+            title: "",
+            text: "성공적으로 구매되었습니다.",
+            showConfirmButton: false,
+          })
+          this.perchaseDialog = false;
         })
     },
+        
+
     closeChatRoom() {
       this.chatroom = false;
       store.commit("setAsk", null);

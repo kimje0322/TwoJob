@@ -85,7 +85,7 @@
               <span>
                 <v-icon left
                   style="color:#FF1744"
-                  class="mr-0" size="19">
+                  class="mr-0 heartChip" size="19">
                   mdi-heart
                 </v-icon>
                 {{item.likeCount}}개
@@ -459,6 +459,9 @@ a {
 }
 .v-card--link:before{
   background: none;
+}
+.heartChip:hover {
+  display: none !important;
 }
 
 </style>

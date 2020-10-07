@@ -238,8 +238,8 @@ export default {
       ],
       // 카테고리
        categoryList: {
-        tech: "테크, 가전",
-        fashion: "패션, 잡화",
+        tech: "테크",
+        fashion: "패션",
         beauty: "뷰티",
         food: "푸드",
         home: "홈리빙",
