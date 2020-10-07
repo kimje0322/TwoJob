@@ -1,6 +1,7 @@
 <template>
   <div class="shoppingHome">
-    <navbar />
+    <!-- <navbar /> -->
+    <HomeNav />
     <!-- 쇼핑 메뉴바 -->
     <div class="shoppingNav">
       <div class="items">
@@ -47,12 +48,11 @@
 
     <div style="margin: 0px 185px 0 185px">
     <!-- 오픈예정 -->
-    <div style="margin-left: 5%; margin-top: 3%">
-      <h4 style="font-weight: 600; margin-left:1px">
-        오픈예정 프로젝트<v-icon style="font-size: 36px; color: black"
-          >mdi-chevron-right</v-icon
-        >
+    <div style="margin-left: 3%; margin-top: 3%">
+      <h4 style="font-weight: 600; margin-bottom:3px">
+        이 프로젝트 어때요?
       </h4>
+      <span style="font-size: 0.9rem; margin-bottom:4px">오픈이 예정되어 있는 프로젝트입니다.</span>
     </div>
 
     <div style="display: flex; padding: 1% 0">
@@ -82,9 +82,7 @@
     <!-- 인기순 -->
     <div style="margin-left: 5%; margin-top: 5%">
       <h4 style="font-weight: 600; margin-left:8px;">
-        인기 프로젝트<v-icon style="font-size: 36px; color: black"
-          >mdi-chevron-right</v-icon
-        >
+        인기 프로젝트를 추천해드려요
       </h4>
     </div>
     <div style="padding: 1% 0">
@@ -141,7 +139,8 @@
 <script>
 import "../../../public/css/InvestHome.scss";
 import "../../../public/css/ShoppingHome.scss";
-import Navbar from "../../components/Navbar.vue";
+// import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import axios from "axios";
 
 const SERVER_URL = "https://www.twojob.ga/api";
@@ -152,7 +151,8 @@ import Axios from 'axios';
 
 export default {
   components: {
-    Navbar,
+    HomeNav,
+    // Navbar,
     ShoppingReview,
   },
   data() {
@@ -172,18 +172,14 @@ export default {
       ],
       items: [
         {
-          src: "https://image.freepik.com/free-photo/_93675-87338.jpg",
+          src: "https://boxmaster.co.kr/upload/magazine/5c99e2ed92bd7.jpg",
         },
         {
           src:
-            "https://lh3.googleusercontent.com/proxy/eEAKz6kNc0gXbYyQR5AM2PFZQYoKepaO4JbqZAjJWtbGtTPvBVfh_2sTRVlj6Woh-UIHNphyKm9bIdkz5va1p2KKywJyl7Ed4872B5o9yQ",
+            "https://boxmaster.co.kr/upload/magazine/5c99e01e4c37e.jpg",
         },
         {
-          src:
-            "https://cdn.wadiz.kr/wwwwadiz/green002/2019/0430/20190430185646591_32703.jpg/wadiz/format/jpg/quality/80/optimize",
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
+          src: "https://cdn.pixabay.com/photo/2017/04/06/11/24/fashion-2208045_1280.jpg",
         },
       ],
       openItems: [],
@@ -258,7 +254,7 @@ export default {
   font-weight: 600;
 }
 .homeImg {
-  margin-bottom: 3%;
+  margin-bottom: 5%;
 }
 .deadlineBadge {
   background-color: rgb(22, 150, 245) !important;

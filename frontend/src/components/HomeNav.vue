@@ -11,18 +11,19 @@
           </div><hr>
         </div>
       </div>
+      <!-- expand-on-hover  -->
   <!-- drawer -->
   <v-card>
     <v-navigation-drawer
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-      expand-on-hover 
+     
     >
       <div v-if="!login">
         <v-list-item class="px-2">
           <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
+            <v-img src="https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg"></v-img>
           </v-list-item-avatar>
           <v-list-item-title @click="onLogin" class="loginBtn ml-3">로그인</v-list-item-title>
           <v-btn
@@ -40,17 +41,6 @@
           </v-list-item-avatar>
           <!-- <div style="display:flex"> -->
           <v-list-item-title class="ml-1">{{ userInfo.name }}님</v-list-item-title>
-            <!-- 지갑 있는 경우 -->
-            <v-btn
-              @click="chargeDialog = true"
-              v-if="walletExist"
-              class="chargeBtn ma-2 px-1 py-1 mr-2 mt-2"
-              outlined
-            >
-            <!-- <i class="fas fa-coins"></i>   -->
-            <v-icon class="mr-1">mdi-plus-circle-outline</v-icon>
-             충전
-            </v-btn>
             
             <!-- 지갑 없는 경우 -->
             <v-btn
@@ -60,7 +50,6 @@
               outlined
             >
             <v-icon>mdi-wallet-outline</v-icon>
-  
              지갑생성 
             </v-btn>
             
@@ -100,36 +89,36 @@
                   <v-btn text @click="onKakao" color="white" style="background-color:rgb(22, 150, 245)">충전</v-btn>
                   <v-btn text @click="chargeDialog=false" style="background-color:#ECEFF1">취소</v-btn>
                 </v-card-actions>
-                <div style="background-color: white;">　.</div>
+                <div style="background-color: white; color:white">　.</div>
               </v-dialog>   
-
-        <!-- 충전하기 모달 -->
-          <!-- <v-dialog
-            v-model="chargeDialog"
-            scrollable
-            max-width="40%"
-            style="height: 400px"
-          >
-            <v-card>
-              <v-card-title class="headline lighten-2" style="padding-bottom: 0 !important">
-                <h4 class="mb-0 mt-1" style="margin-left: 20px">충전하기</h4>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text style="padding: 50px 50px 30px 50px">
-                <v-text-field class="moneyinput" v-model="money" label="충전금액" required></v-text-field>
-              </v-card-text>
-              <v-card-actions style="background-color: white">
-                <v-spacer></v-spacer>
-                <v-btn text @click="chargeDialog = false">닫기</v-btn>
-                <v-btn text color="blue" @click="onKakao">충전하기</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog> -->
         </v-list-item>
       </div>
 
+      <!-- 지갑있는 경우 잔액, 충전 -->
       <v-divider class="divider"></v-divider>
-
+      <div v-if="walletExist">
+        <!-- <i class="fas fa-wallet"></i>  -->
+      <v-list-item>
+        <v-list-item-icon>
+          <v-icon>mdi-wallet-outline</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>{{asset}}원</v-list-item-title>
+        </v-list-item-content>
+        <v-btn
+          @click="chargeDialog = true"
+          v-if="walletExist"
+          class="chargeBtn ma-2 px-1 py-1 mr-2 mt-2"
+          outlined
+        >
+        <!-- <i class="fas fa-coins"></i>   -->
+        <v-icon class="mr-1">mdi-plus-circle-outline</v-icon>
+          충전
+        </v-btn>
+      </v-list-item>
+      <v-divider class="divider"></v-divider>
+      </div>   
+      <!-- 페이지 -->
       <v-list dense>
         <v-list-item
           v-for="item in items"
@@ -233,6 +222,13 @@ export default {
         });
       }
     this.asset = store.state.balance;
+    // 총 balance
+    axios
+     .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
+     .then((res) => {
+       console.log(store.state.accessToken)
+       this.asset = res.data
+     })
   },
   updated() {
     if (this.login && this.items.length == 2) {
