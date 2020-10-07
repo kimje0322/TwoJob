@@ -174,11 +174,72 @@
             <div style="margin: 30px 0">
               <div style="overflow: hidden">
                 <h3 class="mypage_title" style="float: left">거래내역</h3>
-                <router-link to="/#" style="text-decoration: none; color: black"
+                <!-- <router-link to="/#" style="text-decoration: none; color: black"
                   ><span style="float: right">더보기</span></router-link
-                >
+                > -->
               </div>
+                <div style="padding: 1% 0">
+                  <v-card
+                    v-for="(item, i) in transactions"
+                    :key="i"
+                    style="
+                      width: 85%;
+                      height: 90px;
+                      display: inline-block;
+                      margin: 0 6% 4% 6%;
+                    "
+                  >
+                    <v-img
+                      style="width: 15%; float: left"
+                      height="90"
+                     
+                      :src="userimg"
+                    ></v-img>
+                    <div style="margin-top: 3px; width: 85%; float: right">
+                      <v-card-title 
+                        >
+                        <div >
+                        <span class="mr-auto mb-1" style="font-size:20px" v-if="item.pjtname.length < 17">{{ item.pjtname }}</span>
+                        <span class="mr-auto mb-1" v-else>{{ item.pjtname.substring(0, 17) }} ...</span>
+                        </div>
+                      <v-chip
+                        small
+                        class="ma-2 ml-auto px-2"
+                        label
+                        outlined=""
+                        style=background-color: rgb(22, 150, 245);
+                      >
+                      <span v-if="item.type == 'FUND'" style="color: white; ">
+                        <v-icon left
+                          
+                          class="mr-0" size="19">
+                          mdi-plus
+                        </v-icon>
+                        {{ item.value }} 토큰
+                      </span>
 
+                      <span v-else> 
+                        <v-icon left
+                          style="color:#FF1744"
+                          class="mr-0" size="19">
+                          mdi-minus
+                        </v-icon>
+                        {{ item.value }} 토큰
+                      </span>
+
+
+
+                      </v-chip>
+                      </v-card-title>
+                      <v-card-text>
+                        <div style="margin-bottom: 13px; height:48px">{{ item.likeintro }}</div>
+                        <div style="color: black">
+                          <h5 style="text-align: end; font-weight: bold; margin-right:8px; margin-bottom:0px;">판매가 {{item.saleprice}} 원</h5>
+                        </div>
+                      </v-card-text>
+                    </div>
+                  </v-card>
+                </div>
               <!-- <div style="margin-top: 18px; padding: 0 3%">
                 <div
                   v-for="(item, i) in transactions"
