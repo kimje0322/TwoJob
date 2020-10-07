@@ -154,7 +154,8 @@
                             color: rgb(0, 0, 0, 0.6);
                           "
                         >
-                          {{ item.onelineintro }}
+                          <!-- {{ item.onelineintro }} -->
+                          {{ saleonelineIntro[i] }}
                         </div>
                         <!-- <div style="color: black">
                         </div>                         -->
@@ -206,6 +207,7 @@ export default {
 
       investlikelst: [],
       shopplinglikelst: [],
+      saleonelineIntro: [],
     };
   },
   methods: {},
@@ -231,6 +233,7 @@ export default {
 
       this.investlikelst = response.data.object.investmentList;
       this.shopplinglikelst = response.data.object.saleboardList;
+      this.saleonelineIntro = response.data.object.saleonelineIntro;
       console.log("investlikelst");
       console.log(this.investlikelst);
       console.log(this.shopplinglikelst);
