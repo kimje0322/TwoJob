@@ -3,10 +3,7 @@
     <!-- 상단 Navbar -->
     <HomeNav />
     <!-- 투자 글쓰기 메뉴바 -->
-    <div
-      class="mypagebox"
-      style="background-color: white;"
-    >
+    <div class="mypagebox" style="background-color: white">
       <!-- user 정보 -->
       <div style="margin-top: 48px; margin-right: 5%">
         <!-- <img :src="userimg" style="height: 100px; border-radius: 50%" /> -->
@@ -42,7 +39,7 @@
         <div class="project_info">
           <!-- <h2 class="mypage_title">마이 페이지</h2> -->
           <div class="info_box">
-            <div style="padding: 30px;">
+            <div style="padding: 30px">
               <div class="info_frame">
                 <ul class="info_ul">
                   <router-link
@@ -100,14 +97,17 @@
                     border-top: 1px solid #f2f4f6;
                     border-bottom: 1px solid #f2f4f6;
                   "
-                ><router-link
+                >
+                  <router-link
                     to="/likelist"
                     style="text-decoration: none; color: black"
+                  >
+                    <span
+                      style="margin-right: 5px; color: red; font-size: 18px"
                     >
-                  <span style="margin-right: 5px; color: red; font-size: 18px">
-                    <i class="fas fa-heart"></i>
-                  </span>
-                  <span style="font-size: 18px">찜한 목록</span></router-link
+                      <i class="fas fa-heart"></i>
+                    </span>
+                    <span style="font-size: 18px">찜한 목록</span></router-link
                   >
                 </div>
                 <div
@@ -135,7 +135,7 @@
                       margin-right: 5px;
                       color: rgb(22, 150, 245);
                       font-size: 18px;
-                      cursor: pointer
+                      cursor: pointer;
                     "
                   >
                     <i class="fas fa-comments"></i>
@@ -144,7 +144,9 @@
                             to="/chat"
                             style="text-decoration: none; color: black"
                             > -->
-                  <span style="font-size: 18px; cursor: pointer" @click="onChat()"
+                  <span
+                    style="font-size: 18px; cursor: pointer"
+                    @click="onChat()"
                     >채팅 목록</span
                   >
                   <!-- </router-link -->
@@ -164,30 +166,42 @@
                   :key="i"
                   style="margin-bottom: 15px"
                 >
-                  <v-avatar style="width: 50px; height: 50px">
-                    <img :src="userimg" alt="John" />
-                  </v-avatar>
-                  <span
-                    style="
-                      margin-left: 5%;
-                      font-size: 18px;
-                      height: 50px;
-                      line-height: 50px;
-                    "
-                    v-if="item.pjtname.length > 13"
-                    >{{ item.pjtname.substring(0, 13) }} ...</span
-                  >
-                  <span
-                    style="
-                      margin-left: 5%;
-                      font-size: 18px;
-                      height: 50px;
-                      line-height: 50px;
-                    "
-                    v-else
-                    >{{ item.pjtname }}</span
-                  >
+                  <div style="display: flex; margin-left: 3%">
+                    <v-avatar
+                      style="width: 50px; height: 50px;"
+                    >
+                      <img :src="item.image" alt="John" />
+                    </v-avatar>
+                  </div>
+                  <div style="display: inline-block; width: 320px">
+                    <span
+                      style="
+                        margin-left: 5%;
+                        font-size: 18px;
+                        height: 50px;
+                        line-height: 50px;
+                      "
+                      v-if="item.pjtname.length > 20"
+                      >{{ item.pjtname.substring(0, 20) }} ...</span
+                    >
+                    <span
+                      style="
+                        margin-left: 5%;
+                        font-size: 18px;
+                        height: 50px;
+                        line-height: 50px;
+                      "
+                      v-else
+                      >{{ item.pjtname }}</span
+                    >
+                    <p style="margin-left: 5%">
+                      HASH {{ item.blockhash.substring(0, 25) }}
+                      {{ item.blockhash.substring(25, 50) }}
+                      {{ item.blockhash.substring(50, item.blockhash.length) }}
+                    </p>
+                  </div>
                   <div style="display: inline-block; float: right">
+                    <p style="margin-left: 44px">{{ item.type }}</p>
                     <v-icon
                       v-if="item.type == 'FUND'"
                       style="
@@ -198,7 +212,7 @@
                         padding-right: 10px;
                       "
                       >mdi-minus</v-icon
-                    >                    
+                    >
                     <v-icon
                       v-else
                       style="
@@ -360,20 +374,24 @@ export default {
 
     // 거래내역
     axios
-    .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=1`)
-    .then((res) => {
-      console.log("거래내역")
-      console.log(res.data.totalElements)
-      this.transnum = res.data.totalElements
-      if(this.transnum > 0) {
-        axios
-        .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=${this.transnum}`)
-        .then((res) => {
-          this.transactions = res.data.content
-          console.log(this.transactions)
-        })
-      }
-    })
+      .get(
+        `${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=1`
+      )
+      .then((res) => {
+        console.log("거래내역");
+        console.log(res.data.totalElements);
+        this.transnum = res.data.totalElements;
+        if (this.transnum > 0) {
+          axios
+            .get(
+              `${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=${this.transnum}`
+            )
+            .then((res) => {
+              this.transactions = res.data.content;
+              console.log(this.transactions);
+            });
+        }
+      });
 
     axios
       .get(`${SERVER_URL}/mypage/myproject?oauthId=${store.state.userInfo.id}`)
