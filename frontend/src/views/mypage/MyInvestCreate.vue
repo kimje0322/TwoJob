@@ -317,7 +317,7 @@ export default {
         })
         .then((response) => {
           const cutUrl = response.data.substr(18, response.data.length - 17);
-          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+          const imgUrl = "https://twojob.ga/" + cutUrl;
           this.imgPath = imgUrl;
           this.imgList.push({ img: imgUrl, price: Number(this.receiptPrice) });
           this.receiptPrice = "";

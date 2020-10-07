@@ -905,7 +905,27 @@ export default {
       const frm = new FormData();
       frm.append("address", this.nowAddress);
       frm.append("userid", store.state.userInfo.id);
-      axios.post(`${SERVER_URL}/investment/getDetail`, frm).then((response) => {})
+      axios.post(`${SERVER_URL}/investment/getDetail`, frm).then((response) => {
+        if(response.data.data == 'success'){
+          // 댓글 사용자 정보 가져오기
+          this.commentList = this.investPjt.comments;
+          this.commentList.forEach((comment) => {
+            comment.createat = `${comment.createat.substring(
+              0,
+              4
+            )}.${comment.createat.substring(5, 7)}.${comment.createat.substring(
+              8,
+              10
+            )}`;
+            const fc = new FormData();
+            fc.append("userid", comment.userid);
+            axios.post(`${SERVER_URL}/util/userinfo`, fc).then((response) => {
+              this.$set(comment, "name", response.data.object.name);
+              this.$set(comment, "profileImg", response.data.object.profileImg);
+            });
+          });
+        }
+      })
     }
   },
 };

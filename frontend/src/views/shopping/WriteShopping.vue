@@ -268,7 +268,7 @@ export default {
                 headers: { 'Content-Type': 'multipart/form-data' } 
             }).then(response => {
                 const cutUrl = response.data.substr(18, response.data.length-17)
-                const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+                const imgUrl = 'https://twojob.ga/' + cutUrl
                 console.log(response.data);
               callback(imgUrl)
             });
@@ -331,7 +331,7 @@ export default {
             headers: { 'Content-Type': 'multipart/form-data' } 
         }).then(response => {
             const cutUrl = response.data.substr(18, response.data.length-17)
-            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+            const imgUrl = 'https://twojob.ga/' + cutUrl
             console.log(response.data);
             this.picture = imgUrl;
 

@@ -360,7 +360,7 @@ export default {
                   18,
                   response.data.length - 17
                 );
-                const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+                const imgUrl = "https://twojob.ga/" + cutUrl;
                 callback(imgUrl);
               })
               .catch((error) => {
@@ -479,7 +479,7 @@ export default {
         })
         .then((response) => {
           const cutUrl = response.data.substr(18, response.data.length - 17);
-          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+          const imgUrl = "https://twojob.ga/" + cutUrl;
           this.picture = imgUrl;
           $(".v-file-input__text").text(event.name);
         })
