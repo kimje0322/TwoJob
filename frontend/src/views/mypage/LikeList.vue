@@ -1,7 +1,8 @@
 <template>
   <div class="myinvestcreate">
     <!-- 상단 Navbar -->
-    <navbar style="border-bottom: 1px solid lightgray" />
+    <HomeNav />
+    <!-- <navbar style="border-bottom: 1px solid lightgray" /> -->
     <div style="padding: 1% 10%">
       <h3 style="font-weight: 800">찜한 프로젝트</h3>
     </div>
@@ -192,7 +193,7 @@
 <script>
 import axios from "axios";
 import store from "../../store/index.js";
-import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 import "../../../public/css/MyInvestCreate.scss";
@@ -229,7 +230,7 @@ export default {
   },
   methods: {},
   components: {
-    Navbar,
+    HomeNav,
   },
   mounted() {
     //  남은 기간
@@ -245,17 +246,16 @@ export default {
     const fd = new FormData();
     fd.append("userid", store.state.userInfo.id);
     axios.post(`${SERVER_URL}/mypage/likelist`, fd).then((response) => {
-      console.log("여기요!");
-      console.log(response);
+      // console.log("여기요!");
+      // console.log(response);
 
       this.investlikelst = response.data.object.investmentList;
       this.shopplinglikelst = response.data.object.saleboardList;
-      this.saleonelineIntro = response.data.object.saleonelineIntro;
-      console.log("investlikelst");
-      console.log(this.investlikelst);
-      console.log(this.shopplinglikelst);
+      // console.log("investlikelst");
+      // console.log(this.investlikelst);
+      // console.log(this.shopplinglikelst);
       this.investlikelst.forEach((invlst) => {
-        console.log("asdf");
+        // console.log("asdf");
         const year = invlst.deadline.substring(0, 4);
         const month = invlst.deadline.substring(5, 7);
         const day = invlst.deadline.substring(8, 10);
@@ -265,7 +265,7 @@ export default {
         var gap = now.getTime() - Dday.getTime();
         var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
         this.$set(invlst, "lastday", result);
-        console.log("남은날짜 " + invlst.lastday);
+        // console.log("남은날짜 " + invlst.lastday);
       });
     });
   },

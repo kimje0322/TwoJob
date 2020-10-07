@@ -1,20 +1,21 @@
 <template>
   <div class="shoppingHome">
-    <!-- <navbar /> -->
     <HomeNav />
     <!-- 쇼핑 메뉴바 -->
     <div class="shoppingNav">
-      <div class="items">
-        <div style="margin: 0 15% 0 0;">
+      <div class="items" style="margin: 24px 0px 13px 0px;">
+        <div style="margin: 0 12% 0 0;">
           <router-link to="/shoppinghome">
-            <h5 style="color: rgb(22, 150, 245)">쇼핑홈</h5>
+            <h5 class="pageTab mb-0" style="color: rgb(22, 150, 245)">쇼핑홈</h5>
           </router-link>
         </div>
         <div>
           <router-link to="/shoppingproject">
-            <h5>프로젝트</h5>
+            <h5 class="pageTab mb-0">프로젝트</h5>
           </router-link>
-        </div>
+        </div><br>
+      <hr class="divider mx-auto mt-2" style="display:inline-block; width: 18%; border: solid 2px rgb(22, 150, 245); background-color: rgb(22, 150, 245)">
+      <hr class="divider mx-auto mt-2" style="display:inline-block; width: 18%; border: solid 2px lightgrey; background-color: lightgrey">
       </div>
     </div>
     <!-- 쇼핑홈 광고사진 -->
@@ -50,9 +51,10 @@
     <!-- 오픈예정 -->
     <div style="margin-left: 3%; margin-top: 3%">
       <h4 style="font-weight: 600; margin-bottom:3px">
-        이 프로젝트 어때요?
+        이런 프로젝트 어때요?
       </h4>
       <span style="font-size: 0.9rem; margin-bottom:4px">오픈이 예정되어 있는 프로젝트입니다.</span>
+      <hr class="divider mt-2" style="width: 24%; border: solid 2px lightgrey; background-color: lightgrey">
     </div>
 
     <div style="display: flex; padding: 1% 0">
@@ -84,6 +86,7 @@
       <h4 style="font-weight: 600; margin-left:8px;">
         인기 프로젝트를 추천해드려요
       </h4>
+      <hr class="divider ml-2 mt-2" style="width: 30%; border: solid 2px lightgrey; background-color: lightgrey">
     </div>
     <div style="padding: 1% 0">
       <v-card
@@ -142,12 +145,11 @@ import "../../../public/css/ShoppingHome.scss";
 // import Navbar from "../../components/Navbar.vue";
 import HomeNav from "../../components/HomeNav.vue";
 import axios from "axios";
-
-const SERVER_URL = "https://www.twojob.ga/api";
-
 // 쇼핑 리뷰
 import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
 import Axios from 'axios';
+
+const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
@@ -190,7 +192,6 @@ export default {
     axios
       .get(`${SERVER_URL}/sale/curation`)
       .then((res) => {
-        // console.log(res.data.object);
         this.openItems = res.data.object.closeopen;
         // likeopenonelineintro
         this.likeItems = res.data.object.popular;
@@ -235,10 +236,10 @@ export default {
 
 <style scoped>
 .shoppingNav {
-  height: 50px;
+  /* height: 50px; */
   text-align: center;
-  line-height: 50px;
-  border-top: 1px solid lightgray;
+  /* line-height: 50px; */
+  /* border-top: 1px solid lightgray; */
 }
 .items div {
   display: inline-block;
@@ -283,4 +284,5 @@ a {
   text-decoration: none !important;
   color: black;
 }
+
 </style>

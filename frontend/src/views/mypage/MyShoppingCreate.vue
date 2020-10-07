@@ -1,7 +1,7 @@
 <template>
   <div class="myinvestcreate">
     <!-- 상단 Navbar -->
-    <navbar style="" />
+    <HomeNav />
     <div style="border-top: 1px solid lightgray; height: 100vh">
       <div style="padding: 3% 0 2% 10%">
         <h4 style="font-weight: 800">
@@ -66,12 +66,28 @@
                         line-height: 41.6px;
                       "
                     >
-                      <span style="color: rgb(22, 150, 245)">{{ item.saleprice }}</span> 원
+                      <span style="color: rgb(22, 150, 245)">{{
+                        item.saleprice
+                      }}</span>
+                      원
                     </h4>
                   </div>
                 </v-card-text>
               </v-card>
             </div>
+            <!-- 무한 스크롤 -->
+            <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
+              <div
+                slot="no-more"
+                style="
+                  color: rgb(102, 102, 102);
+                  font-size: 14px;
+                  padding: 10px 0px;
+                "
+              >
+                목록의 끝입니다 :)
+              </div>
+            </infinite-loading>
           </div>
         </div>
       </div>
@@ -80,16 +96,21 @@
 </template>
 
 <script>
+import HomeNav from "../../components/HomeNav.vue";
 import axios from "axios";
 import store from "../../store/index.js";
-import Navbar from "../../components/Navbar.vue";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 import "../../../public/css/MyInvestCreate.scss";
+import InfiniteLoading from "vue-infinite-loading";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
+  components: {
+    HomeNav,
+    InfiniteLoading,
+  },
   data() {
     return {
       // 사용자
@@ -101,6 +122,7 @@ export default {
       pageusername: "",
       pageuserid: "",
       page: 0,
+      totalpage: 0,
       // 쇼핑리스트
       shoppingList: [],
       // 좋아요
@@ -109,47 +131,68 @@ export default {
       // oneLineIntro: [],
     };
   },
-  methods: {},
-  components: {
-    Navbar,
+  methods: {
+    infiniteHandler($state) {
+      const pageid = this.$route.params.userid;
+      this.pageuserid = pageid;
+
+      // pageuser가 참가한 투자 프로젝트 가져오기
+      axios
+        .get(
+          `${SERVER_URL}/sale/saleList/${this.page}?userid=${this.pageuserid}`
+        )
+        .then((response) => {
+          setTimeout(() => {
+            if (response.data.data == "success") {
+              console.log(response)
+              this.shoppingList = response.data.object.object;
+              this.totalpage = response.data.object.totalpage;
+              this.shoppingList.forEach((item) => {
+                const idx = this.shoppingList.indexOf(item);
+                this.$set(
+                  item,
+                  "likecount",
+                  response.data.object.likecount[idx]
+                );
+                this.$set(
+                  item,
+                  "oneLineIntro",
+                  response.data.object.onelineintros[idx]
+                );
+                // 제목
+                if (item.pjtname.length > 8) {
+                  item.pjtname = item.pjtname.substring(0, 10) + "...";
+                }
+                // 한줄소개
+                if (item.oneLineIntro.length > 40) {
+                  item.oneLineIntro =
+                    item.oneLineIntro.substring(0, 40) + "...";
+                }
+              });
+              this.page += 1;
+              $state.loaded();
+              if (this.page >= this.totalpage) {
+                $state.complete();
+              }
+            } else {
+              $state.complete();
+            }
+          }, 1000);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
   mounted() {
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
     this.userid = store.state.userInfo.id;
-
-    var idx = window.location.href.indexOf("pjt");
+    
+    // pageuser 정보 가져오기
     const pageid = this.$route.params.userid;
     this.pageuserid = pageid;
-
-    // pageuser가 참가한 투자 프로젝트 가져오기
-    console.log(this.pageuserid);
-    axios
-      .get(`${SERVER_URL}/sale/saleList/${this.page}?userid=${this.pageuserid}`)
-      .then((response) => {
-        console.log(response);
-        // this.oneLineIntro = response.data.object.oneLineIntro;
-        // this.likecount = response.data.object.likecount;
-        this.shoppingList = response.data.object.object;
-        this.shoppingList.forEach((item) => {
-          const idx = this.shoppingList.indexOf(item);
-          this.$set(item, "likecount", response.data.object.likecount[idx])
-          this.$set(item, "oneLineIntro", response.data.object.onelineintros[idx])
-          // 제목
-          if (item.pjtname.length > 8) {
-            item.pjtname = item.pjtname.substring(0, 10) + "...";
-          }
-          // 한줄소개
-          if (item.oneLineIntro.length > 40) {
-            item.oneLineIntro = item.oneLineIntro.substring(0, 40) + "...";
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // pageuser 정보 가져오기
     const fc = new FormData();
     fc.append("userid", this.pageuserid);
     axios.post(`${SERVER_URL}/util/userinfo`, fc).then((response) => {

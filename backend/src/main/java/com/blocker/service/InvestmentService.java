@@ -21,6 +21,11 @@ public class InvestmentService {
 		PageRequest pageRequest = PageRequest.of(page, 9);
 		return investmentRepository.findAllByUserid(pageRequest, userid);
 	}
+	
+	public Page<InvestmentDto> getAllMyinvestmentListForGetAllPJT(String userid, int page) {
+		PageRequest pageRequest = PageRequest.of(page, 3);
+		return investmentRepository.findAllByUserid(pageRequest, userid);
+	}
 
 	public Page<InvestmentDto> getAllInvestmentList(int page) {
 		PageRequest pageRequest = PageRequest.of(page, 9);

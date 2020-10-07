@@ -224,7 +224,7 @@ public class InvestController {
 				investmentResponse.setUrl(investmentDto.getUrl());
 				investmentResponse.setUserid(investmentDto.getUserid());
 				investmentResponse.setIsfinish(investmentDto.isIsfinish());
-
+				investmentResponse.setTotalpage(list.getTotalPages());
 				// editor
 				Optional<EditorInvestmentDto> opEditorInvestmentDto = editorinvestmentRepository
 						.getEditorInvestmentDtoByInvestaddress(investmentDto.getAddress());
@@ -263,7 +263,8 @@ public class InvestController {
 					list = investmentService.getAllInvestmentList(page);
 				} else {
 					list = investmentService.getAllInvestmentList(page, orderOption);
-					System.out.println("============================================================="+list.toString());
+					System.out
+							.println("=============================================================" + list.toString());
 				}
 
 				for (Iterator<InvestmentDto> iter = list.getContent().iterator(); iter.hasNext();) {
@@ -295,7 +296,7 @@ public class InvestController {
 			} else {
 				Page<BoardCategoryMapping> list = boardCategoryService.getAllInvestmentListWithCategory(page,
 						categoryfilter, orderOption);
-				
+
 				for (Iterator<BoardCategoryMapping> iter = list.iterator(); iter.hasNext();) {
 					BoardCategoryMapping nextiter = iter.next();
 					String investaddress = nextiter.getInvestaddress();
@@ -417,7 +418,7 @@ public class InvestController {
 	public Object getAllMyPjt(@RequestParam String userid, @PathVariable int page) {
 		final BasicResponse result = new BasicResponse();
 		try {
-			Page<InvestmentDto> pageInvestment = investmentService.getAllMyinvestmentList(userid, page);
+			Page<InvestmentDto> pageInvestment = investmentService.getAllMyinvestmentListForGetAllPJT(userid, page);
 			List<InvestmentDto> templist = pageInvestment.getContent();
 			List<getAllMyPjtResponse> resultdatas = new ArrayList<>();
 			for (Iterator<InvestmentDto> iter = templist.iterator(); iter.hasNext();) {

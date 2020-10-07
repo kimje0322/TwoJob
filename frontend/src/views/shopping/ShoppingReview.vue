@@ -173,12 +173,12 @@ export default {
       this.imgPath = '';
     },
     onClickImageUpload() {
-      console.log('onClickImageUpload');
-      console.log(this.satisfaction+'만족도');
+      // console.log('onClickImageUpload');
+      // console.log(this.satisfaction+'만족도');
       this.$refs.imageInput.click();
     },
     onChangeImages(e) {
-      console.log("onchangeImages");
+      // console.log("onchangeImages");
       this.showImg = true;
       this.uploadimg = true;
       this.file = e.target.files[0];
@@ -192,7 +192,7 @@ export default {
                 headers: { 'Content-Type': 'multipart/form-data' } 
         }).then(response => {
             const cutUrl = response.data.substr(18, response.data.length-17)
-            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+            const imgUrl = 'https://twojob.ga/' + cutUrl
             this.imgPath = imgUrl;   
         });
     },
@@ -208,10 +208,10 @@ export default {
         userid: "3"
       })
       .then(response => {
-        console.log(response)
+        // console.log(response)
       })
       .catch(error => {
-        console.log(error)
+        // console.log(error)
       })
     },
   },

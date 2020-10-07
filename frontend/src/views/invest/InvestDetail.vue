@@ -1,6 +1,6 @@
 <template>
   <div class="investdetail">
-    <navbar />
+    <HomeNav />
     <!-- 투자 대표 사진 -->
     <div
       class="investImg"
@@ -455,7 +455,6 @@
                 <v-btn @click="oncomment" class="commentBtn">댓글</v-btn>
               </div>
               <hr v-if="islogin" />
-              <p style="margin-left: 10px">총 25건의 댓글이 있습니다.</p>
               <div
                 v-for="(comment, i) in commentList"
                 :key="i"
@@ -484,6 +483,10 @@
                   <p>{{ comment.content }}</p>
                 </div>
               </div>
+              <!-- 무한 스크롤 -->
+              <infinite-loading @infinite="infiniteComment" spinner="waveDots">
+                <div slot="no-more" style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px;">목록의 끝입니다 :)</div>
+              </infinite-loading>
             </div>
           </v-tab-item>
         </v-tabs-items>
@@ -493,7 +496,7 @@
 </template>
 
 <script>
-import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import "../../../public/css/InvestDetail.scss";
 import { VueperSlides, VueperSlide } from "vueperslides";
 import "vueperslides/dist/vueperslides.css";
@@ -508,7 +511,7 @@ const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar,
+    HomeNav,
     VueperSlides,
     VueperSlide,
     ChatRoom,
@@ -534,7 +537,7 @@ export default {
       items: [],
       // 무한 스크롤
       page: 0,
-      totalPage: 0,
+      totalpage: 0,
       // 좋아요
       isliked: false,
       likeCount: 0,
@@ -548,8 +551,8 @@ export default {
     };
   },
   mounted() {
-    this.nowAddress = this.$route.params.address;
     // 투자 프로젝트 정보 가져오기
+    this.nowAddress = this.$route.params.address;
     const frm = new FormData();
     frm.append("address", this.nowAddress);
     frm.append("userid", store.state.userInfo.id);
@@ -638,9 +641,9 @@ export default {
       axios
         .post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.projectList = response.data.object;
-          this.totalPage = response.data.object[0].totalpages;
+          this.totalpage = response.data.object[0].totalpages;
           // 디테일 페이지와 동일한 프로젝트 삭제
           this.projectList.forEach(item =>{
             if(item.investmentDto.address == this.nowAddress){
@@ -651,7 +654,7 @@ export default {
           this.projectList.forEach((item) => {
             // 투자 프로젝트 chip
             if (item.investmentDto.isfinish) {
-              console.log(item)
+              // console.log(item)
               this.$set(item.investmentDto, "chip", "종료");
             } else {
               this.$set(item.investmentDto, "chip", "진행중");
@@ -665,7 +668,7 @@ export default {
             // pjtname
             if (item.investmentDto.pjtname.length > 8) {
               item.investmentDto.pjtname =
-                item.investmentDto.pjtname.substring(0, 12) + "...";
+                item.investmentDto.pjtname.substring(0, 11) + "...";
             }
             // 투자 금액 axios 가져오기
             axios
@@ -714,7 +717,7 @@ export default {
     onChat() {
       // window.open("");
       this.chatroom = true;
-      console.log("oauthId " + this.writer.oauthId);
+      // console.log("oauthId " + this.writer.oauthId);
       store.commit("setAsk", this.writer.name, this.writer.oauthId);
       store.state.askuserid = this.writer.oauthId;
       // console.log("모달 열어보자" + this.chatroom);
@@ -743,7 +746,7 @@ export default {
           userid: store.state.userInfo.id,
         })
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           const today = new Date();
           let year = today.getFullYear(); // 년도
           let month = today.getMonth() + 1; // 월
@@ -766,7 +769,7 @@ export default {
       axios
         .delete(`${SERVER_URL}/investment/deletecomment?num=${comment.num}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
         });
     },
     oninvestbtn() {
@@ -784,7 +787,6 @@ export default {
       let timerInterval;
       Swal.fire({
         title: `${this.investPjt.pjtName}프로젝트에 투자하기`,
-        html: "<b></b> milliseconds 기다려주세요.",
         timer: 5000,
         timerProgressBar: true,
         onBeforeOpen: () => {
@@ -813,38 +815,17 @@ export default {
     // 무한 스크롤
     infiniteHandler($state) {
       this.page += 1
-    //   const EACH_LEN = 30
-    //   fetch("/api/idol/uwasa/pages/" + (this.limit), {method: "get"}).then(resp => {
-    //     return resp.json()
-    //   }).then(data => {
-    //     setTimeout(() => {
-    //       if(data.length) {
-    //         this.topicData = this.topicData.concat(data)
-    //         $state.loaded()
-    //         this.limit += 1
-    //         console.log("after", this.topicData.length, this.limit)
-    //         // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면 
-    //         if(data.length / EACH_LEN < 1) {
-    //           $state.complete()
-    //         }
-    //       } else {
-    //         // 끝 지정(No more data)
-    //         $state.complete()
-    //       }
-    //     }, 1000)
-    //   }).catch(err => {
-    //     console.error(err);
-    //   })
     // 금손 프로젝트 이력 가져오기
       const fd = new FormData();
       fd.append("userid", this.investPjt.userid);
       axios
         .post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
         .then((response) => {
+          console.log(response.data.object)
           setTimeout(() => {
           if(response.data.data == "success"){
             this.projectList = this.projectList.concat(response.data.object);
-            // this.totalPage = response.data.object[0].totalpages;
+            // this.totalpage = response.data.object[0].totalpages;
             // 디테일 페이지와 동일한 프로젝트 삭제
             this.projectList.forEach(item =>{
               if(item.investmentDto.address == this.nowAddress){
@@ -855,7 +836,7 @@ export default {
             this.projectList.forEach((item) => {
               // 투자 프로젝트 chip
               if (item.investmentDto.isfinish) {
-                console.log(item)
+                // console.log(item)
                 this.$set(item.investmentDto, "chip", "종료");
               } else {
                 this.$set(item.investmentDto, "chip", "진행중");
@@ -863,13 +844,13 @@ export default {
               // 투자 프로젝트 사용내역 보여주기
               axios.get(`${SERVER_URL}/funding/getreceipt?campaignId=${item.investmentDto.address}`)
                 .then(response => {
-                  // console.log(response)
+                  console.log(response)
                   // this.items = response.data
                 })
               // pjtname
               if (item.investmentDto.pjtname.length > 8) {
                 item.investmentDto.pjtname =
-                  item.investmentDto.pjtname.substring(0, 12) + "...";
+                  item.investmentDto.pjtname.substring(0, 11) + "...";
               }
               // 투자 금액 axios 가져오기
               axios
@@ -907,8 +888,8 @@ export default {
               }
             });
             $state.loaded()
-            console.log("after", this.projectList, this.page)
-            if(this.page >= this.totalPage) {
+            // console.log("after", this.projectList, this.page)
+            if(this.page >= this.totalpage) {
               $state.complete()
             }
           }else{
@@ -916,6 +897,34 @@ export default {
           }
         }, 1000)
       });
+    },
+    infiniteComment($state) {
+      // 투자 프로젝트 정보 가져오기
+      this.nowAddress = this.$route.params.address;
+      const frm = new FormData();
+      frm.append("address", this.nowAddress);
+      frm.append("userid", store.state.userInfo.id);
+      axios.post(`${SERVER_URL}/investment/getDetail`, frm).then((response) => {
+        if(response.data.data == 'success'){
+          // 댓글 사용자 정보 가져오기
+          this.commentList = this.investPjt.comments;
+          this.commentList.forEach((comment) => {
+            comment.createat = `${comment.createat.substring(
+              0,
+              4
+            )}.${comment.createat.substring(5, 7)}.${comment.createat.substring(
+              8,
+              10
+            )}`;
+            const fc = new FormData();
+            fc.append("userid", comment.userid);
+            axios.post(`${SERVER_URL}/util/userinfo`, fc).then((response) => {
+              this.$set(comment, "name", response.data.object.name);
+              this.$set(comment, "profileImg", response.data.object.profileImg);
+            });
+          });
+        }
+      })
     }
   },
 };

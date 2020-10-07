@@ -44,7 +44,7 @@ public class MyPageServiceImpl implements MyPageService{
 		Optional<Wallet> mywallet = walletRepository.findById(id);
 		if(mywallet.isPresent()) {
 			String address = mywallet.get().getAddress();
-			return blockTransactionRepository.findByFromaddressAndTypeflag(address, 1, pageable);
+			return blockTransactionRepository.findByFromaddress(address, pageable);
 		}else {
 			return null;
 		}

@@ -1,6 +1,7 @@
 <template>
   <div class="shoppingDetail">
-    <navbar />
+    <HomeNav />
+    <div>
     <!-- 상품 게시글 제목 -->
     <div
       class="shoppingImg"
@@ -133,7 +134,7 @@
               disabled="islogin == false || this.maker.oauthId == userid"
               style="flex: 1">
               <div @click="onChat()" class="btns">
-                <v-app></v-app>
+                <v-app class="vApp"></v-app>
                 <div>
                   <v-dialog max-width="800" min-height="500" v-model="chatroom">
                     <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
@@ -364,12 +365,14 @@
         </v-tabs-items>
       </div>
     </div>
+    </div>
   </div>
 </template>
 
 <script>
 import "../../../public/css/ShoppingDetail.scss";
-import Navbar from "../../components/Navbar.vue";
+// import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import axios from "axios";
 import store from "../../store/index.js";
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
@@ -379,13 +382,15 @@ const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar,
+    // Navbar,
+    HomeNav,
     ChatRoom,
   },
   data() {
     return {
       // 로그인 
       islogin: store.state.isSigned,
+      userid: store.state.userInfo.id,
       currentItem: "tab-Web",
       tabItems: ["pjtInfo", "reviews"],
       items: [],
@@ -450,6 +455,7 @@ export default {
         axios
           .post(`${SERVER_URL}/util/userinfo?userid=${userid}`)
           .then((res) => {
+            this.maker = res.data.object
             this.makerName = res.data.object.name
             if (res.data.object.profileImg == null) {
             this.makerImg =
@@ -486,7 +492,6 @@ export default {
           .post(`${SERVER_URL}/util/userinfo?userid=${userId}`)
           .then((res) => {
             this.reviews[i].userid = res.data.object.name;
-            this.maker = response.data.object;
             // console.log(res.data.object)
             if (res.data.object.profileImg == null) {
             this.reviews[i].profile = "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
@@ -531,7 +536,6 @@ export default {
         let timerInterval;
         Swal.fire({
           title: '구매완료까지',
-          html: "<b></b> milliseconds 기다려주세요.",
           timer: 5000,
           timerProgressBar: true,
           onBeforeOpen: () => {
@@ -568,10 +572,8 @@ export default {
     },
     onChat() {
       // window.open("");
-      console.log('maker')
-      console.log(this.maker)
       this.chatroom = true;
-      console.log("oauthId " + this.maker.oauthId);
+      // console.log("oauthId " + this.maker.oauthId);
       store.commit("setAsk", this.maker.name, this.maker.oauthId);
       store.state.askuserid = this.maker.oauthId;
       // console.log("모달 열어보자" + this.chatroom);
