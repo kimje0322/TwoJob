@@ -79,6 +79,7 @@ public class MypageController {
 				Optional<InvestmentDto> opinvestmentDto = investmentService.getInvestment(likeBoardDto.getAddress());
 				if (opinvestmentDto.isPresent()) {
 					investmentList.add(opinvestmentDto.get());
+					
 				} else {
 					SaleBoardDto saleboardDto = saleService.getSaleBoard(likeBoardDto.getAddress()).get();
 					saleboardList.add(saleboardDto);
@@ -86,6 +87,7 @@ public class MypageController {
 							investmentService.getInvestment(saleboardDto.getInvestaddress()).get().getOnelineintro());
 				}
 			}
+			
 			map.put("investmentList", investmentList);
 			map.put("saleboardList", saleboardList);
 			map.put("saleonelineIntro", saleOneLineIntro);
