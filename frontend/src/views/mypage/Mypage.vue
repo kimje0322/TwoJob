@@ -318,7 +318,7 @@ export default {
     axios
       .get(`${SERVER_URL}/wallet/toid?oauthid=${this.pageuserid}`)
       .then((res) => {
-        // this.pageuserbalance = res.data.balance;
+        this.pageuserbalance = res.data.balance;
         console.log(res.data.balance);
         // this.mywallet = res.data.address;
         // console.log("여기여기``");
@@ -339,7 +339,7 @@ export default {
       .then((res) => {
         console.log("총 잔액보여줘제발");
         console.log(res);
-        this.pageuserbalance = res.data;
+        // this.pageuserbalance = res.data;
       });
 
     this.userimg = store.state.userInfo.img;

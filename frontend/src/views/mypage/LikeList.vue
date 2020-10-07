@@ -23,7 +23,7 @@
             <v-card flat tile>
               <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
-                <div style="padding: 1% 0">
+                <div style="padding: 1% 0; display: flex;">
                   <div
                     v-for="(item, i) in investlikelst"
                     :key="i"
@@ -98,9 +98,9 @@
           <!-- 쇼핑 좋아요 프로젝트 창 -->
           <v-tab-item :value="'tab-1'">
             <v-card flat tile>
-              <v-card-text>
+              <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
-                <div style="padding: 1% 0">
+                <div style="padding: 1% 0; display: flex;">
                   <div
                     v-for="(item, i) in shopplinglikelst"
                     :key="i"
@@ -180,7 +180,7 @@
                     </v-card>
                   </div>
                 </div>
-              </v-card-text>
+              <!-- </v-card-text> -->
             </v-card>
           </v-tab-item>
         </v-tabs>
