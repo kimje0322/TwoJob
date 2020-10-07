@@ -436,7 +436,6 @@ export default {
                     let timerInterval;
                     Swal.fire({
                       title: "쇼핑 프로젝트 오픈중",
-                      html: "<b></b> milliseconds 기다려주세요.",
                       timer: 10000,
                       timerProgressBar: true,
                       onBeforeOpen: () => {

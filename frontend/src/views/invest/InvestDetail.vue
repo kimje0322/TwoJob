@@ -787,7 +787,6 @@ export default {
       let timerInterval;
       Swal.fire({
         title: `${this.investPjt.pjtName}프로젝트에 투자하기`,
-        html: "<b></b> milliseconds 기다려주세요.",
         timer: 5000,
         timerProgressBar: true,
         onBeforeOpen: () => {

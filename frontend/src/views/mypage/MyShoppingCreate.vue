@@ -146,7 +146,7 @@ export default {
             if (response.data.data == "success") {
               console.log(response)
               this.shoppingList = response.data.object.object;
-              this.totalpage = response.data.object.object[0].totalpage;
+              this.totalpage = response.data.object.totalpage;
               this.shoppingList.forEach((item) => {
                 const idx = this.shoppingList.indexOf(item);
                 this.$set(
