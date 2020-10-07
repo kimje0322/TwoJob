@@ -27,15 +27,11 @@
                   <div
                     v-for="(item, i) in investlikelst"
                     :key="i"
-                    style="
-                      display: inline-block;
-                      width: 33%;
-                      margin: 20px 5px;
-                    "
+                    style="display: inline-block; width: 30%; margin: 20px 5px"
                   >
                     <v-card
                       class="my-12"
-                      max-width="90%"
+                      max-width="95%"
                       max-height="600px"
                       style="margin: auto"
                     >
@@ -47,46 +43,55 @@
                       >
                         <v-img height="250" :src="item.picture"></v-img>
                       </router-link>
-                      <v-card-title
-                        style="
-                          font-weight: 600;
-                          margin: auto;
-                          color: rgba(0, 0, 0, 0.87);
-                          font-family: BPreplayExtended;
-                        "
-                      >
-                        <p v-if="item.pjtname.length > 6">
-                          {{ item.pjtname.substring(0, 8) }} ...
-                        </p>
-                        <p v-else style="width: 100%">
-                          {{ item.pjtname }}
-                        </p>
-                        <div style="margin-left: auto">
-                          <v-chip class="projectBadge">
-                            {{ item.lastday }}일 남음</v-chip
-                          >
-                          <!-- <v-chip v-model="a" class="likeBadge" style="font-size: 12px"
-                            >100명 좋아요 {{ b }}</v-chip
-                          > -->
-                        </div>
-                      </v-card-title>
-                      <!-- max-height: 120px -->
-                      <v-card-text style="height: 70px">
-                        <div
+                      <div style="height: 200px">
+                        <v-card-title
                           style="
-                            margin-bottom: 10px;
-                            font-size: 0.875rem;
-                            font-weight: 400;
-                            line-height: 1.375rem;
-                            letter-spacing: 0.0071428571em;
-                            color: rgb(0, 0, 0, 0.6);
+                            font-weight: 600;
+                            margin: auto;
+                            color: rgba(0, 0, 0, 0.87);
+                            font-family: BPreplayExtended;
                           "
                         >
-                          {{ item.onelineintro }}
-                        </div>
-                        <!-- <div style="color: black">
+                          <p v-if="item.pjtname.length > 6" style="width: 100%">
+                            {{ item.pjtname.substring(0, 8) }} ...
+                            <!-- {{ item.onelineintro.length }} -->
+                          </p>
+                          <p v-else style="width: 100%">
+                            {{ item.pjtname }}
+                          </p>
+                          <div style="margin-left: auto">
+                            <v-chip class="projectBadge">
+                              {{ item.lastday }}일 남음</v-chip
+                            >
+                            <!-- <v-chip v-model="a" class="likeBadge" style="font-size: 12px"
+                            >100명 좋아요 {{ b }}</v-chip
+                          > -->
+                          </div>
+                        </v-card-title>
+                        <!-- max-height: 120px -->
+                        <v-card-text style="height: 80px">
+                          <div
+                            style="
+                              margin-bottom: 10px;
+                              font-size: 0.875rem;
+                              font-weight: 400;
+                              line-height: 1.375rem;
+                              letter-spacing: 0.0071428571em;
+                              color: rgb(0, 0, 0, 0.6);
+                            "
+                          >
+                            <!-- v-if="item.pjtname.length > 6" -->
+                            <p v-if="item.onelineintro.length > 30">
+                              {{ item.onelineintro.substring(0, 30) }}
+                            </p>
+                            <p v-else>
+                              {{ item.onelineintro }}
+                            </p>
+                          </div>
+                          <!-- <div style="color: black">
                         </div>                         -->
-                      </v-card-text>
+                        </v-card-text>
+                      </div>
                     </v-card>
                   </div>
                 </div>
@@ -153,8 +158,24 @@
                             letter-spacing: 0.0071428571em;
                             color: rgb(0, 0, 0, 0.6);
                           "
+                          v-if="saleonelineIntro[i].length > 30"
                         >
-                          {{ item.onelineintro }}
+                          <!-- {{ item.onelineintro }} -->
+                          {{ saleonelineIntro[i].substring(0, 30) }}
+                        </div>
+                             <div
+                          style="
+                            margin-bottom: 10px;
+                            font-size: 0.875rem;
+                            font-weight: 400;
+                            line-height: 1.375rem;
+                            letter-spacing: 0.0071428571em;
+                            color: rgb(0, 0, 0, 0.6);
+                          "
+                          v-else
+                        >
+                          <!-- {{ item.onelineintro }} -->
+                          {{ saleonelineIntro[i] }}
                         </div>
                         <!-- <div style="color: black">
                         </div>                         -->
@@ -206,6 +227,7 @@ export default {
 
       investlikelst: [],
       shopplinglikelst: [],
+      saleonelineIntro: [],
     };
   },
   methods: {},
@@ -231,6 +253,7 @@ export default {
 
       this.investlikelst = response.data.object.investmentList;
       this.shopplinglikelst = response.data.object.saleboardList;
+      this.saleonelineIntro = response.data.object.saleonelineIntro;
       console.log("investlikelst");
       console.log(this.investlikelst);
       console.log(this.shopplinglikelst);
