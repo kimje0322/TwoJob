@@ -204,7 +204,6 @@ export default {
     axios.get(
         `${SERVER_URL}/wallet/toid?oauthid=${store.state.userInfo.id}`)
         .then((res) => {
-          // console.log(res.data)
           if (res.data == "novalid") {
             store.commit("setWalletExist", false);
             store.commit("setAddress", res.data.address);
@@ -232,7 +231,6 @@ export default {
     axios
      .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
      .then((res) => {
-       console.log(store.state.accessToken)
        this.asset = res.data
      })
   },
@@ -294,14 +292,12 @@ export default {
       //토큰값 받아오는 부분
       // console.log(authObj);
       store.state.accessToken = authObj.access_token
-      console.log(authObj.access_token);
       store.commit("setAccessToken", authObj.access_token);
       const fd = new FormData();
       fd.append("accessToken", authObj.access_token);
 
       axios.post(`${SERVER_URL}/login/kakaologin`, fd)
       .then((res) => {
-        console.log(res)
         this.login = true;
         this.isnew = res.data.isfirsttime
         // store.state.isSigned = true;
@@ -321,7 +317,6 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
         })
         if (res.data.profileImg == null) {
           this.userInfo.img =

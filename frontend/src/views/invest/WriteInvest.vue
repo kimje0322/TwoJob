@@ -111,7 +111,7 @@
                     type="text"
                     style="width: 35%; text-align: right; font-size: 18px"
                   />
-                  <h5 style="display: inline-block; margin-left: 5px">원</h5>
+                  <h5 style="display: inline-block; margin-left: 5px">토큰</h5>
                   <h5><span style="color: red">*</span> 상품 판매 예정 금액</h5>
                   <p style="margin: 0 0 5px 10px">
                     상품 판매할 예정 금액을 입력해주세요(상품이 여러개이면
@@ -123,7 +123,7 @@
                     type="text"
                     style="width: 35%; text-align: right; font-size: 18px"
                   />
-                  <h5 style="display: inline-block; margin-left: 5px">원</h5>
+                  <h5 style="display: inline-block; margin-left: 5px">토큰</h5>
                   <h5><span style="color: red">*</span> 대표 사진</h5>
                   <!-- v-model="thumbnail" -->
                   <v-file-input
@@ -659,8 +659,7 @@ export default {
                       },
                     })
                     .then((response) => {
-                      console.log(response);
-                      if(response.data == 'success'){
+                      console.log(response)
                         this.$router.push("/investhome");
                         Swal.fire({
                           icon: "success",
@@ -668,10 +667,9 @@ export default {
                           text: "프로젝트가 성공적으로 오픈되었습니다.",
                           showConfirmButton: false,
                         })
-                      }else{
-                        alert("블록체인 프로젝트 오픈에 실패했습니다.");
-                      }
-                      
+                      // else{
+                      //   alert("블록체인 프로젝트 오픈에 실패했습니다.");
+                      // }
                     });
                 } else {
                   alert("프로젝트 오픈에 실패했습니다.");

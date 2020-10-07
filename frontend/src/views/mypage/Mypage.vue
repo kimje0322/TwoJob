@@ -178,9 +178,10 @@
                   ><span style="float: right">더보기</span></router-link
                 >
               </div>
-              <div style="margin-top: 18px; padding: 0 3%">
+
+              <!-- <div style="margin-top: 18px; padding: 0 3%">
                 <div
-                  v-for="(item, i) in accounts"
+                  v-for="(item, i) in transactions"
                   :key="i"
                   style="margin-bottom: 15px"
                 >
@@ -194,11 +195,22 @@
                       height: 50px;
                       line-height: 50px;
                     "
-                    >{{ item.pjtName }}</span
+                    v-if="item.pjtname.length > 13"
+                    >{{ item.pjtname.substring(0, 13) }} ...</span
+                  >
+                  <span
+                    style="
+                      margin-left: 5%;
+                      font-size: 18px;
+                      height: 50px;
+                      line-height: 50px;
+                    "
+                    v-else
+                    >{{ item.pjtname }}</span
                   >
                   <div style="display: inline-block; float: right">
                     <v-icon
-                      v-if="item.isAdded"
+                      v-if="item.type == 'FUND'"
                       style="
                         float: left;
                         font-size: 16px;
@@ -206,8 +218,8 @@
                         line-height: 50px;
                         padding-right: 10px;
                       "
-                      >mdi-plus</v-icon
-                    >
+                      >mdi-minus</v-icon
+                    >                    
                     <v-icon
                       v-else
                       style="
@@ -217,7 +229,7 @@
                         line-height: 50px;
                         padding-right: 10px;
                       "
-                      >mdi-minus</v-icon
+                      >mdi-plus</v-icon
                     >
                     <span
                       style="
@@ -226,11 +238,11 @@
                         height: 50px;
                         line-height: 50px;
                       "
-                      >{{ item.transitPrice }} ETH</span
+                      >{{ item.value }} 토큰</span
                     >
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -253,6 +265,38 @@ const SERVER_URL = "https://www.twojob.ga/api";
 // const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
+  data() {
+    return {
+      transnum: "",
+      transactions: [],
+      pageuserid: "",
+      pageuserimg: "",
+      pageusername: "",
+      pageuseraccestoken: "",
+      pageuserbalance: "",
+
+      investcreatenum: 0,
+      investinnum: 0,
+      shoppingcreatenum: 0,
+      shoppinginnum: 0,
+      iswallet: true,
+      chatroom: false,
+      userimg: "",
+      username: "",
+      userbalance: "",
+      tab: null,
+      text: ["1", "2", "3"],
+      tabs: ["투자", "쇼핑"],
+      // 거래내역
+      accounts: [
+        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
+        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: false },
+        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
+        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
+      ],
+    };
+  },
+  computed: {},
   methods: {
     closeChatRoom() {
       this.chatroom = false;
@@ -296,11 +340,7 @@ export default {
             icon: "success",
             title: "지갑 생성 성공",
             text: `비밀키 : ${result.privateKey}가 발급되었습니다.`,
-            // showCancelButton: true,
-            // cancelButtonColor: "#d33",
-            // confirmButtonColor: "#3085d6",
             confirmButtonText: "확인",
-            // cancelButtonText: "취소하기",
           });
         }
       });
@@ -314,22 +354,14 @@ export default {
   },
   mounted() {
     var idx = window.location.href.indexOf("mypage");
-    // console.log(idx);
-    // console.log("url주소 길이" + window.location.href.length);
     const pageid = window.location.href.substring(
       idx + 7,
       window.location.href.length
     );
-    // console.log(pageid);
-    // console.log(pageid + "asdfadsddd");
-    // console.log(typeof pageid);
     const fd = new FormData();
     fd.append("userid", pageid);
-    // console.log("pageid" + pageid);
     this.pageuserid = pageid;
     axios.post(`${SERVER_URL}/util/userinfo`, fd).then((res) => {
-      // console.log("성공인가??");
-      // console.log(res);
       this.pageuserimg = res.data.object.profileImg;
       this.pageusername = res.data.object.name;
       this.pageuseraccestoken = res.data.object.accessToken;
@@ -338,17 +370,9 @@ export default {
     axios
       .get(`${SERVER_URL}/wallet/toid?oauthid=${this.pageuserid}`)
       .then((res) => {
-        // this.pageuserbalance = res.data.balance;
-        // console.log(res.data.balance);
-        // this.mywallet = res.data.address;
-        // console.log("여기여기``");
-        // console.log(this.mywallet);
         if (res.data != "novalid") {
           this.iswallet = true;
         }
-        // store.commit("setBalance", res.data.balance);
-        // store.state.balance = res.data.balance;
-        // console.log(store.state.balance + 123123);
       })
       .catch((error) => {
         // console.log(error);
@@ -357,20 +381,32 @@ export default {
     axios
       .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
       .then((res) => {
-        // console.log("총 잔액보여줘제발");
-        // console.log(res);
         this.pageuserbalance = res.data;
       });
 
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.accessToken;
-    // console.log("이건 유저 발란스 값" + this.userbalance);
 
     // 거래내역
-    // axios
-    // .get(`http://j3b102.p.ssafy.io:8080/mypage/tojalist`)
+    axios
+    .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=1`)
+    .then((res) => {
+      console.log("거래내역")
+      console.log(res.data.totalElements)
+      this.transnum = res.data.totalElements
+      if(this.transnum > 0) {
+        axios
+        .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=${this.transnum}`)
+        .then((res) => {
+          this.transactions = res.data.content
+          console.log(this.transactions)
+        })
+      }
+    })
 
+
+    // 생성 갯수 보여주기
     axios
       .get(`${SERVER_URL}/mypage/myproject?oauthId=${store.state.userInfo.id}`)
       .then((res) => {
@@ -381,36 +417,6 @@ export default {
         // this.shoppinginnum = res.data.partInSaleNum;
       });
   },
-  data() {
-    return {
-      pageuserid: "",
-      pageuserimg: "",
-      pageusername: "",
-      pageuseraccestoken: "",
-      pageuserbalance: "",
-
-      investcreatenum: 0,
-      investinnum: 0,
-      shoppingcreatenum: 0,
-      shoppinginnum: 0,
-      iswallet: true,
-      chatroom: false,
-      userimg: "",
-      username: "",
-      userbalance: "",
-      tab: null,
-      text: ["1", "2", "3"],
-      tabs: ["투자", "쇼핑"],
-      // 거래내역
-      accounts: [
-        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
-        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: false },
-        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
-        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
-      ],
-    };
-  },
-  computed: {},
 };
 </script>
 

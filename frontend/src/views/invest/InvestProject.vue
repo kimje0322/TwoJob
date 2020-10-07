@@ -106,7 +106,16 @@
                 <span>{{ item.pjtName }}</span></router-link
               >
               <div style="margin-left: auto">
-                <v-chip class="projectBadge">{{ item.lastday }}일 남음</v-chip>
+                <!-- 종료 -->
+                <v-chip
+                  v-if="item.isfinish"
+                  class="investPjtBadge"
+                  style="background-color: gray; color: white"
+                  >종료</v-chip
+                >
+                <v-chip v-else  class="projectBadge"
+                  >{{ item.lastday }}일 남음</v-chip
+                >
               </div>
             </v-card-title>
             <v-card-text style="height: 120px">
@@ -476,20 +485,20 @@ export default {
                       this.$set(investPjt, "rate", response.data);
                     });
                 });
-                $state.loaded();
-                console.log("after", this.investProjects, this.page);
-                if (this.page >= this.totalpage) {
-                  $state.complete();
+                $state.loaded()
+                if(this.page >= this.totalpage) {
+                  $state.complete()
                 }
-              } else {
+              }else{
                 this.ispjt = false;
-                $state.complete();
               }
-            }
-          }, 1000);
+            }else {
+                $state.complete()
+              }
+          }, 1000)
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     },
   },

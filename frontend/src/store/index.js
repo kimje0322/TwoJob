@@ -76,8 +76,6 @@ export default new Vuex.Store({
             state.user.walletAddress = null;
         },
         setUserInfo(state, userinfo) {
-            console.log(userinfo)
-                // state.userInfo.email = userinfo.email;
             state.userInfo.id = userinfo.id;
             state.userInfo.name = userinfo.name;
             state.userInfo.img = userinfo.img;

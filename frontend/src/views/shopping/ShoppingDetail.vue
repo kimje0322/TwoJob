@@ -159,8 +159,9 @@
             <img class="makerImg" :src="makerImg" alt />
           </div>
           <div style="float: left; margin: 3px 0 0 15px">
-            <p style="font-size: 1rem; margin-bottom: 5px">
+            <p v-if="items.compName" style="font-size: 1rem; margin-bottom: 5px">
               (주){{ items.compname }}
+            </p>
               <router-link style="color: black;"
               :to="{ name: 'Mypage', params: { userid: maker.oauthId } }"
               >
@@ -170,8 +171,8 @@
               <v-chip @click="visit(items.url)" label small class="visit px-1"
                 >사이트 방문</v-chip
               >
-            </p>
-            <p style="font-size: 1rem">{{ items.introduce }}</p>
+            
+            <p v-html="items.introduce" style="font-size: 1rem">{{ items.introduce }}</p>
           </div>
         </div>
         <hr style="margin-top: 100px; width: 95%" class="mx-auto" />
@@ -530,7 +531,6 @@ export default {
     },
     // 상품 구매
     onPerchase() {
-      console.log(this.numberCount)
       const fd = new FormData();
       fd.append("campaignId ", this.investaddress);
       fd.append("accessToken ", store.state.accessToken);
