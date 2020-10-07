@@ -15,6 +15,7 @@ import Mypage from "@/views/mypage/Mypage.vue";
 import WriteShopping from "@/views/shopping/WriteShopping.vue";
 import MyInvestCreate from "@/views/mypage/MyInvestCreate.vue";
 import MyShoppingCreate from "@/views/mypage/MyShoppingCreate.vue";
+import MyShoppingParticipate from "@/views/mypage/MyShoppingParticipate.vue";
 import LikeList from "@/views/mypage/LikeList.vue"
 import Messenger from "@/views/mypage/Messenger.vue"
 // import ChatRoom from "@/views/c"
@@ -100,6 +101,11 @@ const routes = [{
         path: "/myshoppingcreate/:userid?",
         name: "MyShoppingCreate",
         component: MyShoppingCreate,
+    },
+    {
+        path: "/myShoppingparticipate/:userid?",
+        name: "MyShoppingParticipate",
+        component: MyShoppingParticipate,
     },
     {
         path: "/likelist",

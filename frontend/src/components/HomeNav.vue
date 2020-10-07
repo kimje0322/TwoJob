@@ -74,7 +74,7 @@
                     <div style="position:relative">
                     <v-text-field
                       class="ml-50"
-                      style="width:50%; position:absolue; left: 35%"
+                      style="width:50%; position:absolue; left: 25%"
                       v-model="money"
                       hide-details
                       outlined=""
@@ -195,7 +195,7 @@ export default {
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.login = store.state.isSigned;
-      console.log(this.userInfo);
+      // console.log(this.userInfo);
     } else {
       this.login = false;
     }

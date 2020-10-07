@@ -25,10 +25,11 @@
         <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px rgb(22, 150, 245); background-color:  rgb(22, 150, 245)">
       </div>
     </div>
+  
     <!-- 투자 글쓰기 메뉴바 -->
-    <div style="padding-left:25px; padding-right: 15px;">
+    <div style=" padding-right: 15px;">
       <!-- 투자 글쓰기 메뉴 -->
-      <div class="writeMenuBar">
+      <div class="writeMenuBar mt-4 mb-5">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab
             v-for="(item, i) in tabs"
@@ -39,7 +40,7 @@
           >
           <!-- 투자오픈버튼 -->
           <div class="openbtnBox" @click="openInvestBtn">
-            <v-btn class="openBtn" color="#808080" style
+            <v-btn class="openBtn mr-5" color="#808080" style
               >투자 프로젝트 오픈</v-btn
             >
           </div>
@@ -246,6 +247,7 @@
                       <span style="color: red">*</span> 투자설명
                     </h5>
                     <v-btn
+                      class="saveBtn"
                       @click="onSave"
                       style="
                         float: right;
@@ -255,7 +257,26 @@
                       "
                       >저장하기</v-btn
                     >
-                  </div>
+                    <!-- 스낵바 -->
+                    <v-snackbar
+                      v-model="snackbar"
+                      :timeout="timeout"
+                      center
+                    >
+                      저장되었습니다.
+                      <template v-slot:action="{ attrs }">
+                        <v-btn
+                          color="blue"
+                          text
+                          v-bind="attrs"
+                          @click="snackbar = false"
+                        >
+                          x
+                        </v-btn>
+                      </template>
+                    </v-snackbar>
+
+                    </div>
                   <!-- <textarea name="introduce" id="introduce" cols="180" rows="20" placeholder="투자에 대한 설명을 입력해주세요(사진, 글 입력 가능)"></textarea> -->
                   <editor
                     ref="toastuiEditor"
@@ -270,7 +291,7 @@
           </v-tab-item>
         </v-tabs>
       </div>
-    </div>
+    </div>  
   </div>
 </template>
 
@@ -295,6 +316,9 @@ export default {
   },
   data() {
     return {
+      // 스낵바
+      snackbar: false,
+      timeout: 2000,
       // 개인정보
       userInfo: {},
       userid: store.state.userInfo.id,
@@ -528,6 +552,11 @@ export default {
     },
     onSave() {
       this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
+      if (this.editortext) {
+        $(".saveBtn").css("background-color", "rgb(22, 150, 245)");
+        this.snackbar = true;
+        $(".saveBtn").css("color", "white");
+      }
       // console.log(this.editortext);
     },
     colorBtn() {
@@ -766,5 +795,11 @@ input:hover {
 }
 .pageTab {
   margin-bottom: 0px !important;
+}
+.snackbar {
+  position: fixed;
+  bottom: 330px;
+  left: 20px;
+  width: 300px;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <div class="myinvestcreate">
     <!-- 상단 Navbar -->
-    <navbar style="" />
-    <div style="border-top: 1px solid lightgray; height: 100vh">
+    <HomeNav />
+    <div style="height: 100vh">
       <div style="padding: 3% 0 2% 10%">
         <h4 style="font-weight: 800">
           <span style="color: rgb(22, 150, 245)">{{ pageusername }}</span
@@ -270,7 +270,7 @@
 <script>
 import axios from "axios";
 import store from "../../store/index.js";
-import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 import "../../../public/css/MyInvestCreate.scss";
@@ -280,7 +280,7 @@ const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar,
+    HomeNav,
     InfiniteLoading,
   },
   data() {
@@ -481,7 +481,7 @@ export default {
   height: 50px;
   text-align: center;
   line-height: 50px;
-  border-bottom: 1px solid gray;
+  /* border-bottom: 1px solid gray; */
   margin-bottom: 15px;
 }
 .items div {
@@ -502,8 +502,8 @@ export default {
   margin-left: 3%;
   letter-spacing: unset !important;
   font-size: 1.25rem;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
+  /* border-top-right-radius: 10px;
+  border-top-left-radius: 10px; */
 }
 .writeMenu:hover {
   background-color: rgba(173, 220, 254, 0.4);
