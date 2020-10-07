@@ -2,6 +2,7 @@ package com.blocker.service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -386,12 +387,14 @@ public class FundingServiceImpl implements FundingService{
 		Web3j web3j = Web3j.build(new HttpService("http://j3b102.p.ssafy.io:8545"));
 		Credentials credentials = Credentials.create(property.getAdminPK());
 		CrowdFunding contract = CrowdFunding.load(property.getFundingAddr(), web3j, credentials, new DefaultGasProvider());
-		List<String> list = contract.getReceiptImg(campaignId).send();
-		for(int i=0; i<list.size(); i++) {
-			System.out.println(list.get(i));
+		BigInteger cnt = contract.getUsed(campaignId, "").send().component2();
+		List<String> list = new ArrayList<>();
+		for(int i=0; i<cnt.intValue(); i++) {
+			list.add(contract.getReceiptImg(campaignId,BigInteger.valueOf(i)).send());
 		}
 		return list;
 	}
+	
 	@Override
 	public String useFund(String accessToken, String campaignId,List<receipt> list) throws Exception {
 		Object result =  loginService.getUserInfo(accessToken);
