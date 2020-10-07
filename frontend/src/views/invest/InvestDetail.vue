@@ -110,43 +110,49 @@
             </div>
             <!-- 투자하기 버튼 -->
             <v-btn
-              :disabled="islogin == false || this.writer.oauthId == userid"
+              :disabled="islogin == false || this.writer.oauthId == userid || investPjt.lastday < 0"
               class="investBtn white--text"
               style="width: 100%; height: 42px"
               @click="oninvestbtn"
             >
               <v-icon size="25" class="mr-1">mdi-cash-usd</v-icon>투자 하기
             </v-btn>
-            <!-- 투자하기 모달 -->
-            <v-dialog
-              v-model="investbtn"
-              scrollable
-              max-width="40%"
-              style="height: 400px"
-            >
-              <v-card>
-                <v-card-title
-                  class="headline lighten-2"
-                  style="padding-bottom: 0 !important"
-                >
-                  <h4 style="margin-left: 30px">투자하기</h4>
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text style="padding: 50px 50px 30px 50px">
-                  <v-text-field
-                    class="moneyinput"
-                    v-model="investmoney"
-                    label="투자금액"
-                    required
-                  ></v-text-field>
+            <!-- 투자하기 new version -->
+            <v-dialog max-width="500" min-height="370" v-model="investbtn">
+              <v-card flat tile>
+                <v-card-text style="height:220px;" class="pa-1">
+                  <v-list>
+                    <v-toolbar dense elevation="1">
+                      <h5 class="mx-auto">투자하기</h5>
+                    </v-toolbar>
+                    <div style="text-align: center; margin-top: 30px;">
+                      <p style="font-size:18px" class="my-2">투자할 금액을 입력해주세요.</p>
+                      <span class="mb-3" style="font-size:13px; color: gray">투자완료까지 시간이 다소 걸릴 수 있습니다.</span>
+                    </div>
+                    <!-- 금액 -->
+                    <div>
+                      <div style="position:relative">
+                      <v-text-field
+                        class="ml-50"
+                        style="width:50%; position:absolue; left: 25%"
+                        v-model="investmoney"
+                        hide-details
+                        outlined=""
+                        type="number"
+                      />
+                      <div style="position:absolute; bottom: 29%; right: 33%">
+                        <span> 토큰</span>
+                      </div>
+                    </div>
+                    </div>
+                  </v-list>
                 </v-card-text>
-                <!-- <v-divider></v-divider> -->
-                <v-card-actions style="background-color: white">
-                  <v-spacer></v-spacer>
-                  <v-btn text @click="investbtn = false">닫기</v-btn>
-                  <v-btn text color="blue" @click="oninvest">투자하기</v-btn>
-                </v-card-actions>
               </v-card>
+              <v-card-actions style="background-color: white; padding: 3px 0 3px 0; justify-content:center"> 
+                <v-btn text @click="oninvest" color="white" style="background-color:rgb(22, 150, 245)">투자하기</v-btn>
+                <v-btn text @click="investbtn=false" style="background-color:#ECEFF1">취소</v-btn>
+              </v-card-actions>
+              <div style="background-color: white; color:white">　.</div>
             </v-dialog>
             <!-- 좋아요 문의하기 버튼 -->
             <div style="display: flex; margin-top: 15px">
@@ -796,7 +802,7 @@ export default {
       let timerInterval;
       Swal.fire({
         title: `${this.investPjt.pjtName}프로젝트에 투자하기`,
-        timer: 5000,
+        timer: 10000,
         timerProgressBar: true,
         onBeforeOpen: () => {
           Swal.showLoading();
@@ -812,8 +818,10 @@ export default {
         },
         onClose: () => {
           clearInterval(timerInterval);
+          window.location.reload();
         },
-      }).then((response) => {
+      })
+      .then((response) => {
         // console.log(response)
       });
     },

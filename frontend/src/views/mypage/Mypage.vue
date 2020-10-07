@@ -33,7 +33,7 @@
 
       <div
         style="
-          width: 100%;
+          width: 80%;
           background: rgba(22, 150, 245, 0.1);
           padding: 20px 5%;
           border-radius: 12px;
@@ -119,16 +119,6 @@
                     border-bottom: 1px solid #f2f4f6;
                   "
                 >
-                  <v-app class="vapp"></v-app>
-                  <div>
-                    <v-dialog
-                      max-width="800"
-                      min-height="500"
-                      v-model="chatroom"
-                    >
-                      <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
-                    </v-dialog>
-                  </div>
                   <span
                     style="
                       margin-right: 5px;
@@ -139,24 +129,6 @@
                   >
                     <i class="fas fa-comments"></i>
                   </span>
-
-                  <!-- 채팅목록 -->
-                  <!-- <span
-                    @click="onChat()"
-                    style="
-                      margin-right: 5px;
-                      color: rgb(22, 150, 245);
-                      font-size: 18px;
-                      cursor: pointer
-                    "
-                  >
-
-                  style="color: black; text-decoration: none"
-                    :to="{
-                      name: 'MyInvestCreate',
-                      params: { userid: pageuserid },
-                    <i class="fas fa-comments"></i>
-                  </span> -->
                    <router-link
                     style="color: black; text-decoration: none"
                     :to="{
@@ -259,7 +231,6 @@ import HomeNav from "../../components/HomeNav.vue";
 import "@/../public/css/Mypage.scss";
 import Web3 from "web3";
 import Swal from "sweetalert2";
-import ChatRoom from "@/views/mypage/ChatRoom.vue";
 import InfiniteLoading from "vue-infinite-loading";
 
 const SERVER_URL = "https://www.twojob.ga/api";
@@ -268,7 +239,6 @@ const SERVER_URL = "https://www.twojob.ga/api";
 export default {
   components: {
     HomeNav,
-    ChatRoom,
     InfiniteLoading,
   },
   data() {
@@ -297,6 +267,7 @@ export default {
       filtertransactions: [],
       page: 0,
       totalpage: 0,
+      totaltransaction: [],
     };
   },
   computed: {},
@@ -358,14 +329,14 @@ export default {
       .then((res) => {
         setTimeout(() => {
         const transaction = res.data.content
-        const filtertransaction = []
+        this.totaltransaction = []
         // CREATE, SALEOPEN 빼주기
         transaction.forEach(item=>{
           if(item.type != 'CREATE' && item.type != 'SALEOPEN'){
-            filtertransaction.push(item)
+            this.totaltransaction.push(item)
           }
         })
-        filtertransaction.forEach(item => {
+        this.totaltransaction.forEach(item => {
           // 제목
           if (item.pjtname.length > 10) {
             item.pjtname = item.pjtname.substring(0, 10) + "...";
@@ -397,8 +368,9 @@ export default {
             this.$set(item, "typename", "투자수익금")
           }
         })
-        this.filtertransactions = this.filtertransactions.concat(filtertransaction)
+        this.filtertransactions = this.filtertransactions.concat(this.totaltransaction)
         $state.loaded()
+        console.log(this.page + '데이터')
         if(this.page >= this.totalpage) {
           $state.complete()
         }
