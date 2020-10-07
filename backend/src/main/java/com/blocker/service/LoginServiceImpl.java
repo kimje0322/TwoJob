@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.blocker.dto.Member;
 import com.blocker.dto.Property;
 import com.blocker.repository.MemberRepository;
+import com.blocker.request.LoginResponse;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -29,7 +28,6 @@ public class LoginServiceImpl implements LoginService {
 
 	public Object getUserInfo(String accessToken) {
 		String reqURL = "https://kapi.kakao.com/v2/user/me";
-		Map<String, Object> map = new HashMap<>();
 
 		try {
 			URL url = new URL(reqURL);
@@ -63,6 +61,7 @@ public class LoginServiceImpl implements LoginService {
 						: nprofile_image.getAsString();
 				Optional<Member> m = memberRepository.findById(id);
 				Member m1 = null;
+				LoginResponse loginResponse;
 				if (m.isPresent()) {
 					m1 = m.get();
 					m1.setAccessToken(accessToken);
@@ -70,14 +69,15 @@ public class LoginServiceImpl implements LoginService {
 					m1.setEmail(email);
 					m1.setProfileImg(profile_image);
 					memberRepository.save(m1);
-					map.put("isfirsttime", false);
+					loginResponse = new LoginResponse(m1);
+					loginResponse.setIsfirsttime(false);
 				} else {// 최초로그인
 					m1 = new Member(id, nickname, profile_image, "KAKAO", email, accessToken);
 					memberRepository.save(m1);
-					map.put("isfirsttime", true);
+					loginResponse = new LoginResponse(m1);
+					loginResponse.setIsfirsttime(true);
 				}
-				map.put("memberinfo", m1);
-				return map;
+				return loginResponse;
 			} else {
 				return responseCode;
 			}
