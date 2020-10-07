@@ -1,24 +1,24 @@
 <template>
 <!-- 상단 -->
-  <div class="Navbar">
+  <div class="HomeNav">
     <v-app>
       <div >
         <div class="items">
           <div class="serviceName">
             <router-link to="/">
-              <h3>TwoJob</h3>
+              <h3 class="pt-2">TwoJob</h3>
             </router-link>
           </div><hr>
         </div>
       </div>
-      <!-- expand-on-hover  -->
+  <!-- expand-on-hover  -->
   <!-- drawer -->
   <v-card>
     <v-navigation-drawer
       v-model="drawer" app right
       :mini-variant.sync="mini"
       permanent
-     
+      expand-on-hover
     >
       <div v-if="!login">
         <v-list-item class="px-2">
@@ -48,7 +48,7 @@
             
             <!-- 지갑 없는 경우 -->
             <v-btn
-              v-if="!walletExist"
+              v-if="login && !walletExist"
               @click="onWallet"
               class="WalletBtn ma-2 px-1 py-1 mr-2 mt-2"
               outlined
@@ -74,14 +74,14 @@
                     <div style="position:relative">
                     <v-text-field
                       class="ml-50"
-                      style="width:50%; position:absolue; left: 25%"
+                      style="width:50%; position:absolue; left: 35%"
                       v-model="money"
                       hide-details
                       outlined=""
                       type="number"
                     />
                     <div style="position:absolute; bottom: 29%; right: 33%">
-                      <span>원</span>
+                      <span> 토큰</span>
                     </div>
                   </div>
                   </div>
@@ -106,7 +106,7 @@
           <v-icon>mdi-wallet-outline</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{asset}}원</v-list-item-title>
+          <v-list-item-title>{{asset}} 토큰</v-list-item-title>
         </v-list-item-content>
         <v-btn
           @click="chargeDialog = true"
@@ -279,7 +279,6 @@ export default {
       } else if (title == '쇼핑 프로젝트') {
         this.$router.push('/shoppinghome');
       } else if (title == '마이페이지') {
-        // this.$router.push('/mypage');
         this.$router.push({ name: 'Mypage', params: { userid: this.userInfo.id}})
       } else if (title == '로그아웃'){
         this.onLogout();
@@ -403,7 +402,8 @@ export default {
   /* background-color: rgba(123, 197, 254, 0.8) */
 }
 .chargeBtn:hover, .WalletBtn:hover {
-  background-color: rgba(123, 197, 254, 0.1) !important;
+  background-color: rgb(250, 247, 243) !important;
+   /* rgba(123, 197, 254, 0.1) !important; */
 }
 
 </style>
