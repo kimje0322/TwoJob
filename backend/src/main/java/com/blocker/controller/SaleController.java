@@ -156,6 +156,7 @@ public class SaleController {
 			map.put("object", resultDatalist);
 			map.put("onelineintros", oneLineIntroList);
 			map.put("likecount", likeCount);
+			map.put("totalpage", list.getTotalPages());
 			result.data = "success";
 			result.object = map;
 			result.status = true;
