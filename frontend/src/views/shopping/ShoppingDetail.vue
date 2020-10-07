@@ -533,7 +533,6 @@ export default {
         let timerInterval;
         Swal.fire({
           title: '구매완료까지',
-          html: "<b></b> milliseconds 기다려주세요.",
           timer: 5000,
           timerProgressBar: true,
           onBeforeOpen: () => {

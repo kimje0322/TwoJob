@@ -152,7 +152,7 @@
         <h4>투자 프로젝트 검색 결과가 없습니다.</h4>
       </div>
     </div>
-    <infinite-loading @infinite="infiniteHandler" spinner="waveDots" style="height: 300px">
+    <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
       <div slot="no-more" style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px;">목록의 끝입니다 :)</div>
     </infinite-loading>
   </div>
@@ -212,6 +212,7 @@ export default {
     // 카테고리
     $(".all").addClass("active");
     $(".allicon").addClass("activeIcon");
+    this.initAxios();
   },
   methods: {
     initAxios() {
@@ -414,7 +415,7 @@ export default {
     // }
     // 무한 스크롤
     infiniteHandler($state) {
-      
+      this.page += 1
       const fd = new FormData();
       // const data = this.nowfilter
       console.log("필터 axios");
@@ -474,7 +475,6 @@ export default {
                     });
                 });
                 $state.loaded()
-                this.page += 1
                 console.log("after", this.investProjects, this.page)
                 if(this.page >= this.totalpage) {
                   $state.complete()

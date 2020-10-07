@@ -32,6 +32,10 @@
           >
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
+          <!-- 처음 로그인하면 튜토리얼 보여주기 -->
+          <div v-if="isnew">
+            
+          </div>
         </v-list-item>
       </div>
       <div v-if="login">
@@ -84,7 +88,6 @@
                 </v-list>
               </v-card-text>
                 </v-card>
-                
                 <v-card-actions style="background-color: white; padding: 3px 0 3px 0; justify-content:center"> 
                   <v-btn text @click="onKakao" color="white" style="background-color:rgb(22, 150, 245)">충전</v-btn>
                   <v-btn text @click="chargeDialog=false" style="background-color:#ECEFF1">취소</v-btn>
@@ -177,6 +180,8 @@ export default {
       asset: "0",
       next: false,
       nexturl: "",
+      // 튜토리얼
+      isnew: false,
       // 충전모달
       chargeDialog: false,
     }
@@ -297,15 +302,15 @@ export default {
       axios.post(`${SERVER_URL}/login/kakaologin`, fd)
       .then((res) => {
         this.login = true;
+        this.isnew = res.data.member.isfirsttime
         // store.state.isSigned = true;
         this.userInfo.login = true;
-        this.userInfo.id = res.data.oauthId;
-        this.userInfo.name = res.data.name;
+        this.userInfo.id = res.data.member.oauthId;
+        this.userInfo.name = res.data.member.name;
         // 지갑 정보 조회
         axios.get(
         `${SERVER_URL}/wallet/toid?oauthid=${this.userInfo.id}`)
         .then((res) => {
-          console.log(res.data)
           if (res.data == "novalid") {
             store.commit("setWalletExist", false);
             this.walletExist = store.state.userInfo.walletExist;
@@ -317,11 +322,11 @@ export default {
         .catch((err) => {
           console.log(err);
         })
-        if (res.data.profileImg == null) {
+        if (res.data.member.profileImg == null) {
           this.userInfo.img =
             "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
         } else {
-          this.userInfo.img = res.data.profileImg;
+          this.userInfo.img = res.data.member.profileImg;
         }
         store.commit("setUserInfo", this.userInfo);
      });
