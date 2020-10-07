@@ -29,7 +29,7 @@ public class LoginContoroller {
 	@ApiOperation(value = "[카카오 로그인] accessToken을 전달해 로그인한다, 만약 사용자 정보가 제대로 넘어오면, Member Dto, 잘못된 access면 responseCode return, 실패하면 fail을 return")
 	public ResponseEntity<?> login(@RequestParam("accessToken") String accessToken) {
 		Object result = loginService.getUserInfo(accessToken);
-		if (result.getClass() == Member.class) {
+		if (result.getClass() == LoginResponse.class) {
 
 			return new ResponseEntity<LoginResponse>((LoginResponse) result, HttpStatus.OK);
 		} else if (result.getClass() == String.class) {
