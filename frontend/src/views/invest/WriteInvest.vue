@@ -263,17 +263,19 @@
                       :timeout="timeout"
                       center
                     >
-                      저장되었습니다.
-                      <template v-slot:action="{ attrs }">
+                      투자 설명서가 저장되었습니다.
+                      <!-- 스낵바 닫기 -->
+                      <!-- <template v-slot:action="{ attrs }">
                         <v-btn
                           color="blue"
                           text
+                          
                           v-bind="attrs"
                           @click="snackbar = false"
                         >
                           x
                         </v-btn>
-                      </template>
+                      </template> -->
                     </v-snackbar>
 
                     </div>
@@ -796,10 +798,11 @@ input:hover {
 .pageTab {
   margin-bottom: 0px !important;
 }
-.snackbar {
+/* .snackbar {
   position: fixed;
   bottom: 330px;
   left: 20px;
   width: 300px;
-}
+  color: rgb(22, 150, 245);
+} */
 </style>

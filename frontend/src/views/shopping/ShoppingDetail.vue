@@ -166,6 +166,7 @@
               >
               <strong class="mr-2">{{ makerName }}</strong>
               </router-link>
+              <div v-if="items.url.length"></div>
               <v-chip @click="visit(items.url)" label small class="visit px-1"
                 >사이트 방문</v-chip
               >
@@ -428,6 +429,8 @@ export default {
       .get(`${SERVER_URL}/funding/gettotalsell?campaignId=${this.investaddress}`)
       .then((res) => {
         this.perchased = res.data
+        console.log('판매개수')
+        console.log(this.perchased)
       })
     // 디테일 정보
     this.shoppingAddress = this.$route.params.address
@@ -465,7 +468,9 @@ export default {
             }  
           });
         // 글쓴이 소개글 엔터 변환
-        this.items.introduce = this.items.introduce.split("\n").join("<br />");
+        this.items.introduce = this.items.introduce
+          .split("\n")
+          .join("<br />");
         // 투자 설명서 엔터 변환
         this.items.editorhtml = this.items.editorhtml
           .split("\n")
@@ -532,7 +537,11 @@ export default {
       fd.append("count", this.numberCount);
       fd.append("money", this.dto.saleprice);
       axios
-        .post(`${SERVER_URL}/funding/sellitem`, fd);
+        .post(`${SERVER_URL}/funding/sellitem`, fd)
+        .then((res) => {
+          console.log('구매 된겁니까??')
+          console.log(res)
+        })
         let timerInterval;
         Swal.fire({
           title: '구매완료까지',

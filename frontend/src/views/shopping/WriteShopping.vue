@@ -9,7 +9,7 @@
     </div>
     <div>
       <!-- 쇼핑 글쓰기 메뉴 -->
-      <div class="writeMenuBar mt-3 mb-5">
+      <div class="writeMenuBar mt- mb-5">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab v-for="(item, i) in tabs" :key="i" :href="`#tab-${i}`" class="writeMenu">{{ item }}</v-tab>
           <!-- 쇼핑 오픈버튼 -->
@@ -183,10 +183,11 @@
                     <v-snackbar
                       v-model="snackbar"
                       :timeout="timeout"
-                      center
+                      top
                     >
-                      저장되었습니다.
-                      <template v-slot:action="{ attrs }">
+                      설명서가 저장되었습니다.
+                      <!-- 스낵바 닫기 버튼 -->
+                      <!-- <template v-slot:action="{ attrs }">
                         <v-btn
                           color="blue"
                           text
@@ -195,10 +196,8 @@
                         >
                           x
                         </v-btn>
-                      </template>
+                      </template> -->
                     </v-snackbar>
-
-
                   <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />
                 </div>
               </v-card-text>
@@ -463,6 +462,11 @@ export default {
                   fd.append("campaignId", response.data.data);
                   axios
                     .post(`${SERVER_URL}/funding/sellopen`, fd)
+                    .then((res) => {
+                      console.log(res);
+                    }).catch((err) => {
+                      console.log(err)
+                    })
                     let timerInterval;
                     Swal.fire({
                       title: "쇼핑 프로젝트 오픈중",
