@@ -34,7 +34,7 @@ public class Member {
     
     @Column
     private String accessToken;
-
+    
 	public Member(String oauthId, String name, String profileImg, String providerName, String email,
 			String accessToken) {
 		super();
