@@ -460,8 +460,5 @@ a {
 .v-card--link:before{
   background: none;
 }
-.heartChip:hover {
-  display: none !important;
-}
 
 </style>

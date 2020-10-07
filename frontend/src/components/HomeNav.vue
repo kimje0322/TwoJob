@@ -74,7 +74,7 @@
                     <div style="position:relative">
                     <v-text-field
                       class="ml-50"
-                      style="width:50%; position:absolue; left: 35%"
+                      style="width:50%; position:absolue; left: 25%"
                       v-model="money"
                       hide-details
                       outlined=""

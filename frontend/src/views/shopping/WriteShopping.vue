@@ -4,12 +4,16 @@
     <!-- <h4>마이페이지</h4> -->
     <!-- 쇼핑 글쓰기 메뉴바 -->
     <div>
+      <h5 class="pageTab mb-0 mx-auto" style="text-align:center; color: rgb(22, 150, 245);font-size:1.25rem !important">쇼핑 프로젝트 오픈</h5><br>
+    <hr class="divider mx-auto mt-2" style="text-align:center; width: 16%; border: solid 2px lightgrey; background-color: lightgrey">
+    </div>
+    <div>
       <!-- 쇼핑 글쓰기 메뉴 -->
       <div class="writeMenuBar mt-5">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab v-for="(item, i) in tabs" :key="i" :href="`#tab-${i}`" class="writeMenu">{{ item }}</v-tab>
           <!-- 쇼핑 오픈버튼 -->
-          <div class="openbtn" @click="checkForm">
+          <div class="openbtn mr-5" @click="checkForm">
             <!-- v-bind:disabled="addedItems.length < 1" -->
             <v-btn class="openbtn" color="#808080">쇼핑 프로젝트 오픈</v-btn>
           </div>
@@ -505,10 +509,10 @@ export default {
 
 <style scoped>
 .investNav {
-  height: 50px;
+  /* height: 50px; */
   text-align: center;
-  line-height: 50px;
-  border-bottom: 1px solid gray;
+  /* line-height: 50px; */
+  /* border-bottom: 1px solid gray; */
   margin-bottom: 15px;
 }
 .items div {
@@ -624,5 +628,7 @@ input:hover {
  .v-list-item theme--light {
    padding: 0px !important;
  }
-
+.data-v-27a4f07a{
+  height: 30px;
+}
 </style>

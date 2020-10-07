@@ -25,8 +25,9 @@
         <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px rgb(22, 150, 245); background-color:  rgb(22, 150, 245)">
       </div>
     </div>
+  
     <!-- 투자 글쓰기 메뉴바 -->
-    <div style="padding-left:25px; padding-right: 15px;">
+    <div style=" padding-right: 15px;">
       <!-- 투자 글쓰기 메뉴 -->
       <div class="writeMenuBar">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
@@ -39,7 +40,7 @@
           >
           <!-- 투자오픈버튼 -->
           <div class="openbtnBox" @click="openInvestBtn">
-            <v-btn class="openBtn" color="#808080" style
+            <v-btn class="openBtn mr-5" color="#808080" style
               >투자 프로젝트 오픈</v-btn
             >
           </div>
@@ -270,7 +271,7 @@
           </v-tab-item>
         </v-tabs>
       </div>
-    </div>
+    </div>  
   </div>
 </template>
 
