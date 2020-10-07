@@ -1,12 +1,18 @@
 package com.blocker.controller;
 
-
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,15 +21,20 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.blocker.dto.Chatroom;
 import com.blocker.dto.TransactType;
+import com.blocker.dto.receipt;
+import com.blocker.dto.useFundDTO;
 import com.blocker.repository.BlockTransactionRepository;
 import com.blocker.service.FundingService;
 import com.blocker.service.ScheduleTask;
+import com.blocker.util.BasicResponse;
 import com.blocker.util.webhook;
 
 import io.swagger.annotations.ApiOperation;
@@ -51,7 +62,7 @@ public class FundingController {
 	public ResponseEntity<String> toFunding(@RequestParam("accessToken") String accessToken, @RequestParam("campaignId") String campaignId, @RequestParam("Value") String value) throws Exception {
 		return new ResponseEntity<String>(fundingService.fundingCampaign(accessToken, campaignId, value),HttpStatus.OK);
 	}
-	
+
 	@ApiOperation(value = "[BC][펀딩 금액 받기] 펀딩이 목표에 도달 했을 경우, 펀딩된 금액을 받습니다. param : [campaignId], return : 성공시 success, 캠페인이 없을 경우 noInvest")
 	@PostMapping(value = "/receivefund")
 	public ResponseEntity<String> receiveFund(@RequestParam("campaignId") String campaignId) throws Exception {
@@ -74,7 +85,17 @@ public class FundingController {
 	public ResponseEntity<String> FunderNum(String campaignId) throws Exception {
 		return new ResponseEntity<String>(fundingService.getPepleNum(campaignId),HttpStatus.OK);
 	}
-	@ApiOperation(value = "[BC][해당 투자에 펀딩한 사람의 수] 투자 아이디를 주면, 현재 해당 투자에 펀딩한 사람의 수를 return해줍니다. param : [campaignId], return : 펀딩한 사람의 수 ")
+	@ApiOperation(value = "[BC][해당 투자에 모인 금액확인] 투자 아이디를 주면, 현재 해당 투자에 모인 금액을 리턴합니다.. param : [campaignId], return : 해당 투자 모금 금액 ")
+	@GetMapping(value = "/nowfund")
+	public ResponseEntity<String> nowRaised(String campaignId) throws Exception {
+		return new ResponseEntity<String>(fundingService.getNowRaised(campaignId),HttpStatus.OK);
+	}
+	@ApiOperation(value = "[BC][판매 프로젝트 오픈] ")
+	@PostMapping(value = "/sellopen")
+	public ResponseEntity<String> SellOpen(@RequestParam("accessToken") String accessToken, @RequestParam("campaignId") String campaignId) throws Exception {
+		return new ResponseEntity<String>(fundingService.createSale(accessToken, campaignId),HttpStatus.OK);
+	}
+	@ApiOperation(value = "[BC][판매용] ")
 	@PostMapping(value = "/sellitem")
 	public ResponseEntity<String> SellItems(@RequestParam("accessToken") String accessToken, @RequestParam("campaignId") String campaignId, @RequestParam("count") Integer cnt, @RequestParam("money") Integer money) throws Exception {
 		return new ResponseEntity<String>(fundingService.sellItem(accessToken, campaignId, cnt, money),HttpStatus.OK);
@@ -84,8 +105,31 @@ public class FundingController {
 	public ResponseEntity<BigDecimal> fundingrate( @RequestParam("campaignId") String campaignId) throws Exception {
 		return new ResponseEntity<BigDecimal>(fundingService.getfundingrate(campaignId),HttpStatus.OK);
 	}
-	
+	@ApiOperation(value = "[BC][해당 투자 진행 상태] 투자 아이디를 주면, 현재 해당 투자 진행 상태를 리턴합니다. param : [campaignId], return : 해당 투자 진행 상태 ")
+	@GetMapping(value = "/status")
+	public ResponseEntity<String> projectStatus(String campaignId) throws Exception {
+		return new ResponseEntity<String>(fundingService.getProjectState(campaignId),HttpStatus.OK);
+	}
+	@ApiOperation(value = "[BC][투자 금액 사용 내역] 투자 금액 사용 내역을 블록에 기록합니다. param : [accessToken, campaignId, imgname, value], return : 성공 시 success ")
+	@PostMapping(value = "/usefund")
+	public ResponseEntity<String> usefund(@RequestBody useFundDTO useFund) throws Exception {
+		String accessToken = useFund.getAcceesToken();
+		String campaignId = useFund.getCampaignId();
+		List<receipt> list = useFund.getList();
+		return new ResponseEntity<String>(fundingService.useFund(accessToken, campaignId, list),HttpStatus.OK);
+	}
+	@ApiOperation(value = "[BC][해당 투자 총 판매 개수] 투자 아이디를 주면, 현재 해당 투자의 총 판매 개수를 가져옴 param : [campaignId], return : 해당 투자 총 판매 개수 ")
+	@GetMapping(value = "/gettotalsell")
+	public ResponseEntity<String> getTotalSell(String campaignId) throws Exception {
+		return new ResponseEntity<String>(fundingService.getTotalSell(campaignId),HttpStatus.OK);
+	}
+	@ApiOperation(value = "[BC][해당 투자 영수증 얻긴] 투자 아이디를 주면, 현재 해당 투자 영수증을 가져옴 param : [campaignId], return : 해당 투자 영수증 img 이름 들 ")
+	@GetMapping(value = "/getreceipt")
+	public ResponseEntity<List<String>> getReceipt(String campaignId) throws Exception {
+		return new ResponseEntity<List<String>>(fundingService.getReceipt(campaignId),HttpStatus.OK);
+	}
 	@ApiOperation(value = "testg ")
+<<<<<<< HEAD
 	@GetMapping(value = "/testd")
 	public void test() throws Exception {
 		//fundingService.makeAllTask();
@@ -114,4 +158,22 @@ public class FundingController {
 //		w.send("Funding 부분에서 " + e.getClass());
 //		//w.postHttpsRequest(result, e.getClass().toString());
 //	}
+=======
+	@PostMapping(value = "/testd")
+	public void test() {
+		
+	}
+
+	//	@ExceptionHandler(Exception.class)
+	//	public void nullex(Exception e) {
+	//		StringWriter errors = new StringWriter();
+	//        e.printStackTrace(new PrintWriter(errors));
+	//        String result = errors.toString();
+	//		System.err.println("Funding 부분에서 " + e.getClass());
+	//		System.out.println(result);
+	//		webhook w = new webhook();
+	//		w.send("Funding 부분에서 " + e.getClass());
+	//		//w.postHttpsRequest(result, e.getClass().toString());
+	//	}
+>>>>>>> 734eb3d19b983f88940c84e3a495533154adc6d3
 }

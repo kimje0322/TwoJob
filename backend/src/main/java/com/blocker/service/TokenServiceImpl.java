@@ -2,6 +2,7 @@ package com.blocker.service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,7 @@ public class TokenServiceImpl implements TokenService{
 				BigInteger balance = new BigInteger("0"); 
 				balance = contract.balanceOf(mywallet.getAddress()).send();
 				BigDecimal balance2 = Convert.fromWei(balance.toString(), Unit.ETHER);
+				balance2 = balance2.setScale(2, RoundingMode.HALF_EVEN);
 				return balance2.toString();
 			}
 			return "fail";

@@ -45,20 +45,20 @@
               <v-card-text>
                 <div class="pjtinfo">
                   <p>프로젝트에대한 정보를 정확하게 입력해주세요.</p>
-                  <h5>프로젝트명</h5>
+                  <h5><span style="color: red">*</span> 프로젝트명</h5>
                   <input
                     v-model="title"
                     type="text"
                     placeholder="프로젝트명을 입력해주세요."
                   />
-                  <h5>프로젝트 한줄 소개</h5>
+                  <h5><span style="color: red">*</span> 프로젝트 한줄 소개</h5>
                   <input
                     v-model="content"
                     type="text"
                     maxlength="50"
                     placeholder="프로젝트에대해 50자이내로 설명해주세요."
                   />
-                  <h5>프로젝트 마감 날짜</h5>
+                  <h5><span style="color: red">*</span> 프로젝트 마감 날짜</h5>
                   <div>
                     <!-- 마감날짜 -->
                     <div class="startDayBox">
@@ -95,7 +95,7 @@
                       </div>
                     </div>
                   </div>
-                  <h5>달성 목표 금액</h5>
+                  <h5><span style="color: red">*</span> 달성 목표 금액</h5>
                   <p style="margin: 0 0 5px 10px">
                     마감일 자정까지 목표 금액을 100%달성하셔야만 물품을 판매하실
                     수 있습니다.
@@ -107,7 +107,7 @@
                     style="width: 35%; text-align: right; font-size: 18px"
                   />
                   <h5 style="display: inline-block; margin-left: 5px">원</h5>
-                  <h5>상품 판매 예정 금액</h5>
+                  <h5><span style="color: red">*</span> 상품 판매 예정 금액</h5>
                   <p style="margin: 0 0 5px 10px">
                     상품 판매할 예정 금액을 입력해주세요(상품이 여러개이면
                     대표상품으로 입력해주세요).
@@ -119,7 +119,7 @@
                     style="width: 35%; text-align: right; font-size: 18px"
                   />
                   <h5 style="display: inline-block; margin-left: 5px">원</h5>
-                  <h5>대표 사진</h5>
+                  <h5><span style="color: red">*</span> 대표 사진</h5>
                   <!-- v-model="thumbnail" -->
                   <v-file-input
                     :value="this.thumbnail"
@@ -131,7 +131,7 @@
                     hide-details
                     @change="onthumbnail"
                   ></v-file-input>
-                  <h5>카테고리</h5>
+                  <h5><span style="color: red">*</span> 카테고리</h5>
                   <div class="categoryDiv" style>
                     <v-btn
                       class="categorybtn"
@@ -142,7 +142,7 @@
                       >{{ value }}</v-btn
                     >
                   </div>
-                  <h5>검색용 태그</h5>
+                  <h5><span style="color: red">*</span> 검색용 태그</h5>
                   <div>
                     <v-combobox
                       v-model="model"
@@ -169,7 +169,7 @@
               <v-card-text>
                 <div class="writerinfo">
                   <p>금손님에대한 정보를 입력해주세요.</p>
-                  <h5>개인 / 사업자 구분</h5>
+                  <h5><span style="color: red">*</span> 개인 / 사업자 구분</h5>
                   <v-select
                     v-model="select"
                     :items="items"
@@ -180,7 +180,7 @@
                   ></v-select>
                   <!-- 개인 -->
                   <div v-if="individual">
-                    <h5>금손님 소개</h5>
+                    <h5><span style="color: red">*</span> 금손님 소개</h5>
                     <textarea
                       v-model="introduce"
                       name="introduce"
@@ -198,13 +198,13 @@
                   </div>
                   <!-- 개인사업자/기업 -->
                   <div v-if="business">
-                    <h5>회사명</h5>
+                    <h5><span style="color: red">*</span> 회사명</h5>
                     <input
                       v-model="companyName"
                       type="text"
                       placeholder="회사명을 입력해주세요."
                     />
-                    <h5>금손님 소개</h5>
+                    <h5><span style="color: red">*</span> 금손님 소개</h5>
                     <textarea
                       v-model="introduce"
                       name="introduce"
@@ -239,7 +239,7 @@
                         smargin: 0;
                       "
                     >
-                      투자설명
+                      <span style="color: red">*</span> 투자설명
                     </h5>
                     <v-btn
                       @click="onSave"
@@ -316,8 +316,8 @@ export default {
       ],
       // 카테고리
       categoryList: {
-        tech: "테크, 가전",
-        fashion: "패션, 잡화",
+        tech: "테크",
+        fashion: "패션",
         beauty: "뷰티",
         food: "푸드",
         home: "홈리빙",
@@ -360,7 +360,7 @@ export default {
                   18,
                   response.data.length - 17
                 );
-                const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+                const imgUrl = "https://twojob.ga/" + cutUrl;
                 callback(imgUrl);
               })
               .catch((error) => {
@@ -479,7 +479,7 @@ export default {
         })
         .then((response) => {
           const cutUrl = response.data.substr(18, response.data.length - 17);
-          const imgUrl = "http://j3b102.p.ssafy.io/" + cutUrl;
+          const imgUrl = "https://twojob.ga/" + cutUrl;
           this.picture = imgUrl;
           $(".v-file-input__text").text(event.name);
         })
@@ -604,7 +604,6 @@ export default {
                     let timerInterval;
                     Swal.fire({
                       title: "투자 프로젝트 오픈중",
-                      html: "<b></b> milliseconds 기다려주세요.",
                       timer: 10000,
                       timerProgressBar: true,
                       onBeforeOpen: () => {
@@ -625,13 +624,18 @@ export default {
                     })
                     .then((response) => {
                       console.log(response);
-                      this.$router.push("/investhome");
-                      Swal.fire({
-                        icon: "success",
-                        title: "",
-                        text: "프로젝트가 성공적으로 오픈되었습니다.",
-                        showConfirmButton: false,
-                      })
+                      if(response.data == 'success'){
+                        this.$router.push("/investhome");
+                        Swal.fire({
+                          icon: "success",
+                          title: "",
+                          text: "프로젝트가 성공적으로 오픈되었습니다.",
+                          showConfirmButton: false,
+                        })
+                      }else{
+                        alert("블록체인 프로젝트 오픈에 실패했습니다.");
+                      }
+                      
                     });
                 } else {
                   alert("프로젝트 오픈에 실패했습니다.");

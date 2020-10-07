@@ -20,11 +20,11 @@
               <v-card-text>
                 <div class="pjtinfo">
                   <p>상품에 대한 정보를 정확하게 입력해주세요.</p>
-                  <h5>상품명</h5>
+                  <h5><span style="color: red">*</span>상품명</h5>
                   <input v-model="title" 
                   type="text" placeholder="상품명을 입력해주세요." />
                   <h5 style="display: inline-block; margin-left: 5px;"></h5>
-                  <h5>대표 사진</h5>
+                  <h5><span style="color: red">*</span>대표 사진</h5>
                   <v-file-input
                     v-model="thumbnail"
                     @change="onThumbnail"
@@ -36,7 +36,7 @@
                     hide-details
                   ></v-file-input>
                   <!-- 판매 오픈 날짜 -->
-                  <h5>판매 오픈 날짜</h5>
+                  <h5><span style="color: red">*</span>판매 오픈 날짜</h5>
                     <div class="startDayBox">
                       <div>
                         <v-menu
@@ -71,7 +71,7 @@
                       </div>
                     </div>
                   <!-- 판매 금액 -->
-                  <h5>판매 금액</h5>
+                  <h5><span style="color: red">*</span>판매 금액</h5>
                   <input
                     v-model="price"
                     @click="removeTargetPrice"
@@ -172,7 +172,7 @@
                   <div style="margin-bottom: 1rem">
                     <h5
                       style="display: inline-block; height: 36px; line-height: 36px; Smargin: 0;"
-                    >쇼핑설명</h5>
+                    ><span style="color: red">*</span>쇼핑설명</h5>
                     <v-btn @click="onSave" style="float: right; background-color: white; color: rgb(22, 150,245); font-weight: 600">저장하기</v-btn>
                   </div>
                   <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />
@@ -208,6 +208,8 @@ export default {
   },
   data() {
     return {
+      investAddress: '',
+      campaignId: '',
       userid: '',
       // 추가된 상품
       showCategory: [],
@@ -236,8 +238,8 @@ export default {
       ],
       // 카테고리
        categoryList: {
-        tech: "테크, 가전",
-        fashion: "패션, 잡화",
+        tech: "테크",
+        fashion: "패션",
         beauty: "뷰티",
         food: "푸드",
         home: "홈리빙",
@@ -266,7 +268,7 @@ export default {
                 headers: { 'Content-Type': 'multipart/form-data' } 
             }).then(response => {
                 const cutUrl = response.data.substr(18, response.data.length-17)
-                const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+                const imgUrl = 'https://twojob.ga/' + cutUrl
                 console.log(response.data);
               callback(imgUrl)
             });
@@ -292,7 +294,7 @@ export default {
       });
     },
     addedItems(val) {
-      console.log('넣음')
+      // console.log('넣음')
       if(this.completed = true) {
         this.isActive = true
       }
@@ -302,6 +304,7 @@ export default {
     }
   },
   mounted() {
+    this.investAddress = this.$route.params.address
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.userid = store.state.userInfo.id;
@@ -328,7 +331,7 @@ export default {
             headers: { 'Content-Type': 'multipart/form-data' } 
         }).then(response => {
             const cutUrl = response.data.substr(18, response.data.length-17)
-            const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
+            const imgUrl = 'https://twojob.ga/' + cutUrl
             console.log(response.data);
             this.picture = imgUrl;
 
@@ -412,7 +415,7 @@ export default {
         if (result.value) {
           axios.post(`${SERVER_URL}/sale/create`, {
             userid: this.userid,
-            investaddress: "28d999c6-7a39-4dae-a651-bb46512b549c",
+            investaddress: this.investAddress,
             pjtname: this.title,
             picture: this.picture,
             startdate: this.dateFormatted1,
@@ -423,19 +426,47 @@ export default {
             editorhtml: this.editortext,
           })
             .then(response => {
-              if(response.data.data == 'success'){
-                  Swal.fire({
-                  // position: 'top-end',
-                  icon: 'success',
-                  title: '',
-                  text: '프로젝트가 성공적으로 오픈되었습니다.',
-                  showConfirmButton: false,
-                  // timer: 1500
-              })
-              }else{
-                alert(실패)
-              }
-
+              if(response.data.status == true){
+                  // 블록체인
+                  const fd = new FormData();
+                  fd.append("accessToken", store.state.accessToken);
+                  fd.append("campaignId", response.data.data);
+                  axios
+                    .post(`${SERVER_URL}/funding/sellopen`, fd)
+                    let timerInterval;
+                    Swal.fire({
+                      title: "쇼핑 프로젝트 오픈중",
+                      timer: 10000,
+                      timerProgressBar: true,
+                      onBeforeOpen: () => {
+                        Swal.showLoading();
+                        timerInterval = setInterval(() => {
+                          const content = Swal.getContent();
+                          if (content) {
+                            const b = content.querySelector("b");
+                            if (b) {
+                              b.textContent = Swal.getTimerLeft();
+                            }
+                          }
+                        }, 100);
+                      },
+                      onClose: () => {
+                        clearInterval(timerInterval);
+                      },
+                    })
+                    .then((response) => {
+                      console.log(response);
+                      this.$router.push("/shoppinghome");
+                      Swal.fire({
+                        icon: "success",
+                        title: "",
+                        text: "프로젝트가 성공적으로 오픈되었습니다.",
+                        showConfirmButton: false,
+                      })
+                    });
+                   } else {
+                  alert("프로젝트 오픈에 실패했습니다.");             
+                  }
             })
             .catch(error => {
               console.log(error)

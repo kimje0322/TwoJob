@@ -1,25 +1,47 @@
-.shoppingHome {
-    .v-input__slot {
-        min-height: 150px !important;
+    .shoppingHome {
+        background-color: white!important;
+        .v-input__slot {
+            min-height: 150px !important;
+        }
+        .v-window__prev {
+            background: unset !important;
+            margin-left: 5%
+        }
+        .v-window__next {
+            right: 5px !important;
+            background: unset !important;
+            margin-right: 5%
+        }
+        .v-carousel__controls {
+            background: unset !important;
+        }
+        .v-window__prev .mdi-chevron-left {
+            font-size: 60px !important;
+        }
+        .v-window__next .mdi-chevron-right {
+            font-size: 60px !important;
+        }
+        .mdi-chevron-left::before {
+            background: lightgray;
+            border-radius: 100px;
+        }
+        .mdi-chevron-right::before {
+            background: lightgray;
+            border-radius: 100px;
+        }
+        .v-application--wrap {
+            min-height: 0 !important;
+            // background-color: #f8f9fa;
+        }
+        .homeImg>.v-item-group {
+            height: 400px !important;
+            .v-carousel__item {
+                height: 400px !important;
+                width: 75%;
+                margin: auto;
+            }
+        }
+        .v-carousel__controls {
+            background: unset !important;
+        }
     }
-    .v-window__prev {
-        background: unset !important;
-    }
-    .v-window__next {
-        right: 5px !important;
-        background: unset !important;
-    }
-    .v-carousel__controls {
-        background: unset !important;
-    }
-    .v-window__prev .mdi-chevron-left {
-        font-size: 100px !important;
-    }
-    .v-window__next .mdi-chevron-right {
-        font-size: 100px !important;
-    }
-    .v-application--wrap {
-        min-height: 0 !important;
-        background-color: #f8f9fa;
-    }
-}

@@ -104,7 +104,8 @@ public class SaleController {
 			editorSaleDto.setEditorhtml(saleBoardRequest.getEditorhtml());
 			editorSaleDto.setAddress(saleBoardDto.getAddress());
 			editorSaleRepository.save(editorSaleDto);
-			result.data = "success";
+			result.data = saleBoardDto.getAddress();
+			
 			result.status = true;
 		} catch (Exception e) {
 			result.data = "fail";

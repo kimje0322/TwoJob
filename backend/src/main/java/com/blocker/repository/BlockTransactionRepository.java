@@ -11,9 +11,11 @@ import com.blocker.dto.BlockTransaction;
 import com.blocker.dto.TransactType;
 
 public interface BlockTransactionRepository extends JpaRepository<BlockTransaction, Long>{
+	List<BlockTransaction> findByFromaddressAndType(String address,TransactType type);
 	List<BlockTransaction> findByToaddressAndType(String address,TransactType type);
-	Page<BlockTransaction> findByToaddressAndTypeflag(String address, int typeflag,Pageable pageable);
+	Page<BlockTransaction> findByFromaddressAndTypeflag(String address, int typeflag,Pageable pageable);
+	List<BlockTransaction> findByFromaddressAndType(String address,TransactType type,Pageable pageable);
 	
-//	@Query(value = "select fromaddress from blocktransact where toaddress = :address and type = :type Group By fromaddress")
-//	List<BlockTransaction> findAddress(String address, TransactType type);
+	@Query(value = "SELECT DISTINCT(p.fromaddress) FROM blocktransact p WHERE p.toaddress = ?1 and p.type = ?2", nativeQuery = true)
+	List<String> findthis(String address, String type);
 }
