@@ -200,7 +200,7 @@ export default {
        console.log(store.state.accessToken)
        console.log("총 잔액보여줘제발")
        console.log(res)
-       this.asset = res.data
+      //  this.asset = res.data
      })
 
     axios
