@@ -1,11 +1,11 @@
 <template>
   <div class="mypage">
     <!-- 상단 Navbar -->
-    <navbar />
+    <HomeNav />
     <!-- 투자 글쓰기 메뉴바 -->
     <div
       class="mypagebox"
-      style="background-color: white; border-top: 1px solid lightgray"
+      style="background-color: white;"
     >
       <!-- user 정보 -->
       <div style="margin-top: 48px; margin-right: 5%">
@@ -223,7 +223,7 @@
 import axios from "axios";
 
 import store from "../../store/index.js";
-import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import "@/../public/css/Mypage.scss";
 import Web3 from "web3";
 import Swal from "sweetalert2";
@@ -239,14 +239,14 @@ export default {
     },
     onChat() {
       this.chatroom = true;
-      console.log("모달 열어보자" + this.chatroom);
+      // console.log("모달 열어보자" + this.chatroom);
       // this.$router.push("/chat")
     },
     onLogout() {
       // this.$store.reset()
       store.state.isSigned = false;
-      console.log("로그아웃됨");
-      console.log("store.state.isSigned " + store.state.isSigned);
+      // console.log("로그아웃됨");
+      // console.log("store.state.isSigned " + store.state.isSigned);
       // this.$router.push("/");
     },
     onWallet() {
@@ -256,8 +256,8 @@ export default {
       var Accounts = require("web3-eth-accounts");
       var accounts = new Accounts("https://twojob.ga/eth/");
       var result = web3.eth.accounts.create();
-      console.log(accounts);
-      console.log(result);
+      // console.log(accounts);
+      // console.log(result);
 
       store.commit("setAddress", result.address);
 
@@ -266,9 +266,9 @@ export default {
       fd.append("address", store.state.address);
       fd.append("privatekey", result.privateKey);
       axios.post(`${SERVER_URL}/wallet/regist`, fd).then((res) => {
-        console.log("wow!!success!!");
-        console.log(res);
-        console.log(fd);
+        // console.log("wow!!success!!");
+        // console.log(res);
+        // console.log(fd);
         if (res.data == 401) {
           store.state.isSigned = false;
         } else if (res.data == "success") {
@@ -289,27 +289,27 @@ export default {
     },
   },
   components: {
-    Navbar,
+    HomeNav,
     ChatRoom,
   },
   mounted() {
     var idx = window.location.href.indexOf("mypage");
-    console.log(idx);
-    console.log("url주소 길이" + window.location.href.length);
+    // console.log(idx);
+    // console.log("url주소 길이" + window.location.href.length);
     const pageid = window.location.href.substring(
       idx + 7,
       window.location.href.length
     );
-    console.log(pageid);
+    // console.log(pageid);
     // console.log(pageid + "asdfadsddd");
-    console.log(typeof pageid);
+    // console.log(typeof pageid);
     const fd = new FormData();
     fd.append("userid", pageid);
-    console.log("pageid" + pageid);
+    // console.log("pageid" + pageid);
     this.pageuserid = pageid;
     axios.post(`${SERVER_URL}/util/userinfo`, fd).then((res) => {
-      console.log("성공인가??");
-      console.log(res);
+      // console.log("성공인가??");
+      // console.log(res);
       this.pageuserimg = res.data.object.profileImg;
       this.pageusername = res.data.object.name;
       this.pageuseraccestoken = res.data.object.accessToken;
@@ -319,7 +319,7 @@ export default {
       .get(`${SERVER_URL}/wallet/toid?oauthid=${this.pageuserid}`)
       .then((res) => {
         // this.pageuserbalance = res.data.balance;
-        console.log(res.data.balance);
+        // console.log(res.data.balance);
         // this.mywallet = res.data.address;
         // console.log("여기여기``");
         // console.log(this.mywallet);
@@ -331,21 +331,21 @@ export default {
         // console.log(store.state.balance + 123123);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
 
     axios
       .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
       .then((res) => {
-        console.log("총 잔액보여줘제발");
-        console.log(res);
+        // console.log("총 잔액보여줘제발");
+        // console.log(res);
         this.pageuserbalance = res.data;
       });
 
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.accessToken;
-    console.log("이건 유저 발란스 값" + this.userbalance);
+    // console.log("이건 유저 발란스 값" + this.userbalance);
 
     // 거래내역
     // axios
@@ -354,7 +354,7 @@ export default {
     axios
       .get(`${SERVER_URL}/mypage/myproject?oauthId=${store.state.userInfo.id}`)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         this.investcreatenum = res.data.createNum;
         // this.investinnum = res.data.partInNum;
         this.shoppingcreatenum = res.data.saleNum;

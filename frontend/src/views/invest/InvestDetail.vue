@@ -1,6 +1,6 @@
 <template>
   <div class="investdetail">
-    <navbar />
+    <HomeNav />
     <!-- 투자 대표 사진 -->
     <div
       class="investImg"
@@ -496,7 +496,7 @@
 </template>
 
 <script>
-import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import "../../../public/css/InvestDetail.scss";
 import { VueperSlides, VueperSlide } from "vueperslides";
 import "vueperslides/dist/vueperslides.css";
@@ -511,7 +511,7 @@ const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar,
+    HomeNav,
     VueperSlides,
     VueperSlide,
     ChatRoom,
@@ -641,7 +641,7 @@ export default {
       axios
         .post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           this.projectList = response.data.object;
           this.totalpage = response.data.object[0].totalpages;
           // 디테일 페이지와 동일한 프로젝트 삭제
@@ -654,7 +654,7 @@ export default {
           this.projectList.forEach((item) => {
             // 투자 프로젝트 chip
             if (item.investmentDto.isfinish) {
-              console.log(item)
+              // console.log(item)
               this.$set(item.investmentDto, "chip", "종료");
             } else {
               this.$set(item.investmentDto, "chip", "진행중");
@@ -717,7 +717,7 @@ export default {
     onChat() {
       // window.open("");
       this.chatroom = true;
-      console.log("oauthId " + this.writer.oauthId);
+      // console.log("oauthId " + this.writer.oauthId);
       store.commit("setAsk", this.writer.name, this.writer.oauthId);
       store.state.askuserid = this.writer.oauthId;
       // console.log("모달 열어보자" + this.chatroom);
@@ -746,7 +746,7 @@ export default {
           userid: store.state.userInfo.id,
         })
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           const today = new Date();
           let year = today.getFullYear(); // 년도
           let month = today.getMonth() + 1; // 월
@@ -769,7 +769,7 @@ export default {
       axios
         .delete(`${SERVER_URL}/investment/deletecomment?num=${comment.num}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
         });
     },
     oninvestbtn() {
@@ -836,7 +836,7 @@ export default {
             this.projectList.forEach((item) => {
               // 투자 프로젝트 chip
               if (item.investmentDto.isfinish) {
-                console.log(item)
+                // console.log(item)
                 this.$set(item.investmentDto, "chip", "종료");
               } else {
                 this.$set(item.investmentDto, "chip", "진행중");

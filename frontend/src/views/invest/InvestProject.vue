@@ -1,24 +1,27 @@
 <template>
   <div class="investproject">
-    <navbar />
+    <HomeNav />
     <!-- 투자 메뉴바 -->
     <div class="investNav">
-      <div class="items">
-        <div>
+      <div class="items" style="margin: 24px 0px 0px 0px;">
+        <div >
           <router-link to="/investhome">
-            <h5>투자홈</h5>
+            <h5 class="pageTab">투자홈</h5>
           </router-link>
         </div>
-        <div style="margin: 0 15%">
+        <div style="margin: 0 11%" class="pageTab">
           <router-link to="/investproject">
-            <h5 style="color: rgb(22, 150, 245)">프로젝트</h5>
+            <h5 class="pageTab" style="color: rgb(22, 150, 245)">프로젝트</h5>
           </router-link>
         </div>
         <div>
           <router-link to="/writeinvest">
-            <h5 style="margin: 0">투자오픈</h5>
+            <h5 class="pageTab" style="margin: 0">투자오픈</h5>
           </router-link>
-        </div>
+        </div><br>
+        <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px lightgrey; background-color: lightgrey">
+        <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px rgb(22, 150, 245); background-color: rgb(22, 150, 245)">
+        <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px lightgrey; background-color: lightgrey">
       </div>
     </div>
     <!-- <div>
@@ -159,7 +162,8 @@
 </template>
 
 <script>
-import Navbar from "../../components/Navbar.vue";
+// import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import "../../../public/css/InvestProject.scss";
 import axios from "axios";
 import InfiniteLoading from 'vue-infinite-loading';
@@ -168,7 +172,7 @@ const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar,
+    HomeNav,
     InfiniteLoading
   },
   data() {
@@ -204,7 +208,7 @@ export default {
         $(".all").addClass("active");
         $(".allicon").addClass("activeIcon");
         this.initAxios();
-        console.log("비어있음");
+        // console.log("비어있음");
       }
     },
   },
@@ -217,17 +221,17 @@ export default {
   methods: {
     initAxios() {
       this.page = 0
-      console.log("초기 axios");
+      // console.log("초기 axios");
       const fd = new FormData();
       fd.append("orderOption", 0);
       fd.append("categoryfilter", "");
       axios
         .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           if (response.data.data == "success") {
             this.investProjects = response.data.object;
-            console.log(this.investProjects.length);
+            // console.log(this.investProjects.length);
             if (this.investProjects.length > 0) {
               this.ispjt = true;
               this.investProjects = response.data.object;
@@ -270,32 +274,29 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     },
     filterAxios() {
       this.page = 0
       const fd = new FormData();
       // const data = this.nowfilter
-      console.log("필터 axios");
+      // console.log("필터 axios");
       fd.append("orderOption", this.nowfilter);
       // console.log(Boolean(this.nowcategory));
       // console.log(this.nowcategory.length)
       if (this.nowcategory.length > 0) {
         this.nowcategory.forEach((category) => {
           fd.append("categoryfilter", category);
-          console.log(fd);
+          // console.log(fd);
         });
       } else {
         fd.append("categoryfilter", "");
-        console.log("여기");
       }
-      console.log("폼데이터");
-      console.log(fd);
       axios
         .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           if (response.data.data == "success") {
             this.investProjects = response.data.object;
             if (this.investProjects.length > 0) {
@@ -339,7 +340,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     },
     filterInit() {
@@ -418,25 +419,25 @@ export default {
       this.page += 1
       const fd = new FormData();
       // const data = this.nowfilter
-      console.log("필터 axios");
+      // console.log("필터 axios");
       fd.append("orderOption", this.nowfilter);
-      console.log(Boolean(this.nowcategory));
+      // console.log(Boolean(this.nowcategory));
       if (this.nowcategory.length > 0) {
         this.nowcategory.forEach((category) => {
           fd.append("categoryfilter", category);
-          console.log(fd);
+          // console.log(fd);
         });
       } else {
         fd.append("categoryfilter", "");
-        console.log("여기");
+        // console.log("여기");
       }
-      console.log("폼데이터");
-      console.log(fd);
+      // console.log("폼데이터");
+      // console.log(fd);
       axios
         .post(`${SERVER_URL}/investment/getAllInvestBoard/${this.page}`, fd)
         .then((response) => {
           setTimeout(() => {
-            console.log(response);
+            // console.log(response);
             if (response.data.data == "success") {
               this.investProjects = this.investProjects.concat(response.data.object);
               if (this.investProjects.length > 0) {
@@ -496,11 +497,11 @@ export default {
 
 <style scoped>
 .investNav {
-  height: 50px;
+  /* height: 50px; */
   text-align: center;
-  line-height: 50px;
-  border-bottom: 1px solid lightgray;
-  border-top: 1px solid lightgray;
+  /* line-height: 40px; */
+  /* border-bottom: 1px solid lightgray; */
+  /* border-top: 1px solid lightgray; */
 }
 .items div {
   display: inline-block;
@@ -590,5 +591,8 @@ export default {
 }
 .activeIcon {
   color: rgb(22, 150, 245);
+}
+.pageTab {
+  margin-bottom: 0px !important;
 }
 </style>

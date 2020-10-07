@@ -1,19 +1,21 @@
 <template>
   <div class="investproject">
-    <navbar/>
+    <HomeNav />
     <!-- 쇼핑 메뉴바 -->
-    <div class="investNav">
-      <div class="items">
-        <div style="margin: 0 15% 0 0;">
+    <div class="shoppingNav">
+      <div class="items" style="text-align: center; height: 37.6px; margin: 24px 0px 13px 0px;">
+        <div style="margin: 0 12% 0 0;">
           <router-link to="/shoppinghome">
-            <h5>쇼핑홈</h5>
+            <h5 class="pageTab mb-0">쇼핑홈</h5>
           </router-link>
         </div>
         <div>
           <router-link to="/shoppingproject">
-            <h5 style="color: rgb(22, 150, 245)">프로젝트</h5>
+            <h5 class="pageTab mb-0" style="color: rgb(22, 150, 245)">프로젝트</h5>
           </router-link>
-        </div>
+        </div><br>
+          <hr class="divider mx-auto mt-2" style="display:inline-block; width: 18%; border: solid 2px lightgrey; background-color: lightgrey">
+          <hr class="divider mx-auto mt-2" style="display:inline-block; width: 18%; border: solid 2px rgb(22, 150, 245); background-color: rgb(22, 150, 245)">
       </div>
     </div>
     <!-- 카테고리 -->
@@ -133,8 +135,8 @@
 </template>
 
 <script>
-import Navbar from "../../components/Navbar.vue";
 import "../../../public/css/InvestProject.scss";
+import HomeNav from "../../components/HomeNav.vue";
 // import "../../../public/css/ShoppingHome.scss";
 import axios from "axios";
 
@@ -142,7 +144,7 @@ const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar,
+    HomeNav,
   },
   data() {
     return {
@@ -198,7 +200,7 @@ export default {
       .then((response) => {
         if (response.data.data == "success") {
             this.shoppingList = response.data.object.object;
-            console.log(response.data.object.likecount[0])
+            // console.log(response.data.object.likecount[0])
             if(this.shoppingList.length > 0) {
               this.ispjt = true
               // console.log(this.shoppingList)
@@ -206,9 +208,9 @@ export default {
               this.totalpage = this.shoppingList[0].totalpage;
               for (let i = 0; i < this.shoppingList.length; i++) {
                 this.shoppingList[i].likeCount =  response.data.object.likecount[i];
-            console.log(this.shoppingList[i].likeCount )
+            // console.log(this.shoppingList[i].likeCount )
               }
-              console.log(response.data.object.likeCount)
+              // console.log(response.data.object.likeCount)
               this.shoppingList.forEach((shoppingPjt) => {
               // 좋아요
               // shoppingPjt.likeCount = response.data.object.likecount[0];
@@ -259,7 +261,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     },
     filterInit() {
@@ -335,8 +337,6 @@ export default {
   height: 50px;
   text-align: center;
   line-height: 50px;
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
 }
 .items div {
   display: inline-block;
