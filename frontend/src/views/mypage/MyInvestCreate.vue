@@ -336,13 +336,41 @@ export default {
       this.imgList.splice(idx, 1);
     },
     onreceipt(item) {
+      item.modal.isopen = false
       const useFund = {
         acceesToken: store.state.accessToken,
         campaignId: item.address,
         list: this.imgList,
       };
-      axios.post(`${SERVER_URL}/funding/usefund`, useFund).then((response) => {
-        console.log(response);
+      axios.post(`${SERVER_URL}/funding/usefund`, useFund)
+        let timerInterval;
+        Swal.fire({
+          title: `사용내역을 등록하고 있습니다.`,
+          timer: 5000,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+            timerInterval = setInterval(() => {
+              const content = Swal.getContent();
+              if (content) {
+                const b = content.querySelector("b");
+                if (b) {
+                  b.textContent = Swal.getTimerLeft();
+                }
+              }
+            }, 100);
+          },
+          onClose: () => {
+            clearInterval(timerInterval);
+          },
+        })
+        .then((response) => {
+          console.log(response)
+        if(response.data == 'scucess') {
+          
+        } else{
+          alert("사용내역 등록에 실패했습니다.");
+        }
       });
     },
     infiniteHandler($state) {

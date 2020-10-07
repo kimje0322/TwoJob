@@ -844,7 +844,7 @@ export default {
               // 투자 프로젝트 사용내역 보여주기
               axios.get(`${SERVER_URL}/funding/getreceipt?campaignId=${item.investmentDto.address}`)
                 .then(response => {
-                  // console.log(response)
+                  console.log(response)
                   // this.items = response.data
                 })
               // pjtname

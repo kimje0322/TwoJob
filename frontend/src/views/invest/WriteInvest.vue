@@ -624,13 +624,18 @@ export default {
                     })
                     .then((response) => {
                       console.log(response);
-                      this.$router.push("/investhome");
-                      Swal.fire({
-                        icon: "success",
-                        title: "",
-                        text: "프로젝트가 성공적으로 오픈되었습니다.",
-                        showConfirmButton: false,
-                      })
+                      if(response.data == 'success'){
+                        this.$router.push("/investhome");
+                        Swal.fire({
+                          icon: "success",
+                          title: "",
+                          text: "프로젝트가 성공적으로 오픈되었습니다.",
+                          showConfirmButton: false,
+                        })
+                      }else{
+                        alert("블록체인 프로젝트 오픈에 실패했습니다.");
+                      }
+                      
                     });
                 } else {
                   alert("프로젝트 오픈에 실패했습니다.");
