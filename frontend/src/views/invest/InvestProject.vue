@@ -78,12 +78,6 @@
     </div>
     <!-- 프로젝트 -->
     <div class="projectList" style="padding: 10px 13%">
-      <!-- <div style="height: 45px">
-        <div style="display: inline-block">
-          <span style="color: rgb(22, 150, 245)">25,540</span>
-          <span>개의 프로젝트가 있습니다.</span>
-        </div>
-      </div> -->
       <div v-if="ispjt" style="padding: 1% 0">
         <div
           v-for="(item, i) in investProjects"
@@ -153,7 +147,12 @@
       </div>
     </div>
     <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
-      <div slot="no-more" style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px;">목록의 끝입니다 :)</div>
+      <div
+        slot="no-more"
+        style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px"
+      >
+        목록의 끝입니다 :)
+      </div>
     </infinite-loading>
   </div>
 </template>
@@ -162,14 +161,14 @@
 import Navbar from "../../components/Navbar.vue";
 import "../../../public/css/InvestProject.scss";
 import axios from "axios";
-import InfiniteLoading from 'vue-infinite-loading';
+import InfiniteLoading from "vue-infinite-loading";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
     Navbar,
-    InfiniteLoading
+    InfiniteLoading,
   },
   data() {
     return {
@@ -216,7 +215,7 @@ export default {
   },
   methods: {
     initAxios() {
-      this.page = 0
+      this.page = 0;
       console.log("초기 axios");
       const fd = new FormData();
       fd.append("orderOption", 0);
@@ -274,7 +273,7 @@ export default {
         });
     },
     filterAxios() {
-      this.page = 0
+      this.page = 0;
       const fd = new FormData();
       // const data = this.nowfilter
       console.log("필터 axios");
@@ -391,7 +390,7 @@ export default {
           $(".all").removeClass("active");
           $(".allicon").removeClass("activeIcon");
         }
-        this.filterAxios()
+        this.filterAxios();
       }
     },
     onfilter() {
@@ -415,7 +414,7 @@ export default {
     // }
     // 무한 스크롤
     infiniteHandler($state) {
-      this.page += 1
+      this.page += 1;
       const fd = new FormData();
       // const data = this.nowfilter
       console.log("필터 axios");
@@ -438,7 +437,9 @@ export default {
           setTimeout(() => {
             console.log(response);
             if (response.data.data == "success") {
-              this.investProjects = this.investProjects.concat(response.data.object);
+              this.investProjects = this.investProjects.concat(
+                response.data.object
+              );
               if (this.investProjects.length > 0) {
                 this.ispjt = true;
                 this.totalpage = this.investProjects[0].totalpage;
@@ -474,22 +475,22 @@ export default {
                       this.$set(investPjt, "rate", response.data);
                     });
                 });
-                $state.loaded()
-                console.log("after", this.investProjects, this.page)
-                if(this.page >= this.totalpage) {
-                  $state.complete()
+                $state.loaded();
+                console.log("after", this.investProjects, this.page);
+                if (this.page >= this.totalpage) {
+                  $state.complete();
                 }
               } else {
                 this.ispjt = false;
-                $state.complete()
+                $state.complete();
               }
             }
-          }, 1000)
+          }, 1000);
         })
         .catch((error) => {
           console.log(error);
         });
-    }
+    },
   },
 };
 </script>

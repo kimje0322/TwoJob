@@ -430,6 +430,7 @@ export default {
               this.createRoom();
             }
           }
+          store.state.askusername = null
         // }
       });
     // console.log("askusername" + store.state.askusername)

@@ -21,7 +21,7 @@
           <!-- 투자 좋아요 프로젝트 창 -->
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
-              <v-card-text>
+              <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
                 <div style="padding: 1% 0">
                   <div
@@ -29,10 +29,10 @@
                     :key="i"
                     style="display: inline-block; width: 30%; margin: 20px 5px"
                   >
+                      <!-- max-height="600px" -->
                     <v-card
                       class="my-12"
                       max-width="95%"
-                      max-height="600px"
                       style="margin: auto"
                     >
                       <router-link
@@ -43,7 +43,7 @@
                       >
                         <v-img height="250" :src="item.picture"></v-img>
                       </router-link>
-                      <div style="height: 200px">
+                      <!-- <div style="height: 200px"> -->
                         <v-card-title
                           style="
                             font-weight: 600;
@@ -52,30 +52,27 @@
                             font-family: BPreplayExtended;
                           "
                         >
-                          <p v-if="item.pjtname.length > 6" style="width: 100%">
-                            {{ item.pjtname.substring(0, 8) }} ...
+                          <span v-if="item.pjtname.length > 15" style="width: 100%">
+                            {{ item.pjtname.substring(0, 15) }} ...
                             <!-- {{ item.onelineintro.length }} -->
-                          </p>
-                          <p v-else style="width: 100%">
+                          </span>
+                          <span v-else style="width: 100%">
                             {{ item.pjtname }}
-                          </p>
+                          </span>
                           <div style="margin-left: auto">
                             <v-chip class="projectBadge">
                               {{ item.lastday }}일 남음</v-chip
                             >
-                            <!-- <v-chip v-model="a" class="likeBadge" style="font-size: 12px"
-                            >100명 좋아요 {{ b }}</v-chip
-                          > -->
                           </div>
                         </v-card-title>
                         <!-- max-height: 120px -->
                         <v-card-text style="height: 80px">
+                              <!-- line-height: 1.375rem; -->
                           <div
                             style="
                               margin-bottom: 10px;
                               font-size: 0.875rem;
                               font-weight: 400;
-                              line-height: 1.375rem;
                               letter-spacing: 0.0071428571em;
                               color: rgb(0, 0, 0, 0.6);
                             "
@@ -91,11 +88,11 @@
                           <!-- <div style="color: black">
                         </div>                         -->
                         </v-card-text>
-                      </div>
+                      <!-- </div> -->
                     </v-card>
                   </div>
                 </div>
-              </v-card-text>
+              <!-- </v-card-text> -->
             </v-card>
           </v-tab-item>
           <!-- 쇼핑 좋아요 프로젝트 창 -->
@@ -135,8 +132,8 @@
                           font-family: BPreplayExtended;
                         "
                       >
-                        <p v-if="item.pjtname.length > 6">
-                          {{ item.pjtname.substring(0, 8) }} ...
+                        <p v-if="item.pjtname.length > 15">
+                          {{ item.pjtname.substring(0, 15) }} ...
                         </p>
                         <p v-else>
                           {{ item.pjtname }}
