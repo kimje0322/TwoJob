@@ -232,40 +232,16 @@
                           <strong style="font-size: 20px">{{ item.value }}</strong> 토큰
                         </p>
                       </div>
-                      <!-- <v-card-title style="padding: 10px">
-                        <div>
-                          <span class="mr-auto mb-1" style="font-size:18px; font-weight: 600">{{ item.pjtname }}</span>
-                        </div>
-                      <v-chip
-                        small
-                        class="ma-2 ml-auto px-2"
-                        label
-                        outlined=""
-                        style="background-color: rgb(22, 150, 245)"
-                      >
-                      <span v-if="item.type == 'FUND'" style="color: blue; ">
-                        <v-icon left
-                          class="mr-0" size="19">
-                          mdi-plus
-                        </v-icon>
-                        {{ item.value }} 토큰
-                      </span>
-
-                      <span v-else> 
-                        <v-icon left
-                          style="color:#FF1744"
-                          class="mr-0" size="19">
-                          mdi-minus
-                        </v-icon>
-                        {{ item.value }} 토큰
-                      </span>
-                      </v-chip>
-                      </v-card-title>
-                      <v-card-text>
-                        <div><span>Hash {{item.blockhash}}</span></div>
-                      </v-card-text> -->
                     </div>
                   </v-card>
+                  <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
+                    <div
+                      slot="no-more"
+                      style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px"
+                    >
+                      거래내역이 없습니다 :)
+                    </div>
+                  </infinite-loading>
                 </div>
             </div>
           </div>
@@ -284,11 +260,17 @@ import "@/../public/css/Mypage.scss";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
+import InfiniteLoading from "vue-infinite-loading";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 // const SERVER_URL = "http://j3b102.p.ssafy.io:8080";
 
 export default {
+  components: {
+    HomeNav,
+    ChatRoom,
+    InfiniteLoading,
+  },
   data() {
     return {
       transnum: "",
@@ -313,6 +295,8 @@ export default {
       tabs: ["투자", "쇼핑"],
       // 거래내역
       filtertransactions: [],
+      page: 0,
+      totalpage: 0,
     };
   },
   computed: {},
@@ -366,10 +350,61 @@ export default {
 
       // alert("주소 : " + result.address + " 비밀키 : " + result.privateKey)
     },
-  },
-  components: {
-    HomeNav,
-    ChatRoom,
+    infiniteHandler($state){
+      this.page += 1
+      // 거래내역
+      axios
+      .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=${this.page}&size=3`)
+      .then((res) => {
+        setTimeout(() => {
+        const transaction = res.data.content
+        const filtertransaction = []
+        // CREATE, SALEOPEN 빼주기
+        transaction.forEach(item=>{
+          if(item.type != 'CREATE' && item.type != 'SALEOPEN'){
+            filtertransaction.push(item)
+          }
+        })
+        filtertransaction.forEach(item => {
+          // 제목
+          if (item.pjtname.length > 10) {
+            item.pjtname = item.pjtname.substring(0, 10) + "...";
+          }
+          // type +, - 변환
+          if(item.type == 'REFUND' || item.type == 'RECEIVE' || item.type == 'SALE' || item.type == 'SALEPARTIN') {
+            this.$set(item, "isplus", true)
+          }
+          else{
+            this.$set(item, "isplus", false)
+          }
+          // 유형 나누기
+          if(item.type == 'FUND'){
+            this.$set(item, "typename", "투자함")
+          }
+          else if(item.type == 'REFUND'){
+            this.$set(item, "typename", "투자환불")
+          }
+          else if(item.type == 'RECEIVE'){
+            this.$set(item, "typename", "투자받음")
+          }
+          else if(item.type == 'SALE'){
+            this.$set(item, "typename", "판매")
+          }
+          else if(item.type == 'BUY'){
+            this.$set(item, "typename", "구매")
+          }
+          else if(item.type == 'SALEPARTIN'){
+            this.$set(item, "typename", "투자수익금")
+          }
+        })
+        this.filtertransactions = this.filtertransactions.concat(filtertransaction)
+        $state.loaded()
+        if(this.page >= this.totalpage) {
+          $state.complete()
+        }
+      })
+      }, 1000)
+    }
   },
   mounted() {
     var idx = window.location.href.indexOf("mypage");
@@ -409,57 +444,49 @@ export default {
 
     // 거래내역
     axios
-    .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=1`)
+    .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=3`)
     .then((res) => {
-      console.log("거래내역")
-      console.log(res.data.totalElements)
-      this.transnum = res.data.totalElements
-      if(this.transnum > 0) {
-        axios
-        .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=${this.transnum}`)
-        .then((res) => {
-          this.transactions = res.data.content
-          // CREATE, SALEOPEN 빼주기
-          this.transactions.forEach(item=>{
-            if(item.type != 'CREATE' && item.type != 'SALEOPEN'){
-              this.filtertransactions.push(item)
-            }
-          })
-          this.filtertransactions.forEach(item => {
-            // 제목
-            if (item.pjtname.length > 10) {
-              item.pjtname = item.pjtname.substring(0, 10) + "...";
-            }
-            // type +, - 변환
-            if(item.type == 'REFUND' || item.type == 'RECEIVE' || item.type == 'SALE' || item.type == 'SALEPARTIN') {
-              this.$set(item, "isplus", true)
-            }
-            else{
-              this.$set(item, "isplus", false)
-            }
-            // 유형 나누기
-            if(item.type == 'FUND'){
-              this.$set(item, "typename", "투자함")
-            }
-            else if(item.type == 'REFUND'){
-              this.$set(item, "typename", "투자환불")
-            }
-            else if(item.type == 'RECEIVE'){
-              this.$set(item, "typename", "투자받음")
-            }
-            else if(item.type == 'SALE'){
-              this.$set(item, "typename", "판매")
-            }
-            else if(item.type == 'BUY'){
-              this.$set(item, "typename", "구매")
-            }
-            else if(item.type == 'SALEPARTIN'){
-              this.$set(item, "typename", "투자수익금")
-            }
-          })
-          console.log(this.transactions)
-        })
-      }
+      this.transactions = res.data.content
+      this.totalpage = res.data.totalPages
+      // CREATE, SALEOPEN 빼주기
+      this.transactions.forEach(item=>{
+        if(item.type != 'CREATE' && item.type != 'SALEOPEN'){
+          this.filtertransactions.push(item)
+        }
+      })
+      this.filtertransactions.forEach(item => {
+        // 제목
+        if (item.pjtname.length > 10) {
+          item.pjtname = item.pjtname.substring(0, 10) + "...";
+        }
+        // type +, - 변환
+        if(item.type == 'REFUND' || item.type == 'RECEIVE' || item.type == 'SALE' || item.type == 'SALEPARTIN') {
+          this.$set(item, "isplus", true)
+        }
+        else{
+          this.$set(item, "isplus", false)
+        }
+        // 유형 나누기
+        if(item.type == 'FUND'){
+          this.$set(item, "typename", "투자함")
+        }
+        else if(item.type == 'REFUND'){
+          this.$set(item, "typename", "투자환불")
+        }
+        else if(item.type == 'RECEIVE'){
+          this.$set(item, "typename", "투자받음")
+        }
+        else if(item.type == 'SALE'){
+          this.$set(item, "typename", "판매")
+        }
+        else if(item.type == 'BUY'){
+          this.$set(item, "typename", "구매")
+        }
+        else if(item.type == 'SALEPARTIN'){
+          this.$set(item, "typename", "투자수익금")
+        }
+      })
+      console.log(this.transactions)
     })
 
 
