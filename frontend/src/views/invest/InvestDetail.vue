@@ -59,7 +59,7 @@
               </strong>
               <h3 class="totalPrice">{{ investPjt.investprice }}</h3>
               <strong>
-                <span>토큰 달성</span>
+                <span>토큰</span>
               </strong>
               <div style="display: inline-block; margin-left: 5%">
                 <h3

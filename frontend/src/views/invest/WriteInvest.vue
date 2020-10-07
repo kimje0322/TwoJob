@@ -29,7 +29,7 @@
     <!-- 투자 글쓰기 메뉴바 -->
     <div style=" padding-right: 15px;">
       <!-- 투자 글쓰기 메뉴 -->
-      <div class="writeMenuBar mt-4 mb-5">
+      <div class="writeMenuBar mt-4">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab
             v-for="(item, i) in tabs"
@@ -47,7 +47,7 @@
           <!-- 프로젝트 정보 창 -->
           <v-tab-item :value="'tab-0'">
             <v-card flat tile>
-              <v-card-text>
+              <v-card-text style="padding-bottom: 100px;">
                 <div class="pjtinfo">
                   <p>프로젝트에대한 정보를 정확하게 입력해주세요.</p>
                   <h5><span style="color: red">*</span> 프로젝트명</h5>
@@ -171,7 +171,7 @@
           <!-- 금손 정보 창 -->
           <v-tab-item :value="'tab-1'">
             <v-card flat tile>
-              <v-card-text>
+              <v-card-text style="padding-bottom: 500px;">
                 <div class="writerinfo">
                   <p>금손님에대한 정보를 입력해주세요.</p>
                   <h5><span style="color: red">*</span> 개인 / 사업자 구분</h5>
@@ -232,7 +232,7 @@
           <!-- 투자 설명서 창 -->
           <v-tab-item :value="'tab-2'">
             <v-card flat tile>
-              <v-card-text>
+              <v-card-text style="padding-bottom: 100px;">
                 <div class="investContent">
                   <p>프로젝트 내용에 대해 자세히 설명해주세요.</p>
                   <div style="margin-bottom: 1rem">
