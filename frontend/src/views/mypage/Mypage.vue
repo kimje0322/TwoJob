@@ -161,7 +161,7 @@
 
               <!-- <div style="margin-top: 18px; padding: 0 3%">
                 <div
-                  v-for="(item, i) in accounts"
+                  v-for="(item, i) in transactions"
                   :key="i"
                   style="margin-bottom: 15px"
                 >
@@ -175,11 +175,22 @@
                       height: 50px;
                       line-height: 50px;
                     "
-                    >{{ item.pjtName }}</span
+                    v-if="item.pjtname.length > 13"
+                    >{{ item.pjtname.substring(0, 13) }} ...</span
+                  >
+                  <span
+                    style="
+                      margin-left: 5%;
+                      font-size: 18px;
+                      height: 50px;
+                      line-height: 50px;
+                    "
+                    v-else
+                    >{{ item.pjtname }}</span
                   >
                   <div style="display: inline-block; float: right">
                     <v-icon
-                      v-if="item.isAdded"
+                      v-if="item.type == 'FUND'"
                       style="
                         float: left;
                         font-size: 16px;
@@ -187,8 +198,8 @@
                         line-height: 50px;
                         padding-right: 10px;
                       "
-                      >mdi-plus</v-icon
-                    >
+                      >mdi-minus</v-icon
+                    >                    
                     <v-icon
                       v-else
                       style="
@@ -198,7 +209,7 @@
                         line-height: 50px;
                         padding-right: 10px;
                       "
-                      >mdi-minus</v-icon
+                      >mdi-plus</v-icon
                     >
                     <span
                       style="
@@ -207,7 +218,7 @@
                         height: 50px;
                         line-height: 50px;
                       "
-                      >{{ item.transitPrice }} ETH</span
+                      >{{ item.value }} 토큰</span
                     >
                   </div>
                 </div>
@@ -236,6 +247,8 @@ const SERVER_URL = "https://www.twojob.ga/api";
 export default {
   data() {
     return {
+      transnum: "",
+      transactions: [],
       pageuserid: "",
       pageuserimg: "",
       pageusername: "",
@@ -255,13 +268,12 @@ export default {
       text: ["1", "2", "3"],
       tabs: ["투자", "쇼핑"],
       // 거래내역
-      accounts: [],
-      // accounts: [
-      //   { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
-      //   { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: false },
-      //   { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
-      //   { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
-      // ],
+      accounts: [
+        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
+        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: false },
+        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
+        { pjtName: "특별한 자전거", transitPrice: "120,0000", isAdded: true },
+      ],
     };
   },
   computed: {},
@@ -357,23 +369,22 @@ export default {
     this.userbalance = store.state.accessToken;
 
     // 거래내역
-    axios.get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=4`)
-      .then(response => {
-        this.accounts = response.data.content
-        this.accounts.forEach(item=>{
-          // +/- 구분
-          if(item.type == 'CREATE'){
-            this.$set(item, "isAdded", true)
-          }else{
-            this.$set(item, "isAdded", false)
-          }
-          // 시간 format
-          const time = `${item.time.substring(0, 4)}.${item.time.substring(5, 7)}.${item.time.substring(8, 10)} | ${item.time.substring(11, 19)}`
-          this.$set(item, "time", time)
-          
+    axios
+    .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=1`)
+    .then((res) => {
+      console.log("거래내역")
+      console.log(res.data.totalElements)
+      this.transnum = res.data.totalElements
+      if(this.transnum > 0) {
+        axios
+        .get(`${SERVER_URL}/mypage/tojalist?direction=ASC&oauthId=${this.pageuserid}&page=0&size=${this.transnum}`)
+        .then((res) => {
+          this.transactions = res.data.content
+          console.log(this.transactions)
         })
+      }
+    })
 
-      })
 
     // 생성 갯수 보여주기
     axios

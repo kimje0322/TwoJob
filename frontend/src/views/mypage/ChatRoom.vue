@@ -169,7 +169,7 @@
                       style="
                         width: 250px;
                         height: 30px;
-                        background-color: rgb(0, 153, 255);
+                        background-color: rgba(0, 0, 0, 0.15);
                         border-radius: 18px;
                         padding: 5px;
                         color: white;
@@ -179,6 +179,7 @@
                       {{ lst.message }}
                       <div
                         style="
+                          margin-top: 5px;
                           color: rgba(0, 0, 0, 0.4);
                           margin-bottom: 5px;
                           text-align: left;
@@ -194,7 +195,8 @@
                       style="
                         width: 250px;
                         height: 30px;
-                        background-color: rgba(0, 0, 0, 0.15);
+                        background-color: rgb(0, 153, 255);
+                        
                         border-radius: 18px;
                         padding: 5px;
                         color: white;
@@ -205,6 +207,7 @@
                       {{ lst.message }}
                       <div
                         style="
+                          margin-top: 5px;
                           color: rgba(0, 0, 0, 0.4);
                           margin-bottom: 5px;
                           text-align: right;
@@ -220,13 +223,12 @@
                   </div> -->
                 </div>
                 <!-- 메세지 입력창 -->
-                <div v-if="click == true" style="height: 40px">
+                <div v-if="click == true" style="height: 40px;">
                   <div
                     style="
                       display: inline-block;
-                      margin-left: 30px;
-                      width: 400px;
-                      height: 30px;
+                      width: 85%;
+                      height: 35px;
                       background-color: rgba(0, 0, 0, 0.05);
                       border-radius: 18px;
                       padding: 0 8px 0 12px;
@@ -237,7 +239,7 @@
                       id="inputxt"
                       type="text"
                       placeholder="메시지를 입력하세요."
-                      style="margin-top: 8px; margin-left: 5px; float: left"
+                      style="width: 95%; margin-top: 8px; margin-left: 5px; float: left; outline: none;"
                       v-model="message"
                       v-on:keypress.enter="sendMessage"
                     />
@@ -423,6 +425,7 @@ export default {
               this.createRoom();
             }
           }
+          store.state.askusername = null
         // }
       });
     // console.log("askusername" + store.state.askusername)

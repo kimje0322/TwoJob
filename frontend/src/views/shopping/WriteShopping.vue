@@ -3,15 +3,19 @@
     <HomeNav />
     <!-- <h4>마이페이지</h4> -->
     <!-- 쇼핑 글쓰기 메뉴바 -->
+    <div class="mt-4">
+      <h5 class="pageTab mb-0 mx-auto" style="text-align:center; color:  rgb(22, 150, 245);font-size:1.25rem !important">쇼핑 프로젝트 오픈</h5>
+      <hr class="divider mx-auto mt-2" style="text-align:center; width: 20%; border: solid 2px  rgb(22, 150, 245); background-color:  rgb(22, 150, 245)">
+    </div>
     <div>
       <!-- 쇼핑 글쓰기 메뉴 -->
-      <div class="writeMenuBar mt-5">
+      <div class="writeMenuBar mt-3 mb-5">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
           <v-tab v-for="(item, i) in tabs" :key="i" :href="`#tab-${i}`" class="writeMenu">{{ item }}</v-tab>
           <!-- 쇼핑 오픈버튼 -->
-          <div class="openbtn" @click="checkForm">
+          <div class="openbtn mr-5" @click="checkForm">
             <!-- v-bind:disabled="addedItems.length < 1" -->
-            <v-btn class="openbtn" color="#808080">쇼핑 프로젝트 오픈</v-btn>
+            <v-btn class="openbtn mr-4" color="#808080">쇼핑 프로젝트 오픈</v-btn>
           </div>
 
           <!-- 상품 정보 창 -->
@@ -175,6 +179,26 @@
                     ><span style="color: red">*</span>쇼핑설명</h5>
                     <v-btn @click="onSave" style="float: right; background-color: white; color: rgb(22, 150,245); font-weight: 600">저장하기</v-btn>
                   </div>
+                    <!-- 스낵바 -->
+                    <v-snackbar
+                      v-model="snackbar"
+                      :timeout="timeout"
+                      center
+                    >
+                      저장되었습니다.
+                      <template v-slot:action="{ attrs }">
+                        <v-btn
+                          color="blue"
+                          text
+                          v-bind="attrs"
+                          @click="snackbar = false"
+                        >
+                          x
+                        </v-btn>
+                      </template>
+                    </v-snackbar>
+
+
                   <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />
                 </div>
               </v-card-text>
@@ -208,6 +232,9 @@ export default {
   },
   data() {
     return {
+      // 스낵바
+      snackbar: false,
+      timeout: 2000,
       investAddress: '',
       campaignId: '',
       userid: '',
@@ -337,6 +364,9 @@ export default {
     },
     onSave() {
       this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
+      if (this.editortext) {
+        this.snackbar = true;
+      }
       // console.log(this.editortext)
     },
     formatDate(date) {
@@ -503,10 +533,10 @@ export default {
 
 <style scoped>
 .investNav {
-  height: 50px;
+  /* height: 50px; */
   text-align: center;
-  line-height: 50px;
-  border-bottom: 1px solid gray;
+  /* line-height: 50px; */
+  /* border-bottom: 1px solid gray; */
   margin-bottom: 15px;
 }
 .items div {
