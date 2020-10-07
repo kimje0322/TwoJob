@@ -68,16 +68,14 @@ public class LoginServiceImpl implements LoginService {
 					m1.setName(nickname);
 					m1.setEmail(email);
 					m1.setProfileImg(profile_image);
+					m1.setIsfirsttime(false);
 					memberRepository.save(m1);
-					loginResponse = new LoginResponse(m1);
-					loginResponse.setIsfirsttime(false);
 				} else {// 최초로그인
 					m1 = new Member(id, nickname, profile_image, "KAKAO", email, accessToken);
+					m1.setIsfirsttime(true);
 					memberRepository.save(m1);
-					loginResponse = new LoginResponse(m1);
-					loginResponse.setIsfirsttime(true);
 				}
-				return loginResponse;
+				return m1;
 			} else {
 				return responseCode;
 			}
