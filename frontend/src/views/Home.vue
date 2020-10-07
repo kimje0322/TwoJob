@@ -179,8 +179,6 @@ const redirect_uri = "https://www.twojob.ga/api";
 
 export default {
   mounted() {
-    // console.log("유저아이디는")
-    // console.log(store.state.userInfo.id)
     axios
       .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
       .then((res) => {

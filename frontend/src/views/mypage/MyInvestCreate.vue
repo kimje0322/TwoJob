@@ -2,7 +2,7 @@
   <div class="myinvestcreate">
     <!-- 상단 Navbar -->
     <HomeNav />
-    <div style="border-top: 1px ; height: 100vh">
+    <div style="height: 100vh">
       <div style="padding: 3% 0 2% 10%">
         <h4 style="font-weight: 800">
           <span style="color: rgb(22, 150, 245)">{{ pageusername }}</span
