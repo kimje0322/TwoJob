@@ -59,7 +59,7 @@
               </strong>
               <h3 class="totalPrice">{{ investPjt.investprice }}</h3>
               <strong>
-                <span>원 달성</span>
+                <span>토큰 달성</span>
               </strong>
               <div style="display: inline-block; margin-left: 5%">
                 <h3
@@ -77,11 +77,11 @@
               <p style="font-size: 13px">
                 목표 금액인
                 <strong>{{ investPjt.goalPrice }}</strong
-                >원이 모여야만 결제됩니다.
+                >토큰이 모여야만 결제됩니다.
               </p>
             </div>
             <!-- 마감일 -->
-            <div style="margin-bottom: 4%">
+            <div v-if="investPjt.lastday >= 0" style="margin-bottom: 4%">
               <strong>
                 <p
                   class="listTitle"
@@ -91,6 +91,9 @@
                 </p>
               </strong>
               <span>{{ investPjt.deadLine }} 24:00 마감</span>
+            </div>
+            <div v-else style="margin-bottom: 10px;">
+              <strong>종료</strong> 되었습니다.
             </div>
             <!-- 태그 -->
             <div style="margin-bottom: 3%">
@@ -107,7 +110,7 @@
             </div>
             <!-- 투자하기 버튼 -->
             <v-btn
-              :disabled="islogin == false"
+              :disabled="islogin == false || this.writer.oauthId == userid"
               class="investBtn white--text"
               style="width: 100%; height: 42px"
               @click="oninvestbtn"
@@ -241,16 +244,16 @@
             <!-- 프로젝트 이력 -->
             <div v-if="tabItem == 'projects'" class="mt-2">
               <!-- 프로젝트 이력 -->
-              <div style="display: flex; text-align: center; margin: 20px 0">
-                <h4 style="flex: 1">투자 프로젝트</h4>
-                <h4 style="flex: 1">쇼핑 프로젝트</h4>
-              </div>
               <div
                 v-for="(item, i) in projectList"
                 :key="i"
                 style="padding: 2%"
               >
-                <div>
+              <div style="display: flex; text-align: center;">
+                <h5 style="flex: 1;">투자 프로젝트</h5>
+                <h5 style="flex: 1">쇼핑 프로젝트</h5>
+              </div>
+                <div style="margin-bottom: 50px">
                   <!-- 투자 프로젝트 -->
                   <div
                     style="
@@ -303,7 +306,7 @@
                                 line-height: 41.6px;
                               "
                             >
-                              {{ item.investmentDto.investprice }}원
+                              {{ item.investmentDto.investprice }}토큰
                             </h5>
                             <div style="display: inline-block; float: right">
                               <h3
@@ -381,7 +384,7 @@
                                 line-height: 41.6px;
                               "
                             >
-                              개당 {{ item.saleBoardDto.saleprice }}원
+                              개당 {{ item.saleBoardDto.saleprice }}토큰
                             </h5>
                             <div style="display: inline-block; float: right">
                               <h3
@@ -409,22 +412,23 @@
                   </div>
                 </div>
                 <!-- 투자금 사용 내역 -->
-                <div style="margin: 30px 0; padding: 0 5%">
-                  <!-- <h5>투자금 사용 내역</h5> -->
-                  <!-- <vueper-slides
+                <div v-if="item.investmentDto.showimg > 0" style="margin: 30px 0; padding: 0 5%">
+                  <h5 style="margin-bottom: 30px">투자금 사용 내역</h5>
+                  <vueper-slides
                     class="no-shadow"
-                    :visible-slides="5"
+                    :visible-slides="3"
                     slide-multiple
-                    :gap="3"
-                    :slide-ratio="1 / 4"
+                    :gap="5"
+                    :slide-ratio="1 / 2"
                     :dragging-distance="200"
                     :breakpoints="{ 800: { visibleSlides: 2, slideMultiple: 2 } }"
                     :bullets="false"
                     style="padding: 0 5%;"
                   >
-                    <vueper-slide v-for="(item, i) in items" :key="i" :image="item.src" />
-                  </vueper-slides> -->
+                    <vueper-slide v-for="(img, i) in item.investmentDto.items" :key="i" :image="img" />
+                  </vueper-slides>
                 </div>
+                <hr style="margin-bottom: 0">
               </div>
               <!-- 무한 스크롤 -->
               <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
@@ -534,7 +538,8 @@ export default {
       // 프로젝트 이력
       successRate: "80",
       projectList: [],
-      items: [],
+      newprojectList: [],
+      // items: [],
       // 무한 스크롤
       page: 0,
       totalpage: 0,
@@ -586,7 +591,7 @@ export default {
       // 투자한 사람 수 axios 보내기
       axios
         .get(
-          `${SERVER_URL}/funding/fundernum?campaignId=${this.investPjt.address}`
+          `${SERVER_URL}/funding/fundernum?campaignId=${this.nowAddress}`
         )
         .then((response) => {
           this.$set(this.investPjt, "investnum", response.data);
@@ -594,14 +599,14 @@ export default {
       // 투자금액 axios 보내기
       axios
         .get(
-          `${SERVER_URL}/funding/nowfund?campaignId=${this.investPjt.address}`
+          `${SERVER_URL}/funding/nowfund?campaignId=${this.nowAddress}`
         )
         .then((response) => {
           this.$set(this.investPjt, "investprice", response.data);
         });
       // 달성률 axios 보내기
       const fr = new FormData();
-      fr.append("campaignId", this.investPjt.address);
+      fr.append("campaignId", this.nowAddress);
       axios.post(`${SERVER_URL}/funding/fundingrate`, fr).then((response) => {
         this.$set(this.investPjt, "rate", response.data);
       });
@@ -662,13 +667,17 @@ export default {
             // 투자 프로젝트 사용내역 보여주기
             axios.get(`${SERVER_URL}/funding/getreceipt?campaignId=${item.investmentDto.address}`)
               .then(response => {
-                // console.log(response)
-                // this.items = response.data
+                this.$set(item.investmentDto, "items", response.data)
+                if(response.data.length > 0){
+                  this.$set(item.investmentDto, "showimg", true)
+                }else{
+                  this.$set(item.investmentDto, "showimg", false)
+                }
               })
             // pjtname
             if (item.investmentDto.pjtname.length > 8) {
               item.investmentDto.pjtname =
-                item.investmentDto.pjtname.substring(0, 11) + "...";
+                item.investmentDto.pjtname.substring(0, 9) + "...";
             }
             // 투자 금액 axios 가져오기
             axios
@@ -696,7 +705,7 @@ export default {
               // pjtname
               if (item.saleBoardDto.pjtname.length > 8) {
                 item.saleBoardDto.pjtname =
-                  item.saleBoardDto.pjtname.substring(0, 8) + "...";
+                  item.saleBoardDto.pjtname.substring(0, 9) + "...";
               }
               // 쇼핑 프로젝트 판매개수 axios
               axios.get(`${SERVER_URL}/funding/gettotalsell?campaignId=${item.saleBoardDto.address}`)
@@ -823,16 +832,16 @@ export default {
         .then((response) => {
           setTimeout(() => {
           if(response.data.data == "success"){
-            this.projectList = this.projectList.concat(response.data.object);
+            this.newprojectList = response.data.object
             // this.totalpage = response.data.object[0].totalpages;
             // 디테일 페이지와 동일한 프로젝트 삭제
-            this.projectList.forEach(item =>{
+            this.newprojectList.forEach(item =>{
               if(item.investmentDto.address == this.nowAddress){
-                const idx = this.projectList.indexOf(item);
-                this.projectList.splice(idx, 1);
+                const idx = this.newprojectList.indexOf(item);
+                this.newprojectList.splice(idx, 1);
               }
             })
-            this.projectList.forEach((item) => {
+            this.newprojectList.forEach((item) => {
               // 투자 프로젝트 chip
               if (item.investmentDto.isfinish) {
                 // console.log(item)
@@ -843,12 +852,12 @@ export default {
               // 투자 프로젝트 사용내역 보여주기
               axios.get(`${SERVER_URL}/funding/getreceipt?campaignId=${item.investmentDto.address}`)
                 .then(response => {
-                  // this.items = response.data
+                  this.$set(item.investmentDto, "items", response.data)
                 })
               // pjtname
               if (item.investmentDto.pjtname.length > 8) {
                 item.investmentDto.pjtname =
-                  item.investmentDto.pjtname.substring(0, 11) + "...";
+                  item.investmentDto.pjtname.substring(0, 9) + "...";
               }
               // 투자 금액 axios 가져오기
               axios
@@ -876,7 +885,7 @@ export default {
                 // pjtname
                 if (item.saleBoardDto.pjtname.length > 8) {
                   item.saleBoardDto.pjtname =
-                    item.saleBoardDto.pjtname.substring(0, 8) + "...";
+                    item.saleBoardDto.pjtname.substring(0, 9) + "...";
                 }
                 // 쇼핑 프로젝트 판매개수 axios
                 axios.get(`${SERVER_URL}/funding/gettotalsell?campaignId=${item.saleBoardDto.address}`)
@@ -885,6 +894,7 @@ export default {
                   })
               }
             });
+            this.projectList = this.projectList.concat(this.newprojectList);
             $state.loaded()
             // console.log("after", this.projectList, this.page)
             if(this.page >= this.totalpage) {

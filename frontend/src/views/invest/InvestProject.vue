@@ -112,7 +112,16 @@
                 <span>{{ item.pjtName }}</span></router-link
               >
               <div style="margin-left: auto">
-                <v-chip class="projectBadge">{{ item.lastday }}일 남음</v-chip>
+                <!-- 종료 -->
+                <v-chip
+                  v-if="item.isfinish"
+                  class="investPjtBadge"
+                  style="background-color: gray; color: white"
+                  >종료</v-chip
+                >
+                <v-chip v-else  class="projectBadge"
+                  >{{ item.lastday }}일 남음</v-chip
+                >
               </div>
             </v-card-title>
             <v-card-text style="height: 120px">
@@ -479,11 +488,12 @@ export default {
                 if(this.page >= this.totalpage) {
                   $state.complete()
                 }
-              } else {
+              }else{
                 this.ispjt = false;
+              }
+            }else {
                 $state.complete()
               }
-            }
           }, 1000)
         })
         .catch((error) => {
