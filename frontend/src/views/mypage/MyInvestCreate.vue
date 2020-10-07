@@ -45,7 +45,14 @@
                     <span>{{ item.pjtName }}</span></router-link
                   >
                   <div style="margin-left: auto">
-                    <v-chip class="deadlineBadge"
+                    <!-- 종료 -->
+                    <v-chip
+                      v-if="item.isfinish"
+                      class="investPjtBadge"
+                      style="background-color: gray; color: white"
+                      >종료</v-chip
+                    >
+                    <v-chip v-else  class="deadlineBadge"
                       >{{ item.lastday }}일 남음</v-chip
                     >
                   </div>
@@ -79,9 +86,10 @@
                     </div>
                   </div>
                   <!-- 영수증 등록, 상품 판매 글쓰기 -->
-                  <div v-if="userid == pageuserid" style="margin-bottom: 10px">
+                  <div v-if="userid == pageuserid" style="margin-bottom: 10px; height: 36px">
                     <!-- :disabled="item.isfinish" -->
                     <v-btn
+                      :disabled = !item.issuccess
                       @click.stop="item.modal.isopen = true"
                       style="
                         background-color: rgb(22, 150, 245);
@@ -228,21 +236,25 @@
                         </v-card-actions>
                       </v-card>
                     </v-dialog>
-                    <router-link
+                    <!-- <router-link
                       style="text-decoration: none"
                       :to="{
                         name: 'WriteShopping',
                         params: { address: item.address },
                       }"
-                      ><v-btn
+                      > -->
+                      <!-- #a9a9a9 -->
+                      <v-btn
+                        @click="towriteshopping(item)"
+                        :disabled = !item.issuccess
                         style="
-                          background-color: #a9a9a9;
+                          background-color: rgb(22, 150, 245);
                           color: white;
                           width: 40%;
                         "
                         >쇼핑 오픈</v-btn
-                      ></router-link
-                    >
+                      >
+                      <!-- </router-link> -->
                   </div>
                 </v-card-text>
               </v-card>
@@ -365,12 +377,12 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response)
-        if(response.data == 'scucess') {
-          
-        } else{
-          alert("사용내역 등록에 실패했습니다.");
-        }
+          Swal.fire({
+            icon: "success",
+            title: "",
+            text: "사용내역이 성공적으로 등록되었습니다.",
+            showConfirmButton: false,
+          })
       });
     },
     infiniteHandler($state) {
@@ -383,7 +395,6 @@ export default {
           `${SERVER_URL}/investment/investList/${this.page}?userid=${this.pageuserid}`
         )
         .then((response) => {
-          console.log(response);
           setTimeout(() => {
             if (response.data.data == "success") {
               this.investList = this.investList.concat(response.data.object);
@@ -397,7 +408,7 @@ export default {
                 });
                 // 제목
                 if (item.pjtName.length > 8) {
-                  item.pjtName = item.pjtName.substring(0, 10) + "...";
+                  item.pjtName = item.pjtName.substring(0, 8) + "...";
                 }
                 // 한줄소개
                 if (item.oneLineIntro.length > 40) {
@@ -419,6 +430,13 @@ export default {
                   .post(`${SERVER_URL}/funding/fundingrate`, fr)
                   .then((response) => {
                     this.$set(item, "rate", response.data);
+                    // 성공률 기준 issuccess 추가
+                    if(response.data >= 100 && item.isfinish){
+                      this.$set(item, "issucess", true)
+                    }
+                    else{
+                      this.$set(item, "issuccess", false)
+                    }
                   });
                 // 마감일 기준 남은날짜 계산
                 const year = item.deadLine.substring(0, 4);
@@ -441,9 +459,14 @@ export default {
           }, 1000);
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     },
+    towriteshopping(item){
+      if(item.isfinish){
+        this.$router.push('/writeshopping')
+      }
+    }
   },
   mounted() {
     this.userimg = store.state.userInfo.img;

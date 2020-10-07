@@ -296,7 +296,6 @@ export default {
             }).then(response => {
                 const cutUrl = response.data.substr(18, response.data.length-17)
                 const imgUrl = 'https://twojob.ga/' + cutUrl
-                console.log(response.data);
               callback(imgUrl)
             });
           },
@@ -359,7 +358,6 @@ export default {
         }).then(response => {
             const cutUrl = response.data.substr(18, response.data.length-17)
             const imgUrl = 'https://twojob.ga/' + cutUrl
-            console.log(response.data);
             this.picture = imgUrl;
 
         });

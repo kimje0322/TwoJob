@@ -76,7 +76,7 @@
                 :src="item.picture"
               ></v-img>
             </router-link>
-            <p class="mt-2 mb-1 ml-3 mr-3" style="font-size:13px;">(주){{item.compname}}
+            <p class="mt-2 mb-1 ml-3 mr-3" style="font-size:13px;">
               <v-chip
               small
               class="ma-2 ml-auto px-2"
@@ -131,6 +131,9 @@
         <h5 style="margin-top:20%">쇼핑 프로젝트 검색 결과가 없습니다.</h5>
       </div>
     </div>
+    <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
+      <div slot="no-more" style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px;">목록의 끝입니다 :)</div>
+    </infinite-loading>
   </div>
 </template>
 
@@ -139,12 +142,14 @@ import "../../../public/css/InvestProject.scss";
 import HomeNav from "../../components/HomeNav.vue";
 // import "../../../public/css/ShoppingHome.scss";
 import axios from "axios";
+import InfiniteLoading from 'vue-infinite-loading';
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
     HomeNav,
+    InfiniteLoading
   },
   data() {
     return {
@@ -188,10 +193,12 @@ export default {
   mounted() {
     // 카테고리
     $('.all').addClass('active')
+    $(".allicon").addClass("activeIcon");
     this.initAxios();
   },
   methods: {
     initAxios() {
+      this.page = 0
       const fd = new FormData();
       fd.append("orderOption", 0);
       fd.append("categoryfilter", "");
@@ -213,11 +220,12 @@ export default {
               // console.log(response.data.object.likeCount)
               this.shoppingList.forEach((shoppingPjt) => {
               // 좋아요
-              // shoppingPjt.likeCount = response.data.object.likecount[0];
+              const idx = this.shoppingList.indexOf(shoppingPjt)
+              shoppingPjt.likeCount = response.data.object.likecount[idx];
               // console.log(shoppingPjt)
               // 제목
               if (shoppingPjt.pjtname.length > 11) {
-                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 13) + "...";
+                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
               }
             });
             } else {
@@ -226,10 +234,11 @@ export default {
           }
         })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
     },
     filterAxios() {
+      this.page = 0
       const fd = new FormData();
       fd.append("orderOption", this.nowfilter);
       if (this.nowcategory.length > 0 ) {
@@ -243,13 +252,17 @@ export default {
       axios
         .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
         .then((response) => {
+          console.log(response)
           if (response.data.data == "success") {
-            this.shoppingList = response.data.object;
+            this.shoppingList = response.data.object.object;
             if(this.shoppingList.length > 0) {
               this.ispjt = true
-              this.shoppingList = response.data.object;
+              this.shoppingList = response.data.object.object;
               this.totalpage = this.shoppingList[0].totalpage;
               this.shoppingList.forEach((shoppingPjt) => {
+              // 좋아요
+              const idx = this.shoppingList.indexOf(shoppingPjt)
+              shoppingPjt.likeCount = response.data.object.likecount[idx];
               // 제목
               if (shoppingPjt.pjtname.length > 8) {
                 shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
@@ -327,6 +340,54 @@ export default {
         this.nowfilter = 2;
       }
       this.filterAxios()
+    },
+    infiniteHandler($state) {
+      this.page += 1
+      const fd = new FormData();
+      fd.append("orderOption", this.nowfilter);
+      if (this.nowcategory.length > 0 ) {
+        this.nowcategory.forEach((category) => {
+          // console.log(Boolean(this.nowcategory))
+          fd.append("categoryfilter", category);
+        });
+      } else {
+        fd.append("categoryfilter", "");
+      }
+      axios
+        .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
+        .then((response) => {
+          setTimeout(() => {
+          console.log(response)
+          if (response.data.data == "success") {
+            this.shoppingList = this.shoppingList.concat(response.data.object.object);
+            if(this.shoppingList.length > 0) {
+              this.ispjt = true
+              this.totalpage = this.shoppingList[0].totalpage;
+              this.shoppingList.forEach((shoppingPjt) => {
+              // 좋아요
+              const idx = this.shoppingList.indexOf(shoppingPjt)
+              shoppingPjt.likeCount = response.data.object.likecount[idx];
+              // 제목
+              if (shoppingPjt.pjtname.length > 8) {
+                shoppingPjt.pjtname = shoppingPjt.pjtname.substring(0, 10) + "...";
+              }
+              });
+              $state.loaded()
+              if(this.page >= this.totalpage) {
+                $state.complete()
+              }
+            } else {
+              this.ispjt = false
+            }
+          }else{
+            $state.complete()
+          }
+          }, 1000)
+        })
+        .catch((error) => {
+          // console.log(error);
+        });
+
     },
   },
 };

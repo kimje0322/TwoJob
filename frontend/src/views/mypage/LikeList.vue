@@ -21,7 +21,7 @@
           >
           <!-- 투자 좋아요 프로젝트 창 -->
           <v-tab-item :value="'tab-0'">
-            <v-card flat tile>
+            <v-card flat tile style="height: 100vh, border-radius: 12px !important">
               <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
                 <div style="padding: 1% 0;">
