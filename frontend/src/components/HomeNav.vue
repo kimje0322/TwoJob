@@ -301,12 +301,13 @@ export default {
 
       axios.post(`${SERVER_URL}/login/kakaologin`, fd)
       .then((res) => {
+        console.log(res)
         this.login = true;
-        this.isnew = res.data.member.isfirsttime
+        this.isnew = res.data.isfirsttime
         // store.state.isSigned = true;
         this.userInfo.login = true;
-        this.userInfo.id = res.data.member.oauthId;
-        this.userInfo.name = res.data.member.name;
+        this.userInfo.id = res.data.oauthId;
+        this.userInfo.name = res.data.name;
         // 지갑 정보 조회
         axios.get(
         `${SERVER_URL}/wallet/toid?oauthid=${this.userInfo.id}`)
@@ -322,11 +323,11 @@ export default {
         .catch((err) => {
           console.log(err);
         })
-        if (res.data.member.profileImg == null) {
+        if (res.data.profileImg == null) {
           this.userInfo.img =
             "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
         } else {
-          this.userInfo.img = res.data.member.profileImg;
+          this.userInfo.img = res.data.profileImg;
         }
         store.commit("setUserInfo", this.userInfo);
      });
