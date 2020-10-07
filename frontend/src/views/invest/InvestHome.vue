@@ -37,9 +37,12 @@
       </v-carousel>
     </div>
     <!-- 마감임박 -->
-    <div style="margin: 0 8%">
-      <h4 style="font-weight: 600">마감임박</h4>
-      <hr />
+    <div style="margin: 0 11%">
+       <h4 style="margin-left: 5px; font-weight: 600; margin-bottom:3px">
+        이런 프로젝트 어때요?
+      </h4>
+      <span style="font-size: 0.9rem; margin-left:5px; margin-bottom:4px">오픈이 예정되어 있는 프로젝트입니다.</span>
+      <hr class="divider mt-2" style="width: 24%; border: solid 2px lightgrey; background-color: lightgrey">
     </div>
     <div style="display: flex; padding: 1% 8%">
       <div
@@ -92,9 +95,11 @@
       </div>
     </div>
     <!-- 인기순 -->
-    <div style="margin: 5% 8% 0 8%">
-      <h4 style="font-weight: 600">인기순</h4>
-      <hr />
+    <div style="margin: 5% 11% 0 11%">
+       <h4 style="font-weight: 600; margin-bottom:3px">
+        인기 프로젝트를 추천해드려요
+      </h4>
+      <hr class="divider mt-2" style="width: 28%; border: solid 2px lightgrey; background-color: lightgrey">
     </div>
     <div style="display: flex; padding: 1% 8%; padding-bottom: 5%">
       <div

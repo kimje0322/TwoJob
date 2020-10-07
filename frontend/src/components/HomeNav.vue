@@ -67,7 +67,8 @@
                     <h5 class="mx-auto">충전하기</h5>
                   </v-toolbar>
                   <div style="text-align: center; margin-top: 30px;">
-                    <p class="my-2">충전할 금액을 입력해주세요.</p>
+                    <p style="font-size:18px" class="my-2">충전할 금액을 입력해주세요.</p>
+                    <span class="mb-3" style="font-size:13px; color: gray">충전완료까지 시간이 다소 걸릴 수 있습니다.</span>
                   </div>
                   <!-- 금액 -->
                   <div>
@@ -195,10 +196,7 @@ export default {
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.login = store.state.isSigned;
-<<<<<<< HEAD
-=======
       // console.log(this.userInfo);
->>>>>>> 0b5734eed723f31a4b2e7d18e9dc549cec4dde6f
     } else {
       this.login = false;
     }

@@ -16,7 +16,7 @@
         <div style="text-align: center; margin-top: 20px">
           <h5>{{ pageusername }} 님</h5>
           <div v-if="pageusername == username">
-            <p v-if="iswallet">총 {{ pageuserbalance }} 원</p>
+            <p v-if="iswallet">총 {{ pageuserbalance }} 토큰</p>
           </div>
           <div style="margin-top: 50px">
             <router-link to="/" style="text-decoration: none">
@@ -130,7 +130,6 @@
                     </v-dialog>
                   </div>
                   <span
-                    @click="onChat()"
                     style="
                       margin-right: 5px;
                       color: rgb(22, 150, 245);
@@ -140,14 +139,35 @@
                   >
                     <i class="fas fa-comments"></i>
                   </span>
-                  <!-- <router-link
-                            to="/chat"
-                            style="text-decoration: none; color: black"
-                            > -->
-                  <span style="font-size: 18px; cursor: pointer" @click="onChat()"
-                    >채팅 목록</span
+
+                  <!-- 채팅목록 -->
+                  <!-- <span
+                    @click="onChat()"
+                    style="
+                      margin-right: 5px;
+                      color: rgb(22, 150, 245);
+                      font-size: 18px;
+                      cursor: pointer
+                    "
                   >
-                  <!-- </router-link -->
+
+                  style="color: black; text-decoration: none"
+                    :to="{
+                      name: 'MyInvestCreate',
+                      params: { userid: pageuserid },
+                    <i class="fas fa-comments"></i>
+                  </span> -->
+                   <router-link
+                    style="color: black; text-decoration: none"
+                    :to="{
+                      name: 'MyShoppingParticipate',
+                      params: { userid: pageuserid },
+                    }"
+                  >
+                  <span style="font-size: 18px; cursor: pointer"
+                    >리뷰 등록</span
+                  >
+                  </router-link>
                 </div>
               </div>
             </div>
