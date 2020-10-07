@@ -200,7 +200,7 @@ export default {
         var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
         this.$set(item, "lastday", result);
         // 제목
-        if (item.pjtname.length > 8) {
+        if (item.pjtname.length > 10) {
           item.pjtname = item.pjtname.substring(0, 10) + "...";
         }
         // 투자금액 axios 보내기
@@ -218,7 +218,7 @@ export default {
       });
       this.likeItems.forEach((item) => {
         // 제목
-        if (item.pjtname.length > 8) {
+        if (item.pjtname.length > 10) {
           item.pjtname = item.pjtname.substring(0, 10) + "...";
         }
         // 좋아요 수

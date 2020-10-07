@@ -309,61 +309,36 @@ var reconnect = 0;
 //   },
 // });
 
-// 소켓 연결
-function connect() {
-  ws.connect(
-    {},
-    function (frame) {
-      ws.subscribe("/sub/notice", function (message) {
-        // console.log("!!!!!!!!!!!!event>>", message);
-      });
-      ws.send("/pub/notice", {}, "msg: Haha~~~");
-    },
-    function (error) {
-      // console.log("에러다에러!!!!!");
-      if (reconnect++ <= 5) {
-        setTimeout(function () {
-          sock = new SockJS("https://www.twojob.ga/api/notice");
-          // sock = new SockJS("http://j3b102.p.ssafy.io:8080/api/notice");
-          ws = Stomp.over(sock);
-          connect();
-        }, 10 * 1000);
-      }
-    }
-  );
-}
-connect();
-
-function connection() {
-  ws.connection(
-    {},
-    function (frame) {
-      ws.subscribe("/sub/chat/room" + this.chatroomid, function (message) {
-        var recv = JSON.parse(message.body);
-        vm.recvMessage(recv);
-      });
-      ws.send(
-        "/pub/chat/message",
-        {},
-        JSON.stringify({
-          type: "ENTER",
-          roomid: this.chatroomid,
-          sender: store.state.userInfo.name,
-        })
-      );
-    },
-    function (error) {
-      if (reconnect++ <= 5) {
-        setTimeout(function () {
-          sock = new SockJS("https://www.twojob.ga/api/ws-stomp");
-          // sock = new SockJS("http://j3b102.p.ssafy.io:8080/api/ws-stomp");
-          ws = Stomp.over(sock);
-          connection();
-        }, 10 * 1000);
-      }
-    }
-  );
-}
+// function connection() {
+//   ws.connection(
+//     {},
+//     function (frame) {
+//       ws.subscribe("/sub/chat/room" + this.chatroomid, function (message) {
+//         var recv = JSON.parse(message.body);
+//         vm.recvMessage(recv);
+//       });
+//       ws.send(
+//         "/pub/chat/message",
+//         {},
+//         JSON.stringify({
+//           type: "ENTER",
+//           roomid: this.chatroomid,
+//           sender: store.state.userInfo.name,
+//         })
+//       );
+//     },
+//     function (error) {
+//       if (reconnect++ <= 5) {
+//         setTimeout(function () {
+//           sock = new SockJS("https://www.twojob.ga/api/ws-stomp");
+//           // sock = new SockJS("http://j3b102.p.ssafy.io:8080/api/ws-stomp");
+//           ws = Stomp.over(sock);
+//           connection();
+//         }, 10 * 1000);
+//       }
+//     }
+//   );
+// }
 
 export default {
   data() {
@@ -392,7 +367,10 @@ export default {
   components: {
     // Navbar,
   },
-
+  create() {
+    this.chatroomid = 1
+    this.connect()
+  },
   mounted() {
     // sender
     this.sender = localStorage.getItem("wschat.sender");
@@ -431,6 +409,34 @@ export default {
     // console.log("askusername" + store.state.askusername)
   },
   methods: {
+    // 소켓 연결
+    connect() {
+      var sock = new SockJS("https://www.twojob.ga/api/notice");
+      var ws = Stomp.over(sock);
+      ws.connect(
+        {},
+        (frame) => {
+          ws.subscribe("/sub/notice/", (message) => {
+            var recv = JSON.parse(message.body);
+            this.recvMessage(recv);
+            // console.log("!!!!!!!!!!!!event>>", message);
+          });
+          ws.send("/pub/notice", {}, "msg: Haha~~~");
+        },
+        function (error) {
+          // console.log("에러다에러!!!!!");
+          if (reconnect++ <= 5) {
+            setTimeout(function () {
+              sock = new SockJS("https://www.twojob.ga/api/notice");
+              // sock = new SockJS("http://j3b102.p.ssafy.io:8080/api/notice");
+              ws = Stomp.over(sock);
+              connect();
+            }, 10 * 1000);
+          }
+        }
+      );
+    },
+
     openChat(roomid, name, img) {
       this.click = true;
 
@@ -503,6 +509,7 @@ export default {
 
     // 채팅 수신
     recvMessage: function (recv) {
+      console.log('실행')
       this.messages.unshift({
         type: recv.type,
         sender: recv.type == "ENTER" ? "[알림]" : recv.sender,

@@ -211,13 +211,13 @@ export default {
             today.setDate(day - today.getDate());
             this.$set(item, "afterday", today.getDate());
             // 제목
-            if (item.pjtname.length > 10) {
+            if (item.pjtname.length > 13) {
               item.pjtname = item.pjtname.substring(0, 13) + "...";
             }
         })
         this.likeItems.forEach(item => {
           // 제목
-          if (item.pjtname.length > 10) {
+          if (item.pjtname.length > 12) {
             item.pjtname = item.pjtname.substring(0, 12) + "...";
           }
         })

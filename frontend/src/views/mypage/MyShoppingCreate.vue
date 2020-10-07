@@ -159,7 +159,7 @@ export default {
                   response.data.object.onelineintros[idx]
                 );
                 // 제목
-                if (item.pjtname.length > 8) {
+                if (item.pjtname.length > 10) {
                   item.pjtname = item.pjtname.substring(0, 10) + "...";
                 }
                 // 한줄소개
