@@ -1,6 +1,7 @@
 <template>
   <div class="shoppingDetail">
-    <navbar />
+    <HomeNav />
+    <div>
     <!-- 상품 게시글 제목 -->
     <div
       class="shoppingImg"
@@ -133,7 +134,7 @@
               disabled="islogin == false || this.maker.oauthId == userid"
               style="flex: 1">
               <div @click="onChat()" class="btns">
-                <v-app></v-app>
+                <v-app class="vApp"></v-app>
                 <div>
                   <v-dialog max-width="800" min-height="500" v-model="chatroom">
                     <ChatRoom @closeChatRoom="closeChatRoom"></ChatRoom>
@@ -364,12 +365,14 @@
         </v-tabs-items>
       </div>
     </div>
+    </div>
   </div>
 </template>
 
 <script>
 import "../../../public/css/ShoppingDetail.scss";
-import Navbar from "../../components/Navbar.vue";
+// import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import axios from "axios";
 import store from "../../store/index.js";
 import ChatRoom from "@/views/mypage/ChatRoom.vue";
@@ -379,7 +382,8 @@ const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar,
+    // Navbar,
+    HomeNav,
     ChatRoom,
   },
   data() {
@@ -568,10 +572,8 @@ export default {
     },
     onChat() {
       // window.open("");
-      console.log('maker')
-      console.log(this.maker)
       this.chatroom = true;
-      console.log("oauthId " + this.maker.oauthId);
+      // console.log("oauthId " + this.maker.oauthId);
       store.commit("setAsk", this.maker.name, this.maker.oauthId);
       store.state.askuserid = this.maker.oauthId;
       // console.log("모달 열어보자" + this.chatroom);

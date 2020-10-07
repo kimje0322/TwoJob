@@ -2,7 +2,7 @@
   <div class="home">
     <!-- 상단 Navbar -->
     <HomeNav />
-    <div class="mt-5 words" style="text-align:center;">
+    <div class="mt-2 words" style="text-align:center;">
       <h1 class="my-element my-5" style="font-size:3vw;">Get funding with <span class="twojob">TwoJob</span></h1>
     </div>
     <img style="width:100%; margin-bottom: 8%" class="mx-0 py-0" src="../assets/images/배경12.png" alt="">
@@ -179,18 +179,18 @@ const redirect_uri = "https://www.twojob.ga/api";
 
 export default {
   mounted() {
-    console.log("유저아이디는")
-    console.log(store.state.userInfo.id)
+    // console.log("유저아이디는")
+    // console.log(store.state.userInfo.id)
     axios
       .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
       .then((res) => {
         // console.log("이건 밸런스값임");
-        console.log(res);
+        // console.log(res);
         if (res.data != "401") {
           // console.log("401 에러안나");
           store.commit("setBalance", res.data);
         }
-        console.log(store.state.balance);
+        // console.log(store.state.balance);
       });
   },
   methods: {

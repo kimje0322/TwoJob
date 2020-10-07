@@ -1,7 +1,7 @@
 <template>
   <div class="myinvestcreate">
     <!-- 상단 Navbar -->
-    <navbar style="" />
+    <HomeNav />
     <div style="border-top: 1px solid lightgray; height: 100vh">
       <div style="padding: 3% 0 2% 10%">
         <h4 style="font-weight: 800">
@@ -80,9 +80,9 @@
 </template>
 
 <script>
+import HomeNav from "../../components/HomeNav.vue";
 import axios from "axios";
 import store from "../../store/index.js";
-import Navbar from "../../components/Navbar.vue";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 import "../../../public/css/MyInvestCreate.scss";
@@ -111,7 +111,7 @@ export default {
   },
   methods: {},
   components: {
-    Navbar,
+    HomeNav,
   },
   mounted() {
     this.userimg = store.state.userInfo.img;

@@ -1,6 +1,6 @@
 <template>
   <div class="writeinvest">
-    <navbar/> 
+    <HomeNav />
     <!-- <h4>마이페이지</h4> -->
     <!-- 쇼핑 글쓰기 메뉴바 -->
     <div>
@@ -191,7 +191,7 @@ import "@/../public/css/WriteInvest.scss";
 import "@/../public/css/Writeshopping.scss";
 import $ from "jquery";
 import Swal from "sweetalert2";
-import Navbar from "../../components/Navbar.vue"
+import HomeNav from "../../components/HomeNav.vue";
 // editor
 import "codemirror/lib/codemirror.css";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -203,7 +203,7 @@ import store from '../../store/index.js'
 const SERVER_URL = "https://www.twojob.ga/api";
 export default {
   components: {
-    Navbar,
+    HomeNav,
     Editor,
   },
   data() {
@@ -258,7 +258,7 @@ export default {
       editorOptions: {
         hooks: {
           addImageBlobHook: function (blob, callback) {
-            console.log(blob)
+            // console.log(blob)
             // const imageURL = URL.createObjectURL(blob)
             // callback(imageURL);
             var formData = new FormData();
@@ -326,13 +326,13 @@ export default {
     onThumbnail(e) {
        var formData = new FormData();
         formData.append("img", e);
-        console.log(e)
+        // console.log(e)
         axios.post(`${SERVER_URL}/investment/changePath`, formData, { 
             headers: { 'Content-Type': 'multipart/form-data' } 
         }).then(response => {
             const cutUrl = response.data.substr(18, response.data.length-17)
             const imgUrl = 'http://j3b102.p.ssafy.io/' + cutUrl
-            console.log(response.data);
+            // console.log(response.data);
             this.picture = imgUrl;
 
         });
@@ -411,7 +411,7 @@ export default {
         cancelButtonText: '취소하기',
         reverseButtons: true
       }).then((result) => {
-        console.log(this.userid)
+        // console.log(this.userid)
         if (result.value) {
           axios.post(`${SERVER_URL}/sale/create`, {
             userid: this.userid,
@@ -456,7 +456,7 @@ export default {
                       },
                     })
                     .then((response) => {
-                      console.log(response);
+                      // console.log(response);
                       this.$router.push("/shoppinghome");
                       Swal.fire({
                         icon: "success",
@@ -470,7 +470,7 @@ export default {
                   }
             })
             .catch(error => {
-              console.log(error)
+              // console.log(error)
             })
         }
       })
@@ -492,7 +492,7 @@ export default {
         this.title = "";
         this.openDate = "";
         this.price = 0;
-        console.log(this.addedItems)
+        // console.log(this.addedItems)
       } else {
         alert('모든 정보를 입력해주세요.')
       }

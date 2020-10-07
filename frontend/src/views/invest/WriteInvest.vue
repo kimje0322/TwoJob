@@ -1,28 +1,32 @@
 <template>
   <div class="writeinvest">
-    <navbar />
+    <HomeNav />
     <!-- 투자 메뉴바 -->
     <div class="investNav">
-      <div class="items">
+      <div class="items" style="height: 37.6px !important;margin: 24px 0px 0px 0px; !important">
         <div>
           <router-link to="/investhome">
-            <h5>투자홈</h5>
+            <h5 class="pageTab" style="font-size:1.25rem !important">투자홈</h5>
           </router-link>
         </div>
-        <div style="margin: 0 15%">
+        <div style="margin: 0 11%">
           <router-link to="/investproject">
-            <h5>프로젝트</h5>
+            <h5 class="pageTab" style="font-size:1.25rem !important">프로젝트</h5>
           </router-link>
         </div>
         <div>
           <router-link to="/writeinvest">
-            <h5 style="margin: 0; color: rgb(22, 150, 245)">투자오픈</h5>
+            <h5 class="pageTab" style="margin: 0; color: rgb(22, 150, 245);font-size:1.25rem !important">투자오픈</h5>
           </router-link>
         </div>
+        <br>
+        <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px lightgrey; background-color: lightgrey">
+        <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px lightgrey; background-color: lightgrey">
+        <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px rgb(22, 150, 245); background-color:  rgb(22, 150, 245)">
       </div>
     </div>
     <!-- 투자 글쓰기 메뉴바 -->
-    <div>
+    <div style="padding-left:25px; padding-right: 15px;">
       <!-- 투자 글쓰기 메뉴 -->
       <div class="writeMenuBar">
         <v-tabs v-model="tab" class="elevation-2" dark hide-slider>
@@ -274,7 +278,8 @@
 import "@/../public/css/WriteInvest.scss";
 import $ from "jquery";
 import Swal from "sweetalert2";
-import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
+// import Navbar from "../../components/Navbar.vue";
 // editor
 import "codemirror/lib/codemirror.css";
 import "@toast-ui/editor/dist/toastui-editor.css";
@@ -285,7 +290,7 @@ import store from "../../store/index.js";
 const SERVER_URL = "https://www.twojob.ga/api";
 export default {
   components: {
-    Navbar,
+    HomeNav,
     Editor,
   },
   data() {
@@ -345,7 +350,7 @@ export default {
       editorOptions: {
         hooks: {
           addImageBlobHook: function (blob, callback) {
-            console.log(blob);
+            // console.log(blob);
             // const imageURL = URL.createObjectURL(blob)
             // callback(imageURL);
             var formData = new FormData();
@@ -523,7 +528,7 @@ export default {
     },
     onSave() {
       this.editortext = this.$refs.toastuiEditor.invoke("getHtml");
-      console.log(this.editortext);
+      // console.log(this.editortext);
     },
     colorBtn() {
       if (
@@ -593,7 +598,7 @@ export default {
                 editorhtml: this.editortext,
               })
               .then((response) => {
-                console.log(response);
+                // console.log(response);
                 if (response.data.data == "Success") {
                   // 블록체인
                   const fd = new FormData();
@@ -624,7 +629,7 @@ export default {
                       },
                     })
                     .then((response) => {
-                      console.log(response);
+                      // console.log(response);
                       this.$router.push("/investhome");
                       Swal.fire({
                         icon: "success",
@@ -638,7 +643,7 @@ export default {
                 }
               })
               .catch((error) => {
-                console.log(error);
+                // console.log(error);
               });
           }
         });
@@ -650,11 +655,11 @@ export default {
 
 <style scoped>
 .investNav {
-  height: 50px;
+  /* height: 50px; */
   text-align: center;
-  line-height: 50px;
-  border-bottom: 1px solid lightgray;
-  border-top: 1px solid lightgray;
+  /* line-height: 50px; */
+  /* border-bottom: 1px solid lightgray;
+  border-top: 1px solid lightgray; */
   margin-bottom: 15px;
 }
 .items div {
@@ -754,5 +759,8 @@ input:hover {
 }
 #introduce:hover {
   border: 2px solid rgb(22, 150, 245);
+}
+.pageTab {
+  margin-bottom: 0px !important;
 }
 </style>

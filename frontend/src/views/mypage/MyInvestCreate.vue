@@ -274,7 +274,7 @@ export default {
       // 페이지 사용자
       pageusername: "",
       pageuserid: "",
-      page: 0,
+      page: 1,
       // 투자금 사용내역 모달
       receiptPrice: "",
       inputmessage: false,
@@ -322,7 +322,7 @@ export default {
         list: this.imgList,
       };
       axios.post(`${SERVER_URL}/funding/usefund`, useFund).then((response) => {
-        console.log(response);
+        // console.log(response);
       });
     },
   },
@@ -389,7 +389,7 @@ export default {
         });
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
     // pageuser 정보 가져오기
     const fc = new FormData();

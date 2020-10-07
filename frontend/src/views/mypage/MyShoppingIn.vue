@@ -1,7 +1,7 @@
 <template>
   <div class="myinvestcreate">
     <!-- 상단 Navbar -->
-    <navbar style="" />
+    <HomeNav />
     <div style="border-top: 1px solid lightgray; height: 100vh;">
       <div style="padding: 3% 0 2% 10%">
         <h4 style="font-weight: 800"><span style="color: rgb(22, 150, 245)">{{pageusername}}</span>님이 생성한 쇼핑 프로젝트</h4>
@@ -56,7 +56,7 @@
 <script>
 import axios from "axios";
 import store from "../../store/index.js";
-import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 import "../../../public/css/MyInvestCreate.scss";
@@ -83,7 +83,7 @@ export default {
   methods: {
   },
   components: {
-    Navbar,
+    HomeNav
   },
   mounted() {
     this.userimg = store.state.userInfo.img;
@@ -96,13 +96,13 @@ export default {
     this.pageuserid = pageid;
 
     // pageuser가 참가한 투자 프로젝트 가져오기
-    console.log(this.pageuserid)
+    // console.log(this.pageuserid)
     axios
       .get(
         `${SERVER_URL}/mypage/salelist?direction=ASC&oauthId=${this.pageuserid}&page=${this.page}&size=${this.size}`
       )
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if(response.data.content.type == "FUNDING"){
         }
         // this.shoppingList = response.data.object;
@@ -114,7 +114,7 @@ export default {
         // });
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
     // pageuser 정보 가져오기
     const fc = new FormData();

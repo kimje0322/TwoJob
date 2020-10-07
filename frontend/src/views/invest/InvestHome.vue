@@ -1,28 +1,31 @@
 <template>
   <div class="investhome">
-    <navbar />
+    <HomeNav />
     <!-- 투자 메뉴바 -->
     <div class="investNav">
-      <div class="items">
+      <div class="items" style="text-align: center; height: 37.6px !important;margin: 24px 0px 0px 0px;">
         <div>
           <router-link to="/investhome">
-            <h5 style="color: rgb(22, 150, 245)">투자홈</h5>
+            <h5 class="pageTab" style="color: rgb(22, 150, 245)">투자홈</h5>
           </router-link>
         </div>
-        <div style="margin: 0 15%">
+        <div style="margin: 0 11%">
           <router-link to="/investproject">
-            <h5>프로젝트</h5>
+            <h5 class="pageTab">프로젝트</h5>
           </router-link>
         </div>
         <div>
           <router-link to="/writeinvest">
-            <h5 style="margin: 0">투자오픈</h5>
+            <h5 class="pageTab" style="margin: 0">투자오픈</h5>
           </router-link>
-        </div>
+        </div><br>
+        <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px rgb(22, 150, 245); background-color: rgb(22, 150, 245)">
+        <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px lightgrey; background-color: lightgrey">
+        <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px lightgrey; background-color: lightgrey">
       </div>
     </div>
     <!-- 투자홈 광고사진 -->
-    <div class="homeImg">
+    <div class="homeImg mt-5">
       <v-carousel>
         <v-carousel-item
           v-for="(item, i) in items"
@@ -154,14 +157,14 @@
 
 <script>
 import "../../../public/css/InvestHome.scss";
-import Navbar from "../../components/Navbar.vue";
+import HomeNav from "../../components/HomeNav.vue";
 import axios from "axios";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
-    Navbar,
+    HomeNav,
   },
   data() {
     return {
@@ -242,10 +245,10 @@ export default {
 
 <style scoped>
 .investNav {
-  height: 50px;
+  /* height: 50px; */
   text-align: center;
-  line-height: 50px;
-  border-top: 1px solid lightgray;
+  /* line-height: 50px; */
+  /* border-top: 1px solid lightgray; */
   /* border-bottom: 1px solid lightgray; */
 }
 .items div {
@@ -277,5 +280,8 @@ export default {
 }
 .openBadge {
   color: rgb(22, 150, 245);
+}
+.pageTab {
+  margin-bottom: 0px !important;
 }
 </style>
