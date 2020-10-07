@@ -15,5 +15,7 @@ public interface BlockTransactionRepository extends JpaRepository<BlockTransacti
 	List<BlockTransaction> findByToaddressAndType(String address,TransactType type);
 	Page<BlockTransaction> findByFromaddressAndTypeflag(String address, int typeflag,Pageable pageable);
 	List<BlockTransaction> findByFromaddressAndType(String address,TransactType type,Pageable pageable);
-	List<BlockTransaction> findDistinctFromAddressByToaddressAndType(String address, TransactType type);
+	
+	@Query(value = "SELECT DISTINCT(p.fromaddress) FROM blocktransact p WHERE p.toaddress = ?1 and p.type = ?2", nativeQuery = true)
+	List<String> findthis(String address, String type);
 }
