@@ -1,5 +1,7 @@
 package com.blocker.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,9 @@ public class LoginContoroller {
     public ResponseEntity<?> login(@RequestParam("accessToken") String accessToken) {
     	Object result =  loginService.getUserInfo(accessToken);
     	if(result.getClass() == Member.class){
-    		return new ResponseEntity<Member>((Member)result, HttpStatus.OK);
+    		Map<String, Object> test = (Map)result;
+    		System.out.println(test.toString());
+    		return new ResponseEntity<Map>((Map)result, HttpStatus.OK);
     	}else if(result.getClass() == String.class) {
     		return new ResponseEntity<String>((String)result, HttpStatus.OK);
     	}else {
