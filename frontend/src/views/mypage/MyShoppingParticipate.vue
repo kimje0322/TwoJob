@@ -6,11 +6,11 @@
       <div style="padding: 3% 0 2% 10%">
         <h4 style="font-weight: 800">
           <span style="color: rgb(22, 150, 245)">{{ username }}</span
-          >님이 참여한 쇼핑 프로젝트
+          >님 리뷰를 작성해주세요!
         </h4>
       </div>
       <!-- 프로젝트 메뉴바 -->
-      리뷰
+      
     </div>
   </div>
 </template>
