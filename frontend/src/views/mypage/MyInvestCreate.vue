@@ -80,6 +80,7 @@
                   </div>
                   <!-- 영수증 등록, 상품 판매 글쓰기 -->
                   <div v-if="userid == pageuserid" style="margin-bottom: 10px">
+                    <!-- :disabled="item.isfinish" -->
                     <v-btn
                       @click.stop="item.modal.isopen = true"
                       style="
@@ -246,6 +247,19 @@
                 </v-card-text>
               </v-card>
             </div>
+            <!-- 무한 스크롤 -->
+            <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
+              <div
+                slot="no-more"
+                style="
+                  color: rgb(102, 102, 102);
+                  font-size: 14px;
+                  padding: 10px 0px;
+                "
+              >
+                목록의 끝입니다 :)
+              </div>
+            </infinite-loading>
           </div>
         </div>
       </div>
@@ -260,10 +274,15 @@ import Navbar from "../../components/Navbar.vue";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 import "../../../public/css/MyInvestCreate.scss";
+import InfiniteLoading from "vue-infinite-loading";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
+  components: {
+    Navbar,
+    InfiniteLoading,
+  },
   data() {
     return {
       // 사용자
@@ -275,6 +294,7 @@ export default {
       pageusername: "",
       pageuserid: "",
       page: 0,
+      totalpage: 0,
       // 투자금 사용내역 모달
       receiptPrice: "",
       inputmessage: false,
@@ -325,73 +345,87 @@ export default {
         console.log(response);
       });
     },
-  },
-  components: {
-    Navbar,
+    infiniteHandler($state) {
+      const pageid = this.$route.params.userid;
+      this.pageuserid = pageid;
+
+      // pageuser가 생성한 투자 프로젝트 가져오기
+      axios
+        .get(
+          `${SERVER_URL}/investment/investList/${this.page}?userid=${this.pageuserid}`
+        )
+        .then((response) => {
+          console.log(response);
+          setTimeout(() => {
+            if (response.data.data == "success") {
+              this.investList = this.investList.concat(response.data.object);
+              this.totalpage = this.investList[0].totalpage
+              this.investList.forEach((item) => {
+                // 사용내역 모달
+                const idx = this.investList.indexOf(item);
+                this.$set(item, "modal", {
+                  name: `input${idx}`,
+                  isopen: false,
+                });
+                // 제목
+                if (item.pjtName.length > 8) {
+                  item.pjtName = item.pjtName.substring(0, 10) + "...";
+                }
+                // 한줄소개
+                if (item.oneLineIntro.length > 40) {
+                  item.oneLineIntro =
+                    item.oneLineIntro.substring(0, 40) + "...";
+                }
+                // 투자금액 axios 보내기
+                axios
+                  .get(
+                    `${SERVER_URL}/funding/nowfund?campaignId=${item.address}`
+                  )
+                  .then((response) => {
+                    this.$set(item, "investprice", response.data);
+                  });
+                // 달성률 axios
+                const fr = new FormData();
+                fr.append("campaignId", item.address);
+                axios
+                  .post(`${SERVER_URL}/funding/fundingrate`, fr)
+                  .then((response) => {
+                    this.$set(item, "rate", response.data);
+                  });
+                // 마감일 기준 남은날짜 계산
+                const year = item.deadLine.substring(0, 4);
+                const month = item.deadLine.substring(5, 7);
+                const day = item.deadLine.substring(8, 10);
+                var Dday = new Date(year, month - 1, day);
+                var now = new Date();
+                var gap = now.getTime() - Dday.getTime();
+                var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+                this.$set(item, "lastday", result);
+              });
+              $state.loaded();
+              this.page += 1;
+              if (this.page >= this.totalpage) {
+                $state.complete();
+              }
+            } else {
+              $state.complete();
+            }
+          }, 1000);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
   mounted() {
     this.userimg = store.state.userInfo.img;
     this.username = store.state.userInfo.name;
     this.userbalance = store.state.balance;
     this.userid = store.state.userInfo.id;
-
-    var idx = window.location.href.indexOf("pjt");
+    
+    // pageuser 정보 가져오기
     const pageid = this.$route.params.userid;
     this.pageuserid = pageid;
-
-    // axios
-    // console.log(pageid + "asdfadsddd");
-    // console.log(typeof pageid);
-
-    // pageuser가 생성한 투자 프로젝트 가져오기
-    axios
-      .get(
-        `${SERVER_URL}/investment/investList/${this.page}?userid=${this.pageuserid}`
-      )
-      .then((response) => {
-        console.log(response);
-        this.investList = response.data.object;
-        this.investList.forEach((item) => {
-          // 사용내역 모달
-          const idx = this.investList.indexOf(item);
-          this.$set(item, "modal", { name: `input${idx}`, isopen: false });
-          // 제목
-          if (item.pjtName.length > 8) {
-            item.pjtName = item.pjtName.substring(0, 10) + "...";
-          }
-          // 한줄소개
-          if (item.oneLineIntro.length > 40) {
-            item.oneLineIntro = item.oneLineIntro.substring(0, 40) + "...";
-          }
-          // 투자금액 axios 보내기
-          axios
-            .get(`${SERVER_URL}/funding/nowfund?campaignId=${item.address}`)
-            .then((response) => {
-              this.$set(item, "investprice", response.data);
-            });
-          // 달성률 axios
-          const fr = new FormData();
-          fr.append("campaignId", item.address);
-          axios
-            .post(`${SERVER_URL}/funding/fundingrate`, fr)
-            .then((response) => {
-              this.$set(item, "rate", response.data);
-            });
-          // 마감일 기준 남은날짜 계산
-          const year = item.deadLine.substring(0, 4);
-          const month = item.deadLine.substring(5, 7);
-          const day = item.deadLine.substring(8, 10);
-          var Dday = new Date(year, month - 1, day);
-          var now = new Date();
-          var gap = now.getTime() - Dday.getTime();
-          var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
-          this.$set(item, "lastday", result);
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // pageuser 정보 가져오기
     const fc = new FormData();
     fc.append("userid", this.pageuserid);
     axios.post(`${SERVER_URL}/util/userinfo`, fc).then((response) => {

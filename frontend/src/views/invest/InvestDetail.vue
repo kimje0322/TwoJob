@@ -455,7 +455,6 @@
                 <v-btn @click="oncomment" class="commentBtn">댓글</v-btn>
               </div>
               <hr v-if="islogin" />
-              <p style="margin-left: 10px">총 25건의 댓글이 있습니다.</p>
               <div
                 v-for="(comment, i) in commentList"
                 :key="i"
@@ -484,6 +483,10 @@
                   <p>{{ comment.content }}</p>
                 </div>
               </div>
+              <!-- 무한 스크롤 -->
+              <infinite-loading @infinite="infiniteComment" spinner="waveDots">
+                <div slot="no-more" style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px;">목록의 끝입니다 :)</div>
+              </infinite-loading>
             </div>
           </v-tab-item>
         </v-tabs-items>
@@ -534,7 +537,7 @@ export default {
       items: [],
       // 무한 스크롤
       page: 0,
-      totalPage: 0,
+      totalpage: 0,
       // 좋아요
       isliked: false,
       likeCount: 0,
@@ -548,8 +551,8 @@ export default {
     };
   },
   mounted() {
-    this.nowAddress = this.$route.params.address;
     // 투자 프로젝트 정보 가져오기
+    this.nowAddress = this.$route.params.address;
     const frm = new FormData();
     frm.append("address", this.nowAddress);
     frm.append("userid", store.state.userInfo.id);
@@ -640,7 +643,7 @@ export default {
         .then((response) => {
           console.log(response);
           this.projectList = response.data.object;
-          this.totalPage = response.data.object[0].totalpages;
+          this.totalpage = response.data.object[0].totalpages;
           // 디테일 페이지와 동일한 프로젝트 삭제
           this.projectList.forEach(item =>{
             if(item.investmentDto.address == this.nowAddress){
@@ -665,7 +668,7 @@ export default {
             // pjtname
             if (item.investmentDto.pjtname.length > 8) {
               item.investmentDto.pjtname =
-                item.investmentDto.pjtname.substring(0, 12) + "...";
+                item.investmentDto.pjtname.substring(0, 11) + "...";
             }
             // 투자 금액 axios 가져오기
             axios
@@ -813,38 +816,17 @@ export default {
     // 무한 스크롤
     infiniteHandler($state) {
       this.page += 1
-    //   const EACH_LEN = 30
-    //   fetch("/api/idol/uwasa/pages/" + (this.limit), {method: "get"}).then(resp => {
-    //     return resp.json()
-    //   }).then(data => {
-    //     setTimeout(() => {
-    //       if(data.length) {
-    //         this.topicData = this.topicData.concat(data)
-    //         $state.loaded()
-    //         this.limit += 1
-    //         console.log("after", this.topicData.length, this.limit)
-    //         // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면 
-    //         if(data.length / EACH_LEN < 1) {
-    //           $state.complete()
-    //         }
-    //       } else {
-    //         // 끝 지정(No more data)
-    //         $state.complete()
-    //       }
-    //     }, 1000)
-    //   }).catch(err => {
-    //     console.error(err);
-    //   })
     // 금손 프로젝트 이력 가져오기
       const fd = new FormData();
       fd.append("userid", this.investPjt.userid);
       axios
         .post(`${SERVER_URL}/investment/getAllPJT/${this.page}`, fd)
         .then((response) => {
+          console.log(response.data.object)
           setTimeout(() => {
           if(response.data.data == "success"){
             this.projectList = this.projectList.concat(response.data.object);
-            // this.totalPage = response.data.object[0].totalpages;
+            // this.totalpage = response.data.object[0].totalpages;
             // 디테일 페이지와 동일한 프로젝트 삭제
             this.projectList.forEach(item =>{
               if(item.investmentDto.address == this.nowAddress){
@@ -869,7 +851,7 @@ export default {
               // pjtname
               if (item.investmentDto.pjtname.length > 8) {
                 item.investmentDto.pjtname =
-                  item.investmentDto.pjtname.substring(0, 12) + "...";
+                  item.investmentDto.pjtname.substring(0, 11) + "...";
               }
               // 투자 금액 axios 가져오기
               axios
@@ -907,8 +889,8 @@ export default {
               }
             });
             $state.loaded()
-            console.log("after", this.projectList, this.page)
-            if(this.page >= this.totalPage) {
+            // console.log("after", this.projectList, this.page)
+            if(this.page >= this.totalpage) {
               $state.complete()
             }
           }else{
@@ -916,6 +898,14 @@ export default {
           }
         }, 1000)
       });
+    },
+    infiniteComment($state) {
+      // 투자 프로젝트 정보 가져오기
+      this.nowAddress = this.$route.params.address;
+      const frm = new FormData();
+      frm.append("address", this.nowAddress);
+      frm.append("userid", store.state.userInfo.id);
+      axios.post(`${SERVER_URL}/investment/getDetail`, frm).then((response) => {})
     }
   },
 };

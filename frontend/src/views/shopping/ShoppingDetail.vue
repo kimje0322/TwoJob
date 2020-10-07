@@ -130,9 +130,10 @@
               </div>
             </button>
             <button 
-              disabled="islogin == false || this.maker.oauthId == userid"
-              style="flex: 1">
-              <div @click="onChat()" class="btns">
+              :disabled="islogin == false || this.maker.oauthId == userid"
+              style="flex: 1"
+              @click="onChat()" >
+              <div class="btns">
                 <v-app></v-app>
                 <div>
                   <v-dialog max-width="800" min-height="500" v-model="chatroom">
@@ -386,6 +387,7 @@ export default {
     return {
       // 로그인 
       islogin: store.state.isSigned,
+      userid: store.state.userInfo.id,
       currentItem: "tab-Web",
       tabItems: ["pjtInfo", "reviews"],
       items: [],
@@ -450,6 +452,7 @@ export default {
         axios
           .post(`${SERVER_URL}/util/userinfo?userid=${userid}`)
           .then((res) => {
+            this.maker = res.data.object
             this.makerName = res.data.object.name
             if (res.data.object.profileImg == null) {
             this.makerImg =
@@ -486,7 +489,6 @@ export default {
           .post(`${SERVER_URL}/util/userinfo?userid=${userId}`)
           .then((res) => {
             this.reviews[i].userid = res.data.object.name;
-            this.maker = response.data.object;
             // console.log(res.data.object)
             if (res.data.object.profileImg == null) {
             this.reviews[i].profile = "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
