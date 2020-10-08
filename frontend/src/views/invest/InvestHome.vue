@@ -39,7 +39,7 @@
        <h4 style="margin-left: 5px; font-weight: 600; margin-bottom:3px">
         이런 프로젝트 어때요?
       </h4>
-      <span style="font-size: 0.9rem; margin-left:5px; margin-bottom:4px">오픈이 예정되어 있는 프로젝트입니다.</span>
+      <span style="font-size: 0.9rem; margin-left:5px; margin-bottom:4px">마감이 임박한 있는 프로젝트입니다.</span>
       <hr class="divider mt-2" style="width: 24%; border: solid 2px lightgrey; background-color: lightgrey">
     </div>
     <div style="display: flex; padding: 1% 8%">

@@ -185,7 +185,7 @@
                       :timeout="timeout"
                       top
                     >
-                      설명서가 저장되었습니다.
+                      상품 설명서가 저장되었습니다.
                       <!-- 스낵바 닫기 버튼 -->
                       <!-- <template v-slot:action="{ attrs }">
                         <v-btn
@@ -330,6 +330,9 @@ export default {
   },
   mounted() {
     this.investAddress = this.$route.params.address
+    console.log(this.investAddress)
+    console.log('invest어드레스')
+
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.userid = store.state.userInfo.id;

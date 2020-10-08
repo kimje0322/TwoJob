@@ -8,6 +8,25 @@
           <span style="color: rgb(22, 150, 245)">{{ username }}</span
           >님 리뷰를 작성해주세요!
         </h4>
+        <div style="height: 100vh;">
+          아직 참여한 쇼핑 프로젝트가 없습니다.
+          쇼핑 프로젝에 참여하고 리뷰를 작성해보세요!
+        </div>
+        <div style="text-align: end; margin-right: 70px">
+          <v-btn @click="openReviewDialog(-1)" outlined> 리뷰 작성 </v-btn>
+        </div>
+      <!-- 리뷰 모달 -->
+      <v-dialog max-width="640" min-height="500" v-model="reviewDialog">
+        <ShoppingReview @closeReviewDialog="closeReviewDialog"></ShoppingReview>
+        <v-card-actions style="background-color: white;">
+          <v-spacer></v-spacer>
+          <v-btn text @click="reviewDialog=false">취소</v-btn>
+          <v-btn text color="blue">등록</v-btn>
+        </v-card-actions>
+    </v-dialog>    
+    
+
+      
       </div>
       <!-- 프로젝트 메뉴바 -->
       
@@ -22,12 +41,15 @@ import store from "../../store/index.js";
 import Web3 from "web3";
 import Swal from "sweetalert2";
 import "../../../public/css/MyInvestCreate.scss";
+// 쇼핑 리뷰
+import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
     HomeNav,
+    ShoppingReview,
   },
   data() {
     return {
@@ -43,8 +65,13 @@ export default {
       shoppingList: [],
     };
   },
-  methods: {
-
+   methods: {
+    openReviewDialog() {
+      this.reviewDialog = true;
+    },
+    closeReviewDialog() {
+      this.reviewDialog = false;
+    },
   },
   mounted() {
     this.userimg = store.state.userInfo.img;
