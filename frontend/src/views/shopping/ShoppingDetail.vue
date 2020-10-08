@@ -67,15 +67,16 @@
           <v-chip v-for="(val, key) in items.tags" :key="key" class="mr-1" small
             >#{{ val }}</v-chip
           >
-          <br />
-          <br />
-          <v-list-item>
-         
-          </v-list-item>
+          <div v-if="!items.isopen" style="height: 110px; display: flex; justify-content: center; align-items: center;">
+            <h5 style="margin-top: 10px"><strong>D-{{items.opendate}}</strong>일 후 오픈예정입니다.</h5>
+          </div>
+          <div v-else style="height:110px">
+          </div>
+          
           <v-btn 
             @click="selectCount" 
             class="perchaseBtn white--text"
-            :disabled="islogin == false"
+            :disabled="islogin == false || items.isopen == false"
           >
             <v-icon size="18" class="mr-1">mdi-cart-outline</v-icon>상품 구매
           </v-btn>
@@ -131,7 +132,7 @@
               </div>
             </button>
             <button 
-              disabled="islogin == false || this.maker.oauthId == userid"
+              :disabled="islogin == false || this.maker.oauthId == userid"
               style="flex: 1">
               <div @click="onChat()" class="btns">
                 <v-app class="vApp"></v-app>
@@ -167,11 +168,10 @@
               >
               <strong class="mr-2">{{ makerName }}</strong>
               </router-link>
-              <div v-if="items.url.length"></div>
+              <div v-if="isurl" style="display: inline-block;">
               <v-chip @click="visit(items.url)" label small class="visit px-1"
-                >사이트 방문</v-chip
-              >
-            
+                >사이트 방문</v-chip>
+              </div>
             <p v-html="items.introduce" style="font-size: 1rem">{{ items.introduce }}</p>
           </div>
         </div>
@@ -396,6 +396,7 @@ export default {
       currentItem: "tab-Web",
       tabItems: ["pjtInfo", "reviews"],
       items: [],
+      isurl: "",
       dto: {},
       reviewDate: "",
       shoppingPjt: "",
@@ -444,6 +445,21 @@ export default {
       .then((res) => {
         this.items = res.data.object.object;
         this.investaddress = this.items.saleBoardDto.investaddress
+        this.isurl = this.items.url
+        // 오픈예정
+        const year = this.items.saleBoardDto.startdate.substring(0, 4);
+        const month = this.items.saleBoardDto.startdate.substring(5, 7);
+        const day = this.items.saleBoardDto.startdate.substring(8, 10);
+        var Dday = new Date(year, month-1, day);
+        var now = new Date();
+        var gap = now.getTime() - Dday.getTime();
+        var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+        this.$set(this.items, "opendate", result);
+        if(result > 0){
+          this.$set(this.items, "isopen", false)
+        }else{
+          this.$set(this.items, "isopen", true)
+        }
         // 좋아요
         this.likeCount = res.data.object.likecount;
         this.isliked = res.data.object.like;

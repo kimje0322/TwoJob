@@ -152,6 +152,7 @@
               </div>
                 <div style="padding: 1% 0">
                   <v-card
+                    class="shadowimg"
                     v-for="(item, i) in filtertransactions"
                     :key="i"
                     style="
@@ -663,5 +664,8 @@ input:hover {
 }
 .vapp {
   display: none;
+}
+.shadowimg:hover {
+  box-shadow: 10px 10px 20px grey;
 }
 </style>

@@ -82,7 +82,7 @@
                     type="text"
                     style="width: 35%; text-align: right; font-size: 18px"
                   />
-                  <h5 style="display: inline-block; margin-left: 5px;">원</h5>
+                  <h5 style="display: inline-block; margin-left: 5px;">토큰</h5>
                   <!-- 카테고리 -->
                   <!-- <h5>카테고리</h5>
                   <div class="categoryDiv" style>
@@ -144,7 +144,7 @@
                                 <v-icon size=17>mdi-check</v-icon>
                                 판매 금액
                             </span>
-                            {{ item.price }} 원
+                            {{ item.price }} 토큰
                             </v-list-item-subtitle>
                           <v-list-item-subtitle>
                             <span class="summary">
@@ -198,7 +198,7 @@
                         </v-btn>
                       </template> -->
                     </v-snackbar>
-                  <editor ref="toastuiEditor" v-model="editortext" initialEditType="wysiwyg" height="800px" :options="editorOptions"  />
+                  <editor ref="toastuiEditor" v-model="editortext" initialEditType="markdown" height="800px" :options="editorOptions"  />
                 </div>
               </v-card-text>
             </v-card>
