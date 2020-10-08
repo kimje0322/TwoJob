@@ -185,7 +185,7 @@
                       :timeout="timeout"
                       top
                     >
-                      설명서가 저장되었습니다.
+                      상품 설명서가 저장되었습니다.
                       <!-- 스낵바 닫기 버튼 -->
                       <!-- <template v-slot:action="{ attrs }">
                         <v-btn
@@ -461,6 +461,7 @@ export default {
                   axios
                     .post(`${SERVER_URL}/funding/sellopen`, fd)
                     .then((res) => {
+                      console.log('d응답보겟슴');
                       console.log(res);
                     }).catch((err) => {
                       console.log(err)

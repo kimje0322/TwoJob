@@ -202,10 +202,10 @@ export default {
       axios.post(`${SERVER_URL}/sale/Review`, {
         reviewPicture: this.imgPath,
         reviewexplain: this.content,
-        saleaddress: '239a52e9-380b-4e98-a641-b33c749162ef',
+        saleaddress: 'c270cc9e-52ef-4e92-afca-ae26de74b971',
         satisfied: this.satisfaction,
         similar: this.similarity,
-        userid: "3"
+        userid: "1480844047"
       })
       .then(response => {
         // console.log(response)

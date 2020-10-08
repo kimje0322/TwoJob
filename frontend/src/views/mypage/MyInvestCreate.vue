@@ -89,7 +89,7 @@
                   <div v-if="userid == pageuserid" style="margin-bottom: 10px; height: 36px">
                     <!-- :disabled="item.isfinish" -->
                     <v-btn
-                      :disabled = !item.issuccess
+                      :disabled = item.isfail
                       @click.stop="item.modal.isopen = true"
                       style="
                         background-color: rgb(22, 150, 245);
@@ -246,7 +246,7 @@
                       <!-- #a9a9a9 -->
                       <v-btn
                         @click="towriteshopping(item)"
-                        :disabled = !item.issuccess
+                        :disabled = item.isfail
                         style="
                           background-color: rgb(22, 150, 245);
                           color: white;
@@ -432,10 +432,10 @@ export default {
                     this.$set(item, "rate", response.data);
                     // 성공률 기준 issuccess 추가
                     if(response.data >= 100 && item.isfinish){
-                      this.$set(item, "issucess", true)
+                      this.$set(item, "isfail", false)
                     }
                     else{
-                      this.$set(item, "issuccess", false)
+                      this.$set(item, "isfail", true)
                     }
                   });
                 // 마감일 기준 남은날짜 계산
