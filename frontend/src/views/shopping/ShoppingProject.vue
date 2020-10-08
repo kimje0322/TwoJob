@@ -207,7 +207,7 @@ export default {
       axios
       .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
       .then((response) => {
-        console.log(response)
+        // console.log(response)
         if (response.data.data == "success") {
             this.shoppingList = response.data.object.object;
             // console.log(response.data.object.likecount[0])
@@ -269,7 +269,7 @@ export default {
       axios
         .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
         .then((response) => {
-          console.log(response)
+          // console.log(response)
           if (response.data.data == "success") {
             this.shoppingList = response.data.object.object;
             if(this.shoppingList.length > 0) {
@@ -392,7 +392,7 @@ export default {
         .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
         .then((response) => {
           setTimeout(() => {
-          console.log(response)
+          // console.log(response)
           if (response.data.data == "success") {
             this.shoppingList = this.shoppingList.concat(response.data.object.object);
             if(this.shoppingList.length > 0) {

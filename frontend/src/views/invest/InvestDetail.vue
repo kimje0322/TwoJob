@@ -204,13 +204,13 @@
             >
               (주){{ investPjt.compName }}
             </span>
-            <router-link style="color: black;"
+            <!-- <router-link v-if="islogin" style="color: black;"
               :to="{ name: 'Mypage', params: { userid: writer.oauthId } }"
-            >
-              <span
-                ><strong>{{ writer.name }}</strong></span
-              >
-            </router-link>
+            > -->
+            <button :disabled="!islogin" @click="onpageuserpage">
+              <span ><strong>{{ writer.name }}</strong></span>
+            </button>
+            <!-- </router-link> -->
             <p style="font-size: 0.9rem" v-html="investPjt.introduce">
               {{ investPjt.introduce }}
             </p>
@@ -494,9 +494,9 @@
                 </div>
               </div>
               <!-- 무한 스크롤 -->
-              <infinite-loading @infinite="infiniteComment" spinner="waveDots">
+              <!-- <infinite-loading @infinite="infiniteComment" spinner="waveDots">
                 <div slot="no-more" style="color: rgb(102, 102, 102); font-size: 14px; padding: 10px 0px;">목록의 끝입니다 :)</div>
-              </infinite-loading>
+              </infinite-loading> -->
             </div>
           </v-tab-item>
         </v-tabs-items>
@@ -724,6 +724,11 @@ export default {
     });
   },
   methods: {
+    onpageuserpage(){
+      if(islogin){
+        this.$router.push(`/mypage/${this.writer.oauthId}`)
+      }
+    },
     closeChatRoom() {
       this.chatroom = false;
       store.state.askusername = null;
@@ -914,34 +919,34 @@ export default {
         }, 1000)
       });
     },
-    infiniteComment($state) {
-      // 투자 프로젝트 정보 가져오기
-      this.nowAddress = this.$route.params.address;
-      const frm = new FormData();
-      frm.append("address", this.nowAddress);
-      frm.append("userid", store.state.userInfo.id);
-      axios.post(`${SERVER_URL}/investment/getDetail`, frm).then((response) => {
-        if(response.data.data == 'success'){
-          // 댓글 사용자 정보 가져오기
-          this.commentList = this.investPjt.comments;
-          this.commentList.forEach((comment) => {
-            comment.createat = `${comment.createat.substring(
-              0,
-              4
-            )}.${comment.createat.substring(5, 7)}.${comment.createat.substring(
-              8,
-              10
-            )}`;
-            const fc = new FormData();
-            fc.append("userid", comment.userid);
-            axios.post(`${SERVER_URL}/util/userinfo`, fc).then((response) => {
-              this.$set(comment, "name", response.data.object.name);
-              this.$set(comment, "profileImg", response.data.object.profileImg);
-            });
-          });
-        }
-      })
-    }
+    // infiniteComment($state) {
+    //   // 투자 프로젝트 정보 가져오기
+    //   this.nowAddress = this.$route.params.address;
+    //   const frm = new FormData();
+    //   frm.append("address", this.nowAddress);
+    //   frm.append("userid", store.state.userInfo.id);
+    //   axios.post(`${SERVER_URL}/investment/getDetail`, frm).then((response) => {
+    //     if(response.data.data == 'success'){
+    //       // 댓글 사용자 정보 가져오기
+    //       this.commentList = this.investPjt.comments;
+    //       this.commentList.forEach((comment) => {
+    //         comment.createat = `${comment.createat.substring(
+    //           0,
+    //           4
+    //         )}.${comment.createat.substring(5, 7)}.${comment.createat.substring(
+    //           8,
+    //           10
+    //         )}`;
+    //         const fc = new FormData();
+    //         fc.append("userid", comment.userid);
+    //         axios.post(`${SERVER_URL}/util/userinfo`, fc).then((response) => {
+    //           this.$set(comment, "name", response.data.object.name);
+    //           this.$set(comment, "profileImg", response.data.object.profileImg);
+    //         });
+    //       });
+    //     }
+    //   })
+    // }
   },
 };
 </script>

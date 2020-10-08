@@ -163,11 +163,13 @@
             <p v-if="items.compName" style="font-size: 1rem; margin-bottom: 5px">
               (주){{ items.compname }}
             </p>
-              <router-link style="color: black;"
+              <!-- <router-link style="color: black;"
               :to="{ name: 'Mypage', params: { userid: maker.oauthId } }"
-              >
-              <strong class="mr-2">{{ makerName }}</strong>
-              </router-link>
+              > -->
+              <button :disabled="!islogin" @click="onpageuserpage">
+                <strong class="mr-2">{{ makerName }}</strong>
+              </button>
+              <!-- </router-link> -->
               <div v-if="isurl" style="display: inline-block;">
               <v-chip @click="visit(items.url)" label small class="visit px-1"
                 >사이트 방문</v-chip>
@@ -431,8 +433,8 @@ export default {
       .get(`${SERVER_URL}/funding/gettotalsell?campaignId=${this.investaddress}`)
       .then((res) => {
         this.perchased = res.data
-        console.log('판매개수')
-        console.log(this.perchased)
+        // console.log('판매개수')
+        // console.log(this.perchased)
       })
     // 디테일 정보
     this.shoppingAddress = this.$route.params.address
@@ -541,6 +543,11 @@ export default {
       });
   },
   methods: {
+    onpageuserpage(){
+      if(islogin){
+        this.$router.push(`/mypage/${this.maker.oauthId}`)
+      }
+    },
     // 상품 구매 전 모달
     selectCount() {
       this.perchaseDialog = true;
@@ -555,8 +562,8 @@ export default {
       axios
         .post(`${SERVER_URL}/funding/sellitem`, fd)
         .then((res) => {
-          console.log('구매 된겁니까??')
-          console.log(res)
+          // console.log('구매 된겁니까??')
+          // console.log(res)
         })
         let timerInterval;
         Swal.fire({
