@@ -20,7 +20,7 @@
               style="display: inline-block; width: 33%; margin-bottom: 20px"
             >
               <v-card
-                class="my-12"
+                class="my-12 shadowimg"
                 max-width="78%"
                 max-height="600px"
                 style="margin: auto; margin-bottom: 30px"
@@ -406,5 +406,8 @@ input:hover {
   background-color: rgb(22, 150, 245) !important;
   color: white !important;
   text-align: right;
+}
+.shadowimg:hover {
+  box-shadow: 10px 10px 20px grey;
 }
 </style>

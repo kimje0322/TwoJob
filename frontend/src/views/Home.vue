@@ -12,15 +12,15 @@
       <div class="mt-4 ml-5 pt-3 pl-4">
         <h1 class="engTitle mt-5" style="font-size:5vw">Reliable</h1>
         <h3 class="korTitle">신뢰가능한</h3>
-        <p class="mt-5 ml-2" style="font-size:1vw">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
+        <p class="mt-5 ml-2" style="font-size:1vw"><span class="twojob">TwoJob</span>서비스는 블록체인에 프로젝트 이력을 저장하고<br> 상품설명서 정확도를 체크하여 신뢰가능한<br> 투자/쇼핑이 가능합니다.</p>
       </div>
     </div>
 
     <div class="homeDiv mx-auto" style="display:flex"> 
       <div class="mt-4 ml-5 mr-5 pt-3 pl-4 pr-4">
-        <h1 class="engTitle mt-5" style="font-size:4.7vw">Reasonable</h1>
-        <h3 class="korTitle mr-2" style="text-align: end">합리적인</h3>
-        <p class="mt-5 mr-2" style="font-size:1vw; text-align: end">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
+        <h1 class="engTitle mt-5" style="font-size:4.7vw">Transparent</h1>
+        <h3 class="korTitle mr-2" style="text-align: end">투명한</h3>
+        <p class="mt-5 mr-2" style="font-size:1vw; text-align: end">모든 사용자에게 투자한 금액의 사용내역서를<br> <span class="twojob">Twojob</span>에서는 투명하게 공개하고 있습니다.<br> 이제 걱정없이 투자해보세요.</p>
       </div>
       <img class="homeImg2 ml-2" src="../assets/images/home5.jpg" alt="">
     </div>
@@ -28,9 +28,9 @@
     <div class="homeDiv mx-auto" style="display:flex"> 
       <img class="homeImg3 mr-1" src="../assets/images/하늘filter.jpg" alt="">
       <div class="mt-4 ml-4 pt-3 pl-3">
-        <h1 class="engTitle mt-5" style="font-size:4.6vw">Transparent</h1>
-        <h3 class="korTitle ml-2">투명한</h3>
-        <p class="mt-5 ml-2" style="font-size:1vw">신뢰성 블록체인에 기록된 <span class="twojob">TwoJob</span>서비스 데이터는 <br>해킹을 통한 위변조가 매우 어렵기 때문에 누구나 <br>신뢰할 수 있습니다.</p>
+        <h1 class="engTitle mt-5" style="font-size:4.6vw">profitable</h1>
+        <h3 class="korTitle ml-2">수익성있는</h3>
+        <p class="mt-5 ml-2" style="font-size:1vw">자신이 투자한 프로젝트에서 나오는 수익을<br> <span class="twojob">TwoJob</span>은 자동화 시스템으로 토큰을 보상해줍니다.<br> 다양한 투자프로젝트에 참여하시고 토큰을 얻어 수익을 얻어보세요.</p>
       </div>
     </div>
     <!-- <div class="homeImg">

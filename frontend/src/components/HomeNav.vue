@@ -327,6 +327,7 @@ export default {
      });
     },
     onLogout() {
+      window.location.reload();
       store.commit("deluserInfo");
       this.login = false;
       this.items = [

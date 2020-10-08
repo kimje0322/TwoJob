@@ -33,7 +33,7 @@
               outlined
               tile
             >
-              <v-icon :class="`${category.key}icon`" size="30">mdi-{{ category.icon }}</v-icon>
+              <v-icon class="categoryicon" :class="`${category.key}icon`" size="30">mdi-{{ category.icon }}</v-icon>
               <p class="categoryTag">{{category.name}}</p>
             </v-card>
           </v-col>
@@ -67,7 +67,7 @@
           :key="i"
           style="display: inline-block; width: 30%; margin-bottom: 30px"
         >
-          <v-card class="my-12" max-width="320" style="margin: auto">
+          <v-card class="my-12 shadowimg" max-width="320" style="margin: auto">
             <router-link
               :to="{ name: 'ShoppingDetail', params: { address: item.address } }"
             >
@@ -76,29 +76,31 @@
                 :src="item.picture"
               ></v-img>
             </router-link>
-            <p class="mt-2 mb-1 ml-3 mr-3" style="font-size:13px;">
-              <v-chip
-              small
-              class="ma-2 ml-auto px-2"
-              label
-              outlined=""
-              style="background-color:#FF4081; color:black; float:right;"
-            >
-              <span>
-                <v-icon left
-                  style="color:#FF1744"
-                  class="mr-0 heartChip" size="19">
-                  mdi-heart
-                </v-icon>
-                {{item.likeCount}}개
-              </span>
-              </v-chip>
-            </p>
             
-            <v-card-title style="font-weight: 600; margin: auto">
+            
+            <v-card-title style="font-weight: 600; margin: auto;">
               {{ item.pjtname }}
               <div style="margin-left: auto">
-                <!-- <v-chip class="projectBadge">{{ item.lastday }}일 남음</v-chip> -->
+                  <v-chip
+                  v-if="item.isopen"
+                  small
+                  class="ma-2 ml-auto px-2"
+                  label
+                  outlined=""
+                  style="background-color:#FF4081; color:black; float:right;"
+                >
+                  <span>
+                    <v-icon left
+                      style="color:#FF1744"
+                      class="mr-0 heartChip" size="19">
+                      mdi-heart
+                    </v-icon>
+                    {{item.likeCount}}개
+                  </span>
+                </v-chip>
+                <v-chip v-else label small style="padding:7px; background-color: rgb(22, 150, 245); margin-left: auto;">
+                  <span class="openBadge" style="color:white">오픈 D-{{ item.opendate }}</span>
+                </v-chip>
               </div>
             </v-card-title>
             <v-card-text style="height: 105px">
@@ -205,6 +207,7 @@ export default {
       axios
       .post(`${SERVER_URL}/sale/getAllSaleList/${this.page}`, fd)
       .then((response) => {
+        console.log(response)
         if (response.data.data == "success") {
             this.shoppingList = response.data.object.object;
             // console.log(response.data.object.likecount[0])
@@ -219,6 +222,20 @@ export default {
               }
               // console.log(response.data.object.likeCount)
               this.shoppingList.forEach((shoppingPjt) => {
+              // 오픈예정
+              const year = shoppingPjt.startdate.substring(0, 4);
+              const month = shoppingPjt.startdate.substring(5, 7);
+              const day = shoppingPjt.startdate.substring(8, 10);
+              var Dday = new Date(year, month-1, day);
+              var now = new Date();
+              var gap = now.getTime() - Dday.getTime();
+              var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+              this.$set(shoppingPjt, "opendate", result);
+              if(result > 0){
+                this.$set(shoppingPjt, "isopen", false)
+              }else{
+                this.$set(shoppingPjt, "isopen", true)
+              }
               // 좋아요
               const idx = this.shoppingList.indexOf(shoppingPjt)
               shoppingPjt.likeCount = response.data.object.likecount[idx];
@@ -259,7 +276,25 @@ export default {
               this.ispjt = true
               this.shoppingList = response.data.object.object;
               this.totalpage = this.shoppingList[0].totalpage;
+              for (let i = 0; i < this.shoppingList.length; i++) {
+                this.shoppingList[i].likeCount =  response.data.object.likecount[i];
+              // console.log(this.shoppingList[i].likeCount )
+              }
               this.shoppingList.forEach((shoppingPjt) => {
+                // 오픈예정
+                const year = shoppingPjt.startdate.substring(0, 4);
+                const month = shoppingPjt.startdate.substring(5, 7);
+                const day = shoppingPjt.startdate.substring(8, 10);
+                var Dday = new Date(year, month-1, day);
+                var now = new Date();
+                var gap = now.getTime() - Dday.getTime();
+                var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+                this.$set(shoppingPjt, "opendate", result);
+                if(result > 0){
+                  this.$set(shoppingPjt, "isopen", false)
+                }else{
+                  this.$set(shoppingPjt, "isopen", true)
+                }
               // 좋아요
               const idx = this.shoppingList.indexOf(shoppingPjt)
               shoppingPjt.likeCount = response.data.object.likecount[idx];
@@ -364,6 +399,20 @@ export default {
               this.ispjt = true
               this.totalpage = this.shoppingList[0].totalpage;
               this.shoppingList.forEach((shoppingPjt) => {
+                // 오픈예정
+                const year = shoppingPjt.startdate.substring(0, 4);
+                const month = shoppingPjt.startdate.substring(5, 7);
+                const day = shoppingPjt.startdate.substring(8, 10);
+                var Dday = new Date(year, month-1, day);
+                var now = new Date();
+                var gap = now.getTime() - Dday.getTime();
+                var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
+                this.$set(shoppingPjt, "opendate", result);
+                if(result > 0){
+                  this.$set(shoppingPjt, "isopen", false)
+                }else{
+                  this.$set(shoppingPjt, "isopen", true)
+                }
               // 좋아요
               const idx = this.shoppingList.indexOf(shoppingPjt)
               shoppingPjt.likeCount = response.data.object.likecount[idx];
@@ -496,9 +545,6 @@ export default {
 .pa-2 {
   padding:8px;
 }
-.v-card__title {
-  padding-top: 0px;
-}
 a {
   text-decoration: none !important;
   color: black;
@@ -518,8 +564,16 @@ a {
   border-radius: 100px !important;
   max-width: 94px;
 }
+.categoryCard:hover {
+  background-color: rgba(22, 150, 245, 0.1);
+}
+.categoryCard:hover .categoryicon {
+  color: rgb(22, 150, 245);
+}
 .v-card--link:before{
   background: none;
 }
-
+.shadowimg:hover {
+  box-shadow: 10px 10px 20px grey;
+}
 </style>

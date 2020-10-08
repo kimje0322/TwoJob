@@ -50,7 +50,7 @@
         :key="i"
         style="display: inline-block; flex: 1"
       >
-        <v-card class="my-12" max-width="320" style="margin: auto">
+        <v-card class="my-12 shadowimg" max-width="320" style="margin: auto">
           <router-link
             style="text-decoration: none"
             :to="{ name: 'InvestDetail', params: { address: item.address } }"
@@ -107,7 +107,7 @@
         :key="i"
         style="display: inline-block; flex: 1"
       >
-        <v-card class="my-12" max-width="320" style="margin: auto">
+        <v-card class="my-12 shadowimg" max-width="320" style="margin: auto">
           <router-link
             style="text-decoration: none"
             :to="{ name: 'InvestDetail', params: { address: item.address } }"
@@ -288,5 +288,8 @@ export default {
 }
 .pageTab {
   margin-bottom: 0px !important;
+}
+.shadowimg:hover {
+  box-shadow: 10px 10px 20px grey;
 }
 </style>

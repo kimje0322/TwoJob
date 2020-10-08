@@ -59,14 +59,11 @@
 
     <div style="display: flex; padding: 1% 0">
       <div v-for="(item, i) in openItems" :key="i" style="display: inline-block; flex:1">
-        <v-card class="my-12" max-width="320" style="margin: auto">
+        <v-card class="my-12 shadowimg" max-width="320" style="margin: auto">
           <router-link :to="{ name: 'ShoppingDetail', params: { address: item.address } }">
           <v-img height="250" :src="item.picture"></v-img>
           <v-card-title style="font-weight: 600; margin: auto">{{item.pjtname}}
             <v-chip label small style="padding:7px; background-color: rgb(22, 150, 245); margin-left: auto;">
-            <!-- <v-icon style= "margin-right: 3px; color: white"
-                >mdi-clock-outline
-            </v-icon> -->
                 <span class="openBadge" style="color:white">오픈 D-{{ item.afterday }}</span>
             </v-chip>
           </v-card-title>
@@ -90,6 +87,7 @@
     </div>
     <div style="padding: 1% 0">
       <v-card
+        class="shadowimg"
         v-for="(item, i) in likeItems"
         :key="i"
         style="
@@ -192,6 +190,7 @@ export default {
     axios
       .get(`${SERVER_URL}/sale/curation`)
       .then((res) => {
+        console.log(res)
         this.openItems = res.data.object.closeopen;
         // likeopenonelineintro
         this.likeItems = res.data.object.popular;
@@ -201,7 +200,7 @@ export default {
           this.likeItems[i].likecount = res.data.object.popularlikecount[i]
         }
         for (var j = 0; j < this.openItems.length; j++) {
-          this.openItems[j].openintro = res.data.object.closeopenonelineintro[j] 
+          this.openItems[j].openintro = res.data.object.closeopenonelineintro[j]
         }
 
         this.openItems.forEach(item => {
@@ -284,5 +283,7 @@ a {
   text-decoration: none !important;
   color: black;
 }
-
+.shadowimg:hover {
+  box-shadow: 10px 10px 20px grey;
+}
 </style>
