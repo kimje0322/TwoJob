@@ -197,9 +197,9 @@ export default {
     axios
      .get(`${SERVER_URL}/Token/balance?accessToken=${store.state.accessToken}`)
      .then((res) => {
-       console.log(store.state.accessToken)
-       console.log("총 잔액보여줘제발")
-       console.log(res)
+      //  console.log(store.state.accessToken)
+      //  console.log("총 잔액보여줘제발")
+      //  console.log(res)
       //  this.asset = res.data
      })
 
@@ -215,16 +215,16 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
 
     // console.log("네브바 콘솔" + store.state.balance);
     this.asset = store.state.balance;
-    console.log(this.asset);
+    // console.log(this.asset);
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.login = store.state.isSigned;
-      console.log(this.userInfo);
+      // console.log(this.userInfo);
     } else {
       this.login = false;
     }
@@ -236,8 +236,8 @@ export default {
       var Accounts = require("web3-eth-accounts");
       var accounts = new Accounts("https://twojob.ga/eth/");
       var result = web3.eth.accounts.create();
-      console.log(accounts);
-      console.log(result);
+      // console.log(accounts);
+      // console.log(result);
 
       store.commit("setAddress", result.address);
 
@@ -246,9 +246,9 @@ export default {
       fd.append("address", result.address);
       fd.append("privatekey", result.privateKey);
       axios.post(`${SERVER_URL}/wallet/regist`, fd).then((res) => {
-        console.log("wow!!success!!");
-        console.log(res);
-        console.log(fd);
+        // console.log("wow!!success!!");
+        // console.log(res);
+        // console.log(fd);
         if (res.data == 401) {
           store.state.isSigned = false;
         } else if (res.data == "success") {
@@ -274,8 +274,8 @@ export default {
       // this.kakopay = true;
       this.money = this.money * 1;
       store.commit("setCharge", this.money);
-      console.log("vuex에 저장된 충전할 금액은");
-      console.log(store.state.charge);
+      // console.log("vuex에 저장된 충전할 금액은");
+      // console.log(store.state.charge);
       const fd = new FormData();
       fd.append("count", this.money);
       fd.append("userid", this.userInfo.id);
@@ -287,7 +287,7 @@ export default {
           window.location.href = this.nexturl;
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     },
     onLogin() {
