@@ -187,8 +187,9 @@
                         <p style="padding: 5px">Hash {{item.blockhash}}</p>
                       </div>
                       <div style="display: flex; align-items: center; justify-content: center; height: 120px; width: 30%; padding: 12px;">
-                        <p v-if="item.isplus == 'FUND'" style="margin: 0; color: blue; ">
+                        <p v-if="item.isplus" style="margin: 0; ">
                           <v-icon left
+                            style="color: blue;"
                             class="mr-0" size="30">
                             mdi-plus
                           </v-icon>
