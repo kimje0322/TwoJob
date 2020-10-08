@@ -2,7 +2,7 @@
   <div class="myinvestcreate">
     <!-- 상단 Navbar -->
     <HomeNav />
-    <div style="height: 100vh">
+    <div>
       <div style="padding: 3% 0 2% 10%">
         <h4 style="font-weight: 800">
           <span style="color: rgb(22, 150, 245)">{{ username }}</span
@@ -59,8 +59,8 @@ export default {
     fc.append("userid", this.pageuserid);
     axios.get(`${SERVER_URL}/mypage/saleplist?direction=DESC&oauthId=${this.userid}&page=${this.page}&size=${this.size}`)
       .then((response) => {
-      console.log('쇼핑 플젝 확인')
-      console.log(response)
+      // console.log('쇼핑 플젝 확인')
+      // console.log(response)
     })
   },
   computed: {},

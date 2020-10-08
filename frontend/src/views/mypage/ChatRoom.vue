@@ -509,7 +509,7 @@ export default {
 
     // 채팅 수신
     recvMessage: function (recv) {
-      console.log('실행')
+      // console.log('실행')
       this.messages.unshift({
         type: recv.type,
         sender: recv.type == "ENTER" ? "[알림]" : recv.sender,

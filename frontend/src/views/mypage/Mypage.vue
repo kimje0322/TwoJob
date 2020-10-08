@@ -19,9 +19,7 @@
             <p v-if="iswallet">총 {{ pageuserbalance }} 토큰</p>
           </div>
           <div style="margin-top: 50px">
-            <router-link to="/" style="text-decoration: none">
-              <v-btn class="logoutBtn" @click="onLogout">로그아웃</v-btn>
-            </router-link>
+            <v-btn class="logoutBtn" @click="onLogout">로그아웃</v-btn>
             <br />
             <v-btn v-if="!iswallet" @click="onWallet" class="walletBtn"
               >지갑생성</v-btn
@@ -284,9 +282,11 @@ export default {
     onLogout() {
       // this.$store.reset()
       store.state.isSigned = false;
+      store.commit("deluserInfo");
       // console.log("로그아웃됨");
       // console.log("store.state.isSigned " + store.state.isSigned);
-      // this.$router.push("/");
+      this.$router.push("/");
+      // window.location.reload();
     },
     onWallet() {
       // var Web3 = require('web3');
@@ -371,7 +371,7 @@ export default {
         })
         this.filtertransactions = this.filtertransactions.concat(this.totaltransaction)
         $state.loaded()
-        console.log(this.page + '데이터')
+        // console.log(this.page + '데이터')
         if(this.page >= this.totalpage) {
           $state.complete()
         }
@@ -459,7 +459,7 @@ export default {
           this.$set(item, "typename", "투자수익금")
         }
       })
-      console.log(this.transactions)
+      // console.log(this.transactions)
     })
 
 
