@@ -1,6 +1,7 @@
 <template>
   <div class="shoppingDetail">
     <HomeNav />
+    
     <div>
     <!-- 상품 게시글 제목 -->
     <div

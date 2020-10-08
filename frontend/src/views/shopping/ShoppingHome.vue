@@ -32,19 +32,16 @@
     </div>
     <div>
       <!-- 임시 리뷰작성 버튼 activator -->
-      <div style="text-align: end; margin-right: 70px">
-        <v-btn @click="openReviewDialog(-1)" outlined> 리뷰 작성 </v-btn>
-      </div>
-      
+
       <!-- 리뷰 모달 -->
-      <v-dialog max-width="640" min-height="500" v-model="reviewDialog">
+      <!-- <v-dialog max-width="640" min-height="500" v-model="reviewDialog">
         <ShoppingReview @closeReviewDialog="closeReviewDialog"></ShoppingReview>
         <v-card-actions style="background-color: white;">
           <v-spacer></v-spacer>
           <v-btn text @click="reviewDialog=false">취소</v-btn>
           <v-btn text color="blue">등록</v-btn>
         </v-card-actions>
-      </v-dialog>    
+      </v-dialog>     -->
     </div>
 
     <div style="margin: 0px 185px 0 185px">
@@ -143,9 +140,6 @@ import "../../../public/css/ShoppingHome.scss";
 // import Navbar from "../../components/Navbar.vue";
 import HomeNav from "../../components/HomeNav.vue";
 import axios from "axios";
-// 쇼핑 리뷰
-import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
-import Axios from 'axios';
 
 const SERVER_URL = "https://www.twojob.ga/api";
 

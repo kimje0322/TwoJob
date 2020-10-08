@@ -330,6 +330,9 @@ export default {
   },
   mounted() {
     this.investAddress = this.$route.params.address
+    console.log(this.investAddress)
+    console.log('invest어드레스')
+
     if (store.state.isSigned) {
       this.userInfo = store.state.userInfo;
       this.userid = store.state.userInfo.id;
@@ -465,6 +468,7 @@ export default {
                       console.log(res);
                     }).catch((err) => {
                       console.log(err)
+                      
                     })
                     let timerInterval;
                     Swal.fire({
