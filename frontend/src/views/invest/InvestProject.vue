@@ -48,7 +48,7 @@
               outlined
               tile
             >
-              <v-icon :class="`${category.key}icon`" size="30"
+              <v-icon class="categoryicon" :class="`${category.key}icon`"  size="30"
                 >mdi-{{ category.icon }}</v-icon
               >
               <p class="categoryTag">{{ category.name }}</p>
@@ -88,7 +88,7 @@
           style="display: inline-block; width: 33%; margin-top: 5%"
         >
           <!-- :class="`${item.address}img`" @mouseover="cardhover(item.address)" transform:scale(1); -->
-          <v-card class="my-12" max-width="320" style="margin: auto">
+          <v-card class="my-12 shadowimg" max-width="320" style="margin: auto">
             <router-link
               style="text-decoration: none"
               :to="{ name: 'InvestDetail', params: { address: item.address } }"
@@ -531,6 +531,12 @@ export default {
   border-radius: 100px !important;
   max-width: 94px;
 }
+.categoryCard:hover {
+  background-color: rgba(22, 150, 245, 0.1) !important;
+}
+.categoryCard:hover .categoryicon {
+  color: rgb(22, 150, 245);
+}
 .v-card--link:before {
   background: none;
 }
@@ -603,5 +609,8 @@ export default {
 }
 .pageTab {
   margin-bottom: 0px !important;
+}
+.shadowimg:hover {
+  box-shadow: 10px 10px 20px grey;
 }
 </style>

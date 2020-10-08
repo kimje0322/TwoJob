@@ -24,16 +24,16 @@
             <v-card flat tile style="border-radius: 12px !important">
               <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
-                <div style="padding: 1% 0; height: 100vh;">
+                <div style="padding: 3%; height: 100vh;">
                   <div
                     v-for="(item, i) in investlikelst"
                     :key="i"
-                    style="display: inline-block; width: 30%; margin: 20px 5px"
+                    style="display: inline-block; width: 33%;"
                   >
                       <!-- max-height="600px" -->
                     <v-card
-                      class="my-12"
-                      max-width="95%"
+                      class="my-12 shadowimg"
+                      max-width="85%"
                       style="margin: auto"
                     >
                       <router-link
@@ -104,7 +104,7 @@
             <v-card flat tile>
               <!-- <v-card-text> -->
                 <!-- style="float: left; padding: 50px 20px 0; width: 200px; box-sizing: border-box;" -->
-                <div style="padding: 1% 0; height: 100vh;">
+                <div style="padding: 3%; height: 100vh;">
                   <div
                     v-for="(item, i) in shopplinglikelst"
                     :key="i"
@@ -115,8 +115,8 @@
                     "
                   >
                     <v-card
-                      class="my-12"
-                      max-width="90%"
+                      class="my-12 shadowimg"
+                      max-width="85%"
                       max-height="600px"
                       style="margin: auto"
                     >
@@ -244,8 +244,8 @@ export default {
         var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1;
         this.$set(invlst, "lastday", result);
         // 제목
-        if (invlst.pjtname.length > 12) {
-          invlst.pjtname = invlst.pjtname.substring(0, 12) + "...";
+        if (invlst.pjtname.length > 10) {
+          invlst.pjtname = invlst.pjtname.substring(0, 10) + "...";
         }
         // 한줄소개
         if (invlst.onelineintro.length > 30) {
@@ -387,5 +387,8 @@ input:hover {
   background-color: rgb(22, 150, 245) !important;
   color: white !important;
   text-align: right;
+}
+.shadowimg:hover {
+  box-shadow: 10px 10px 20px grey;
 }
 </style>

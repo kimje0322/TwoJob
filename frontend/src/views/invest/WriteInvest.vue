@@ -283,7 +283,7 @@
                   <editor
                     ref="toastuiEditor"
                     v-model="editortext"
-                    initialEditType="wysiwyg"
+                    initialEditType="markdown"
                     height="800px"
                     :options="editorOptions"
                   />
