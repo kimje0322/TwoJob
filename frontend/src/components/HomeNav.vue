@@ -317,6 +317,7 @@ export default {
         })
         .catch((err) => {
         })
+        window.location.reload();
         if (res.data.profileImg == null) {
           this.userInfo.img =
             "https://file3.instiz.net/data/cached_img/upload/2020/02/26/12/f7975c2dacddf8bf521e7e6d7e4c02ee.jpg";
@@ -330,6 +331,7 @@ export default {
       window.location.reload();
       store.commit("deluserInfo");
       this.login = false;
+      this.asset = 0
       this.items = [
           { title: '투자 프로젝트', icon: 'mdi-lightbulb-on-outline' },
           { title: '쇼핑 프로젝트', icon: 'mdi-basket' },

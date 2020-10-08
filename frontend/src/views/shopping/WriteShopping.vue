@@ -464,11 +464,9 @@ export default {
                   axios
                     .post(`${SERVER_URL}/funding/sellopen`, fd)
                     .then((res) => {
-                      console.log('d응답보겟슴');
-                      console.log(res);
+                      // console.log(res);
                     }).catch((err) => {
-                      console.log(err)
-                      
+                      // console.log(err)
                     })
                     let timerInterval;
                     Swal.fire({

@@ -659,7 +659,7 @@ export default {
                       },
                     })
                     .then((response) => {
-                      console.log(response)
+                      // console.log(response)
                         this.$router.push("/investhome");
                         Swal.fire({
                           icon: "success",

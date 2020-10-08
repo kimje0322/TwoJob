@@ -15,9 +15,7 @@
           </router-link>
         </div>
         <div>
-          <router-link to="/writeinvest">
-            <h5 class="pageTab" style="margin: 0">투자오픈</h5>
-          </router-link>
+          <h5 @click="openinvestbtn" class="pageTab" style="margin: 0; cursor:pointer">투자오픈</h5>
         </div><br>
         <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px rgb(22, 150, 245); background-color: rgb(22, 150, 245)">
         <hr class="divider mx-auto mt-2" style="display:inline-block; width: 16%; border: solid 2px lightgrey; background-color: lightgrey">
@@ -164,6 +162,8 @@
 import "../../../public/css/InvestHome.scss";
 import HomeNav from "../../components/HomeNav.vue";
 import axios from "axios";
+import store from "../../store/index.js";
+import Swal from "sweetalert2";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
@@ -173,6 +173,7 @@ export default {
   },
   data() {
     return {
+      islogin: store.state.isSigned,
       items: [
         {
           src:
@@ -244,7 +245,21 @@ export default {
       });
     });
   },
-  methods: {},
+  methods: {
+    openinvestbtn() {
+      if(this.islogin){
+        this.$router.push('/writeinvest')
+      }
+      else{
+        Swal.fire({
+            icon: "warning",
+            title: "",
+            text: "로그인 후 이용해 주세요.",
+            showConfirmButton: false,
+          })
+      }
+    }
+  },
 };
 </script>
 
