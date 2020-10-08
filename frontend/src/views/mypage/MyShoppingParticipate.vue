@@ -42,14 +42,14 @@ import Web3 from "web3";
 import Swal from "sweetalert2";
 import "../../../public/css/MyInvestCreate.scss";
 // 쇼핑 리뷰
-import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
+// import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
 
 const SERVER_URL = "https://www.twojob.ga/api";
 
 export default {
   components: {
     HomeNav,
-    ShoppingReview,
+    // ShoppingReview,
   },
   data() {
     return {

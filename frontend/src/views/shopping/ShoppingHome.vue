@@ -139,6 +139,8 @@ import "../../../public/css/InvestHome.scss";
 import "../../../public/css/ShoppingHome.scss";
 // import Navbar from "../../components/Navbar.vue";
 import HomeNav from "../../components/HomeNav.vue";
+import ShoppingReview from "@/views/shopping/ShoppingReview.vue";
+
 import axios from "axios";
 
 const SERVER_URL = "https://www.twojob.ga/api";
