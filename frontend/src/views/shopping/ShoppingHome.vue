@@ -147,7 +147,7 @@ export default {
   components: {
     HomeNav,
     // Navbar,
-    ShoppingReview,
+    // ShoppingReview,
   },
   data() {
     return {
