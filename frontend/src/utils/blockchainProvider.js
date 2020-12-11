@@ -1,27 +1,17 @@
-import { BLOCKCHAIN_URL } from "../config"; // todo check index.js가 import 되는지 확인하기
+import { BLOCKCHAIN_URL } from "../config"; 
 import Web3 from "web3";
 
-const NUMBER_OF_CONTENTS_TO_SHOW = 10; // 한 번에 보여줄 정보의 개수
-const REFRESH_TIMES_OF_OVERVIEW = 1000; // 개요 정보 갱신 시간 1초
-const REFRESH_TIMES_OF_BLOCKS = 15000; // 블록 정보 갱신 시간 5초
-const REFRESH_TIMES_OF_TRANSACTIONS = 15000; // 트랜잭션 정보 갱신 시간 15초
+const NUMBER_OF_CONTENTS_TO_SHOW = 10; 
+const REFRESH_TIMES_OF_OVERVIEW = 1000; 
+const REFRESH_TIMES_OF_BLOCKS = 15000; 
+const REFRESH_TIMES_OF_TRANSACTIONS = 15000; 
 
 const web3 = new Web3(BLOCKCHAIN_URL);
 
-// 가장 최근 블록 넘버를 비동기로 조회한다.
 function fetchLatestBlock() {
   return web3.eth.getBlockNumber();
 }
 
-/*
-    javascript 에서 URL 쿼리 스트링을 읽을 수 있게 해주는 함수
-    https://test.com/?abc=123&def=456 의 URL을 아래와 같이 변환해서 리턴한다.
-
-    [
-        "abc": "123",
-        "def": "456"
-    ]
-*/
 function parseQueryString() {
   var values = [],
     item;
@@ -38,8 +28,7 @@ function parseQueryString() {
   return values;
 }
 
-// from 블록 부터 end 블록까지 순차적으로 조회하여
-// callback 함수를 실행한다.
+
 function fetchBlocks(from, end, callback) {
   web3.eth.getBlock(from).then(function(block) {
     callback(block);
@@ -51,7 +40,6 @@ function fetchBlocks(from, end, callback) {
   });
 }
 
-// timestamp 포맷을 사람이 읽을 수 있는 형태로 변환한다.
 function timeSince(date) {
   var seconds = Math.floor((new Date() - date * 1000) / 1000);
 
@@ -80,10 +68,10 @@ function timeSince(date) {
 }
 
 export {
-  NUMBER_OF_CONTENTS_TO_SHOW, // 한 번에 보여줄 정보의 개수
-  REFRESH_TIMES_OF_OVERVIEW, // 개요 정보 갱신 시간 1초
-  REFRESH_TIMES_OF_BLOCKS, // 블록 정보 갱신 시간 5초
-  REFRESH_TIMES_OF_TRANSACTIONS, // 트랜잭션 정보 갱신 시간 15초
+  NUMBER_OF_CONTENTS_TO_SHOW, 
+  REFRESH_TIMES_OF_OVERVIEW, 
+  REFRESH_TIMES_OF_BLOCKS,
+  REFRESH_TIMES_OF_TRANSACTIONS, 
   fetchLatestBlock,
   parseQueryString,
   fetchBlocks,
